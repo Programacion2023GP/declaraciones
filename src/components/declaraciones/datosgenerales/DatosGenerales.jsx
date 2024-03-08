@@ -5,7 +5,6 @@ import { CardForm } from "../../Reusables/cardform/CardForm";
 import { Input } from "../../Reusables/input/Input";
 import { Formulario } from "../../Reusables/formulario/Formulario";
 
-
 export const DatosGenerales = () => {
   const [validationSchema, setValidationSchema] = useState(
     Yup.object().shape({})
@@ -15,7 +14,7 @@ export const DatosGenerales = () => {
     <>
       <Formulario textbutton={"registrar"}>
         <Input col={4} label="nombre" name="nombre" value={"d"} />
-        <Input col={4} label="age" name="age" value={"ss"} />
+        {/* <Input col={4} label="age" name="age" value={"ss"} /> */}
 
         {/* <Input col={4} label="nombre" name="nombre" value={"d"} /> */}
       </Formulario>

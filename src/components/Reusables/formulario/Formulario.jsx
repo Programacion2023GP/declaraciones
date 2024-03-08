@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { CardForm } from "../../Reusables/cardform/CardForm";
 import { Input } from "../../Reusables/input/Input";
 export const Formulario = ({ children, textbutton }) => {
-  console.warn(children);
+  console.log("propiedades", children.props);
   const { name, value, label } = children.props;
 
   const [validationSchema, setValidationSchema] = useState(
@@ -34,7 +34,7 @@ export const Formulario = ({ children, textbutton }) => {
         }) => (
           <CardForm handleSubmit={handleSubmit} textbutton={textbutton}>
             {cloneElement(children, {
-              // value: values[name] ?? value,
+              value: values[name] ?? value,
               dataForm: initialValues,
               initialValues: setInitialValues,
               handleBlur,
