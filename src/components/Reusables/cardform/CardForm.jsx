@@ -2,7 +2,7 @@ import { Button, Grid, Typography } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 
-export const CardForm = ({ children, handleSubmit, textbutton }) => {
+export const CardForm = ({ children, handleSubmit, textButton,title}) => {
   return (
     <Card
       component="form"
@@ -11,14 +11,18 @@ export const CardForm = ({ children, handleSubmit, textbutton }) => {
       TouchRippleProps={{ disabled: true }}
     >
       <CardContent>
+      <Typography variant="h3" align="center" color="textPrimary" style={{ fontWeight: '500' }}> 
+  {title}
+</Typography>
+<br />
         <Typography variant="body2" color="text.secondary">
-          <Grid container spacing={2}>
+          <Grid container spacing={3}>
             {children}
             <Grid item xs={12}></Grid>
 
             <Grid item xs={3}>
               <Button variant="contained" type="submit">
-                {textbutton}
+                {textButton}
               </Button>
             </Grid>
           </Grid>

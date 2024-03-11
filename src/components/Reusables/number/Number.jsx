@@ -2,7 +2,8 @@ import { Grid } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useEffect } from "react";
 import CircularProgress from '@mui/material/CircularProgress';
-export const Text = ({
+
+export const Number = ({
   helperText,
   loading=false,
   col,
@@ -10,13 +11,12 @@ export const Text = ({
   name = "name",
   onChange,
   value = null,
-  type = null,
   errors,
   touched,
   handleBlur,
+  disabled,
+  validations,
  optional,
- validations,
- disabled,
 }) => {
   useEffect(() => {
   }, [ name,value]);
@@ -28,16 +28,15 @@ export const Text = ({
         fullWidth
         onBlur={handleBlur}
         label={label}
-        type={type ?? "text"}
+        type={'number'}
         variant="outlined"
         name={name}
         onChange={(e) => onChange(name, e.target.value)}
         value={value}
         error={errors[name] && touched[name]}
         helperText={errors[name] && touched[name] ? errors[name] : helperText}
-      />
-      {loading && <CircularProgress sx={{ position: 'absolute', top: '40%', left: '40%',}} />}
-      
-  </Grid>
+        />
+    {loading && <CircularProgress sx={{ position: 'absolute', top: '40%', left: '40%',}} />}
+    </Grid>
   );
 };
