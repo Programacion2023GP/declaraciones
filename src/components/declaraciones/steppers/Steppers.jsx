@@ -34,7 +34,7 @@ const steps = [
   },
 ];
 
-export const Declaraciones = () => {
+export const Steppers = () => {
   const {
     checked,
     selected,
@@ -72,6 +72,9 @@ export const Declaraciones = () => {
     if (checkeds[activeStep]) {
       setDialog(false);
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      if (activeStep === steps.length - 1) {
+        window.location.hash = `declaraciones/${selected}`;
+      }
       setSkipped(newSkipped);
     } else {
       setDialog(true);
@@ -89,8 +92,8 @@ export const Declaraciones = () => {
     if (!isStepOptional(activeStep)) {
       throw new Error("You can't skip a step that isn't optional.");
     }
-
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
     setSkipped((prevSkipped) => {
       const newSkipped = new Set(prevSkipped.values());
       newSkipped.add(activeStep);

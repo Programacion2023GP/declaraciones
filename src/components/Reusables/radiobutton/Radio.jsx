@@ -1,4 +1,10 @@
-import { Grid, RadioGroup, FormControlLabel, Radio } from "@mui/material";
+import {
+  Grid,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Typography,
+} from "@mui/material";
 import { useEffect } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -11,8 +17,11 @@ export const CustomRadio = ({
   value = null,
   type = null,
   errors,
+  message,
   touched,
+  helperText,
   handleBlur,
+  title,
   data,
   rowLayout = true, // Cambia a false para poner en columnas
 }) => {
@@ -20,7 +29,19 @@ export const CustomRadio = ({
 
   return (
     <>
-      <Grid item xs={col} sx={{ display: "flex", alignItems: "center" }}>
+      <Grid
+        item
+        xs={col}
+        sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+      >
+        <Typography
+          variant="subtitle1"
+          align="center"
+          color="textPrimary"
+          sx={{ marginBottom: "1rem" }} // Agregar espacio debajo del título
+        >
+          {title}
+        </Typography>
         <RadioGroup
           name={name}
           value={value}
@@ -35,7 +56,6 @@ export const CustomRadio = ({
               label={item}
               disabled={loading}
               sx={{
-                marginRight: rowLayout ? "16px" : 0, // Espacio entre los radio buttons si están en la misma fila
                 marginBottom: rowLayout ? 0 : "8px", // Espacio entre los radio buttons si están en columnas
                 "& .MuiRadio-root": {
                   color: "#1976d2",
@@ -51,6 +71,16 @@ export const CustomRadio = ({
             />
           ))}
         </RadioGroup>
+        {errors[name] && touched[name] && (
+          <Typography variant="body2" color="error">
+            {message&& errors[name] }
+          </Typography>
+        )}
+        {helperText && (
+          <Typography variant="body2" color="textSecondary">
+            {helperText}
+          </Typography>
+        )}
         {loading && (
           <CircularProgress
             sx={{ position: "absolute", top: "40%", left: "40%" }}

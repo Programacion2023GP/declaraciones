@@ -19,6 +19,9 @@ export const Password = ({
   errors,
   touched,
   handleBlur,
+  optional,
+  validations,
+  disabled,
  
 }) => {
   useEffect(() => {

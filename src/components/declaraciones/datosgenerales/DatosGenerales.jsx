@@ -1,4 +1,4 @@
-import { cloneElement, useState } from "react";
+import { useState } from "react";
 
 import { Text } from "../../Reusables/input/Input";
 import { Formulario } from "../../Reusables/formulario/Formulario";
@@ -14,29 +14,24 @@ import { useEffect } from "react";
 import { Date } from "../../Reusables/date/Date";
 import { CustomRadio } from "../../Reusables/radiobutton/Radio";
 import { CustomCheckbox } from "../../Reusables/checkbox/Inpcheckbox";
+import { Card, CardContent, Grid, Typography } from "@mui/material";
+import { Nacionalidad, Paises, Regimenes, estadoCivil } from "./datas";
+import { useParams } from "react-router-dom";
+
 //regex min max validaciones
 //optional indica que no tiene validaciones
 // hidden lo desaparece del dom
 //validations son las validaciones
 
-export const DatosGenerales = () => {
+export const DatosGenerales = ({ next, previous }) => {
+  let { declaracion } = useParams();
+  declaracion = parseInt(declaracion);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [loadingMovies, setLoadingMovies] = useState(false);
   const [activeRegimen, setActiveReginen] = useState(true);
   const [errorActive, setActiveError] = useState(false);
   const [valor, setValor] = useState(true);
-  const top100Films = [
-    { label: "The Shawshank Redemption", id: 1 },
-    { label: "The Godfather", id: 2 },
-    { label: "The Godfather: Part II", id: 3 },
-    { label: "The Dark Knight", id: 4 },
-    { label: "12 Angry Men", id: 5 },
-    { label: "Schindler's List", id: 6 },
-    { label: "Pulp Fiction", id: 7 },
-  ];
-
   const getData = (data) => {
-    console.log(data);
     if (data.situacion == 2) {
       setActiveReginen(false);
       setActiveError(false);
@@ -44,7 +39,6 @@ export const DatosGenerales = () => {
       setActiveReginen(true);
       setActiveError(true);
     }
-
     // else{
     //   setValor(true);
     // }
@@ -53,117 +47,184 @@ export const DatosGenerales = () => {
   useEffect(() => {}, []);
   return (
     <>
-      <Formulario
-        getData={getData}
-        action={""}
-        card={true}
-        // post={""}
-        // put={""}
-        // get={""}
-        textButton={"registrar"}
-        title={"Declaración de situación patrimonial - Inicial"}
+      {/* Invoca correctamente la función submit */}
+      <Card
+        sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}
+        TouchRippleProps={{ disabled: true }}
       >
-        <Text
-          col={12}
-          name="nombre"
-          label={"Nombre(s)"}
-          helperText={"Sin abreviaturas, sin acentos, ni signos especiales"}
-        />
-        <Text
-          col={12}
-          name="apellido"
-          label={"Primer apellido"}
-          helperText={"Sin abreviaturas, sin acentos, ni signos especiales"}
-        />
-        <Text
-          col={12}
-          name="segundo"
-          label={"Segundo apellido"}
-          helperText={`Si se tiene un solo apellido debera colocarse en el espacio de "Primer apellido" y dejar el espacio 
+        <CardContent>
+          <Typography
+            variant="h6"
+            align="start"
+            color="textPrimary"
+            style={{ fontWeight: "500" }}
+          >
+            Los datos que no serán públicos estarán resaltados de color verde
+          </Typography>
+          <br />
+          <Typography variant="body2" color="text.secondary">
+            <Grid container spacing={2}>
+              <Formulario
+                // submit= {}
+                getData={getData}
+                action={""}
+                submit={next}
+                // post={""}
+                // put={""}
+                // get={""}
+                textButton={"Registrar"}
+                title={"Declaración de situación patrimonial - Inicial"}
+              >
+                <Text
+                  col={12}
+                  name="nombre"
+                  label={"Nombre(s)"}
+                  helperText={
+                    "Sin abreviaturas, sin acentos, ni signos especiales"
+                  }
+                  optional={true}
+                />
+                <Text
+                  col={12}
+                  name="apellido"
+                  label={"Primer apellido"}
+                  helperText={
+                    "Sin abreviaturas, sin acentos, ni signos especiales"
+                  }
+                  optional={true}
+                />
+                <Text
+                  col={12}
+                  name="segundo"
+                  label={"Segundo apellido"}
+                  helperText={`Si se tiene un solo apellido debera colocarse en el espacio de "Primer apellido" y dejar el espacio 
             "Segundo apellido" en blanco. Sin abreviaturas, sin acentos, ni signos especiales`}
-        />
-        <Curp
-          col={12}
-          name="curp"
-          label={"CURP (Clave Única de Registro de Población)"}
-        />
-        <Rfc
-          col={12}
-          name="rfc"
-          label={"RFC (Registro Federal de Contribuyentes)"}
-        />
-        <Text col={12} name="homoclave" label={"Homoclave"} />
+                  optional={true}
+                />
+                <Curp
+                  col={12}
+                  name="curp"
+                  label={"CURP (Clave Única de Registro de Población)"}
+                  optional={true}
+                />
+                <Rfc
+                  col={12}
+                  name="rfc"
+                  label={"RFC (Registro Federal de Contribuyentes)"}
+                  optional={true}
+                />
+                <Text
+                  col={12}
+                  name="homoclave"
+                  label={"Homoclave"}
+                  optional={true}
+                />
 
-        <Email
-          col={12}
-          name="email"
-          label={"Correo electrónico institucional"}
-          helperText={
-            "En caso de no contar con correo institucional ingresar el correo personal."
-          }
-        />
-        <Email
-          col={12}
-          name="alterno"
-          label={"Correo electrónico personal/alterno"}
-          helperText={
-            "Es importante considerar que en la cuenta que proporcione le será enviada la declaración patrimonial y de interés que haya presentado y el acuse"
-          }
-        />
-        <Text
-          col={12}
-          name="number"
-          label={"Número telefónico de casa"}
-          helperText={
-            "En caso de no contar con teléfono de casa, ingresar número de celular."
-          }
-        />
-        <Phone col={12} name="phone" label={"Número celular personal"} />
-        <AutoComplete
-          col={12}
-          label="Situación personal / Estado civil"
-          name="situacion"
-          loading={false}
-          // onChange={handleMovieChange}
-          options={[
-            { text: "SOLTERO (A)", id: 1 },
-            { text: "CASADO (A)", id: 2 },
-            { text: "DIVORCIADO (A)", id: 3 },
-            { text: "VIUDO (A)", id: 4 },
-            { text: "CONCUBINA/CONCUBINARIO/UNIÓN LIBRE", id: 5 },
-            { text: "SOCIEDAD DE CONVIVENCIA", id: 6 },
-          ]}
-        />
-        <AutoComplete
-          col={12}
-          label="Situación personal / Estado civil"
-          name="situacion"
-          loading={activeRegimen}
-          optional={activeRegimen}
-          helperText={errorActive && "la situacion patrimonial es requerida"}
-          // onChange={handleMovieChange}
-          options={[
-            { text: "SOCIEDAD CONYUGAL", id: 1 },
-            { text: "SEPARACIÓN DE BIENES", id: 2 },
-            { text: "OTRO", id: 3 },
-          ]}
-        />
-        <TextArea
-          col={12}
-          rows={10}
-          name="aclaraciones"
-          label={"Aclaraciones/Observaciones"}
-        />
-      </Formulario>
-
+                <Email
+                  col={12}
+                  name="email"
+                  label={"Correo electrónico institucional"}
+                  helperText={
+                    "En caso de no contar con correo institucional ingresar el correo personal."
+                  }
+                  optional={true}
+                />
+                <Email
+                  col={12}
+                  name="alterno"
+                  label={"Correo electrónico personal/alterno"}
+                  helperText={
+                    "Es importante considerar que en la cuenta que proporcione le será enviada la declaración patrimonial y de interés que haya presentado y el acuse"
+                  }
+                  optional={true}
+                />
+                <Text
+                  col={12}
+                  name="number"
+                  label={"Número telefónico de casa"}
+                  helperText={
+                    "En caso de no contar con teléfono de casa, ingresar número de celular."
+                  }
+                  optional={true}
+                />
+                <Phone
+                  col={12}
+                  name="phone"
+                  label={"Número celular personal"}
+                  optional={true}
+                />
+                <AutoComplete
+                  col={12}
+                  label="Situación personal / Estado civil"
+                  name="situacion"
+                  loading={false}
+                  // onChange={handleMovieChange}
+                  options={estadoCivil}
+                  optional={true}
+                />
+                <AutoComplete
+                  col={12}
+                  label="Régimen matrimonial"
+                  name="regimen"
+                  loading={activeRegimen}
+                  optional={true}
+                  // optional={activeRegimen}
+                  helperText={
+                    errorActive && "la situacion patrimonial es requerida"
+                  }
+                  // onChange={handleMovieChange}
+                  options={Regimenes}
+                />
+                <AutoComplete
+                  col={12}
+                  label="País de nacimiento"
+                  name="pais"
+                  optional={true}
+                  // onChange={handleMovieChange}
+                  options={Paises}
+                />
+                <AutoComplete
+                  col={12}
+                  label="Nacionalidad"
+                  name="nacionalidad"
+                  optional={true}
+                  // onChange={handleMovieChange}
+                  options={Nacionalidad}
+                />
+                <TextArea
+                  placeholder={"Otros motivos"}
+                  col={12}
+                  rows={10}
+                  name="aclaraciones"
+                  optional={true}
+                  color="green"
+                  label={"Aclaraciones/Observaciones"}
+                />
+                <CustomRadio
+                  rowLayout={true}
+                  title={
+                    "¿Te desempeñaste como servidor publico el año inmediato anterior?"
+                  }
+                  message={"Es requerido que seleccione una opción"}
+                  hidden={declaracion == 2 ? false : true}
+                  col={5}
+                  name="radio"
+                  label={"radio"}
+                  data={["Si", "No"]}
+                  optional={true}
+                />
+              </Formulario>
+            </Grid>
+          </Typography>
+        </CardContent>
+      </Card>
       {/* <CustomCheckbox
           rowLayout={false}
           col={2}
           name="checbox"
           label={"checbox"}
-          data={{ text: "Option 1", value: "option1" }}
+          data={{ text: "Option 1", id: "option1" }}
         /> */}
-
       {/* <Curp col={5} label="Curp" name="curp" />
         <Rfc col={5} label="rfc" name="rfc" />
 
@@ -179,7 +240,7 @@ export const DatosGenerales = () => {
           col={3}
           label={"carlos"}
           name="carlos"
-          value={100}
+          id={100}
           loading={true}
         />
 
@@ -195,7 +256,6 @@ export const DatosGenerales = () => {
             min: 6,
           }}
         /> */}
-
       {/* <CustomRadio
           rowLayout={false}
           col={5}
@@ -220,7 +280,6 @@ export const DatosGenerales = () => {
             { text: "Pulp Fiction", id: 7 },
           ]}
         /> */}
-
       {/* <CustomRadio
           rowLayout={true}
           col={5}
@@ -233,16 +292,15 @@ export const DatosGenerales = () => {
           col={2}
           name="checbox"
           label={"checbox"}
-          data={{ text: "Option 1", value: "option1" }}
+          data={{ text: "Option 1", id: "option1" }}
         />
         <CustomCheckbox
           rowLayout={false}
           col={2}
           name="other"
           label={"other"}
-          data={{ text: "Option 1", value: "option1" }}
+          data={{ text: "Option 1", id: "option1" }}
         /> */}
-
       {/* <Date
         col={12}
         label="Fecha de nacimiento"
@@ -273,7 +331,6 @@ export const DatosGenerales = () => {
 
         /> 
         */}
-
       {/* <AutoComplete/> */}
     </>
   );

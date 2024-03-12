@@ -46,7 +46,7 @@ export const AutoComplete = ({
         onChange={handleAutocompleteChange}
         inputValue={inputValue}
         onInputChange={(event, newInputValue) => {
-          setInputValue(newInputValue);
+          setInputValue(String(newInputValue));
         }}
         renderInput={(params) => (
           <TextField
@@ -58,8 +58,11 @@ export const AutoComplete = ({
             label={label}
             variant="outlined"
             error={errors[name] && touched[name]}
-            helperText={errors[name] && touched[name] ? errors[name] : helperText}
+            helperText={
+              errors[name] && touched[name] ? errors[name] : helperText
+            }
             InputProps={{
+              style: optional ? { color: "green" } : {},
               ...params.InputProps,
               endAdornment: (
                 <>

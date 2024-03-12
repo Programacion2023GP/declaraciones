@@ -2,8 +2,19 @@ import { Children, cloneElement, useEffect, useState } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { CardForm } from "../../Reusables/cardform/CardForm";
+import { Button } from "@mui/material";
 
-export const Formulario = ({ children, textButton, title, getData,getValidations, card }) => {
+export const Formulario = ({
+  children,
+  textButton,
+  title,
+  getData,
+  getValidations,
+  submit,
+  stepper,
+  stepperText,
+  stepperFunction,
+}) => {
   const [formikKey, setFormikKey] = useState(0); // Agregar estado para la clave de reset
   const [validationSchema, setValidationSchema] = useState(
     Yup.object().shape({})
@@ -97,14 +108,11 @@ export const Formulario = ({ children, textButton, title, getData,getValidations
     setInitialValues(initialValuesObj);
     setValidationSchema(Yup.object().shape(validationShape));
     if (getValidations) {
-    
-      getValidations(validationSchema)
+      getValidations(validationSchema);
     }
     setInitialized(true);
-  }, [Children.count(children)]);
- const setValidationsParent=()=>{
-  
- }
+  }, [Children.count(children),textButton,stepper,stepperText,stepperFunction,submit,getData,title]);
+  const setValidationsParent = () => {};
   return (
     <>
       {initialized && ( // Renderizar Formik solo cuando los datos están inicializados
@@ -114,6 +122,8 @@ export const Formulario = ({ children, textButton, title, getData,getValidations
           validationSchema={validationSchema}
           onSubmit={(values, { setSubmitting }) => {
             console.warn("FORMULARIO", values);
+            submit();
+
             // Aquí puedes manejar la lógica de envío del formulario si es necesario
             // Por ejemplo, puedes llamar a una función para enviar los datos al servidor
             // y luego restablecer el estado del formulario
@@ -122,7 +132,9 @@ export const Formulario = ({ children, textButton, title, getData,getValidations
           // Aquí actualizamos los errores del formulario
           // para poder acceder a ellos desde el exterior
           validate={(values) => {
-            getData(values);
+            if (getData) {
+              getData(values);
+            }
             validationSchema
               .validate(values, { abortEarly: false })
               .then(() => {
@@ -146,50 +158,39 @@ export const Formulario = ({ children, textButton, title, getData,getValidations
             handleBlur,
           }) => (
             <>
-              {card && (
-                <CardForm
-                  handleSubmit={handleSubmit}
-                  textButton={textButton}
-                  title={title}
-                >
-                  {Children.map(children, (child, index) => {
-                    if (child.props.hidden) {
-                      return null; // No clonar si la propiedad 'hidden' está presente
+              <CardForm
+                handleSubmit={handleSubmit}
+                textButton={textButton}
+                title={title}
+                {...(stepper
+                  ? {
+                      stepper: stepper,
+                      stepperText: stepperText,
+                      stepperFunction: stepperFunction,
                     }
+                  : {
+                      stepper: null,
+                      stepperText: null,
+                      stepperFunction: null,
+                    })}
+              >
+                {/* Contenido del CardForm */}
 
-                    return cloneElement(child, {
-                      key: index,
-                      value: values[child.props.name] ?? child.props.value,
-                      onChange: setFieldValue,
-                      onBlur: handleBlur,
-                      errors,
-                      touched,
-                    });
-                  })}
-                </CardForm>
-              )}
-              {!card && (
-                <>
-                  {Children.map(children, (child, index) => {
-                    if (child.props.hidden) {
-                      return null; // No clonar si la propiedad 'hidden' está presente
-                    }
-                    return (
-                      <>
-                        {cloneElement(child, {
-                          key: index,
-                          value: values[child.props.name] ?? child.props.value,
-                          onChange: setFieldValue,
-                          onBlur: handleBlur,
-                          errors,
-                          touched,
-                        })}
-                        <br /> {/* Agrega el salto de línea aquí */}
-                      </>
-                    );
-                  })}
-                </> // Fragmento vacío si card es falso
-              )}
+                {Children.map(children, (child, index) => {
+                  if (child.props.hidden) {
+                    return null; // No clonar si la propiedad 'hidden' está presente
+                  }
+
+                  return cloneElement(child, {
+                    key: index,
+                    value: values[child.props.name] ?? child.props.value,
+                    onChange: setFieldValue,
+                    onBlur: handleBlur,
+                    errors,
+                    touched,
+                  });
+                })}
+              </CardForm>
             </>
           )}
         </Formik>

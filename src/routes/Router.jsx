@@ -6,12 +6,14 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import BaseLayout from "../layout/BaseLayout";
-import { Declaraciones } from "../components/declaraciones/steppers/Declaraciones";
+import { Declaraciones } from "../components/declaraciones/declaraciones";
 import StepperContextProvider from "../context/StepperContext";
 import { DatosGenerales } from "../components/declaraciones/datosgenerales/DatosGenerales";
 import MenuContextProvider from "../context/MenuContext";
+import { Steppers } from "../components/declaraciones/steppers/Steppers";
+import { Login } from "../components/autenticacion/login";
 // import { Declaraciones } from "../Declaraciones/Declaraciones";
-// import StepperContextProvider from "../../context/StepperContext"; 
+// import StepperContextProvider from "../../context/StepperContext";
 // import StepperContextProvider from "../../context/StepperContext";
 export const router = createHashRouter([
   // {path:"/", element:<StepperContextProvider>
@@ -19,45 +21,40 @@ export const router = createHashRouter([
   // </StepperContextProvider>},
   {
     path: "/",
-    element:( 
-<MenuContextProvider>
-  <BaseLayout />
-</MenuContextProvider>
-   
-)
-    ,
+    element: (
+      <MenuContextProvider>
+        <BaseLayout />
+      </MenuContextProvider>
+    ),
     errorElement: <h1>Error</h1>,
     children: [
       {
-        index: true,
         element: <h1>Home</h1>,
       },
+
       {
         path: "declaraciones",
-        element: (
-          <StepperContextProvider>
-            <Declaraciones />
-          </StepperContextProvider>
-        ),
-      },
-      {
-        path: "declaraciones",
-        children:[
-            {
-                path:"datosgenerales",
-                element:<DatosGenerales/>
-            }
-        ]
+        children: [
+          {
+            path: "steppers",
+            element: (
+              <StepperContextProvider>
+                <Steppers />
+              </StepperContextProvider>
+            ),
+          },
+          {
+            path: ":declaracion",
+            element: <Declaraciones />,
+          },
+        ],
       },
     ],
+  },
+  {
+    
+        path: "login",
+        element: <Login />,
+      
   },
 ]);
-
-const navigate = [
-  {
-    path: "/",
-    children: [
-      { path: "declaraciones"},
-    ],
-  },
-];

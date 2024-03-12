@@ -37,8 +37,9 @@ export const Date = ({
           ),
         }}
         InputLabelProps={{
+          
           shrink: true,
-          style: { color: "#1976d2" }, // Color del label en estado enfocado
+          style: { color: optiona?'"green"':'#1976d2' }, // Color del label en estado enfocado
         }}
         sx={{
           "& .MuiInputLabel-root": {

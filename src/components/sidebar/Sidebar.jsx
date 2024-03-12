@@ -38,7 +38,7 @@ const Sidebar = () => {
           active: false,
         },
         {
-          path: "declaraciones",
+          path: "declaraciones/steppers",
           text: "Declaraciones",
           active: true,
         },

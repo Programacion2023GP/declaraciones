@@ -16,6 +16,7 @@ export const Number = ({
   handleBlur,
   disabled,
   validations,
+  color,
  optional,
 }) => {
   useEffect(() => {
@@ -35,6 +36,9 @@ export const Number = ({
         value={value}
         error={errors[name] && touched[name]}
         helperText={errors[name] && touched[name] ? errors[name] : helperText}
+        InputLabelProps={{
+          style: color ? { color: 'green' } : {}
+        }}
         />
     {loading && <CircularProgress sx={{ position: 'absolute', top: '40%', left: '40%',}} />}
     </Grid>
