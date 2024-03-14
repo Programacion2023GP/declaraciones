@@ -52,11 +52,17 @@ export const Login = () => {
               title="Imagen de ejemplo"
               style={styles.media}
             />
-            <Formulario submit={submit} textButton={"Iniciar sesión"}>
-              <Email col={12} name="email" label={"Correo electrónico"} />
+            <Formulario
+              submit={submit}
+              textButton={"Iniciar sesión"}
+              action={"post"}
+              post={"/login"}
+              navigate={'/'}
+            >
+              <Email col={12} name="Email" label={"Correo electrónico"} />
               <Password
                 col={12}
-                name="contraseña"
+                name="Password"
                 label={"contraseña"}
                 validations={{
                   min: 6,

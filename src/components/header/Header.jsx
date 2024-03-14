@@ -36,19 +36,9 @@ export const Header = () => {
         <div className="navbar-right">
           <ul className="navbar-menu">
             <li className="navbar-item">
-              <Link to="/about" className="navbar-link">
-                About
-              </Link>
-            </li>
-            <li className="navbar-item">
-              <Link to="/services" className="navbar-link">
-                Services
-              </Link>
-            </li>
-            <li className="navbar-item">
-              <Link to="/contact" className="navbar-link">
-                Contact
-              </Link>
+              {/* <Link to="/contact" className="navbar-link">
+                
+              </Link> */}
             </li>
           </ul>
         </div>

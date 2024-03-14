@@ -15,22 +15,34 @@ import { Date } from "../../Reusables/date/Date";
 import { CustomRadio } from "../../Reusables/radiobutton/Radio";
 import { CustomCheckbox } from "../../Reusables/checkbox/Inpcheckbox";
 import { Card, CardContent, Grid, Typography } from "@mui/material";
-import { Nacionalidad, Paises, Regimenes, estadoCivil } from "./datas";
 import { useParams } from "react-router-dom";
+import { Axios, GetAxios } from "../../../services/services";
 
 //regex min max validaciones
 //optional indica que no tiene validaciones
-// hidden lo desaparece del dom
+// exist lo desaparece del dom
 //validations son las validaciones
 
 export const DatosGenerales = ({ next, previous }) => {
   let { declaracion } = useParams();
+
   declaracion = parseInt(declaracion);
-  const [selectedMovie, setSelectedMovie] = useState(null);
-  const [loadingMovies, setLoadingMovies] = useState(false);
+  const [estadocivil, setEstadoCivil] = useState(null);
+  const [regimenes, setRegimenes] = useState(null);
+  const [paises, setPaises] = useState(null);
+  const [nacionalidades, setNacionalidades] = useState(null);
   const [activeRegimen, setActiveReginen] = useState(true);
   const [errorActive, setActiveError] = useState(false);
   const [valor, setValor] = useState(true);
+  const [validations, setValidations] = useState([
+    {
+      name: "Id_RegimenMatrimonial",
+      condition: "values.Id_EstadoCivil>2",
+      action: "required",
+      label: "Régimen matrimonial",
+    },
+    // {name:'name',condition:'hidden',action:"optional"}
+  ]);
   const getData = (data) => {
     if (data.situacion == 2) {
       setActiveReginen(false);
@@ -39,12 +51,21 @@ export const DatosGenerales = ({ next, previous }) => {
       setActiveReginen(true);
       setActiveError(true);
     }
+
     // else{
     //   setValor(true);
     // }
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const init = async () => {
+      setEstadoCivil(await GetAxios("/estadoCivil/show"));
+      setRegimenes(await GetAxios("/regimenes/show"));
+      setPaises(await GetAxios("/paises/show"));
+      setNacionalidades(await GetAxios("/paises/showNacionalidad"));
+    };
+    init();
+  }, []);
   return (
     <>
       {/* Invoca correctamente la función submit */}
@@ -66,6 +87,7 @@ export const DatosGenerales = ({ next, previous }) => {
             <Grid container spacing={2}>
               <Formulario
                 // submit= {}
+                modifiedValidations={validations}
                 getData={getData}
                 action={""}
                 submit={next}
@@ -77,7 +99,7 @@ export const DatosGenerales = ({ next, previous }) => {
               >
                 <Text
                   col={12}
-                  name="nombre"
+                  name="Nombre"
                   label={"Nombre(s)"}
                   helperText={
                     "Sin abreviaturas, sin acentos, ni signos especiales"
@@ -86,7 +108,7 @@ export const DatosGenerales = ({ next, previous }) => {
                 />
                 <Text
                   col={12}
-                  name="apellido"
+                  name="PrimerApellido"
                   label={"Primer apellido"}
                   helperText={
                     "Sin abreviaturas, sin acentos, ni signos especiales"
@@ -95,7 +117,7 @@ export const DatosGenerales = ({ next, previous }) => {
                 />
                 <Text
                   col={12}
-                  name="segundo"
+                  name="SegundoApellido"
                   label={"Segundo apellido"}
                   helperText={`Si se tiene un solo apellido debera colocarse en el espacio de "Primer apellido" y dejar el espacio 
             "Segundo apellido" en blanco. Sin abreviaturas, sin acentos, ni signos especiales`}
@@ -103,26 +125,35 @@ export const DatosGenerales = ({ next, previous }) => {
                 />
                 <Curp
                   col={12}
-                  name="curp"
+                  name="Curp"
                   label={"CURP (Clave Única de Registro de Población)"}
                   optional={true}
+                  validations={{
+                    max: 20,
+                  }}
                 />
                 <Rfc
                   col={12}
-                  name="rfc"
+                  name="Rfc"
                   label={"RFC (Registro Federal de Contribuyentes)"}
                   optional={true}
+                  validations={{
+                    max: 16,
+                  }}
                 />
                 <Text
                   col={12}
-                  name="homoclave"
+                  name="Homoclave"
                   label={"Homoclave"}
                   optional={true}
+                  validations={{
+                    max: 3,
+                  }}
                 />
 
                 <Email
                   col={12}
-                  name="email"
+                  name="CorreoPersonal"
                   label={"Correo electrónico institucional"}
                   helperText={
                     "En caso de no contar con correo institucional ingresar el correo personal."
@@ -131,7 +162,7 @@ export const DatosGenerales = ({ next, previous }) => {
                 />
                 <Email
                   col={12}
-                  name="alterno"
+                  name="CorreoInstitucional"
                   label={"Correo electrónico personal/alterno"}
                   helperText={
                     "Es importante considerar que en la cuenta que proporcione le será enviada la declaración patrimonial y de interés que haya presentado y el acuse"
@@ -140,7 +171,7 @@ export const DatosGenerales = ({ next, previous }) => {
                 />
                 <Text
                   col={12}
-                  name="number"
+                  name="TelefonoCasa"
                   label={"Número telefónico de casa"}
                   helperText={
                     "En caso de no contar con teléfono de casa, ingresar número de celular."
@@ -149,23 +180,23 @@ export const DatosGenerales = ({ next, previous }) => {
                 />
                 <Phone
                   col={12}
-                  name="phone"
+                  name="TelefonoCelularPersonal"
                   label={"Número celular personal"}
                   optional={true}
                 />
                 <AutoComplete
                   col={12}
                   label="Situación personal / Estado civil"
-                  name="situacion"
+                  name="Id_EstadoCivil"
                   loading={false}
                   // onChange={handleMovieChange}
-                  options={estadoCivil}
+                  options={estadocivil}
                   optional={true}
                 />
                 <AutoComplete
                   col={12}
                   label="Régimen matrimonial"
-                  name="regimen"
+                  name="Id_RegimenMatrimonial"
                   loading={activeRegimen}
                   optional={true}
                   // optional={activeRegimen}
@@ -173,29 +204,29 @@ export const DatosGenerales = ({ next, previous }) => {
                     errorActive && "la situacion patrimonial es requerida"
                   }
                   // onChange={handleMovieChange}
-                  options={Regimenes}
+                  options={regimenes}
                 />
                 <AutoComplete
                   col={12}
                   label="País de nacimiento"
-                  name="pais"
+                  name="Id_PaisNacimiento"
                   optional={true}
                   // onChange={handleMovieChange}
-                  options={Paises}
+                  options={paises}
                 />
                 <AutoComplete
                   col={12}
                   label="Nacionalidad"
-                  name="nacionalidad"
+                  name="Id_Nacionalidad"
                   optional={true}
                   // onChange={handleMovieChange}
-                  options={Nacionalidad}
+                  options={nacionalidades}
                 />
                 <TextArea
                   placeholder={"Otros motivos"}
                   col={12}
                   rows={10}
-                  name="aclaraciones"
+                  name="Aclaraciones"
                   optional={true}
                   color="green"
                   label={"Aclaraciones/Observaciones"}
@@ -206,9 +237,9 @@ export const DatosGenerales = ({ next, previous }) => {
                     "¿Te desempeñaste como servidor publico el año inmediato anterior?"
                   }
                   message={"Es requerido que seleccione una opción"}
-                  hidden={declaracion == 2 ? false : true}
+                  exist={declaracion == 2 ? false : true}
                   col={5}
-                  name="radio"
+                  name="FueServidorPublicoAnioAnterior"
                   label={"radio"}
                   data={["Si", "No"]}
                   optional={true}
@@ -309,7 +340,7 @@ export const DatosGenerales = ({ next, previous }) => {
       {/* <Number 
         col={5} 
         label="Edade(s)" name="age"
-        hidden={true}
+        exist={true}
         optional
         value={valor}
         validations={{
@@ -319,7 +350,7 @@ export const DatosGenerales = ({ next, previous }) => {
       /> */}
       {/* <Text col={5} name="d" label={"d"}  loading={valor}/>
         <Number col={3} label={"carlos"} name="carlos" value={100} loading={true} />
-        <Phone col={5} label="telefono" name="phone" hidden={valor}/> */}
+        <Phone col={5} label="telefono" name="phone" exist={valor}/> */}
       {/* 
         <Password col={5} label="contraseña" name="password"/>
         <Email col={5} label="Correo" name="email" value="" />

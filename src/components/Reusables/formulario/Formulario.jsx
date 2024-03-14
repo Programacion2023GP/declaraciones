@@ -3,13 +3,20 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { CardForm } from "../../Reusables/cardform/CardForm";
 import { Button } from "@mui/material";
+import { PostAxios } from "../../../services/services";
+import { Loader } from "../sppiner/Spinner";
 
 export const Formulario = ({
+  action,
+  post,
+  get,
+  navigate,
+  put,
   children,
   textButton,
   title,
   getData,
-  getValidations,
+  modifiedValidations,
   submit,
   stepper,
   stepperText,
@@ -19,6 +26,7 @@ export const Formulario = ({
   const [validationSchema, setValidationSchema] = useState(
     Yup.object().shape({})
   );
+  const [loader, setLoader] = useState(false);
   const [initialValues, setInitialValues] = useState({});
   const [formErrors, setFormErrors] = useState({}); // Estado para almacenar los errores del formulario
   const [initialized, setInitialized] = useState(false); // Estado para rastrear si los datos han sido inicializados
@@ -34,14 +42,14 @@ export const Formulario = ({
       // console.log("Child herres");
       const fieldName = child.props.name;
       const fieldValue = child.props.value ?? "";
-      if (!child.props.hidden) {
+      if (!child.props.exist) {
         initialValuesObj[fieldName] = fieldValue;
       }
       const component = child.type.name;
       let fieldValidation = Yup.string();
 
       // Si el campo no es opcional, se agrega la validación requerida
-      if (!child.props.optional && !child.props.hidden) {
+      if (!child.props.optional && !child.props.exist) {
         fieldValidation = fieldValidation.required(
           child.props.message ?? `${child.props.label} es requerido`
         );
@@ -106,23 +114,53 @@ export const Formulario = ({
     setPropsChildrens(newArray);
     setFormikKey((prevKey) => prevKey + 1);
     setInitialValues(initialValuesObj);
+    console.warn("Mis validaciones", validationShape);
     setValidationSchema(Yup.object().shape(validationShape));
-    if (getValidations) {
-      getValidations(validationSchema);
-    }
+
     setInitialized(true);
-  }, [Children.count(children),textButton,stepper,stepperText,stepperFunction,submit,getData,title]);
+  }, [
+    Children.count(children),
+    // textButton,
+    // stepper,
+    // stepperText,
+    // stepperFunction,
+    // submit,
+    // getData,
+    // title,
+  ]);
   const setValidationsParent = () => {};
   return (
     <>
+      {loader && <Loader />}
       {initialized && ( // Renderizar Formik solo cuando los datos están inicializados
         <Formik
           key={formikKey} // Utilizar la clave de reset
           initialValues={initialValues}
           validationSchema={validationSchema}
-          onSubmit={(values, { setSubmitting }) => {
-            console.warn("FORMULARIO", values);
-            submit();
+          onSubmit={async (values, { setSubmitting }) => {
+            if ((action && post) || (action && get) || (action && put)) {
+              if (action == "post") {
+                setLoader(true);
+                const response = await PostAxios(post, values);
+                console.warn(response);
+                response ? setLoader(false) : null;
+                if (response.data.status_code == 200) {
+                  window.location.hash = navigate;
+                }
+                if (response.data.result.user) {
+                  const user = response.data.result.user;
+                  for (let key in user) {
+                    if (user.hasOwnProperty(key)) {
+                      localStorage.setItem(key, JSON.stringify(user[key]));
+                    }
+                  }
+                }
+              } else if (action == "get") {
+              } else if (action == "put") {
+              }
+            } else {
+              submit();
+            }
 
             // Aquí puedes manejar la lógica de envío del formulario si es necesario
             // Por ejemplo, puedes llamar a una función para enviar los datos al servidor
@@ -132,6 +170,49 @@ export const Formulario = ({
           // Aquí actualizamos los errores del formulario
           // para poder acceder a ellos desde el exterior
           validate={(values) => {
+            let newValidationSchema = Yup.object().shape({
+              ...validationSchema.fields,
+            });
+            if (modifiedValidations) {
+              let newValidationSchema = Yup.object().shape({
+                ...validationSchema.fields,
+              });
+
+              modifiedValidations.forEach(({ name, condition, label }) => {
+                const filteredValidation = modifiedValidations.filter(
+                  (item) => item.name === name
+                );
+
+                if (filteredValidation.length > 0) {
+                  const value = values[name]; // Obtener el valor del campo
+                  const conditionString = filteredValidation[0].condition; // Obtener la cadena de condición
+
+                  if (eval(conditionString.replace(name, value))) {
+                    console.log("pasas la condicion");
+                    let fieldValidation = Yup.string();
+
+                    if (action === "required") {
+                      fieldValidation = fieldValidation.required(
+                        `${label} es requerido`
+                      );
+                    }
+
+                    newValidationSchema = newValidationSchema.shape({
+                      [name]: fieldValidation,
+                    });
+                  }
+                }
+              });
+
+              // Imprime el nuevo esquema de validación completo
+              const validationFields = newValidationSchema.describe().fields;
+
+              // Imprimir las definiciones de validación de los campos
+              console.log(validationFields);
+
+              setValidationSchema(newValidationSchema);
+            }
+
             if (getData) {
               getData(values);
             }
@@ -177,8 +258,8 @@ export const Formulario = ({
                 {/* Contenido del CardForm */}
 
                 {Children.map(children, (child, index) => {
-                  if (child.props.hidden) {
-                    return null; // No clonar si la propiedad 'hidden' está presente
+                  if (child.props.exist) {
+                    return null; // No clonar si la propiedad 'exist' está presente
                   }
 
                   return cloneElement(child, {

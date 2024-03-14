@@ -133,7 +133,7 @@ ul {
 .page-wrapper {
   background-color: var(--background-color);
   min-height: 100vh;
-  overflow: hidden;
+  overflow: exist;
 }
 
 .content-wrapper {

@@ -25,12 +25,12 @@ const Sidebar = () => {
   const { theme } = useContext(ThemeContext);
   const { isSidebarOpen, closeSidebar } = useContext(SidebarContext);
   const navbarRef = useRef(null);
-  
+
   const [routes, setRoutes] = useState([
     {
       path: "declaraciones",
       text: "Declaraciones",
-      active: true,
+      active: false,
       children: [
         {
           path: "Mis declaraciones",
@@ -40,11 +40,10 @@ const Sidebar = () => {
         {
           path: "declaraciones/steppers",
           text: "Declaraciones",
-          active: true,
+          active: false,
         },
       ],
     },
-   
   ]);
   // closing the navbar when clicked outside the sidebar area
   const handleClickOutside = (event) => {
@@ -62,7 +61,6 @@ const Sidebar = () => {
     if (childIndex !== undefined) {
       routes[index].children.map((children) => {
         children.active = false;
-        
       });
 
       updatedRoutes[index].children[childIndex].active = true;
@@ -77,7 +75,6 @@ const Sidebar = () => {
     }
     setRoutes(updatedRoutes);
   };
-  
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
