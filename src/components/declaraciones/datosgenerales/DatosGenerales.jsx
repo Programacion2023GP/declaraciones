@@ -1,22 +1,31 @@
 import { useState } from "react";
 
 import { Text } from "../../Reusables/input/Input";
-import { Formulario } from "../../Reusables/formulario/Formulario";
 import { AutoComplete } from "../../Reusables/autocomplete/autocomplete";
 import { Number } from "../../Reusables/number/Number";
 import { Password } from "../../Reusables/password/Password";
 import { TextArea } from "../../Reusables/textaerea/TextAerea";
 import { Phone } from "../../Reusables/phone/Phone";
 import { Email } from "../../Reusables/email/Email";
-import { Curp } from "../../Reusables/curp/Curp";
+// import { Curp } from "../../Reusables/curp/Curp";
 import { Rfc } from "../../Reusables/rfc/rfc";
 import { useEffect } from "react";
 import { Date } from "../../Reusables/date/Date";
 import { CustomRadio } from "../../Reusables/radiobutton/Radio";
 import { CustomCheckbox } from "../../Reusables/checkbox/Inpcheckbox";
-import { Card, CardContent, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useParams } from "react-router-dom";
 import { Axios, GetAxios } from "../../../services/services";
+import { Formik, setNestedObjectValues } from "formik";
+import * as Yup from "yup";
 
 //regex min max validaciones
 //optional indica que no tiene validaciones
@@ -31,31 +40,7 @@ export const DatosGenerales = ({ next, previous }) => {
   const [regimenes, setRegimenes] = useState(null);
   const [paises, setPaises] = useState(null);
   const [nacionalidades, setNacionalidades] = useState(null);
-  const [activeRegimen, setActiveReginen] = useState(true);
-  const [errorActive, setActiveError] = useState(false);
-  const [valor, setValor] = useState(true);
-  const [validations, setValidations] = useState([
-    {
-      name: "Id_RegimenMatrimonial",
-      condition: "values.Id_EstadoCivil>2",
-      action: "required",
-      label: "Régimen matrimonial",
-    },
-    // {name:'name',condition:'hidden',action:"optional"}
-  ]);
-  const getData = (data) => {
-    if (data.situacion == 2) {
-      setActiveReginen(false);
-      setActiveError(false);
-    } else {
-      setActiveReginen(true);
-      setActiveError(true);
-    }
-
-    // else{
-    //   setValor(true);
-    // }
-  };
+  const [messages, setMessages] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -66,6 +51,46 @@ export const DatosGenerales = ({ next, previous }) => {
     };
     init();
   }, []);
+
+  const dataForm = {
+    Nombre: "",
+    PrimerApellido: "",
+    SegundoApellido: "",
+    Curp: "",
+    Rfc: "",
+    Homoclave: "",
+    CorreoInstitucional: "",
+  };
+
+  const validationSchema = Yup.object().shape({
+    Nombre: Yup.string().required("El Nombre es obligatorio"),
+    PrimerApellido: Yup.string().required("El Primer apellido es obligatorio"),
+    SegundoApellido: Yup.string().required(
+      "El Segundo apellido es obligatorio"
+    ),
+    Curp: Yup.string()
+      .required("El CURP es requerido")
+      .matches(
+        /^[A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d]\d$/,
+        "El CURP no cumple el formato válido"
+      )
+      .length(18, "El CURP debe tener exactamente 18 caracteres"),
+
+    Rfc: Yup.string()
+      .required("El rfc es requerido")
+      .matches(
+        /^[A-ZÑ&]{3,4}\d{6}(?:[A-Z\d]{3})?$/,
+        "El rfc no cumple el formato"
+      )
+      .length(13, "El rfc debe contar con 13 caracteres"),
+
+    Homoclave: Yup.string()
+      .required("La Homoclave es requerida")
+      .length(3, "La Homoclave debe tener exactamente 3 caracteres"),
+    CorreoInstitucional: Yup.string()
+      .email("El formato de correo es inválido")
+      .required("El correo es necesario"),
+  });
   return (
     <>
       {/* Invoca correctamente la función submit */}
@@ -80,175 +105,222 @@ export const DatosGenerales = ({ next, previous }) => {
             color="textPrimary"
             style={{ fontWeight: "500" }}
           >
-            Los datos que no serán públicos estarán resaltados de color verde
+            Los datos que no serán públicos estarán resaltados de color{" "}
+            <span style={{ color: "green" }}>verde</span>
           </Typography>
           <br />
           <Typography variant="body2" color="text.secondary">
-            <Grid container spacing={2}>
-              <Formulario
-                // submit= {}
-                modifiedValidations={validations}
-                getData={getData}
-                action={""}
-                submit={next}
-                // post={""}
-                // put={""}
-                // get={""}
-                textButton={"Registrar"}
-                title={"Declaración de situación patrimonial - Inicial"}
-              >
-                <Text
-                  col={12}
-                  name="Nombre"
-                  label={"Nombre(s)"}
-                  helperText={
-                    "Sin abreviaturas, sin acentos, ni signos especiales"
-                  }
-                  optional={true}
-                />
-                <Text
-                  col={12}
-                  name="PrimerApellido"
-                  label={"Primer apellido"}
-                  helperText={
-                    "Sin abreviaturas, sin acentos, ni signos especiales"
-                  }
-                  optional={true}
-                />
-                <Text
-                  col={12}
-                  name="SegundoApellido"
-                  label={"Segundo apellido"}
-                  helperText={`Si se tiene un solo apellido debera colocarse en el espacio de "Primer apellido" y dejar el espacio 
-            "Segundo apellido" en blanco. Sin abreviaturas, sin acentos, ni signos especiales`}
-                  optional={true}
-                />
-                <Curp
+            <Grid container spacing={2}></Grid>
+          </Typography>
+          <Formik
+            initialValues={dataForm}
+            validationSchema={validationSchema}
+            onSubmit={async (values, { setSubmitting }) => {
+              setSubmitting(false);
+            }}
+          >
+            {({
+              values,
+              handleSubmit,
+              handleChange,
+              errors,
+              touched,
+              handleBlur,
+            }) => {
+              {
+                // console.log("touched", touched);
+              }
+              return (
+                <Box component={"form"} onSubmit={handleSubmit}>
+                  <Text
+                    col={12}
+                    name="Nombre"
+                    label="Nombre(s)"
+                    value={setNestedObjectValues}
+                    touched={touched}
+                    handleChange={handleChange}
+                    handleBlur={handleBlur}
+                    errors={errors}
+                    placeholder={
+                      "Sin abreviaturas, sin acentos, ni signos especiales"
+                    }
+                  />
+                  <Text
+                    col={12}
+                    name="PrimerApellido"
+                    label="Primer apellido"
+                    value={values}
+                    touched={touched}
+                    handleChange={handleChange}
+                    handleBlur={handleBlur}
+                    errors={errors}
+                    placeholder={
+                      "Sin abreviaturas, sin acentos, ni signos especiales"
+                    }
+                  />
+                  <Text
+                    col={12}
+                    name="SegundoApellido"
+                    label="Segundo apellido"
+                    value={values}
+                    touched={touched}
+                    handleChange={handleChange}
+                    handleBlur={handleBlur}
+                    errors={errors}
+                    placeholder={`
+                    Si se tiene un solo apellido debera colocarse en el espacio de "Primer apellido" y dejar el espacio
+                     "Segundo apellido" en blanco. Sin abreviaturas, sin acentos, ni signos especiales
+
+                    `}
+                  />
+                  <Text
+                    col={12}
+                    name="Curp"
+                    label="Curp"
+                    value={values}
+                    touched={touched}
+                    handleChange={handleChange}
+                    handleBlur={handleBlur}
+                    errors={errors}
+                  />
+                  <Text
+                    col={12}
+                    name="Rfc"
+                    label="Rfc"
+                    value={values}
+                    touched={touched}
+                    handleChange={handleChange}
+                    handleBlur={handleBlur}
+                    errors={errors}
+                  />
+                  <Text
+                    col={12}
+                    name="Homoclave"
+                    label="Homoclave"
+                    value={values}
+                    touched={touched}
+                    handleChange={handleChange}
+                    handleBlur={handleBlur}
+                    errors={errors}
+                  />
+                  <Text
+                    col={12}
+                    name="CorreoInstitucional"
+                    label="Correo electrónico institucional"
+                    type={"email"}
+                    value={values}
+                    touched={touched}
+                    handleChange={handleChange}
+                    handleBlur={handleBlur}
+                    errors={errors}
+                    placeholder={
+                      "En caso de no contar con correo institucional ingresar el correo personal."
+                    }
+                  />
+                  {/* <Curp
                   col={12}
                   name="Curp"
-                  label={"CURP (Clave Única de Registro de Población)"}
-                  optional={true}
-                  validations={{
-                    max: 20,
-                  }}
+                  label="Curp"
+                  value={values["Curp"]}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  errors={errors}
+                  message={messages}
                 />
                 <Rfc
                   col={12}
                   name="Rfc"
-                  label={"RFC (Registro Federal de Contribuyentes)"}
-                  optional={true}
-                  validations={{
-                    max: 16,
-                  }}
+                  label="Rfc"
+                  value={values["Rfc"]}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  errors={errors}
+                  message={messages}
                 />
                 <Text
                   col={12}
                   name="Homoclave"
-                  label={"Homoclave"}
-                  optional={true}
-                  validations={{
-                    max: 3,
-                  }}
-                />
-
-                <Email
-                  col={12}
-                  name="CorreoPersonal"
-                  label={"Correo electrónico institucional"}
-                  helperText={
-                    "En caso de no contar con correo institucional ingresar el correo personal."
-                  }
-                  optional={true}
+                  label="Homoclave(s)"
+                  value={values["Homoclave"]}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  errors={errors}
+                  message={messages}
                 />
                 <Email
                   col={12}
                   name="CorreoInstitucional"
-                  label={"Correo electrónico personal/alterno"}
+                  label="Correo electrónico institucional"
+                  value={values["CorreoInstitucional"]}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  errors={errors}
+                  message={messages}
+                  helperText={
+                    "En caso de no contar con correo institucional ingresar el correo personal."
+                  }
+                />
+                <Email
+                  col={12}
+                  name="CorreoPersonal"
+                  label="Correo electrónico personal/alterno"
+                  value={values["CorreoPersonal"]}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  errors={errors}
+                  message={messages}
                   helperText={
                     "Es importante considerar que en la cuenta que proporcione le será enviada la declaración patrimonial y de interés que haya presentado y el acuse"
                   }
-                  optional={true}
                 />
                 <Text
                   col={12}
                   name="TelefonoCasa"
-                  label={"Número telefónico de casa"}
-                  helperText={
-                    "En caso de no contar con teléfono de casa, ingresar número de celular."
-                  }
-                  optional={true}
+                  label="Número telefónico de casa"
+                  value={values["TelefonoCasa"]}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  errors={errors}
+                  message={messages}
                 />
                 <Phone
                   col={12}
                   name="TelefonoCelularPersonal"
-                  label={"Número celular personal"}
-                  optional={true}
+                  label="Número celular personal"
+                  value={values["TelefonoCelularPersonal"]}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  errors={errors}
+                  message={messages}
                 />
-                <AutoComplete
+                 <AutoComplete
                   col={12}
                   label="Situación personal / Estado civil"
                   name="Id_EstadoCivil"
-                  loading={false}
-                  // onChange={handleMovieChange}
                   options={estadocivil}
-                  optional={true}
-                />
-                <AutoComplete
-                  col={12}
-                  label="Régimen matrimonial"
-                  name="Id_RegimenMatrimonial"
-                  loading={activeRegimen}
-                  optional={true}
-                  // optional={activeRegimen}
-                  helperText={
-                    errorActive && "la situacion patrimonial es requerida"
-                  }
-                  // onChange={handleMovieChange}
-                  options={regimenes}
-                />
-                <AutoComplete
-                  col={12}
-                  label="País de nacimiento"
-                  name="Id_PaisNacimiento"
-                  optional={true}
-                  // onChange={handleMovieChange}
-                  options={paises}
-                />
-                <AutoComplete
-                  col={12}
-                  label="Nacionalidad"
-                  name="Id_Nacionalidad"
-                  optional={true}
-                  // onChange={handleMovieChange}
-                  options={nacionalidades}
-                />
-                <TextArea
-                  placeholder={"Otros motivos"}
-                  col={12}
-                  rows={10}
-                  name="Aclaraciones"
-                  optional={true}
-                  color="green"
-                  label={"Aclaraciones/Observaciones"}
-                />
-                <CustomRadio
-                  rowLayout={true}
-                  title={
-                    "¿Te desempeñaste como servidor publico el año inmediato anterior?"
-                  }
-                  message={"Es requerido que seleccione una opción"}
-                  exist={declaracion == 2 ? false : true}
-                  col={5}
-                  name="FueServidorPublicoAnioAnterior"
-                  label={"radio"}
-                  data={["Si", "No"]}
-                  optional={true}
-                />
-              </Formulario>
-            </Grid>
-          </Typography>
+                  value={values["Id_EstadoCivil"]}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  errors={errors}
+                  message={messages}
+                /> */}
+                  <Button
+                    type="submit"
+                    // onClick={() => {
+                    //   setMessages(true);
+                    // }}
+                    variant="contained"
+                    color="primary"
+                  >
+                    Enviar
+                  </Button>
+                </Box>
+              );
+            }}
+          </Formik>
         </CardContent>
       </Card>
+
       {/* <CustomCheckbox
           rowLayout={false}
           col={2}

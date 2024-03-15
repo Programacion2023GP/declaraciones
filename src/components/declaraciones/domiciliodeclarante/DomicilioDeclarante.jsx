@@ -6,7 +6,7 @@ import { Password } from "../../Reusables/password/Password";
 import { TextArea } from "../../Reusables/textaerea/TextAerea";
 import { Phone } from "../../Reusables/phone/Phone";
 import { Email } from "../../Reusables/email/Email";
-import { Curp } from "../../Reusables/curp/Curp";
+// import { Curp } from "../../Reusables/curp/Curp";
 import { Rfc } from "../../Reusables/rfc/rfc";
 import { useEffect } from "react";
 import { Date } from "../../Reusables/date/Date";
@@ -16,7 +16,7 @@ import { Card, CardContent, Grid, Typography } from "@mui/material";
 export const DomicilioDeclarante = ({ next, previous }) => {
   return (
     <>
-      <Card
+      {/* <Card
         sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}
         TouchRippleProps={{ disabled: true }}
       >
@@ -67,7 +67,7 @@ export const DomicilioDeclarante = ({ next, previous }) => {
             </Grid>
           </Typography>
         </CardContent>
-      </Card>
+      </Card> */}
     </>
   );
 };

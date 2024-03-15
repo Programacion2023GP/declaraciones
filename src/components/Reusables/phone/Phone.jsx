@@ -11,11 +11,9 @@ export const Phone = ({
   value = null,
   type = null,
   errors,
-  touched,
   handleBlur,
-  optional,
   disabled,
-  validations,
+  message,
 }) => {
   const [maskedValue, setMaskedValue] = useState(value);
 
@@ -32,7 +30,6 @@ export const Phone = ({
     // Aplicar la máscara (xxx)-xxx-xxxx
     return phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, "($1)-$2-$3");
   };
-  
 
   const handleChange = (e) => {
     let newValue = e.target.value.replace(/[^0-9-]/g, "");
@@ -45,23 +42,34 @@ export const Phone = ({
     setMaskedValue(maskPhoneNumber(newValue));
     onChange(name, newValue.replace(/-/g, ""));
   };
+  const [touched, seTouched] = useState(false);
 
   return (
-    <Grid item xs={col} sx={{ display: 'flex', position: 'relative' }}>
+    <Grid item xs={col} sx={{ display: "flex", position: "relative" }}>
       <TextField
-        disabled={loading ||disabled}
+        disabled={loading || disabled}
         fullWidth
         onBlur={handleBlur}
         label={label}
         type={type ?? "text"}
         variant="outlined"
         name={name}
-        onChange={handleChange}
-        value={maskedValue}
-        error={errors[name] && touched[name]}
-        helperText={errors[name] && touched[name] ? errors[name] : helperText}
+        onChange={(e) => {
+          handleChange;
+          seTouched(true);
+          console.warn(errors);
+          onChange(e); // Llama a la función onChange proporcionada por Formik
+          e.persist(); // Asegura que el evento esté disponible dentro del callback de useEffect
+        }}
+        value={value}
+        error={(errors[name] && touched) || (errors[name] && message)}
+        helperText={errors[name] || helperText}
+      />
+      {loading && (
+        <CircularProgress
+          sx={{ position: "absolute", top: "40%", left: "40%" }}
         />
-      {loading && <CircularProgress sx={{ position: 'absolute', top: '40%', left: '40%',}} />}
+      )}
     </Grid>
   );
 };

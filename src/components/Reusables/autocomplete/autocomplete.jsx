@@ -17,7 +17,7 @@ export const AutoComplete = ({
   touched,
   optional,
   disabled,
-  validations,
+  message,
 }) => {
   const [inputValue, setInputValue] = useState("");
 
@@ -43,8 +43,13 @@ export const AutoComplete = ({
         id={`${name}-autocomplete`}
         options={options}
         getOptionLabel={(option) => option.text}
-        onChange={handleAutocompleteChange}
-        inputValue={inputValue}
+        onChange={(e) => {
+          handleAutocompleteChange
+          seTouched(true);
+          console.warn(errors);
+          onChange(e); // Llama a la función onChange proporcionada por Formik
+          e.persist(); // Asegura que el evento esté disponible dentro del callback de useEffect
+        }}        inputValue={inputValue}
         onInputChange={(event, newInputValue) => {
           setInputValue(String(newInputValue));
         }}
@@ -54,13 +59,11 @@ export const AutoComplete = ({
             disabled={loading || disabled}
             value={value}
             fullWidth
-            onBlur={() => {}} // Evitar el evento onBlur para evitar activar la validación al salir del campo
+            onBlur={handleBlur}
             label={label}
             variant="outlined"
-            error={errors[name] && touched[name]}
-            helperText={
-              errors[name] && touched[name] ? errors[name] : helperText
-            }
+            error={(errors[name] && touched) || (errors[name] && message)}
+            helperText={errors[name] || helperText}
             InputProps={{
               style: optional ? { color: "green" } : {},
               ...params.InputProps,

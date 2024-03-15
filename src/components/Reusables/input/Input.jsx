@@ -1,41 +1,55 @@
-import { Grid } from "@mui/material";
+import { FormControl, Grid } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
+import { Field, Formik } from "formik";
+// Formik
 export const Text = ({
-  helperText,
   loading = false,
   col,
   label,
   name = "name",
-  onChange,
+  handleChange,
   value = null,
   type = null,
   errors,
-  touched,
   handleBlur,
-  optional,
-  validations,
   disabled,
+  placeholder,
+  touched,
   color,
 }) => {
-  useEffect(() => {}, [name, value]);
+  useEffect(() => {
+    console.log("aqui", handleBlur);
+  }, [name, value]);
+  // const [touched, seTouched] = useState(false);
+  // console.log("aqui", handleBlur);
 
   return (
     <>
-      <Grid item xs={col} sx={{ display: "flex", position: "relative" }}>
+      <Grid
+        style={{ margin: "1rem 0" }}
+        item
+        xs={col}
+        sx={{ display: "flex", position: "relative" }}
+      >
         <TextField
-          disabled={loading || disabled}
-          fullWidth
-          onBlur={handleBlur}
+          key={"text_" + name}
+          name={name}
           label={label}
           type={type ?? "text"}
           variant="outlined"
-          name={name}
-          onChange={(e) => onChange(name, e.target.value)}
-          value={value}
-          error={errors[name] && touched[name]}
-          helperText={errors[name] && touched[name] ? errors[name] : null}
+          value={value[name]}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          disabled={loading || disabled}
+          fullWidth
+          error={(errors[name] && touched[name])}
+          helperText={
+            errors[name] && touched[name]
+              ?errors[name]:placeholder
+              
+          }
           InputLabelProps={{
             style: color ? { color: color } : {},
           }}

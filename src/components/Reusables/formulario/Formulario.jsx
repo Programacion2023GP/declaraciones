@@ -170,48 +170,42 @@ export const Formulario = ({
           // Aquí actualizamos los errores del formulario
           // para poder acceder a ellos desde el exterior
           validate={(values) => {
+            const fieldNames = Object.keys(validationSchema.fields);
+            const fieldValidations = fieldNames.map(fieldName => {
+              return validationSchema.fields[fieldName];
+            });
+            
+            const es = validationSchema.concat(Yup.object().shape(fieldValidations));
+            console.log("Todos los esquemas de validación:", es);
+            
+            setValidationSchema(es);
+            
+
             let newValidationSchema = Yup.object().shape({
               ...validationSchema.fields,
             });
             if (modifiedValidations) {
-              let newValidationSchema = Yup.object().shape({
-                ...validationSchema.fields,
-              });
-
-              modifiedValidations.forEach(({ name, condition, label }) => {
-                const filteredValidation = modifiedValidations.filter(
-                  (item) => item.name === name
-                );
-
-                if (filteredValidation.length > 0) {
-                  const value = values[name]; // Obtener el valor del campo
-                  const conditionString = filteredValidation[0].condition; // Obtener la cadena de condición
-
-                  if (eval(conditionString.replace(name, value))) {
-                    console.log("pasas la condicion");
-                    let fieldValidation = Yup.string();
-
-                    if (action === "required") {
-                      fieldValidation = fieldValidation.required(
-                        `${label} es requerido`
-                      );
-                    }
-
+              let newValidationSchema = es;
+            
+              modifiedValidations.forEach(({ name, condition, label, action }) => {
+                const value = values[name]; // Obtener el valor del campo
+                const conditionString = condition.replace(name, value); // Sustituir el nombre del campo en la condición
+            
+                if (eval(conditionString)) {
+                  console.log("pasas la condicion");
+            
+                  if (action === "required") {
                     newValidationSchema = newValidationSchema.shape({
-                      [name]: fieldValidation,
+                      [name]: newValidationSchema.fields[name].concat(Yup.string().required(`${label} es requerido`)),
                     });
                   }
                 }
               });
-
-              // Imprime el nuevo esquema de validación completo
-              const validationFields = newValidationSchema.describe().fields;
-
-              // Imprimir las definiciones de validación de los campos
-              console.log(validationFields);
-
+            
+              console.log("Nuevo esquema de validación:", newValidationSchema);
               setValidationSchema(newValidationSchema);
             }
+            
 
             if (getData) {
               getData(values);
