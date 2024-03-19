@@ -8,7 +8,8 @@ import SunIcon from "./assets/icons/sun.svg";
 import BaseLayout from "./layout/BaseLayout";
 import { Dashboard, PageNotFound } from "./screens";
 import { router } from "./routes/Router";
-
+ import { LocalizationProvider } from "@mui/x-date-pickers";
+ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 function App() {
   const { theme, toggleTheme } = useContext(ThemeContext);
 
@@ -23,7 +24,9 @@ function App() {
 
   return (
     <>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <RouterProvider router={router}></RouterProvider>
+    </LocalizationProvider>
       {/* <Router>
         <Routes>
           <Route element={<BaseLayout />}>

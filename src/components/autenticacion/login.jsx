@@ -63,7 +63,12 @@ export const Login = () => {
               try {
                 setMessages(false);
                 const response = await Axios.post("/login", values);
+                
                 Success(response.data.data.message);
+                console.log(response.data.data);
+                localStorage.setItem("Id_User", response.data.data.result.user.Id_User);
+                localStorage.setItem("Id_Person", response.data.data.result.user.Id_Person);
+                localStorage.setItem("Id_Role", response.data.data.result.user.Id_Role);
                 window.location.hash = "/";
                 return response.data;
               } catch (error) {
