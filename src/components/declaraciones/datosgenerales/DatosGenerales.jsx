@@ -24,14 +24,14 @@ import * as Yup from "yup";
 // exist lo desaparece del dom
 //validations son las validaciones
 
-export const DatosGenerales = ({ next, previous }) => {
+export const DatosGenerales = ({ next, previous, title }) => {
    let { declaracion } = useParams();
 
    declaracion = parseInt(declaracion);
-   const [estadocivil, setEstadoCivil] = useState(null);
-   const [regimenes, setRegimenes] = useState(null);
-   const [paises, setPaises] = useState(null);
-   const [nacionalidades, setNacionalidades] = useState(null);
+   const [estadocivil, setEstadoCivil] = useState([]);
+   const [regimenes, setRegimenes] = useState([]);
+   const [paises, setPaises] = useState([]);
+   const [nacionalidades, setNacionalidades] = useState([]);
    const [activeRegimen, setActiveRegimen] = useState(true);
 
    useEffect(() => {
@@ -100,6 +100,9 @@ export const DatosGenerales = ({ next, previous }) => {
          {/* Invoca correctamente la función submit */}
          <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
             <CardContent>
+               <Typography variant="h3" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
+                  {title}
+               </Typography>
                <Typography variant="h6" align="start" color="textPrimary" style={{ fontWeight: "500" }}>
                   Los datos que no serán públicos estarán resaltados de color
                   <span style={{ color: "green" }}>verde</span>

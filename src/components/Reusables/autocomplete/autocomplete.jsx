@@ -1,13 +1,16 @@
-import React, { useState } from "react";
-import { Grid } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Grid, LinearProgress, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Field, useFormikContext } from "formik";
+import PropTypes from "prop-types";
 
-export const AutoComplete = ({ helperText, loading = false, handleGetValue = null, col, label, name = "name", options, disabled, optional, color, hidden }) => {
+export const AutoComplete = ({ helperText, loading = false, handleGetValue = null, col, label, name = "name", options = [], disabled, optional, color, hidden }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const [inputValue, setInputValue] = useState("");
+   const [loadingData, setLoadingData] = useState(true);
+   const [progress, setProgress] = useState(10);
 
    const handleValue = (name, value) => {
       if (handleGetValue) {
@@ -15,13 +18,21 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
       }
       // return handleGetValue(name, value);
    };
+
+   useEffect(() => {
+      if (Array.isArray(options) && options.length > 0) {
+         setLoadingData(false);
+      }
+      if (!Array.isArray(options)) {
+         options = []; // Si no es un array, lo convertimos en un array vacío
+      }
+   }, [options]);
    return (
-      <Grid key={"grid_" + name} style={{ margin: "1rem 0" }} item xs={col} container sx={{ display: "flex", position: "relative" }}>
-         <Field name={name} key={"field_" + name}>
+      <Grid style={{ margin: "1rem 0" }} item xs={col} container sx={{ display: "flex", position: "relative" }}>
+         <Field name={name}>
             {({ field }) => (
                <Autocomplete
-                  key={"auto_" + name}
-                  disabled={disabled}
+                  disabled={loading || disabled || loadingData}
                   InputLabelProps={{
                      style: color ? { color: color } : {}
                   }}
@@ -42,10 +53,9 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
                   }}
                   renderInput={(params) => (
                      <TextField
-                        key={"text_" + name}
                         {...params}
                         {...field}
-                        disabled={loading || disabled}
+                        disabled={loading || disabled || loadingData}
                         fullWidth
                         label={label}
                         onBlur={formik.handleBlur}
@@ -57,7 +67,41 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
                            ...params.InputProps,
                            endAdornment: (
                               <>
-                                 {loading ? <CircularProgress color="primary" size={35} sx={{ position: "absolute", top: "30%", left: "40%" }} /> : null}
+                                 {loading || loadingData ? (
+                                    <>
+                                       {loading && (
+                                          <Box sx={{ position: "absolute", display: "inline-flex", top: "15%", left: "50%" }}>
+                                             <CircularProgress color="primary" size={35} />
+                                          </Box>
+                                       )}
+
+                                       {loadingData && !disabled &&  (
+                                          <Box
+                                             sx={{
+                                                position: "absolute",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                top: "15%",
+                                                left: "50%",
+                                                transform: "translateX(-50%)"
+                                             }}
+                                          >
+                                             <Typography
+                                                variant="caption"
+                                                component="div"
+                                                color="text.secondary"
+                                                sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}
+                                             >
+                                                Cargando informacion...
+                                                <Box sx={{ mt: 1 }}>
+                                                   <LinearProgress value={progress} sx={{ width: "100px" }} />
+                                                </Box>
+                                             </Typography>
+                                          </Box>
+                                       )}
+                                    </>
+                                 ) : null}
+
                                  {params.InputProps.endAdornment}
                               </>
                            )
@@ -70,3 +114,12 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
       </Grid>
    );
 };
+AutoComplete.propTypes = {
+   options: PropTypes.arrayOf(
+     PropTypes.shape({
+       id: PropTypes.number.isRequired,
+       text: PropTypes.string.isRequired
+     })
+   ).isRequired,
+   // Otras PropTypes para tus props aquí...
+ };

@@ -5,8 +5,7 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import { pink } from "@mui/material/colors";
-import { DialogWarning } from "../Reusables/DialogWarning";
-import { useStepperContext } from "../../context/StepperContext";
+
 import { DatosGenerales } from "./datosgenerales/DatosGenerales";
 import { Titles } from "./funciones/titles";
 import StepContent from "@mui/material/StepContent";
@@ -15,6 +14,7 @@ import Typography from "@mui/material/Typography";
 import { useParams } from "react-router-dom";
 import { DomicilioDeclarante } from "./domiciliodeclarante/DomicilioDeclarante";
 import { DatosCurriculares } from "./datoscurriculares/DatosCurriculares";
+import { DatosEmpleo } from "./datosempleo/DatosEmpleo";
 
 const color = pink[300];
 
@@ -29,7 +29,7 @@ export const Declaraciones = () => {
       "Se tiene que aceptar para continuar"
    ];
 
-   const [activeStep, setActiveStep] = useState(2);
+   const [activeStep, setActiveStep] = useState(3);
 
    const handleNext = () => {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -45,15 +45,19 @@ export const Declaraciones = () => {
    const steps = [
       {
          label: `Datos generales`,
-         description: () => <DatosGenerales next={handleNext} previous={handleBack} />
+         description: () => <DatosGenerales next={handleNext} previous={handleBack} title={Titles(declaracion)} />
       },
       {
          label: `Domicilio Declarante`,
-         description: () => <DomicilioDeclarante next={handleNext} previous={handleBack} />
+         description: () => <DomicilioDeclarante next={handleNext} previous={handleBack} title={Titles(declaracion)} />
       },
       {
          label: `Datos Curriculares del Declarante`,
-         description: () => <DatosCurriculares next={handleNext} previous={handleBack} />
+         description: () => <DatosCurriculares next={handleNext} previous={handleBack} title={Titles(declaracion)} />
+      },
+      {
+         label: `Datos del empleo, cargo o comisión que inicia`,
+         description: () => <DatosEmpleo next={handleNext} previous={handleBack} title={Titles(declaracion)} />
       }
    ];
    return (
@@ -64,32 +68,9 @@ export const Declaraciones = () => {
                   <Step key={step.label}>
                      <StepLabel optional={index === 2 ? <Typography variant="caption">Last step</Typography> : null}>{step.label}</StepLabel>
                      <StepContent>
-                        <Typography variant="h2" align="start" color="textPrimary" style={{ fontWeight: "500" }}>
-                           {Titles(declaracion)}
-                        </Typography>
-                        <Typography>
-                           {step.description()}
-                        
-                        
-                        
-                        </Typography>
+                        <Typography>{step.description()}</Typography>
                         <Box sx={{ mb: 2 }}>
-                           <div>
-                              {/* <Button
-                    variant="contained"
-                    onClick={handleNext}
-                    sx={{ mt: 1, mr: 1 }}
-                  >
-                    {index === steps.length - 1 ? "Finish" : "Continue"}
-                  </Button>
-                  <Button
-                    disabled={index === 0}
-                    onClick={handleBack}
-                    sx={{ mt: 1, mr: 1 }}
-                  >
-                    Back
-                  </Button> */}
-                           </div>
+                           <div></div>
                         </Box>
                      </StepContent>
                   </Step>

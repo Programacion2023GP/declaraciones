@@ -11,13 +11,13 @@ import { useParams } from "react-router-dom";
 import { Axios, GetAxios, PostAxios } from "../../../services/services";
 import { Formik, setNestedObjectValues } from "formik";
 import * as Yup from "yup";
-export const DomicilioDeclarante = ({ next, previous }) => {
+export const DomicilioDeclarante = ({ next, previous,title }) => {
    let { declaracion } = useParams();
    const [entidades, setEntidades] = useState([]);
    const [municipios, setMunicipios] = useState([]);
+   const [paises, setPaises] = useState([]);
    const [activeMunicipios, setActiveMunicipios] = useState(true);
    const [loadingMuncipios, setLoadingMunicipios] = useState(false);
-   const [paises, setPaises] = useState(null);
    const [mexico, setMexico] = useState(false);
    const dataForm = {
       EsEnMexico: 1,
@@ -35,7 +35,10 @@ export const DomicilioDeclarante = ({ next, previous }) => {
    };
    if (mexico) {
       dataForm.EstadoProvincia = "";
-   }
+  } else {
+      delete dataForm.EstadoProvincia;
+  }
+  
 
    const validationSchema = Yup.object().shape({
       EsEnMexico: Yup.number("Debe ser numerico").required("Es requerido que selecione una opcion"),
@@ -77,6 +80,9 @@ export const DomicilioDeclarante = ({ next, previous }) => {
       <>
          <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
             <CardContent>
+            <Typography variant="h3" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
+                     {title}
+               </Typography>
                <Typography variant="h6" align="start" color="textPrimary" style={{ fontWeight: "500" }}>
                   Los datos que no serán públicos estarán resaltados de color
                   <span style={{ color: "green" }}>verde</span>
