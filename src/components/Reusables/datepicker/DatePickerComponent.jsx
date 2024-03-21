@@ -53,7 +53,7 @@ const DatePickerComponent = ({
    // };
 
    return (
-      <FormControl fullWidth sx={{}}>
+      <FormControl fullWidth sx={{ margin: "1rem 0" }}>
          <Field name={idName} id={idName}>
             {({ field, form }) => (
                <>

@@ -64,10 +64,10 @@ export const DatosEmpleo = ({ next, previous, title }) => {
       Id_NivelOrdenGobierno: Yup.number().min(1, "El nivel de orden y de gobierno es requerido").required("El nivel de orden y de gobierno es requerido"),
       Id_AmbitoPublico: Yup.number().min(1, "El ambito público es requerido").required("El ambito público es requerido"),
       NombreEntePublico: Yup.string().required("El Nombre del ente público es requerido"),
-      NivelEmpleoCargoComision: Yup.number().min(1, "El nivel empleo cargo comisión es requerido").required("El nivel empleo cargo comisión es requerido"),
-      NivelEmpleoCargoComisionText: !activeEspecificarEmpleo ? Yup.string().required("El nivel empleo cargo comisión es requerido ") : "",
       AreaAdscripcion: Yup.string().required("El Áerea de adscripción del ente público es requerido"),
       EmpleoCargoComision: Yup.string().required("El Empleo cargo comisión es requerido"),
+      NivelEmpleoCargoComision: Yup.number().min(1, "El nivel empleo cargo comisión es requerido").required("El nivel empleo cargo comisión es requerido"),
+      NivelEmpleoCargoComisionText: !activeEspecificarEmpleo ? Yup.string().required("El nivel empleo cargo comisión es requerido ") : "",
       FuncionPrincipal: Yup.string().required("La función principal es requerida"),
       FechaTomaConclusionPosesion: Yup.date("No cumple el formato valido de fecha").required("La fecha es requerida"),
       TelefonoOficina: Yup.number("Tienen que ser numeros").required("El telefono de oficina es requerido"),
@@ -101,6 +101,9 @@ export const DatosEmpleo = ({ next, previous, title }) => {
          setMunicipios(await GetAxios(`municipios/show/${value}`));
          setLoadingMunicipios(false);
       }
+      if (name == "EsEnMexico") {
+         value == 1 ? setMexico(true) : setMexico(false);
+      }
    };
    return (
       <>
@@ -123,23 +126,27 @@ export const DatosEmpleo = ({ next, previous, title }) => {
                   validationSchema={validationSchema}
                   onSubmit={async (values, { setSubmitting }) => {
                      values.EsEnMexico = parseInt(values.EsEnMexico);
+                     if (values.NivelEmpleoCargoComision == 4) {
+                        values.NivelEmpleoCargoComision = values.NivelEmpleoCargoComisionText;
+                        delete values.NivelEmpleoCargoComision;
+                     } else {
+                        delete values.NivelEmpleoCargoComisionText;
+                     }
+                     try {
+                        const response = await PostAxios("/datoscargoscomision/create", values);
+                        next();
 
-                     console.log(values);
-                     //  values.EsEnMexico = parseInt(values.EsEnMexico);
-                     //  try {
-                     //     const response = await PostAxios("/datoscurriculares/create", values);
-                     //        next();
+                        Success(response.data.data.message);
 
-                     //     Success(response.data.data.message);
-
-                     //     return response.data;
-                     //  } catch (error) {
-                     //     if (error.response?.data?.data?.message) {
-                     //        Error(error.response.data.data.message);
-                     //     } else {
-                     //        Error("NO EXISTE CONEXION A LA DB");
-                     //     }
-                     //  }
+                        return response.data;
+                     } catch (error) {
+                        console.error("here", error);
+                        if (error.response?.data?.data?.message) {
+                           Error(error.response.data.data.message);
+                        } else {
+                           Error("NO EXISTE CONEXION A LA DB");
+                        }
+                     }
                      setSubmitting(false);
                   }}
                >
@@ -184,12 +191,12 @@ export const DatosEmpleo = ({ next, previous, title }) => {
                               label="Nivel del empleo, cargo o comisión"
                               placeholder={"Ingrese Nivel del empleo, cargo o comisión"}
                            />
-                           <Text
+                          <Text
                               col={12}
                               name="FuncionPrincipal"
                               label="Especifique función principal"
                               placeholder={"Señalar cuál es la función o actividad principal que desempeña en su empleo, cargo o comisión"}
-                           />
+                           /> 
                            <DatePickerComponent
                               idName={"FechaTomaConclusionPosesion"}
                               label={"Fecha de toma posesión del empleo, cargo o comisión."}
@@ -217,6 +224,7 @@ export const DatosEmpleo = ({ next, previous, title }) => {
                               placeholder={`Proporcionar la extensión del teléfono laboral según corresponda (Si aplica)`}
                            />
                            <CustomRadio
+                              handleGetValue={handleGetValue}
                               hidden={false}
                               col={12}
                               name="EsEnMexico" // Nombre del campo en el formulario

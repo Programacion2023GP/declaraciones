@@ -90,6 +90,7 @@ export const DatosCurriculares = ({ next, previous,title }) => {
                            <Text col={12} name="NombreInstitucionEducativa" label="Institución educativa" />
                            <Text col={12} name="CarreraAreaConocimiento" label="Aerea de conocimiento" />
                            <CustomRadio
+                              // getValue={}
                               col={12}
                               name="Id_UbicacionInstitucionEducativa"
                               title="¿Lugar donde se ubica la institución educativa?"

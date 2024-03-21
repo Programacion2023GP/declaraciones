@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Text } from "../../Reusables/input/Input";
 import { AutoComplete } from "../../Reusables/autocomplete/autocomplete";
 
-// import { Curp } from "../../Reusables/curp/Curp";
 
 import { CustomRadio } from "../../Reusables/radiobutton/Radio";
 import { Box, Button, Card, CardContent, Grid, TextField, Typography } from "@mui/material";
@@ -121,7 +120,6 @@ export const DomicilioDeclarante = ({ next, previous,title }) => {
                         // console.log(values.Id_EntidadFederativa);
 
                         // Utiliza la variable hasHandleChangeIdEntidadFederativa según tu necesidad
-                        console.log(setFieldValue);
                         // if (values.Id_EntidadFederativa != dataForm.Id_EntidadFederativa) {
                         //    dataForm.Id_EntidadFederativa = values.Id_EntidadFederativa;
                         //    setActiveMunicipios(false);

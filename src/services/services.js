@@ -17,6 +17,7 @@ export const PostAxios = async (url, values) => {
         Success(response.data.data.message);
         return response.data;
     } catch (error) {
+        console.log(error.response)
         Error(error.response.data.data.message);
         throw error; // Propaga la excepción para que se maneje externamente
     }

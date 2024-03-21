@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -15,6 +15,7 @@ import { useParams } from "react-router-dom";
 import { DomicilioDeclarante } from "./domiciliodeclarante/DomicilioDeclarante";
 import { DatosCurriculares } from "./datoscurriculares/DatosCurriculares";
 import { DatosEmpleo } from "./datosempleo/DatosEmpleo";
+import { ExperienciaLaboral } from "./experiencialaboral/ExperienciaLaboral";
 
 const color = pink[300];
 
@@ -29,7 +30,7 @@ export const Declaraciones = () => {
       "Se tiene que aceptar para continuar"
    ];
 
-   const [activeStep, setActiveStep] = useState(3);
+   const [activeStep, setActiveStep] = useState(4);
 
    const handleNext = () => {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -58,6 +59,10 @@ export const Declaraciones = () => {
       {
          label: `Datos del empleo, cargo o comisión que inicia`,
          description: () => <DatosEmpleo next={handleNext} previous={handleBack} title={Titles(declaracion)} />
+      },
+      {
+         label: `Experiencia laboral (últimos cinco empleos)`,
+         description: () => <ExperienciaLaboral next={handleNext} previous={handleBack} title={Titles(declaracion)} />
       }
    ];
    return (
