@@ -8,26 +8,28 @@ import SunIcon from "./assets/icons/sun.svg";
 import BaseLayout from "./layout/BaseLayout";
 import { Dashboard, PageNotFound } from "./screens";
 import { router } from "./routes/Router";
- import { LocalizationProvider } from "@mui/x-date-pickers";
- import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import "primeicons/primeicons.css";
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 function App() {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+   const { theme, toggleTheme } = useContext(ThemeContext);
 
-  // adding dark-mode class if the dark mode is set on to the body tag
-  useEffect(() => {
-    if (theme === DARK_THEME) {
-      document.body.classList.add("dark-mode");
-    } else {
-      document.body.classList.remove("dark-mode");
-    }
-  }, [theme]);
+   // adding dark-mode class if the dark mode is set on to the body tag
+   useEffect(() => {
+      if (theme === DARK_THEME) {
+         document.body.classList.add("dark-mode");
+      } else {
+         document.body.classList.remove("dark-mode");
+      }
+   }, [theme]);
 
-  return (
-    <>
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <RouterProvider router={router}></RouterProvider>
-    </LocalizationProvider>
-      {/* <Router>
+   return (
+      <>
+         <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <RouterProvider router={router}></RouterProvider>
+         </LocalizationProvider>
+         {/* <Router>
         <Routes>
           <Route element={<BaseLayout />}>
             <Route path="/" element={<Dashboard />} />
@@ -46,8 +48,8 @@ function App() {
           />
         </button>
       </Router> */}
-    </>
-  );
+      </>
+   );
 }
 
 export default App;

@@ -75,7 +75,7 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
                                           </Box>
                                        )}
 
-                                       {loadingData && !disabled &&  (
+                                       {loadingData && !disabled && (
                                           <Box
                                              sx={{
                                                 position: "absolute",
@@ -116,10 +116,10 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
 };
 AutoComplete.propTypes = {
    options: PropTypes.arrayOf(
-     PropTypes.shape({
-       id: PropTypes.number.isRequired,
-       text: PropTypes.string.isRequired
-     })
-   ).isRequired,
+      PropTypes.shape({
+         id: PropTypes.number.isRequired,
+         text: PropTypes.string.isRequired
+      })
+   ).isRequired
    // Otras PropTypes para tus props aquí...
- };
+};

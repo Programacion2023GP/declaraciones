@@ -162,7 +162,7 @@ export const DatosEmpleo = ({ next, previous, title }) => {
                               label="Área de adscripción"
                               placeholder={"Especificar el nombre de la Unidad Administrativa u homóloga superior inmediata de su adscripción. (Superior jerárquico)"}
                            />
-                           <Text col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión" />
+                           <Text col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión"  />
                            <CustomRadio
                               col={12}
                               name="ContratadoPorHonorarios"

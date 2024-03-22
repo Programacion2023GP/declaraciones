@@ -9,12 +9,15 @@ import { Formik, setNestedObjectValues } from "formik";
 import * as Yup from "yup";
 import DatePickerComponent from "../../Reusables/datepicker/DatePickerComponent";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
+import { MyDataTable } from "../../Reusables/datable/MyDataTable";
+// import DataTable from "../../Reusables/table/DataTable";
 
 export const ExperienciaLaboral = ({ next, previous, title }) => {
    let { declaracion } = useParams();
    const [ambitoPublico, setAmbitoPublico] = useState([]);
-   const [actvieAmbitoPublico, setActvieAmbitoPublico] = useState(false);
-
+   const [activeAmbitoPublico, setactiveAmbitoPublico] = useState(false);
+   const [activeSector, setActiveSector] = useState(false);
+   const [datas, setDatas] = useState([]);
    const dataForm = {
       Id_AmbitoSector: 1,
       Id_AmbitoPublico: 0,
@@ -27,20 +30,52 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
       EsEnMexico: 1,
       Aclaraciones: ""
    };
+   if (activeAmbitoPublico) {
+      dataForm.NombreEntePublico = "";
+      dataForm.Rfc = "";
+      dataForm.Puesto = "";
+      dataForm.Sector = "";
+   } else {
+      delete dataForm.NombreEntePublico;
+      delete dataForm.Rfc;
+      delete dataForm.Puesto;
+      delete dataForm.Sector;
+   }
+   if (activeSector) {
+      dataForm.SectorEspecifico = "";
+   } else {
+      delete dataForm.SectorEspecifico;
+   }
    const validationSchema = Yup.object().shape({
-      Id_AmbitoSector: Yup.number("Debe ser numerico").required("Es requerido que selecione una opcion"),
-      Id_AmbitoPublico: Yup.number().min(1, "El ambito público es requerido").required("El ambito público es requerido"),
-      NombreEntePublico: Yup.string().required("El Nombre del ente público es requerido"),
-      AreaAdscripcion: Yup.string().required("El Áerea de adscripción del ente público es requerido"),
-      EmpleoCargoComision: Yup.string().required("El Empleo cargo comisión es requerido"),
-      FuncionPrincipal: Yup.string().required("La función principal es requerida"),
-      FechaIngreso: Yup.date("El formato de fecha es invalido").required("La fecha de ingreso es requerida"),
-      FechaEngreso: Yup.date("El formato de fecha es invalida").required("La fecha de engreso es requerida"),
-      EsEnMexico: Yup.number("Debe ser numerico").required("Es requerido que selecione una opcion")
+      Id_AmbitoSector: Yup.number().typeError("Debe ser numérico").required("Es requerido que seleccione una opción"),
+      Id_AmbitoPublico: activeAmbitoPublico ? Yup.number().min(1, "El ámbito público es requerido").required("El ámbito público es requerido") : null,
+      NombreEntePublico: activeAmbitoPublico ? Yup.string().required("El nombre del ente público es requerido") : null,
+      AreaAdscripcion: activeAmbitoPublico ? Yup.string().required("El área de adscripción del ente público es requerido") : null,
+      EmpleoCargoComision: activeAmbitoPublico ? Yup.string().required("El empleo, cargo o comisión es requerido") : null,
+      FuncionPrincipal: activeAmbitoPublico ? Yup.string().required("La función principal es requerida") : null,
+      SectorEspecifico: activeSector ? Yup.string().required("El sector es requerido") : null,
+      Rfc: !activeAmbitoPublico ? null : Yup.string().required("El RFC de la empresa es requerido"),
+      Puesto: !activeAmbitoPublico ? null : Yup.string().required("El puesto de la empresa es requerido"),
+      Sector: !activeAmbitoPublico ? null : Yup.number().required("El sector es requerido"),
+
+      FechaIngreso: Yup.date().typeError("El formato de fecha es inválido").required("La fecha de ingreso es requerida"),
+      FechaEngreso: Yup.date().typeError("El formato de fecha es inválido").required("La fecha de egreso es requerida"),
+      EsEnMexico: Yup.number().typeError("Debe ser numérico").required("Es requerido que seleccione una opción")
    });
+
    const handleGetValue = async (name, value) => {
       if (name == "Id_AmbitoSector") {
-         value == 1 ? setActvieAmbitoPublico(false) : setActvieAmbitoPublico(true);
+         value == 1 ? setactiveAmbitoPublico(false) : setactiveAmbitoPublico(true);
+      }
+      name == "Sector" && value == 0 ? setActiveSector(true) : setActiveSector(false);
+   };
+   const submit = async (values, { setSubmitting }) => {
+      values.EsEnMexico = parseInt(values.EsEnMexico);
+      if (datas.length < 5) {
+         // console.log("jj");
+         datas.push(values);
+         setDatas(datas);
+         console.log("Data", datas);
       }
    };
    useEffect(() => {
@@ -54,6 +89,11 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
    }, []);
    return (
       <>
+         <Box sx={{ maxWidth: "90%", margin: "auto" }}>
+            <MyDataTable />
+            {/* <DataTable data={datas} /> */}
+         </Box>
+         <br />
          <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
             <CardContent>
                <Typography variant="h3" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
@@ -67,33 +107,10 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                <Typography variant="body2" color="text.secondary">
                   <Grid container spacing={2}></Grid>
                </Typography>
-               <Formik
-                  initialValues={dataForm}
-                  validationSchema={validationSchema}
-                  onSubmit={async (values, { setSubmitting }) => {
-                     values.EsEnMexico = parseInt(values.EsEnMexico);
-                     console.log("valores", values);
-                     try {
-                        const response = await PostAxios("/domiciliodeclarante/create", values);
-
-                        next();
-                        Success(response.data.data.message);
-
-                        return response.data;
-                     } catch (error) {
-                        if (error.response?.data?.data?.message) {
-                           Error(error.response.data.data.message);
-                        } else {
-                           Error("NO EXISTE CONEXION A LA DB");
-                        }
-                     }
-
-                     setSubmitting(false);
-                  }}
-               >
+               <Formik initialValues={dataForm} validationSchema={validationSchema} onSubmit={submit}>
                   {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue }) => {
                      {
-                        // console.log(values.Id_EntidadFederativa);
+                        console.error(errors);
                         // Utiliza la variable hasHandleChangeIdEntidadFederativa según tu necesidad
                         // if (values.Id_EntidadFederativa != dataForm.Id_EntidadFederativa) {
                         //    dataForm.Id_EntidadFederativa = values.Id_EntidadFederativa;
@@ -125,7 +142,7 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                                  { value: 2, label: "PRIVADO" }
                               ]} // Opciones para los radio buttons
                            />
-                           <Ngif condition={!actvieAmbitoPublico}>
+                           <Ngif condition={!activeAmbitoPublico}>
                               <AutoComplete col={12} label="Ámbito público" name="Id_AmbitoPublico" options={ambitoPublico} />
                               <Text col={12} name="NombreEntePublico" label="Nombre del ente público" />
                               <Text
@@ -143,6 +160,26 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                                  label="Especifique función principal"
                                  placeholder={"Señalar cuál es la función o actividad principal que desempeña en su empleo, cargo o comisión"}
                               />
+                           </Ngif>
+                           <Ngif condition={activeAmbitoPublico}>
+                              <Text col={12} name="NombreEntePublico" label="Nombre de la empresa" />
+                              <Text col={12} name="Rfc" label="Rfc de la empresa" />
+                              <Text col={12} name="AreaAdscripcion" label="Aerea" />
+                              <Text col={12} name="Puesto" label="Puesto" />
+                              <CustomRadio
+                                 handleGetValue={handleGetValue}
+                                 col={12}
+                                 name="Sector" // Nombre del campo en el formulario
+                                 title="Sector al que pertenece"
+                                 options={[
+                                    { value: 1, label: "Empresa" },
+                                    { value: 2, label: "Sociedad o Asociación" },
+                                    { value: 0, label: "Otro especifique ..." }
+                                 ]} // Opciones para los radio buttons
+                              />
+                           </Ngif>
+                           <Ngif condition={activeSector}>
+                              <Text col={12} name="SectorEspecificado" label="Especifica el sector" />
                            </Ngif>
                            <DatePickerComponent
                               idName={"FechaIngreso"}
