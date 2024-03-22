@@ -9,7 +9,7 @@ export const Ngfor = ({ data = [], children }) => {
             return Children.map(children, (child, childIndex) => {
                const childContent = getChildContent(child);
                if (itemKeys.includes(childContent)) {
-                  return cloneElement(child, {}, childContent);
+                  return cloneElement(child, {}, item[childContent]);
                }
                return child;
             });
