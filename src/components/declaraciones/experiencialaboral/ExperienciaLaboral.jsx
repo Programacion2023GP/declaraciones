@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Text } from "../../Reusables/input/Input";
 import { AutoComplete } from "../../Reusables/autocomplete/autocomplete";
 import { CustomRadio } from "../../Reusables/radiobutton/Radio";
 import { Box, Button, Card, CardContent, Grid, TextField, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { Axios, GetAxios, PostAxios } from "../../../services/services";
-import { Formik, setNestedObjectValues } from "formik";
+import { Formik, useFormikContext } from "formik";
 import * as Yup from "yup";
 import DatePickerComponent from "../../Reusables/datepicker/DatePickerComponent";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
-import { MyDataTable } from "../../Reusables/datable/MyDataTable";
+import DataTable from "../../Reusables/table/DataTable";
+
 // import DataTable from "../../Reusables/table/DataTable";
 
 export const ExperienciaLaboral = ({ next, previous, title }) => {
@@ -18,6 +19,10 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
    const [activeAmbitoPublico, setactiveAmbitoPublico] = useState(false);
    const [activeSector, setActiveSector] = useState(false);
    const [datas, setDatas] = useState([]);
+   const [datasVisuales, setDatasVisuales] = useState([]);
+   const [idUnique, setIdUnique] = useState(1);
+   const formikRef = useRef(); // Referencia para acceder a la instancia de Formik
+
    const dataForm = {
       Id_AmbitoSector: 1,
       Id_AmbitoPublico: 0,
@@ -31,29 +36,27 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
       Aclaraciones: ""
    };
    if (activeAmbitoPublico) {
-      dataForm.NombreEntePublico = "";
       dataForm.Rfc = "";
       dataForm.Puesto = "";
       dataForm.Sector = "";
    } else {
-      delete dataForm.NombreEntePublico;
       delete dataForm.Rfc;
       delete dataForm.Puesto;
       delete dataForm.Sector;
    }
    if (activeSector) {
-      dataForm.SectorEspecifico = "";
+      dataForm.SectorEspecificado = "";
    } else {
-      delete dataForm.SectorEspecifico;
+      delete dataForm.SectorEspecificado;
    }
    const validationSchema = Yup.object().shape({
       Id_AmbitoSector: Yup.number().typeError("Debe ser numérico").required("Es requerido que seleccione una opción"),
-      Id_AmbitoPublico: activeAmbitoPublico ? Yup.number().min(1, "El ámbito público es requerido").required("El ámbito público es requerido") : null,
-      NombreEntePublico: activeAmbitoPublico ? Yup.string().required("El nombre del ente público es requerido") : null,
-      AreaAdscripcion: activeAmbitoPublico ? Yup.string().required("El área de adscripción del ente público es requerido") : null,
-      EmpleoCargoComision: activeAmbitoPublico ? Yup.string().required("El empleo, cargo o comisión es requerido") : null,
-      FuncionPrincipal: activeAmbitoPublico ? Yup.string().required("La función principal es requerida") : null,
-      SectorEspecifico: activeSector ? Yup.string().required("El sector es requerido") : null,
+      Id_AmbitoPublico: !activeAmbitoPublico ? Yup.number().min(1, "El ámbito público es requerido").required("El ámbito público es requerido") : null,
+      NombreEntePublico: Yup.string().required("El nombre del ente público es requerido"),
+      AreaAdscripcion: Yup.string().required("El área de adscripción del ente público es requerido"),
+      EmpleoCargoComision: !activeAmbitoPublico ? Yup.string().required("El empleo, cargo o comisión es requerido") : null,
+      FuncionPrincipal: !activeAmbitoPublico ? Yup.string().required("La función principal es requerida") : null,
+      SectorEspecificado: activeSector ? Yup.string().required("El sector es requerido") : null,
       Rfc: !activeAmbitoPublico ? null : Yup.string().required("El RFC de la empresa es requerido"),
       Puesto: !activeAmbitoPublico ? null : Yup.string().required("El puesto de la empresa es requerido"),
       Sector: !activeAmbitoPublico ? null : Yup.number().required("El sector es requerido"),
@@ -64,19 +67,45 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
    });
 
    const handleGetValue = async (name, value) => {
+      console.log("consulta", name, value);
       if (name == "Id_AmbitoSector") {
-         value == 1 ? setactiveAmbitoPublico(false) : setactiveAmbitoPublico(true);
+         value == 2 ? setactiveAmbitoPublico(true) : setactiveAmbitoPublico(false);
+         console.error(activeAmbitoPublico);
       }
       name == "Sector" && value == 0 ? setActiveSector(true) : setActiveSector(false);
    };
-   const submit = async (values, { setSubmitting }) => {
-      values.EsEnMexico = parseInt(values.EsEnMexico);
+   const submit = async (values, { resetForm }) => {
       if (datas.length < 5) {
-         // console.log("jj");
-         datas.push(values);
-         setDatas(datas);
-         console.log("Data", datas);
+         values.EsEnMexico = parseInt(values.EsEnMexico);
+         values.identificador = idUnique;
+         setIdUnique(idUnique + 1);
+         const newDatas = [...datas, values];
+         setDatas(newDatas);
+         const newDatasVisuales = [
+            ...datasVisuales,
+            {
+               id: values.identificador,
+               Sector: values.Id_AmbitoSector === 1 ? "PÚBLICO" : "PRIVADO",
+               "Empleo, Ámbito cargo o comisión": values.NombreEntePublico,
+               Lugar: values.EsEnMexico === 1 ? "Mexico" : "Extranjero",
+               "Fecha ingreso": values.FechaIngreso,
+               "Fecha egreso": values.FechaEngreso
+            }
+         ];
+         console.log("table", newDatasVisuales);
+         setDatasVisuales(newDatasVisuales);
+         resetForm();
       }
+   };
+   const Edit = (row) => {
+      const finData = datas.filter((elemento) => elemento.id !== row.id);
+      console.log(finData[0]);
+      formikRef.current.setValues(finData[0]); // Establecer los datos en los campos de formulario
+   };
+   const Delete = (row) => {
+      const newDatasVisuales = datasVisuales.filter((elemento) => elemento.identificador !== row.id);
+      console.log("eliminar", newDatasVisuales);
+      setDatasVisuales(newDatasVisuales);
    };
    useEffect(() => {
       const init = async () => {
@@ -86,13 +115,27 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
          // setPaises(await GetAxios("/paises/show"));
       };
       init();
-   }, []);
+   }, [activeAmbitoPublico, activeSector]);
    return (
       <>
-         <Box sx={{ maxWidth: "90%", margin: "auto" }}>
-            <MyDataTable />
-            {/* <DataTable data={datas} /> */}
+         {/* {console.log("la datas", datas)} */}
+         <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
+            <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
+               <DataTable
+                  editButton={true}
+                  deleteButton={true}
+                  dataHidden={["id"]}
+                  // headers={["Ámbito", "Empleo, Ámbito cargo o comisión", "Lugar", "Fecha ingreso", "Fecha egreso"]}
+                  handleEdit={Edit}
+                  handleDelete={Delete}
+                  data={datasVisuales}
+                  // filter={true}
+                  // pagination={[5, 10]}
+               />
+            </Card>
          </Box>
+
+         <Box sx={{ maxWidth: "90%", margin: "auto" }}>{/* <DataTable data={datas} /> */}</Box>
          <br />
          <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
             <CardContent>
@@ -107,27 +150,10 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                <Typography variant="body2" color="text.secondary">
                   <Grid container spacing={2}></Grid>
                </Typography>
-               <Formik initialValues={dataForm} validationSchema={validationSchema} onSubmit={submit}>
-                  {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue }) => {
+               <Formik innerRef={formikRef} initialValues={dataForm} validationSchema={validationSchema} onSubmit={submit}>
+                  {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues }) => {
                      {
-                        console.error(errors);
-                        // Utiliza la variable hasHandleChangeIdEntidadFederativa según tu necesidad
-                        // if (values.Id_EntidadFederativa != dataForm.Id_EntidadFederativa) {
-                        //    dataForm.Id_EntidadFederativa = values.Id_EntidadFederativa;
-                        //    setActiveMunicipios(false);
-                        //    setLoadingMunicipios(true);
-                        //      Axios.get(`municipios/show/${values.Id_EntidadFederativa}`).then(response=>{
-                        //       setmunicipios(response.data.data.result);
-                        //       // response.data.data.result
-                        //    });
-                        //    console.warn("cambio");
-                        //    // setLoadingMunicipios(false);
-                        // }
-                        // if (touched.Id_EntidadFederativa && handleBlur) { // Verifica si se ha hecho "blur" en Id_EntidadFederativa
-                        //    if (values.Id_EntidadFederativa !== 0 && handleChange) {
-                        //    }
-                        //  }
-                        // setmunicipios(await GetAxios("municipios/show/values."));
+                        console.warn(errors);
                      }
                      return (
                         <Box component={"form"} onSubmit={handleSubmit}>
