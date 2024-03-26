@@ -10,11 +10,15 @@ import * as Yup from "yup";
 import DatePickerComponent from "../../Reusables/datepicker/DatePickerComponent";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import DataTable from "../../Reusables/table/DataTable";
+import { Error } from "../../../toasts/toast";
 
 // import DataTable from "../../Reusables/table/DataTable";
 
 export const ExperienciaLaboral = ({ next, previous, title }) => {
    let { declaracion } = useParams();
+   const [save, setSave] = useState(true);
+   const [idRow, setIdRow] = useState(null);
+
    const [ambitoPublico, setAmbitoPublico] = useState([]);
    const [activeAmbitoPublico, setactiveAmbitoPublico] = useState(false);
    const [activeSector, setActiveSector] = useState(false);
@@ -33,22 +37,25 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
       FechaIngreso: "",
       FechaEngreso: "",
       EsEnMexico: 1,
-      Aclaraciones: ""
+      Aclaraciones: "",
+      Rfc: "",
+      Puesto: "",
+      Sector: "",
+      SectorEspecificado: ""
    };
-   if (activeAmbitoPublico) {
-      dataForm.Rfc = "";
-      dataForm.Puesto = "";
-      dataForm.Sector = "";
-   } else {
-      delete dataForm.Rfc;
-      delete dataForm.Puesto;
-      delete dataForm.Sector;
-   }
-   if (activeSector) {
-      dataForm.SectorEspecificado = "";
-   } else {
-      delete dataForm.SectorEspecificado;
-   }
+   // if (activeAmbitoPublico) {
+   //    dataForm.Puesto = "";
+   //    dataForm.Sector = "";
+   // } else {
+   //    delete dataForm.Rfc;
+   //    delete dataForm.Puesto;
+   //    delete dataForm.Sector;
+   // }
+   // if (activeSector) {
+   //    dataForm.SectorEspecificado = "";
+   // } else {
+   //    delete dataForm.SectorEspecificado;
+   // }
    const validationSchema = Yup.object().shape({
       Id_AmbitoSector: Yup.number().typeError("Debe ser numérico").required("Es requerido que seleccione una opción"),
       Id_AmbitoPublico: !activeAmbitoPublico ? Yup.number().min(1, "El ámbito público es requerido").required("El ámbito público es requerido") : null,
@@ -57,9 +64,9 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
       EmpleoCargoComision: !activeAmbitoPublico ? Yup.string().required("El empleo, cargo o comisión es requerido") : null,
       FuncionPrincipal: !activeAmbitoPublico ? Yup.string().required("La función principal es requerida") : null,
       SectorEspecificado: activeSector ? Yup.string().required("El sector es requerido") : null,
-      Rfc: !activeAmbitoPublico ? null : Yup.string().required("El RFC de la empresa es requerido"),
-      Puesto: !activeAmbitoPublico ? null : Yup.string().required("El puesto de la empresa es requerido"),
-      Sector: !activeAmbitoPublico ? null : Yup.number().required("El sector es requerido"),
+      Rfc: activeAmbitoPublico && Yup.string().length(12, "Debe contar con 12 caracteres").trim().required("El RFC de la empresa es requerido"),
+      Puesto: activeAmbitoPublico && Yup.string().required("El puesto de la empresa es requerido"),
+      Sector: activeAmbitoPublico && Yup.number().required("El sector es requerido"),
 
       FechaIngreso: Yup.date().typeError("El formato de fecha es inválido").required("La fecha de ingreso es requerida"),
       FechaEngreso: Yup.date().typeError("El formato de fecha es inválido").required("La fecha de egreso es requerida"),
@@ -67,44 +74,78 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
    });
 
    const handleGetValue = async (name, value) => {
-      console.log("consulta", name, value);
       if (name == "Id_AmbitoSector") {
          value == 2 ? setactiveAmbitoPublico(true) : setactiveAmbitoPublico(false);
-         console.error(activeAmbitoPublico);
       }
       name == "Sector" && value == 0 ? setActiveSector(true) : setActiveSector(false);
    };
+   const clearForm = (privado = false, sector = false) => {
+      privado ? setactiveAmbitoPublico(false) : setactiveAmbitoPublico(true);
+      sector ? setActiveSector(true) : setActiveSector(false);
+
+      formikRef.current.resetForm();
+      formikRef.current.initialValues = dataForm;
+   };
    const submit = async (values, { resetForm }) => {
-      if (datas.length < 5) {
-         values.EsEnMexico = parseInt(values.EsEnMexico);
-         values.identificador = idUnique;
-         setIdUnique(idUnique + 1);
-         const newDatas = [...datas, values];
+      if (save) {
+         if (datas.length < 5) {
+            values.EsEnMexico = parseInt(values.EsEnMexico);
+            values.identificador = idUnique;
+            setIdUnique(idUnique + 1);
+            const newDatas = [...datas, values];
+            setDatas(newDatas);
+
+            clearForm();
+
+            const newDatasVisuales = [
+               ...datasVisuales,
+               {
+                  id: values.identificador,
+                  Sector: values.Id_AmbitoSector === 1 ? "PÚBLICO" : "PRIVADO",
+                  "Empleo, Ámbito cargo o comisión": values.NombreEntePublico,
+                  Lugar: values.EsEnMexico === 1 ? "Mexico" : "Extranjero",
+                  "Fecha ingreso": values.FechaIngreso,
+                  "Fecha egreso": values.FechaEngreso
+               }
+            ];
+            setDatasVisuales(newDatasVisuales);
+         } else {
+            Error("cuentas con el limite de experiencias laborales");
+         }
+      } else {
+         console.log(idRow);
+         const index = datas.findIndex((elemento) => elemento.identificador == idRow);
+         const newDatas = [...datas];
+         newDatas[index] = values;
          setDatas(newDatas);
-         const newDatasVisuales = [
-            ...datasVisuales,
-            {
-               id: values.identificador,
-               Sector: values.Id_AmbitoSector === 1 ? "PÚBLICO" : "PRIVADO",
-               "Empleo, Ámbito cargo o comisión": values.NombreEntePublico,
-               Lugar: values.EsEnMexico === 1 ? "Mexico" : "Extranjero",
-               "Fecha ingreso": values.FechaIngreso,
-               "Fecha egreso": values.FechaEngreso
-            }
-         ];
-         console.log("table", newDatasVisuales);
+         const newDatasVisuales = [...datasVisuales];
+         newDatasVisuales[index] = {
+            id: values.identificador,
+            Sector: values.Id_AmbitoSector === 1 ? "PÚBLICO" : "PRIVADO",
+            "Empleo, Ámbito cargo o comisión": values.NombreEntePublico,
+            Lugar: values.EsEnMexico === 1 ? "Mexico" : "Extranjero",
+            "Fecha ingreso": values.FechaIngreso,
+            "Fecha egreso": values.FechaEngreso
+         };
          setDatasVisuales(newDatasVisuales);
-         resetForm();
+         clearForm();
       }
+      setSave(true);
    };
    const Edit = (row) => {
-      const finData = datas.filter((elemento) => elemento.id !== row.id);
-      console.log(finData[0]);
-      formikRef.current.setValues(finData[0]); // Establecer los datos en los campos de formulario
+      setSave(false);
+      const finData = datas.filter((elemento) => elemento.identificador == row.id);
+      const item = finData[0];
+      console.log("id", item.identificador);
+      setIdRow(item.identificador);
+      console.log("id", idRow);
+
+      clearForm(item.Id_AmbitoPublico != 0, item.SectorEspecificado != "" && item.Sector == 0);
+      formikRef.current.setValues(item);
+      // formikRef.current.setFieldValue("Id_AmbitoPublico", finData[0].Id_AmbitoPublico);
    };
    const Delete = (row) => {
       const newDatasVisuales = datasVisuales.filter((elemento) => elemento.identificador !== row.id);
-      console.log("eliminar", newDatasVisuales);
       setDatasVisuales(newDatasVisuales);
    };
    useEffect(() => {
@@ -122,13 +163,13 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
                <DataTable
-                  editButton={true}
-                  deleteButton={true}
+                  headers={["Sector", "Ente publico o Nombre de la empresa", "Lugar", "Fecha de ingreso", "Fecha de salida"]}
                   dataHidden={["id"]}
-                  // headers={["Ámbito", "Empleo, Ámbito cargo o comisión", "Lugar", "Fecha ingreso", "Fecha egreso"]}
-                  handleEdit={Edit}
-                  handleDelete={Delete}
                   data={datasVisuales}
+                  editButton={true}
+                  handleEdit={Edit}
+                  deleteButton={true}
+                  handleDelete={Delete}
                   // filter={true}
                   // pagination={[5, 10]}
                />
@@ -153,7 +194,6 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                <Formik innerRef={formikRef} initialValues={dataForm} validationSchema={validationSchema} onSubmit={submit}>
                   {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues }) => {
                      {
-                        console.warn(errors);
                      }
                      return (
                         <Box component={"form"} onSubmit={handleSubmit}>
@@ -211,7 +251,7 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                               idName={"FechaIngreso"}
                               label={"Fecha de ingreso"}
                               format={"DD/MM/YYYY"}
-                              value={values.FechaIngreso}
+                              // value={values.FechaIngreso}
                               setFieldValue={setFieldValue}
                               onChange={handleChange}
                               onBlur={handleBlur}
@@ -223,7 +263,7 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                               idName={"FechaEngreso"}
                               label={"Fecha de egreso"}
                               format={"DD/MM/YYYY"}
-                              value={values.FechaEngreso}
+                              // value={values.FechaEngreso}
                               setFieldValue={setFieldValue}
                               onChange={handleChange}
                               onBlur={handleBlur}

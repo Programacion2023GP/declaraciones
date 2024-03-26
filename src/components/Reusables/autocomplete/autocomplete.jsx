@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Box, Grid, LinearProgress, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Field, useFormikContext } from "formik";
 import PropTypes from "prop-types";
-
+import { DebugerContext } from "../../../context/DebuggerContext";
 export const AutoComplete = ({ helperText, loading = false, handleGetValue = null, col, label, name = "name", options = [], disabled, optional, color, hidden }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
+   const { agregarVariables, agregarEventos } = useContext(DebugerContext);
+
    const [inputValue, setInputValue] = useState("");
    const [loadingData, setLoadingData] = useState(true);
    const [progress, setProgress] = useState(10);
@@ -24,8 +26,16 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
          setLoadingData(false);
       }
       if (!Array.isArray(options)) {
-         options = []; // Si no es un array, lo convertimos en un array vacío
+         options = [];
+         setLoadingData(false);
       }
+      // if (formik.values[name]) {
+      //    handleValue(name, formik.values[name]);
+      //    formik.setFieldValue(name, formik.values[name]);
+      //    // Actualiza el estado inputValue para reflejar el texto del valor seleccionado
+      //    const selectedOption = options.find(option => option.id === formik.values[name]);
+      //    setInputValue(selectedOption ? selectedOption.text : "");
+      // }
    }, [options]);
    return (
       <Grid style={{ margin: "1rem 0" }} item xs={col} container sx={{ display: "flex", position: "relative" }}>
@@ -41,13 +51,20 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
                   id={`${name}-autocomplete`}
                   options={options}
                   getOptionLabel={(option) => option.text}
+                  isOptionEqualToValue={(option, value) => option && value && option.id === value.id}
                   onChange={(event, newValue) => {
                      const selectedOption = options.find((option) => option.text.trim() === newValue.text.trim());
                      handleValue(name, selectedOption.id);
+                     agregarVariables(name, selectedOption.id);
+                     agregarEventos(`${name}`, "cambiando valor");
                      // handleGetValue ?? handleGetValue(name, selectedOption.id);
                      formik.setFieldValue(name, selectedOption ? selectedOption.id : "");
                   }}
-                  inputValue={inputValue}
+                  inputValue={
+                     formik.values[name] && options.find((option) => option.id === formik.values[name])
+                        ? options.find((option) => option.id === formik.values[name]).text
+                        : ""
+                  }
                   onInputChange={(event, newInputValue) => {
                      setInputValue(String(newInputValue));
                   }}

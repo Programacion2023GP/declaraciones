@@ -76,12 +76,9 @@ const Title = ({ titles, data, filterData, previousData, filter }) => {
          <thead>
             <tr style={{ background: "#F9FAFB", width: "100%" }}>
                {headersMap.map((title) => {
-                  return <th style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>{title}</th>;
+                  return <th style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>{title.charAt(0).toUpperCase() + title.slice(1)}</th>;
                })}
-               {headersMap.length>0 &&(
-
-              <th style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>Acciones</th>
-               )}
+               {headersMap.length > 0 && <th style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>Acciones</th>}
             </tr>
             <tr>
                {filter &&
@@ -154,7 +151,7 @@ const PaginatorSelect = ({ pagination, selectOption }) => {
    );
 };
 
-const DataTable = ({ data = [], dataHidden = [], pagination, headers, filter, editButton, deleteButton,handleEdit,handleDelete }) => {
+const DataTable = ({ data = [], dataHidden = [], pagination, headers, filter, editButton, deleteButton, handleEdit, handleDelete }) => {
    const [totalData, setTotalData] = useState(data);
    const [dataFilter, setDataFilter] = useState(data);
    const [titles, setTitles] = useState([]);
@@ -299,57 +296,69 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers, filter, ed
                   </tbody>
                </table>
             </div>
-         ): (
-         <div className="" style={{ maxWidth: "fit-content", display: "flex", flexDirection: "column", maxWidth: "100%", overflow: "auto" }}>
-            <table style={{ borderCollapse: "collapse" }}>
-               <Title titles={titles} previousData={data} data={dataFilter} filterData={filterData} filter={filter}></Title>
-               <tbody>
-                  {dataTable.map((item, index) => {
-                     return (
-                        <tr key={index} style={{}}>
-                           {Object.entries(item).map(([key, value]) => {
-                              if (dataHidden) {
-                                 if (!dataHidden.includes(key)) {
+         ) : (
+            <div className="" style={{ maxWidth: "fit-content", display: "flex", flexDirection: "column", overflow: "auto" }}>
+               <table style={{ borderCollapse: "collapse" }}>
+                  <Title titles={titles} previousData={data} data={dataFilter} filterData={filterData} filter={filter}></Title>
+                  <tbody>
+                     {dataTable.map((item, index) => {
+                        return (
+                           <tr key={index} style={{}}>
+                              {Object.entries(item).map(([key, value]) => {
+                                 if (dataHidden) {
+                                    if (!dataHidden.includes(key)) {
+                                       return (
+                                          <td style={{ textAlign: "center", border: "1px solid #BDBDBD", padding: 0, margin: 0 }} key={key} cols={value}>
+                                             {value}
+                                          </td>
+                                       );
+                                    }
+                                 } else {
                                     return (
-                                       <td style={{ textAlign: "center", border: "1px solid #BDBDBD", padding: 0, margin: 0 }} key={key} cols={value}>
+                                       <td style={{ textAlign: "center", borderBottom: "1px solid", padding: 0, margin: 0 }} key={key} cols={value}>
                                           {value}
                                        </td>
                                     );
                                  }
-                              } else {
-                                 return (
-                                    <td style={{ textAlign: "center", borderBottom: "1px solid", padding: 0, margin: 0 }} key={key} cols={value}>
-                                       {value}
-                                    </td>
-                                 );
-                              }
-                           })}
-                           {(editButton || deleteButton) && (
-                              <td style={{ textAlign: "center", border: "1px solid #BDBDBD", padding: 0, margin: 0 }}>
-                                 {editButton && (
-                                    <IconButton aria-label="edit" color="warning" onClick={()=>{handleEdit(item)}}>
-                                       <EditIcon style={{ color: "orange" }} />
-                                    </IconButton>
-                                 )}
-                                 {deleteButton && (
-                                    <IconButton aria-label="delete" color="warning" onClick={()=>{handleDelete(item)}}>
-                                       <DeleteIcon style={{ color: "red" }} />
-                                    </IconButton>
-                                 )}
-                              </td>
-                           )}
-                        </tr>
-                     );
-                  })}
-               </tbody>
-            </table>
+                              })}
+                              {(editButton || deleteButton) && (
+                                 <td style={{ textAlign: "center", border: "1px solid #BDBDBD", padding: 0, margin: 0 }}>
+                                    {editButton && (
+                                       <IconButton
+                                          aria-label="edit"
+                                          color="warning"
+                                          onClick={() => {
+                                             handleEdit(item);
+                                          }}
+                                       >
+                                          <EditIcon style={{ color: "orange" }} />
+                                       </IconButton>
+                                    )}
+                                    {deleteButton && (
+                                       <IconButton
+                                          aria-label="delete"
+                                          color="warning"
+                                          onClick={() => {
+                                             handleDelete(item);
+                                          }}
+                                       >
+                                          <DeleteIcon style={{ color: "red" }} />
+                                       </IconButton>
+                                    )}
+                                 </td>
+                              )}
+                           </tr>
+                        );
+                     })}
+                  </tbody>
+               </table>
 
-            {pagination && (
-               <div style={{ minWidth: "100%", padding: "0.5rem 1rem", alignSelf: "flex-end", border: "1px solid #BDBDBD", background: "#F9FAFB" }}>
-                  <Paginator pagination={pagination} handleChange={handleSeparateData} pages={totalPages} previous={previous} next={next} page={numberShowPage} />
-               </div>
-            )}
-         </div>
+               {pagination && (
+                  <div style={{ minWidth: "100%", padding: "0.5rem 1rem", alignSelf: "flex-end", border: "1px solid #BDBDBD", background: "#F9FAFB" }}>
+                     <Paginator pagination={pagination} handleChange={handleSeparateData} pages={totalPages} previous={previous} next={next} page={numberShowPage} />
+                  </div>
+               )}
+            </div>
          )}
       </>
    );
