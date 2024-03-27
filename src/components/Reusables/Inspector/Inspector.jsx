@@ -8,13 +8,10 @@ export const Inspector = () => {
    const [functions, setFunctions] = useState([]);
 
    useEffect(() => {
-      console.log("holas");
       setValores(variables);
       setFunctions(eventos);
 
-      // Este efecto se ejecutará cada vez que cambie `variables` o `eventos` en el contexto
-      console.log("variables actualizadas:", variables, valores);
-      console.log("Eventos actualizados:", eventos);
+      // 
    }, [variables, eventos, valores, eventos]);
    return (
       <>

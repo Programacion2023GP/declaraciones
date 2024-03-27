@@ -12,7 +12,7 @@ import { Rfc } from "../../Reusables/rfc/rfc";
 import { useEffect } from "react";
 import { Date } from "../../Reusables/date/Date";
 import { CustomRadio } from "../../Reusables/radiobutton/Radio";
-import { CustomCheckbox } from "../../Reusables/checkbox/Inpcheckbox";
+// import { CustomCheckbox } from "../../Reusables/checkbox/Inpcheckbox";
 import { Box, Button, Card, CardContent, Grid, TextField, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { Axios, GetAxios, PostAxios } from "../../../services/services";
@@ -59,11 +59,9 @@ export const DatosGenerales = ({ next, previous, title }) => {
       Id_RegimenMatrimonial: 0,
       Id_PaisNacimiento: 0,
       Id_Nacionalidad: 0,
-      Aclaraciones: ""
+      Aclaraciones: "",
+      FueServidorPublicoAnioAnterior: 0
    };
-   if (declaracion == 2) {
-      dataForm.FueServidorPublicoAnioAnterior = 0;
-   }
 
    const validationSchema = Yup.object().shape({
       Nombre: Yup.string().required("El Nombre es obligatorio"),
@@ -113,7 +111,7 @@ export const DatosGenerales = ({ next, previous, title }) => {
                </Typography>
                <Formik
                   initialValues={dataForm}
-                  // validationSchema={{}}
+                  validationSchema={validationSchema}
                   onSubmit={async (values, { setSubmitting }) => {
                      console.warn(values);
                      values.Id_User = parseInt(localStorage.getItem("Id_User"));

@@ -1,64 +1,92 @@
-import { useState } from "react";
-import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
+import * as React from "react";
+import { useTheme } from "@mui/material/styles";
+import MobileStepper from "@mui/material/MobileStepper";
+import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { DatosGenerales } from "./datosgenerales/DatosGenerales";
-import { Titles } from "./funciones/titles";
-import { useParams } from "react-router-dom";
 import { DomicilioDeclarante } from "./domiciliodeclarante/DomicilioDeclarante";
 import { DatosCurriculares } from "./datoscurriculares/DatosCurriculares";
 import { DatosEmpleo } from "./datosempleo/DatosEmpleo";
 import { ExperienciaLaboral } from "./experiencialaboral/ExperienciaLaboral";
+import { Titles } from "./funciones/titles";
+import { useParams } from "react-router-dom";
+import { DebugerContext } from "../../context/DebuggerContext";
+import { DatosParejas } from "./datospareja/DatosPareja";
+
+// Importa aquí los componentes correspondientes a cada paso
 
 export const Declaraciones = () => {
+   const { clearDebug } = React.useContext(DebugerContext);
+
    const { declaracion } = useParams();
-   const [activeStep, setActiveStep] = useState(4);
-   const [page, setPage] = useState(0);
-   const stepsPerPage = 5;
+
+   const theme = useTheme();
+   const [activeStep, setActiveStep] = React.useState(5);
 
    const handleNext = () => {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
-      if ((activeStep + 1) % stepsPerPage === 0) {
-         setPage((prevPage) => prevPage + 1);
-         setActiveStep(0);
-      }
    };
 
    const handleBack = () => {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
-      if (activeStep % stepsPerPage === 0 && page > 0) {
-         setPage((prevPage) => prevPage - 1);
-         setActiveStep(stepsPerPage - 1);
-      }
    };
 
+   // Define aquí la lista de pasos con sus títulos y componentes correspondientes
    const steps = [
       { label: `Datos generales`, component: <DatosGenerales next={handleNext} previous={handleBack} title={Titles(declaracion)} /> },
       { label: `Domicilio Declarante`, component: <DomicilioDeclarante next={handleNext} previous={handleBack} title={Titles(declaracion)} /> },
       { label: `Datos Curriculares del Declarante`, component: <DatosCurriculares next={handleNext} previous={handleBack} title={Titles(declaracion)} /> },
       { label: `Datos del empleo, cargo o comisión que inicia`, component: <DatosEmpleo next={handleNext} previous={handleBack} title={Titles(declaracion)} /> },
-      { label: `Experiencia laboral (últimos cinco empleos)`, component: <ExperienciaLaboral next={handleNext} previous={handleBack} title={Titles(declaracion)} /> }
+      {
+         label: `Experiencia laboral (últimos cinco empleos)`,
+         component: <ExperienciaLaboral next={handleNext} previous={handleBack} title={Titles(declaracion)} debugerClear={clearDebug} />
+      },
+      {
+         label: "Datos de la pareja",
+         component: <DatosParejas next={handleNext} previous={handleBack} title={Titles(declaracion)} debugerClear={clearDebug} />
+      }
    ];
 
-   const startIndex = page * stepsPerPage;
-   const endIndex = Math.min(startIndex + stepsPerPage, steps.length);
-   const visibleSteps = steps.slice(startIndex, endIndex);
+   // Función para obtener el título del paso actual
+   const getStepTitle = () => {
+      return steps[activeStep].label;
+   };
 
    return (
-      <Box sx={{ minWidth: "90%" }}>
-         <Stepper activeStep={activeStep}>
-            {visibleSteps.map((step, index) => (
-               <Step key={step.label}>
-                  <StepLabel>{step.label}</StepLabel>
-               </Step>
-            ))}
-         </Stepper>
-         <Box sx={{ mt: 3 }}>
-            <Typography>{visibleSteps[activeStep % stepsPerPage].component}</Typography>
-         </Box>
-      </Box>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
+         <React.Fragment>
+            {/* Contenido del MobileStepper */}
+            <div style={{ border: "2px solid #007bff", borderRadius: "10px", padding: "20px", boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)", marginBottom: "20px" }}>
+               {/* Título del paso con estilos mejorados */}
+               <Typography variant="h4" align="center" gutterBottom style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}>
+                  {getStepTitle()}
+               </Typography>
+
+               {/* MobileStepper para navegar entre los pasos */}
+               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
+                  {steps.map((step, index) => (
+                     <div
+                        key={index}
+                        style={{
+                           width: "10px",
+                           height: "10px",
+                           borderRadius: "50%",
+                           backgroundColor: index === activeStep ? "#007bff" : "#ccc",
+                           margin: "0 5px",
+                           cursor: "pointer"
+                        }}
+                     />
+                  ))}
+               </div>
+               <Typography variant="subtitle1" align="center" gutterBottom style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}>
+                  Paso {activeStep + 1} de {steps.length}
+               </Typography>
+               {/* Componente correspondiente al paso actual */}
+               {steps[activeStep].component}
+            </div>
+         </React.Fragment>
+      </div>
    );
 };

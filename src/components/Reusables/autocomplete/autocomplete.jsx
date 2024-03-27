@@ -6,6 +6,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Field, useFormikContext } from "formik";
 import PropTypes from "prop-types";
 import { DebugerContext } from "../../../context/DebuggerContext";
+
 export const AutoComplete = ({ helperText, loading = false, handleGetValue = null, col, label, name = "name", options = [], disabled, optional, color, hidden }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const { agregarVariables, agregarEventos } = useContext(DebugerContext);
@@ -18,7 +19,6 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
       if (handleGetValue) {
          handleGetValue(name, value);
       }
-      // return handleGetValue(name, value);
    };
 
    useEffect(() => {
@@ -29,23 +29,14 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
          options = [];
          setLoadingData(false);
       }
-      // if (formik.values[name]) {
-      //    handleValue(name, formik.values[name]);
-      //    formik.setFieldValue(name, formik.values[name]);
-      //    // Actualiza el estado inputValue para reflejar el texto del valor seleccionado
-      //    const selectedOption = options.find(option => option.id === formik.values[name]);
-      //    setInputValue(selectedOption ? selectedOption.text : "");
-      // }
    }, [options]);
+
    return (
       <Grid style={{ margin: "1rem 0" }} item xs={col} container sx={{ display: "flex", position: "relative" }}>
          <Field name={name}>
             {({ field }) => (
                <Autocomplete
-                  disabled={loading || disabled || loadingData}
-                  InputLabelProps={{
-                     style: color ? { color: color } : {}
-                  }}
+                  disabled={loading || disabled || loadingData} // Asegúrate de que el componente no esté deshabilitado
                   sx={{ minWidth: "100%", display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center" }}
                   disablePortal
                   id={`${name}-autocomplete`}
@@ -55,15 +46,16 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
                   onChange={(event, newValue) => {
                      const selectedOption = options.find((option) => option.text.trim() === newValue.text.trim());
                      handleValue(name, selectedOption.id);
-                     agregarVariables(name, selectedOption.id);
+                     agregarVariables(label, selectedOption.id);
                      agregarEventos(`${name}`, "cambiando valor");
-                     // handleGetValue ?? handleGetValue(name, selectedOption.id);
                      formik.setFieldValue(name, selectedOption ? selectedOption.id : "");
                   }}
                   inputValue={
-                     formik.values[name] && options.find((option) => option.id === formik.values[name])
-                        ? options.find((option) => option.id === formik.values[name]).text
-                        : ""
+                     inputValue
+                        ? inputValue
+                        : formik.values[name] && options.find((option) => option.id === formik.values[name])
+                          ? options.find((option) => option.id === formik.values[name]).text
+                          : ""
                   }
                   onInputChange={(event, newInputValue) => {
                      setInputValue(String(newInputValue));
@@ -72,7 +64,7 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
                      <TextField
                         {...params}
                         {...field}
-                        disabled={loading || disabled || loadingData}
+                        disabled={loading || disabled || loadingData} // Asegúrate de que el componente no esté deshabilitado
                         fullWidth
                         label={label}
                         onBlur={formik.handleBlur}
@@ -130,13 +122,4 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
          </Field>
       </Grid>
    );
-};
-AutoComplete.propTypes = {
-   options: PropTypes.arrayOf(
-      PropTypes.shape({
-         id: PropTypes.number.isRequired,
-         text: PropTypes.string.isRequired
-      })
-   ).isRequired
-   // Otras PropTypes para tus props aquí...
 };

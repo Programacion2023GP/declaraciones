@@ -5,6 +5,7 @@ export const DebugerContext = createContext();
 export default function DebugerContextProvider({ children }) {
    const [variables, setVariables] = useState([]);
    const [eventos, setEventos] = useState([]);
+
    const agregarVariables = (key, value) => {
       const existingIndex = variables.findIndex((variable) => variable.key === key);
 
@@ -27,6 +28,10 @@ export default function DebugerContextProvider({ children }) {
          ];
          setVariables(newData);
       }
+   };
+   const clearDebug = () => {
+      setVariables([]);
+      setEventos([]);
    };
 
    const agregarEventos = (key, action) => {
@@ -59,7 +64,8 @@ export default function DebugerContextProvider({ children }) {
             variables,
             agregarVariables,
             eventos, // Aquí proporcionas la lista de eventos
-            agregarEventos
+            agregarEventos,
+            clearDebug
          }}
       >
          {children}

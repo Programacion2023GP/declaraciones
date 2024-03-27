@@ -10,11 +10,11 @@ import * as Yup from "yup";
 import DatePickerComponent from "../../Reusables/datepicker/DatePickerComponent";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import DataTable from "../../Reusables/table/DataTable";
-import { Error } from "../../../toasts/toast";
+import { Error, Success } from "../../../toasts/toast";
 
 // import DataTable from "../../Reusables/table/DataTable";
 
-export const ExperienciaLaboral = ({ next, previous, title }) => {
+export const ExperienciaLaboral = ({ next, previous, title, debugerClear }) => {
    let { declaracion } = useParams();
    const [save, setSave] = useState(true);
    const [idRow, setIdRow] = useState(null);
@@ -25,7 +25,8 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
    const [datas, setDatas] = useState([]);
    const [datasVisuales, setDatasVisuales] = useState([]);
    const [idUnique, setIdUnique] = useState(1);
-   const formikRef = useRef(); // Referencia para acceder a la instancia de Formik
+   const formikRef = useRef();
+   const [continuar, setContinuar] = useState(false);
 
    const dataForm = {
       Id_AmbitoSector: 1,
@@ -36,20 +37,21 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
       FuncionPrincipal: "",
       FechaIngreso: "",
       FechaEngreso: "",
-      EsEnMexico: 1,
+      FueEnMexico: 1,
       Aclaraciones: "",
       Rfc: "",
       Puesto: "",
-      Sector: "",
-      SectorEspecificado: ""
+      Id_Sector: "",
+      SectorEspecificado: "",
+      Id_SituacionPatrimonial: parseInt(localStorage.getItem("id_SituacionPatrimonial"))
    };
    // if (activeAmbitoPublico) {
    //    dataForm.Puesto = "";
-   //    dataForm.Sector = "";
+   //    dataForm.Id_Sector = "";
    // } else {
    //    delete dataForm.Rfc;
    //    delete dataForm.Puesto;
-   //    delete dataForm.Sector;
+   //    delete dataForm.Id_Sector;
    // }
    // if (activeSector) {
    //    dataForm.SectorEspecificado = "";
@@ -66,18 +68,18 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
       SectorEspecificado: activeSector ? Yup.string().required("El sector es requerido") : null,
       Rfc: activeAmbitoPublico && Yup.string().length(12, "Debe contar con 12 caracteres").trim().required("El RFC de la empresa es requerido"),
       Puesto: activeAmbitoPublico && Yup.string().required("El puesto de la empresa es requerido"),
-      Sector: activeAmbitoPublico && Yup.number().required("El sector es requerido"),
+      Id_Sector: activeAmbitoPublico && Yup.number().required("El sector es requerido"),
 
       FechaIngreso: Yup.date().typeError("El formato de fecha es inválido").required("La fecha de ingreso es requerida"),
       FechaEngreso: Yup.date().typeError("El formato de fecha es inválido").required("La fecha de egreso es requerida"),
-      EsEnMexico: Yup.number().typeError("Debe ser numérico").required("Es requerido que seleccione una opción")
+      FueEnMexico: Yup.number().typeError("Debe ser numérico").required("Es requerido que seleccione una opción")
    });
 
    const handleGetValue = async (name, value) => {
       if (name == "Id_AmbitoSector") {
          value == 2 ? setactiveAmbitoPublico(true) : setactiveAmbitoPublico(false);
       }
-      name == "Sector" && value == 0 ? setActiveSector(true) : setActiveSector(false);
+      name == "Id_Sector" && value == 0 ? setActiveSector(true) : setActiveSector(false);
    };
    const clearForm = (privado = false, sector = false) => {
       privado ? setactiveAmbitoPublico(false) : setactiveAmbitoPublico(true);
@@ -89,26 +91,31 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
    const submit = async (values, { resetForm }) => {
       if (save) {
          if (datas.length < 5) {
-            values.EsEnMexico = parseInt(values.EsEnMexico);
+            values.FueEnMexico = parseInt(values.FueEnMexico);
+            values.Id_AmbitoSector = parseInt(values.Id_AmbitoSector);
             values.identificador = idUnique;
             setIdUnique(idUnique + 1);
             const newDatas = [...datas, values];
             setDatas(newDatas);
 
-            clearForm();
+            clearForm(true, false);
 
             const newDatasVisuales = [
                ...datasVisuales,
                {
                   id: values.identificador,
-                  Sector: values.Id_AmbitoSector === 1 ? "PÚBLICO" : "PRIVADO",
+                  Id_Sector: values.Id_AmbitoSector === 1 ? "PÚBLICO" : "PRIVADO",
                   "Empleo, Ámbito cargo o comisión": values.NombreEntePublico,
-                  Lugar: values.EsEnMexico === 1 ? "Mexico" : "Extranjero",
+                  Lugar: values.FueEnMexico === 1 ? "Mexico" : "Extranjero",
                   "Fecha ingreso": values.FechaIngreso,
                   "Fecha egreso": values.FechaEngreso
                }
             ];
             setDatasVisuales(newDatasVisuales);
+            if (datas.length >= 2) {
+               setContinuar(true);
+               Success("Ya puedes continunar abajo del formulario o seguir ingresando");
+            }
          } else {
             Error("cuentas con el limite de experiencias laborales");
          }
@@ -123,7 +130,7 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
             id: values.identificador,
             Sector: values.Id_AmbitoSector === 1 ? "PÚBLICO" : "PRIVADO",
             "Empleo, Ámbito cargo o comisión": values.NombreEntePublico,
-            Lugar: values.EsEnMexico === 1 ? "Mexico" : "Extranjero",
+            Lugar: values.FueEnMexico === 1 ? "Mexico" : "Extranjero",
             "Fecha ingreso": values.FechaIngreso,
             "Fecha egreso": values.FechaEngreso
          };
@@ -131,7 +138,29 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
          clearForm();
       }
       setSave(true);
+      debugerClear();
    };
+   const saveDatabase = async () => {
+      try {
+         const newDatas = [...datas];
+         for (let i = 0; i < newDatas.length; i++) {
+            delete newDatas[i].identificador;
+         }
+         const response = await PostAxios("/experiencialaboral/create", newDatas);
+         next();
+         Success(response.data.message);
+
+         return response.data;
+      } catch (error) {
+         if (error.response?.data?.data?.message) {
+            Error(error.response.data.data.message);
+         } else {
+            console.error("error", error);
+            Error("NO EXISTE CONEXION A LA DB");
+         }
+      }
+   };
+
    const Edit = (row) => {
       setSave(false);
       const finData = datas.filter((elemento) => elemento.identificador == row.id);
@@ -140,7 +169,7 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
       setIdRow(item.identificador);
       console.log("id", idRow);
 
-      clearForm(item.Id_AmbitoPublico != 0, item.SectorEspecificado != "" && item.Sector == 0);
+      clearForm(item.Id_AmbitoPublico != 0, item.SectorEspecificado != "" && item.Id_Sector == 0);
       formikRef.current.setValues(item);
       // formikRef.current.setFieldValue("Id_AmbitoPublico", finData[0].Id_AmbitoPublico);
    };
@@ -235,7 +264,7 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                               <CustomRadio
                                  handleGetValue={handleGetValue}
                                  col={12}
-                                 name="Sector" // Nombre del campo en el formulario
+                                 name="Id_Sector" // Nombre del campo en el formulario
                                  title="Sector al que pertenece"
                                  options={[
                                     { value: 1, label: "Empresa" },
@@ -274,7 +303,7 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                            <CustomRadio
                               hidden={false}
                               col={12}
-                              name="EsEnMexico" // Nombre del campo en el formulario
+                              name="FueEnMexico" // Nombre del campo en el formulario
                               title="¿Es de México?"
                               options={[
                                  { value: 1, label: "Si" },
@@ -284,8 +313,13 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                            <Text col={12} name="Aclaraciones" label="Aclaraciones" rows={10} color={"green"} />
 
                            <Button type="submit" variant="contained" color="primary">
-                              Registrar y Continuar
+                              Registrar
                            </Button>
+                           {continuar && (
+                              <Button sx={{ marginLeft: "1rem" }} variant="contained" color="primary" onClick={saveDatabase}>
+                                 Continuar
+                              </Button>
+                           )}
                         </Box>
                      );
                   }}

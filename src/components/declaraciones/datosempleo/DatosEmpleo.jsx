@@ -126,6 +126,7 @@ export const DatosEmpleo = ({ next, previous, title }) => {
                   validationSchema={validationSchema}
                   onSubmit={async (values, { setSubmitting }) => {
                      values.EsEnMexico = parseInt(values.EsEnMexico);
+                     console.log(values);
                      if (values.NivelEmpleoCargoComision == 4) {
                         values.NivelEmpleoCargoComision = values.NivelEmpleoCargoComisionText;
                         delete values.NivelEmpleoCargoComision;
@@ -134,7 +135,7 @@ export const DatosEmpleo = ({ next, previous, title }) => {
                      }
                      try {
                         const response = await PostAxios("/datoscargoscomision/create", values);
-                        next();
+                        // next();
 
                         Success(response.data.data.message);
 
@@ -162,7 +163,7 @@ export const DatosEmpleo = ({ next, previous, title }) => {
                               label="Área de adscripción"
                               placeholder={"Especificar el nombre de la Unidad Administrativa u homóloga superior inmediata de su adscripción. (Superior jerárquico)"}
                            />
-                           <Text col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión"  />
+                           <Text col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión" />
                            <CustomRadio
                               col={12}
                               name="ContratadoPorHonorarios"
@@ -191,12 +192,12 @@ export const DatosEmpleo = ({ next, previous, title }) => {
                               label="Nivel del empleo, cargo o comisión"
                               placeholder={"Ingrese Nivel del empleo, cargo o comisión"}
                            />
-                          <Text
+                           <Text
                               col={12}
                               name="FuncionPrincipal"
                               label="Especifique función principal"
                               placeholder={"Señalar cuál es la función o actividad principal que desempeña en su empleo, cargo o comisión"}
-                           /> 
+                           />
                            <DatePickerComponent
                               idName={"FechaTomaConclusionPosesion"}
                               label={"Fecha de toma posesión del empleo, cargo o comisión."}
@@ -245,7 +246,7 @@ export const DatosEmpleo = ({ next, previous, title }) => {
                            <Text col={12} name="NumeroInterior" label="Número Interior" type={"number"} />
                            <Text col={12} name="CodigoPostal" label="Código Postal" type={"number"} />
                            <AutoComplete
-                              hidden={mexico}
+                              hidden={!mexico}
                               col={12}
                               label="Entidad Federativa"
                               name="Id_EntidadFederativa"
@@ -254,7 +255,7 @@ export const DatosEmpleo = ({ next, previous, title }) => {
                               handleGetValue={handleGetValue}
                            />
                            <AutoComplete
-                              hidden={mexico}
+                              hidden={!mexico}
                               disabled={activeMunicipios}
                               loading={loadingMuncipios}
                               col={12}
@@ -265,8 +266,8 @@ export const DatosEmpleo = ({ next, previous, title }) => {
                               color="green"
                               // getValue={getValue}
                            />
-                           <AutoComplete hidden={!mexico} col={12} label="Pais de nacimiento" name="Id_Pais" options={paises} color="green" />
-                           <Text hidden={!mexico} col={12} name="EstadoProvincia" label="Estado / Provincia" type={"number"} />
+                           <AutoComplete hidden={mexico} col={12} label="Pais de nacimiento" name="Id_Pais" options={paises} color="green" />
+                           <Text hidden={mexico} col={12} name="EstadoProvincia" label="Estado / Provincia" />
 
                            <Text
                               col={12}

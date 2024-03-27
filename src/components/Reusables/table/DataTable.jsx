@@ -58,19 +58,20 @@ const SearchInput = ({ column, data, getData, previousData }) => {
    );
 };
 
-const Title = ({ titles, data, filterData, previousData, filter }) => {
+const Title = ({ headers, titles, data, filterData, previousData, filter, editButton, deleteButton }) => {
    const [titlesMap, setTitlesMap] = useState([]);
    const [headersMap, setHeadersMap] = useState([]);
    useEffect(() => {
+      let initialHeaders = null;
       if (titles && titles.length > 0) {
          const initialTitles = titles[0].titles || [];
-         const initialHeaders = titles[0].headers && titles[0].headers.length > 0 ? titles[0].headers[0] : initialTitles;
+         initialHeaders = titles[0].headers && titles[0].headers.length > 0 ? titles[0].headers[0] : initialTitles;
 
          setTitlesMap(initialTitles);
-         setHeadersMap(initialHeaders);
       }
+      setHeadersMap(headers ? headers : initialHeaders);
       // Manejar el caso cuando titles no tiene elementos
-   }, [titles, titlesMap, headersMap]);
+   }, [titles, titlesMap, headersMap, headers, editButton, deleteButton]);
    return (
       <>
          <thead>
@@ -78,7 +79,9 @@ const Title = ({ titles, data, filterData, previousData, filter }) => {
                {headersMap.map((title) => {
                   return <th style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>{title.charAt(0).toUpperCase() + title.slice(1)}</th>;
                })}
-               {headersMap.length > 0 && <th style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>Acciones</th>}
+               {headersMap.length > 0 && (editButton || deleteButton) && (
+                  <th style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>Acciones</th>
+               )}
             </tr>
             <tr>
                {filter &&
@@ -89,6 +92,7 @@ const Title = ({ titles, data, filterData, previousData, filter }) => {
                         </th>
                      );
                   })}
+               {filter && (editButton || deleteButton) && <th style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}></th>}
             </tr>
          </thead>
       </>
@@ -151,7 +155,7 @@ const PaginatorSelect = ({ pagination, selectOption }) => {
    );
 };
 
-const DataTable = ({ data = [], dataHidden = [], pagination, headers, filter, editButton, deleteButton, handleEdit, handleDelete }) => {
+const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filter, editButton, deleteButton, handleEdit, handleDelete }) => {
    const [totalData, setTotalData] = useState(data);
    const [dataFilter, setDataFilter] = useState(data);
    const [titles, setTitles] = useState([]);
@@ -220,18 +224,20 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers, filter, ed
 
    const handleShowData = (page = 1, data = false) => {
       const showData = data.filter((column) => column.page === page);
-
+      console.log("llegando");
       if (showData.length > 0 && showData[0].hasOwnProperty("items")) {
          setDataTable(showData[0].items);
          setLoading(false);
+      } else {
+         setDataTable([]);
       }
    };
 
    const modifiedData = (data, pagina = 1) => {
       let newTitles = [];
-      if (data.length > 0) {
-         const firstItem = data[0];
+      const firstItem = data[0];
 
+      if (firstItem) {
          if (dataHidden) {
             newTitles = Object.keys(firstItem).filter((item) => !dataHidden.includes(item));
          } else {
@@ -243,28 +249,29 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers, filter, ed
          } else {
             setTitles([{ titles: newTitles, headers: [] }]);
          }
-
-         let index = 0;
-         let page = 0;
-         const datas = [];
-         data.map((item, i) => {
-            if (selectRow === index || i === 0) {
-               index = 0;
-               page++;
-               datas.push({ page, items: [] });
-            }
-            const pageIndex = datas.findIndex((data) => data.page === page);
-            datas[pageIndex].items.push(item);
-            index++;
-         });
-         const totalPages = datas.length; // Calcular el total de páginas aquí
-         setTotalPages(totalPages);
-         handleShowData(pagina, datas);
       }
+      console.log("my data", data);
+
+      let index = 0;
+      let page = 0;
+      const datas = [];
+      data.map((item, i) => {
+         if (selectRow === index || i === 0) {
+            index = 0;
+            page++;
+            datas.push({ page, items: [] });
+         }
+         const pageIndex = datas.findIndex((data) => data.page === page);
+         datas[pageIndex].items.push(item);
+         index++;
+      });
+      const totalPages = datas.length; // Calcular el total de páginas aquí
+      setTotalPages(totalPages);
+      console.log("avances");
+      handleShowData(pagina, datas);
    };
 
    useEffect(() => {
-      console.log("data cambiada", data);
       setDataFilter(data);
 
       const init = () => {
@@ -276,30 +283,40 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers, filter, ed
       };
       init();
       setNumberShowPage(1);
-      console.log("renderizado");
    }, [loading, selectRow, pagination, headers, objectValues, data, dataFilter]);
 
    return (
       <>
-         {data.length === 0 ? (
-            <div className="" style={{ maxWidth: "fit-content", display: "flex", flexDirection: "column" }}>
-               <table style={{ borderCollapse: "collapse" }}>
+         <div className="" style={{ maxWidth: "fit-content", display: "flex", flexDirection: "column" }}>
+            <table style={{ borderCollapse: "collapse" }}>
+               {titles.length > 0 || headers.length > 0 ? (
+                  <Title
+                     editButton={editButton}
+                     deleteButton={deleteButton}
+                     headers={headers}
+                     titles={titles}
+                     previousData={data}
+                     data={dataFilter}
+                     filterData={filterData}
+                     filter={filter}
+                  ></Title>
+               ) : (
                   <thead>
-                     <tr style={{ background: "#F9FAFB" }}>
-                        <th style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>No hay información suficiente no hay registros</th>
+                     <tr>
+                        <th>No hay titulos cargados ...</th>
                      </tr>
                   </thead>
+               )}
+               {data.length === 0 || dataTable.length === 0 ? (
                   <tbody>
                      <tr>
-                        <td style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}> No hay información suficiente no hay registros</td>
+                        <td colSpan={headers.length + 1} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>
+                           {" "}
+                           No hay información suficiente no hay registros
+                        </td>
                      </tr>
                   </tbody>
-               </table>
-            </div>
-         ) : (
-            <div className="" style={{ maxWidth: "fit-content", display: "flex", flexDirection: "column", overflow: "auto" }}>
-               <table style={{ borderCollapse: "collapse" }}>
-                  <Title titles={titles} previousData={data} data={dataFilter} filterData={filterData} filter={filter}></Title>
+               ) : (
                   <tbody>
                      {dataTable.map((item, index) => {
                         return (
@@ -351,16 +368,24 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers, filter, ed
                         );
                      })}
                   </tbody>
-               </table>
-
-               {pagination && (
-                  <div style={{ minWidth: "100%", padding: "0.5rem 1rem", alignSelf: "flex-end", border: "1px solid #BDBDBD", background: "#F9FAFB" }}>
-                     <Paginator pagination={pagination} handleChange={handleSeparateData} pages={totalPages} previous={previous} next={next} page={numberShowPage} />
-                  </div>
                )}
-            </div>
-         )}
+            </table>
+            {pagination && (
+               <div style={{ minWidth: "100%", padding: "0.5rem 1rem", alignSelf: "flex-end", border: "1px solid #BDBDBD", background: "#F9FAFB" }}>
+                  <Paginator pagination={pagination} handleChange={handleSeparateData} pages={totalPages} previous={previous} next={next} page={numberShowPage} />
+               </div>
+            )}
+         </div>
       </>
+      // (
+      //    <div className="" style={{ maxWidth: "fit-content", display: "flex", flexDirection: "column", overflow: "auto" }}>
+      //       <table style={{ borderCollapse: "collapse" }}>
+      //          <tbody>
+
+      //          </tbody>
+      //       </table>
+
+      // )
    );
 };
 

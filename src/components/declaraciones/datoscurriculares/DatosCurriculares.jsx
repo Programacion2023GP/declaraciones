@@ -37,7 +37,6 @@ export const DatosCurriculares = ({ next, previous,title }) => {
       NombreInstitucionEducativa: Yup.string().required("El Nombre de la instución educativa es requerida"),
       CarreraAreaConocimiento: Yup.string().required("El Aerea de conocimiento es requerida"),
       Id_UbicacionInstitucionEducativa: Yup.number()
-         .min(1, "El lugar donde se ubica la institución educativa requerido")
          .required("El lugar donde se ubica la institución educativa es requerido"),
       Id_DocumentoObtenido: Yup.number().min(1, "El documento obtenido es requerido").required("El documento obtenido es requerido"),
       Id_Estatus: Yup.number().min(1, "El Estatus de la institución es requerido").required("El Estatus de la institución es es requerido"),

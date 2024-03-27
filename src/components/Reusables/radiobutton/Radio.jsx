@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Grid, RadioGroup, FormControlLabel, Radio, Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Field, useFormikContext } from "formik"; // Importar Field y useFormikContext de Formik
+import { DebugerContext } from "../../../context/DebuggerContext";
 
 export const CustomRadio = ({
    loading = false,
@@ -15,8 +16,12 @@ export const CustomRadio = ({
    rowLayout = true // Cambiar a false para poner en columnas
 }) => {
    const { values, errors, touched, handleChange, handleBlur } = useFormikContext(); // Obtener valores, errores y funciones de Formik
+   const { variables,agregarVariables, agregarEventos } = useContext(DebugerContext);
 
-   useEffect(() => {}, [name, values[name]]);
+   useEffect(() => {
+      console.warn("aqui", title, values[name]);
+      agregarVariables(title, values[name]);
+   }, [title, name, values[name]]);
 
    const isError = touched[name] && errors[name];
    const handleValue = (name, value) => {
@@ -47,6 +52,7 @@ export const CustomRadio = ({
                   value={option.value}
                   onClick={() => {
                      //  console.log("hola", handleGetValue);
+                     agregarVariables(title, values[name]);
                      handleValue(name, option.value);
                   }}
                   control={<Radio />}

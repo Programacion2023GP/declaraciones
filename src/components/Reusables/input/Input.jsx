@@ -23,6 +23,7 @@ export const Text = ({ loading = false, col, label, name = "name", type = null, 
             style={{ margin: "1rem 0" }}
             item
             xs={col}
+            
             sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", position: "relative" }}
          >
             {mask ? (
@@ -68,7 +69,7 @@ export const Text = ({ loading = false, col, label, name = "name", type = null, 
 
                      // Agrega tu lógica adicional aquí
                      // Por ejemplo, puedes agregar variables o eventos al contexto DebugerContext
-                     agregarVariables(name, formik.values[name]);
+                     agregarVariables(label, formik.values[name]);
                      agregarEventos(`${name}_blur`, "Field Blurred");
                   }}
                   disabled={loading || disabled}

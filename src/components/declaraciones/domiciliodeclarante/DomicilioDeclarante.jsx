@@ -95,7 +95,6 @@ export const DomicilioDeclarante = ({ next, previous,title }) => {
                   validationSchema={validationSchema}
                   onSubmit={async (values, { setSubmitting }) => {
                      values.EsEnMexico = parseInt(values.EsEnMexico);
-                     console.log("valores", values);
                      try {
                         const response = await PostAxios("/domiciliodeclarante/create", values);
 
