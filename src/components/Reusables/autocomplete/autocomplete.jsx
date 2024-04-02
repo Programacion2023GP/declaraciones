@@ -29,6 +29,7 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
          options = [];
          setLoadingData(false);
       }
+      console.warn("opciones", options);
    }, [options]);
 
    return (

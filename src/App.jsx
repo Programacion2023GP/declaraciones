@@ -13,6 +13,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "primeicons/primeicons.css";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import DebugerContextProvider from "./context/DebuggerContext";
+import { Provider } from "react-redux";
+import store from "./redux/store";
+
 function App() {
    const { theme, toggleTheme } = useContext(ThemeContext);
 
@@ -27,11 +30,13 @@ function App() {
 
    return (
       <>
+         <Provider store={store}>
          <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DebugerContextProvider>
-            <RouterProvider router={router}></RouterProvider>
+               <RouterProvider router={router}></RouterProvider>
             </DebugerContextProvider>
          </LocalizationProvider>
+         </Provider>,
          {/* <Router>
         <Routes>
           <Route element={<BaseLayout />}>

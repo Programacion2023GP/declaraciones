@@ -19,7 +19,6 @@ export const CustomRadio = ({
    const { variables,agregarVariables, agregarEventos } = useContext(DebugerContext);
 
    useEffect(() => {
-      console.warn("aqui", title, values[name]);
       agregarVariables(title, values[name]);
    }, [title, name, values[name]]);
 

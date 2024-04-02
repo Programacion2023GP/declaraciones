@@ -11,6 +11,7 @@ const BaseLayout = () => {
    const { open } = useMenuContext();
    return (
       <>
+      
          <Grid container style={{ width: "100%", overflow: "exist" }}>
             {" "}
             {/* Establecer el estilo height en 100vh para que ocupe toda la altura de la ventana */}

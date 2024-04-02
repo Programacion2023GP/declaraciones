@@ -30,13 +30,14 @@ export const DomicilioDeclarante = ({ next, previous,title }) => {
       Id_MunicipioAlcaldia: 0,
 
       Aclaraciones: "",
-      Id_SituacionPatrimonial: parseInt(localStorage.getItem("id_SituacionPatrimonial"))
+      Id_SituacionPatrimonial: parseInt(localStorage.getItem("id_SituacionPatrimonial")),
+      EstadoProvincia:"",
    };
-   if (mexico) {
-      dataForm.EstadoProvincia = "";
-  } else {
-      delete dataForm.EstadoProvincia;
-  }
+//    if (mexico) {
+//       dataForm.EstadoProvincia = "";
+//   } else {
+//       delete dataForm.EstadoProvincia;
+//   }
   
 
    const validationSchema = Yup.object().shape({

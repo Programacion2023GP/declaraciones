@@ -17,7 +17,7 @@ import { DatosParejas } from "./datospareja/DatosPareja";
 
 // Importa aquí los componentes correspondientes a cada paso
 
-export const Declaraciones = () => {
+const ComponentDeclaraciones = () => {
    const { clearDebug } = React.useContext(DebugerContext);
 
    const { declaracion } = useParams();
@@ -90,3 +90,4 @@ export const Declaraciones = () => {
       </div>
    );
 };
+export default ComponentDeclaraciones;
