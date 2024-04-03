@@ -30,13 +30,11 @@ function App() {
 
    return (
       <>
-         <Provider store={store}>
          <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DebugerContextProvider>
                <RouterProvider router={router}></RouterProvider>
             </DebugerContextProvider>
          </LocalizationProvider>
-         </Provider>,
          {/* <Router>
         <Routes>
           <Route element={<BaseLayout />}>

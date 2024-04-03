@@ -4,11 +4,9 @@ import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Field, useFormikContext } from "formik"; // Importa el hook useFormikContext
 import InputMask from "react-input-mask";
-import { DebugerContext } from "../../../context/DebuggerContext";
 
-export const Text = ({ loading = false, col, label, name = "name", type = null, disabled, placeholder, color, rows, hidden, mask }) => {
+export const Text = ({ loading = false, col, label, name = "name", type = null, disabled, placeholder, color, rows, hidden, mask, marginBoton }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
-   const { agregarVariables, agregarEventos } = useContext(DebugerContext);
 
    useEffect(() => {}, [name]); // Observa los cambios en el nombre y el valor del campo
 
@@ -20,10 +18,9 @@ export const Text = ({ loading = false, col, label, name = "name", type = null, 
    return (
       <>
          <Grid
-            style={{ margin: "1rem 0" }}
+            style={{ margin: marginBoton ? `${marginBoton} 0` : "1rem 0" }}
             item
             xs={col}
-            
             sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", position: "relative" }}
          >
             {mask ? (
@@ -69,8 +66,6 @@ export const Text = ({ loading = false, col, label, name = "name", type = null, 
 
                      // Agrega tu lógica adicional aquí
                      // Por ejemplo, puedes agregar variables o eventos al contexto DebugerContext
-                     agregarVariables(label, formik.values[name]);
-                     agregarEventos(`${name}_blur`, "Field Blurred");
                   }}
                   disabled={loading || disabled}
                   fullWidth

@@ -224,7 +224,6 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filte
 
    const handleShowData = (page = 1, data = false) => {
       const showData = data.filter((column) => column.page === page);
-      console.log("llegando");
       if (showData.length > 0 && showData[0].hasOwnProperty("items")) {
          setDataTable(showData[0].items);
          setLoading(false);

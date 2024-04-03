@@ -14,6 +14,7 @@ import { Titles } from "./funciones/titles";
 import { useParams } from "react-router-dom";
 import { DebugerContext } from "../../context/DebuggerContext";
 import { DatosParejas } from "./datospareja/DatosPareja";
+import { DependientesEconomicos } from "./dependienteseconomicos/DependientesEconomicos";
 
 // Importa aquí los componentes correspondientes a cada paso
 
@@ -23,7 +24,7 @@ const ComponentDeclaraciones = () => {
    const { declaracion } = useParams();
 
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(5);
+   const [activeStep, setActiveStep] = React.useState(6);
 
    const handleNext = () => {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -46,6 +47,10 @@ const ComponentDeclaraciones = () => {
       {
          label: "Datos de la pareja",
          component: <DatosParejas next={handleNext} previous={handleBack} title={Titles(declaracion)} debugerClear={clearDebug} />
+      },
+      {
+         label: "Datos del dependiente económicos",
+         component: <DependientesEconomicos next={handleNext} previous={handleBack} title={Titles(declaracion)} />
       }
    ];
 

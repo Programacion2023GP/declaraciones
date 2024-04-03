@@ -7,6 +7,8 @@ import MenuContextProvider from "../context/MenuContext";
 import { Steppers } from "../components/declaraciones/steppers/Steppers";
 import { Login } from "../components/autenticacion/login";
 import ComponentDeclaraciones from "../components/declaraciones/ComponentDeclaraciones";
+import { Provider } from "react-redux";
+import store from "../redux/store";
 // import Declaraciones from "../components/declaraciones/declaraciones";
 // import { Declaraciones } from "../Declaraciones/Declaraciones";
 // import StepperContextProvider from "../../context/StepperContext";
@@ -41,7 +43,11 @@ export const router = createHashRouter([
                },
                {
                   path: ":declaracion",
-                  element: <ComponentDeclaraciones/>
+                  element: (
+                     <Provider store={store}>
+                        <ComponentDeclaraciones />
+                     </Provider>
+                  )
                }
             ]
          }

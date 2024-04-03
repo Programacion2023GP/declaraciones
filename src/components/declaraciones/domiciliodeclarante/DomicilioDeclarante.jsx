@@ -14,9 +14,9 @@ export const DomicilioDeclarante = ({ next, previous,title }) => {
    let { declaracion } = useParams();
    const [entidades, setEntidades] = useState([]);
    const [municipios, setMunicipios] = useState([]);
-   const [paises, setPaises] = useState([]);
    const [activeMunicipios, setActiveMunicipios] = useState(true);
    const [loadingMuncipios, setLoadingMunicipios] = useState(false);
+   const [paises, setPaises] = useState([]);
    const [mexico, setMexico] = useState(false);
    const dataForm = {
       EsEnMexico: 1,
@@ -60,7 +60,6 @@ export const DomicilioDeclarante = ({ next, previous,title }) => {
    });
 
    const handleGetValue = async (name, value) => {
-      console.warn(name, value);
       if (name == "Id_EntidadFederativa") {
          setActiveMunicipios(false);
          setLoadingMunicipios(true);

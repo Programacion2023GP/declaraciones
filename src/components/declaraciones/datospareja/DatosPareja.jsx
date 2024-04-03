@@ -8,19 +8,35 @@ import { useDispatch, useSelector } from "react-redux";
 import { addDatosPareja, configValidations, validationDatosPareja } from "../../../redux/DatosParejaHoja6/DatosPareja";
 import { useEffect, useRef, useState } from "react";
 import { AutoComplete } from "../../Reusables/autocomplete/autocomplete";
-import { GetAxios } from "../../../services/services";
+import { GetAxios, PostAxios } from "../../../services/services";
 import { CustomRadio } from "../../Reusables/radiobutton/Radio";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
+import { Success } from "../../../toasts/toast";
 
 export const DatosParejas = ({ next, previous, title, debugerClear }) => {
    const dataForm = useSelector((state) => state.DatosPareja.initialState);
    const validations = useSelector((state) => state.DatosPareja.validationSchema);
-
    const formik = useRef(null);
    const dispatch = useDispatch();
    const submit = async (values, { resetForm }) => {
-      console.log("INNNNNNNNNNNNNNNNNNNNNNNNSERTTTTTTTTTTTTTTTT");
       dispatch(addDatosPareja(values));
+      if (pareja) {
+         try {
+            const response = await PostAxios("/datospareja/create", values);
+            // next();
+            Success(response.data.message);
+
+            return response.data;
+         } catch (error) {
+            if (error.response?.data?.data?.message) {
+               Error(error.response.data.data.message);
+            } else {
+               Error("NO EXISTE CONEXION A LA DB");
+            }
+         }
+      } else {
+         Success("Continuemos");
+      }
    };
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
    const [relacionDeclarante, setRelacionDeclarante] = useState([]);
@@ -37,7 +53,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
    const [monedas, setMonedas] = useState([]);
    const [ambitosPublicos, setAmbitosPublicos] = useState([]);
    const [nivelGobierno, setNivelGobiernos] = useState([]);
-
+   const [pareja, setPareja] = useState(false);
    useEffect(() => {
       const init = async () => {
          setRelacionDeclarante(await GetAxios("/relacioncondeclarante/show"));
@@ -54,22 +70,26 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
          init();
       }
 
-      setValidationSchema(Yup.object().shape(validations));
-   }, [useSelector((state) => state.DatosPareja.validationSchema)]);
+      pareja ? setValidationSchema(Yup.object().shape(validations)) : setValidationSchema(Yup.object().shape({}));
+   }, [useSelector((state) => state.DatosPareja.validationSchema), pareja]);
    const handleGetValue = async (name, value) => {
+      if (name == "Pareja") {
+         setPareja(value == 1 ? true : false);
+      }
       if (name == "HabitaDomicilioDeclarante" && value == 0) {
          setDomicilioPareja(true);
+         dispatch(configValidations({ tipo: "DomicilioDeclarante" }));
          dispatch(configValidations("DomicilioDeclarante"));
       } else if (name == "HabitaDomicilioDeclarante") {
-         dispatch(configValidations("DomicilioDeclaranteNULL"));
+         dispatch(configValidations({ tipo: "DomicilioDeclaranteNULL" }));
 
          setDomicilioPareja(false);
       }
-      if (name == "EsEnMexico" && value == 1) {
+      if (name == "EsCiudadanoExtranjero" && value == 0) {
          setMexico(true);
-         dispatch(configValidations("Mexico"));
+         dispatch(configValidations({ tipo: "Mexico" }));
       } else if (name == "EsEnMexico") {
-         dispatch(configValidations("NoesMexico"));
+         dispatch(configValidations({ tipo: "NoesMexico" }));
          setMexico(false);
       }
       if (name == "Id_EntidadFederativa") {
@@ -81,15 +101,19 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
       if (name == "Id_ActividadLaboral") {
          switch (value) {
             case 1:
+               dispatch(configValidations({ tipo: "Privado", validaciones: validations }));
                setAmbitoTrabajo(1);
                break;
             case 2:
+               dispatch(configValidations({ tipo: "Publico", validaciones: validations }));
                setAmbitoTrabajo(2);
                break;
             case 3:
+               dispatch(configValidations({ tipo: "Ninguno", validaciones: validations }));
                setAmbitoTrabajo(3);
                break;
             case 4:
+               dispatch(configValidations({ tipo: "Otro", validaciones: validations }));
                setAmbitoTrabajo(4);
                break;
          }
@@ -116,197 +140,206 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                      }
                      return (
                         <Box component={"form"} onSubmit={handleSubmit}>
-                           <Text col={12} name="Nombre" label="Nombre (s)" placeholder="Sin abreviaturas, sin acentos, ni signos especiales." color={"green"} />
-                           <Text
+                           <CustomRadio
                               col={12}
-                              name="PrimerApellido"
-                              label="Primer apellido"
-                              placeholder="Sin abreviaturas, sin acentos, ni signos especiales. "
-                              color={"green"}
+                              name="Pareja"
+                              title="¿Tienes pareja?"
+                              options={[
+                                 { value: 1, label: "Si" },
+                                 { value: 0, label: "No" }
+                              ]}
+                              handleGetValue={handleGetValue}
                            />
-                           <Text
-                              col={12}
-                              name="SegundoApellido"
-                              label="Segundo apellido"
-                              placeholder={`
+                           <Ngif condition={pareja}>
+                              <Text col={12} name="Nombre" label="Nombre (s)" placeholder="Sin abreviaturas, sin acentos, ni signos especiales." color={"green"} />
+                              <Text
+                                 col={12}
+                                 name="PrimerApellido"
+                                 label="Primer apellido"
+                                 placeholder="Sin abreviaturas, sin acentos, ni signos especiales. "
+                                 color={"green"}
+                              />
+                              <Text
+                                 col={12}
+                                 name="SegundoApellido"
+                                 label="Segundo apellido"
+                                 placeholder={`
                               Si se tiene un sólo apellido deberá colocarse en el espacio del “primer apellido” y dejar el espacio del “segundo apellido” 
                               en blanco. Sin abreviaturas, sin acentos, ni signos especiales.`}
-                              color={"green"}
-                           />
-                           <DatePickerComponent
-                              idName={"FechaNacimiento"}
-                              label={"Fecha de nacimiento"}
-                              format={"DD/MM/YYYY"}
-                              setFieldValue={setFieldValue}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              //   value={values.FechaEngreso}
-                              //   error={errors.FechaEngreso}
-                              //   touched={touched.FechaEngreso}
-                              showErrorInput={null}
-                           />
-                           <Text col={12} name="RfcPareja" label="RFC" color={"green"} />
-                           <Text col={12} name="Curp" label="Curp" color={"green"} />
-                           <Text col={12} name="Homoclave" label="Homoclave" color={"green"} />
+                                 color={"green"}
+                              />
+                              <DatePickerComponent
+                                 idName={"FechaNacimiento"}
+                                 label={"Fecha de nacimiento"}
+                                 format={"DD/MM/YYYY"}
+                                 setFieldValue={setFieldValue}
+                                 onChange={handleChange}
+                                 onBlur={handleBlur}
+                                 //   value={values.FechaEngreso}
+                                 //   error={errors.FechaEngreso}
+                                 //   touched={touched.FechaEngreso}
+                                 showErrorInput={null}
+                              />
+                              <Text col={12} name="RfcPareja" label="RFC" color={"green"} />
+                              <Text col={12} name="Curp" label="Curp" color={"green"} />
+                              <Text col={12} name="Homoclave" label="Homoclave" color={"green"} />
 
-                           {/* <Text col={12} name="Homoclave" label="Homoclave" color={"green"} />
+                              {/* <Text col={12} name="Homoclave" label="Homoclave" color={"green"} />
                            <Text col={12} name="curp" label="Curp" color={"green"} /> */}
-                           <AutoComplete col={12} label="Relación con el declarante" name="Id_RelacionDeclarante" options={relacionDeclarante} />
-                           <CustomRadio
-                              col={12}
-                              name="EsCiudadanoExtranjero"
-                              title="¿Es ciudadano extranjero?"
-                              options={[
-                                 { value: 1, label: "Si" },
-                                 { value: 0, label: "No" }
-                              ]} // Opciones para los radio buttons
-                           />
-                           <CustomRadio
-                              col={12}
-                              name="EsDependienteEconomico"
-                              title="¿Es dependiente económico?"
-                              options={[
-                                 { value: 1, label: "Si" },
-                                 { value: 0, label: "No" }
-                              ]}
-                           />
-
-                           <CustomRadio
-                              col={12}
-                              name="HabitaDomicilioDeclarante"
-                              title="¿Habita en el domicilio del declarante?"
-                              options={[
-                                 { value: 1, label: "Si" },
-                                 { value: 0, label: "No" }
-                              ]}
-                              handleGetValue={handleGetValue}
-                           />
-                           <Ngif condition={domicilioPareja}>
+                              <AutoComplete col={12} label="Relación con el declarante" name="Id_RelacionDeclarante" options={relacionDeclarante} />
                               <CustomRadio
-                                 hidden={false}
                                  col={12}
-                                 name="EsEnMexico" // Nombre del campo en el formulario
-                                 title="¿Es de México?"
+                                 name="EsCiudadanoExtranjero"
+                                 title="¿Es ciudadano extranjero?"
                                  options={[
                                     { value: 1, label: "Si" },
                                     { value: 0, label: "No" }
                                  ]} // Opciones para los radio buttons
-                                 handleGetValue={handleGetValue}
                               />
-                              <Text
+                              <CustomRadio
                                  col={12}
-                                 name="Calle"
-                                 label="Calle"
-                                 color={"green"}
-                                 // Otras props opcionales como color, mask, etc., si es necesario
+                                 name="EsDependienteEconomico"
+                                 title="¿Es dependiente económico?"
+                                 options={[
+                                    { value: 1, label: "Si" },
+                                    { value: 0, label: "No" }
+                                 ]}
                               />
-                              <Text col={12} name="NumeroExterior" label="Número Exterior" type={"number"} color={"green"} />
-                              <Text col={12} name="NumeroInterior" label="Número Interior" type={"number"} color={"green"} />
-                              <Text col={12} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} />
-                              <AutoComplete
-                                 hidden={mexico}
-                                 col={12}
-                                 label="Entidad Federativa"
-                                 name="Id_EntidadFederativa"
-                                 options={entidades}
-                                 color="green"
-                                 handleGetValue={handleGetValue}
-                              />
-                              <AutoComplete
-                                 hidden={mexico}
-                                 disabled={activeMunicipios}
-                                 loading={loadingMuncipios}
-                                 col={12}
-                                 otro={23}
-                                 label="Municipio / Alcaldía"
-                                 name="Id_MunicipioAlcaldia"
-                                 options={municipios}
-                                 color="green"
-                                 // getValue={getValue}
-                              />
-                              <AutoComplete hidden={!mexico} col={12} label="Pais de nacimiento" name="Id_Pais" options={paises} color="green" />
-                              <Text hidden={!mexico} col={12} name="EstadoProvincia" label="Estado / Provincia" type={"number"} color={"green"} />
 
-                              <Text col={12} name="ColoniaLocalidad" label="Colonia / Localidad" color={"green"} />
+                              <CustomRadio
+                                 col={12}
+                                 name="HabitaDomicilioDeclarante"
+                                 title="¿Habita en el domicilio del declarante?"
+                                 options={[
+                                    { value: 1, label: "Si" },
+                                    { value: 0, label: "No" }
+                                 ]}
+                                 handleGetValue={handleGetValue}
+                              />
+                              <Ngif condition={domicilioPareja}>
+                                 <CustomRadio
+                                    hidden={false}
+                                    col={12}
+                                    name="EsCiudadanoExtranjero" // Nombre del campo en el formulario
+                                    title="¿Es de México?"
+                                    options={[
+                                       { value: 0, label: "Si" },
+                                       { value: 1, label: "No" }
+                                    ]} // Opciones para los radio buttons
+                                    handleGetValue={handleGetValue}
+                                 />
+                                 <Text
+                                    col={12}
+                                    name="Calle"
+                                    label="Calle"
+                                    color={"green"}
+                                    // Otras props opcionales como color, mask, etc., si es necesario
+                                 />
+                                 <Text col={12} name="NumeroExterior" label="Número Exterior" type={"number"} color={"green"} />
+                                 <Text col={12} name="NumeroInterior" label="Número Interior" type={"number"} color={"green"} />
+                                 <Text col={12} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} />
+                                 <AutoComplete
+                                    hidden={mexico}
+                                    col={12}
+                                    label="Entidad Federativa"
+                                    name="Id_EntidadFederativa"
+                                    options={entidades}
+                                    color="green"
+                                    handleGetValue={handleGetValue}
+                                 />
+                                 <AutoComplete
+                                    hidden={mexico}
+                                    disabled={activeMunicipios}
+                                    loading={loadingMuncipios}
+                                    col={12}
+                                    otro={23}
+                                    label="Municipio / Alcaldía"
+                                    name="Id_MunicipioAlcaldia"
+                                    options={municipios}
+                                    color="green"
+                                    // getValue={getValue}
+                                 />
+                                 <AutoComplete hidden={!mexico} col={12} label="Pais de nacimiento" name="Id_Pais" options={paises} color="green" />
+                                 <Text hidden={!mexico} col={12} name="EstadoProvincia" label="Estado / Provincia" type={"number"} color={"green"} />
+
+                                 <Text col={12} name="ColoniaLocalidad" label="Colonia / Localidad" color={"green"} />
+                              </Ngif>
+                              <CustomRadio
+                                 hidden={false}
+                                 col={12}
+                                 name="Id_ActividadLaboral" // Nombre del campo en el formulario
+                                 title="Actividad laboral de la pareja"
+                                 options={[
+                                    { value: 1, label: "Privado" },
+                                    { value: 2, label: "Público" },
+                                    { value: 3, label: "Ninguno" },
+                                    { value: 4, label: "Otro" }
+                                 ]} // Opciones para los radio buttons
+                                 handleGetValue={handleGetValue}
+                              />
+                              <Ngif condition={ambitoTrabajo == 1 || ambitoTrabajo == 4}>
+                                 <Text col={12} name="NombreEmpresaSociedadAsociacion" label="Nombre de la empresa, sociedad o asociación" color={"green"} />
+                                 <Text col={12} name="RfcEmpresa" label="RFC (empresa)" color={"green"} />
+                                 <Text col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión" color={"green"} />
+                                 <AutoComplete col={12} label="Sector al que pertenece" name="Id_Sector" options={sectores} color="green" />
+                                 <DatePickerComponent
+                                    idName={"FechaIngreso"}
+                                    label={"Fecha de ingreso"}
+                                    format={"DD/MM/YYYY"}
+                                    // value={values.FechaIngreso}
+                                    setFieldValue={setFieldValue}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    error={errors.FechaIngreso}
+                                    touched={touched.FechaIngreso}
+                                    showErrorInput={null}
+                                 />
+
+                                 <CustomRadio
+                                    hidden={false}
+                                    col={12}
+                                    name="EsProveedorContratistaGobierno" // Nombre del campo en el formulario
+                                    title="¿Es proveedor o contratista del gobierno?"
+                                    options={[
+                                       { value: 1, label: "Si" },
+                                       { value: 0, label: "No" }
+                                    ]} // Opciones para los radio buttons
+                                 />
+                              </Ngif>
+                              <Ngif condition={ambitoTrabajo == 2}>
+                                 <AutoComplete col={12} label="Nivel / orden de gobierno" name="Id_NivelOrdenGobierno" options={nivelGobierno} color="green" />
+                                 <AutoComplete col={12} label="Ámbito público" name="Id_AmbitoPublico" options={ambitosPublicos} color="green" />
+                                 <Text col={12} name="NombreEntePublico" label="Nombre del ente público" color={"green"} />
+                                 <Text col={12} name="AreaAdscripcion" label="Área de adscripción" color={"green"} />
+                                 <Text col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión" color={"green"} />
+                                 <Text col={12} name="FuncionPrincipal" label="Especifique función principal" color={"green"} />
+                                 <DatePickerComponent
+                                    idName={"FechaIngreso"}
+                                    label={"Fecha de ingreso"}
+                                    format={"DD/MM/YYYY"}
+                                    // value={values.FechaIngreso}
+                                    setFieldValue={setFieldValue}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    error={errors.FechaIngreso}
+                                    touched={touched.FechaIngreso}
+                                    showErrorInput={null}
+                                 />
+                              </Ngif>
+                              <Ngif condition={ambitoTrabajo == 1 || ambitoTrabajo == 2 || ambitoTrabajo == 4}>
+                                 <Text
+                                    col={12}
+                                    type={"number"}
+                                    name="ValorSalarioMensualNeto"
+                                    label="Salario mensual neto"
+                                    color={"green"}
+                                    placeholder={"No debe llevar centavos"}
+                                 />
+                                 <AutoComplete col={12} label="Moneda" name="Id_MonedaSalarioMensualNeto" options={monedas} color="green" />
+                              </Ngif>
+
                               <Text col={12} name="Aclaraciones" label="Aclaraciones/Observaciones" rows={10} color={"green"} />
                            </Ngif>
-                           <CustomRadio
-                              hidden={false}
-                              col={12}
-                              name="Id_ActividadLaboral" // Nombre del campo en el formulario
-                              title="Actividad laboral de la pareja"
-                              options={[
-                                 { value: 1, label: "Privado" },
-                                 { value: 2, label: "Público" },
-                                 { value: 3, label: "Ninguno" },
-                                 { value: 4, label: "Otro" }
-                              ]} // Opciones para los radio buttons
-                              handleGetValue={handleGetValue}
-                           />
-                           <Ngif condition={ambitoTrabajo == 1 || ambitoTrabajo == 4}>
-                              <Text col={12} name="NombreEmpresaSociedadAsociacion" label="Nombre de la empresa, sociedad o asociación" color={"green"} />
-                              <Text col={12} name="RfcEmpresa" label="RFC (empresa)" color={"green"} />
-                              <Text col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión" color={"green"} />
-                              <AutoComplete col={12} label="Sector al que pertenece" name="Id_Sector" options={sectores} color="green" />
-                              <DatePickerComponent
-                                 idName={"FechaIngreso"}
-                                 label={"Fecha de ingreso"}
-                                 format={"DD/MM/YYYY"}
-                                 // value={values.FechaIngreso}
-                                 setFieldValue={setFieldValue}
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 error={errors.FechaIngreso}
-                                 touched={touched.FechaIngreso}
-                                 showErrorInput={null}
-                              />
-                            
-                              <CustomRadio
-                                 hidden={false}
-                                 col={12}
-                                 name="EsProveedorContratistaGobierno" // Nombre del campo en el formulario
-                                 title="¿Es proveedor o contratista del gobierno?"
-                                 options={[
-                                    { value: 1, label: "Si" },
-                                    { value: 0, label: "No" }
-                                 ]} // Opciones para los radio buttons
-                              />
-                           </Ngif>
-                           <Ngif condition={ambitoTrabajo == 2}>
-                              <AutoComplete col={12} label="Nivel / orden de gobierno" name="Id_NivelOrdenGobierno" options={nivelGobierno} color="green" />
-                              <AutoComplete col={12} label="Ámbito público" name="Id_AmbitoPublico" options={ambitosPublicos} color="green" />
-                              <Text col={12} name="NombreEntePublico" label="Nombre del ente público" color={"green"} />
-                              <Text col={12} name="AreaAdscripcion" label="Área de adscripción" color={"green"} />
-                              <Text col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión" color={"green"} />
-                              <Text col={12} name="FuncionPrincipal" label="Especifique función principal" color={"green"} />
-                              <DatePickerComponent
-                                 idName={"FechaIngreso"}
-                                 label={"Fecha de ingreso"}
-                                 format={"DD/MM/YYYY"}
-                                 // value={values.FechaIngreso}
-                                 setFieldValue={setFieldValue}
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 error={errors.FechaIngreso}
-                                 touched={touched.FechaIngreso}
-                                 showErrorInput={null}
-                              />
-                            
-                           </Ngif>
-                           <Ngif condition={ambitoTrabajo == 1 || ambitoTrabajo == 2 || ambitoTrabajo == 4}>
-                              <Text
-                                 col={12}
-                                 type={"number"}
-                                 name="ValorSalarioMensualNeto"
-                                 label="Salario mensual neto"
-                                 color={"green"}
-                                 placeholder={"No debe llevar centavos"}
-                              />
-                              <AutoComplete col={12} label="Moneda" name="Id_MonedaSalarioMensualNeto" options={monedas} color="green" />
-                           </Ngif>
-
-                           <Text col={12} name="Aclaraciones" label="Aclaraciones/Observaciones" rows={10} color={"green"} />
-
                            <Button type="submit" variant="contained" color="primary">
                               Registrar y Continuar
                            </Button>
