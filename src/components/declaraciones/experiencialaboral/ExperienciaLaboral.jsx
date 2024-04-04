@@ -120,7 +120,6 @@ export const ExperienciaLaboral = ({ next, previous, title, debugerClear }) => {
             Error("cuentas con el limite de experiencias laborales");
          }
       } else {
-         console.log(idRow);
          const index = datas.findIndex((elemento) => elemento.identificador == idRow);
          const newDatas = [...datas];
          newDatas[index] = values;
@@ -195,8 +194,8 @@ export const ExperienciaLaboral = ({ next, previous, title, debugerClear }) => {
                   headers={["Sector", "Ente publico o Nombre de la empresa", "Lugar", "Fecha de ingreso", "Fecha de salida"]}
                   dataHidden={["id"]}
                   data={datasVisuales}
-                  editButton={true}
-                  handleEdit={Edit}
+                  // editButton={true}
+                  // handleEdit={Edit}
                   deleteButton={true}
                   handleDelete={Delete}
                   // filter={true}

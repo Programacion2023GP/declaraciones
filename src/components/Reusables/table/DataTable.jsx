@@ -249,7 +249,6 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filte
             setTitles([{ titles: newTitles, headers: [] }]);
          }
       }
-      console.log("my data", data);
 
       let index = 0;
       let page = 0;
@@ -266,7 +265,6 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filte
       });
       const totalPages = datas.length; // Calcular el total de páginas aquí
       setTotalPages(totalPages);
-      console.log("avances");
       handleShowData(pagina, datas);
    };
 

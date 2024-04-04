@@ -15,6 +15,7 @@ import { useParams } from "react-router-dom";
 import { DebugerContext } from "../../context/DebuggerContext";
 import { DatosParejas } from "./datospareja/DatosPareja";
 import { DependientesEconomicos } from "./dependienteseconomicos/DependientesEconomicos";
+import { IngresosNetos } from "./ingresosnetos/IngresosNetos";
 
 // Importa aquí los componentes correspondientes a cada paso
 
@@ -24,7 +25,7 @@ const ComponentDeclaraciones = () => {
    const { declaracion } = useParams();
 
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(6);
+   const [activeStep, setActiveStep] = React.useState(7);
 
    const handleNext = () => {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -51,6 +52,11 @@ const ComponentDeclaraciones = () => {
       {
          label: "Datos del dependiente económicos",
          component: <DependientesEconomicos next={handleNext} previous={handleBack} title={Titles(declaracion)} />
+      },
+      {
+         label: "Ingresos netos",
+         subtitule: "Del declarante, pareja y/o dependientes economicos",
+         component: <IngresosNetos next={handleNext} previous={handleBack} title={Titles(declaracion)} />
       }
    ];
 
@@ -58,7 +64,9 @@ const ComponentDeclaraciones = () => {
    const getStepTitle = () => {
       return steps[activeStep].label;
    };
-
+   const getStepSubtitule = () => {
+      return steps[activeStep].subtitule;
+   };
    return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
          <React.Fragment>
@@ -67,6 +75,10 @@ const ComponentDeclaraciones = () => {
                {/* Título del paso con estilos mejorados */}
                <Typography variant="h4" align="center" gutterBottom style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}>
                   {getStepTitle()}
+               </Typography>
+               <br />
+               <Typography variant="h5" align="center" gutterBottom style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}>
+                  {getStepSubtitule()}
                </Typography>
 
                {/* MobileStepper para navegar entre los pasos */}

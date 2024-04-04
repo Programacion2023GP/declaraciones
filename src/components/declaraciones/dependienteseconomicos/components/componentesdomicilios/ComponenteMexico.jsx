@@ -1,8 +1,12 @@
 import { memo, useEffect, useState } from "react";
 import { AutoComplete } from "../../../../Reusables/autocomplete/autocomplete";
 import { GetAxios } from "../../../../../services/services";
+import { useDispatch } from "react-redux";
+import { configValidationsDependiente } from "../../../../../redux/DependientesEconomicos7/DependientesEconomicos";
 
 export const ComponenteMexico = memo(({}) => {
+   const dispatch = useDispatch();
+
    const [entidades, setEntidades] = useState([]);
    const [municipios, setMunicipios] = useState([]);
    const [activeMunicipios, setActiveMunicipios] = useState(true);
@@ -14,6 +18,8 @@ export const ComponenteMexico = memo(({}) => {
       setLoadingMunicipios(false);
    };
    useEffect(() => {
+            dispatch(configValidationsDependiente({ tipo: "Mexico" }));
+
       const init = async () => {
          setEntidades(await GetAxios("/entidades/show"));
       };

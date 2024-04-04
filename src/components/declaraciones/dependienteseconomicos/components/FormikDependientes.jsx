@@ -1,7 +1,7 @@
 import { Box, Button, Card, CardContent, Grid, Typography } from "@mui/material";
 import { Formik } from "formik";
 
-export const FormikDependientes = ({ initialValues, validationSchema, submit, title, children,ref }) => {
+export const FormikDependientes = ({ initialValues, validationSchema, submit, title, children, ref }) => {
    return (
       <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
          <CardContent>
@@ -25,7 +25,7 @@ export const FormikDependientes = ({ initialValues, validationSchema, submit, ti
                                  {children}
 
                                  <Button type="submit" variant="contained" color="primary">
-                                    Registrar y Continuar
+                                    Registrar
                                  </Button>
                               </Box>
                            </>

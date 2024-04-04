@@ -6,13 +6,15 @@ import { GetAxios } from "../../../../services/services";
 import { AutoComplete } from "../../../Reusables/autocomplete/autocomplete";
 import { CustomRadio } from "../../../Reusables/radiobutton/Radio";
 
-export const InitialValuesFormik = memo(({ handleGetValue }) => {
+export const InitialValuesFormik = memo(({ handleGetValue, getParentescos }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const [relacionDeclarante, setRelacionDeclarante] = useState([]);
 
    useEffect(() => {
       const init = async () => {
-         setRelacionDeclarante(await GetAxios("/relacioncondeclarante/show"));
+         const relacionData = await GetAxios("/relacioncondeclarante/show");
+         setRelacionDeclarante(relacionData);
+         getParentescos(relacionData);
       };
       init();
    }, []);
@@ -45,17 +47,16 @@ export const InitialValuesFormik = memo(({ handleGetValue }) => {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             //   value={values.FechaEngreso}
-              error={formik.errors.FechaEngreso}
-              touched={formik.touched.FechaEngreso}
+            error={formik.errors.FechaEngreso}
+            touched={formik.touched.FechaEngreso}
             showErrorInput={null}
          />
          <Text col={12} name="RfcDependiente" label="RFC" color={"green"} />
          <Text col={12} name="Curp" label="Curp" color={"green"} />
-         <Text col={12} name="Homoclave" label="Homoclave" color={"green"} />
          <AutoComplete
             col={12}
             label="Parentesco o relación con el declarante"
-            name="Id_RelacionDeclarante"
+            name="Id_ParentescoRelacion"
             options={relacionDeclarante}
             handleGetValue={handleGetValue}
          />

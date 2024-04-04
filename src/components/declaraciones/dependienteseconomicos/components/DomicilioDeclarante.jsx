@@ -4,18 +4,21 @@ import { Ngif } from "../../../Reusables/conditionals/Ngif";
 import { Text } from "../../../Reusables/input/Input";
 import { ComponenteMexico } from "./componentesdomicilios/ComponenteMexico";
 import { ComponenteExtranjero } from "./componentesdomicilios/ComponenteExtranjero";
-
+import { useDispatch } from "react-redux";
+import { configValidationsDependiente } from "../../../../redux/DependientesEconomicos7/DependientesEconomicos";
 export const DomicilioDeclarante = memo(({}) => {
    const [mexico, setMexico] = useState(true);
+   const dispatch = useDispatch();
    const handleGetValue = (name, value) => {
       setMexico(value == 1 ? true : false);
+      dispatch(configValidationsDependiente({ tipo: (value = 1 ? "DomicilioDeclaranteNULL" : "DomicilioDeclarante") }));
    };
    return (
       <>
          <CustomRadio
             hidden={false}
             col={12}
-            name="Id_LugarDondeReside" // Nombre del campo en el formulario
+            name="Id_LugarDondeReside" 
             title="¿Es de México el dependiente economicó?"
             options={[
                { value: 1, label: "Si" },
@@ -41,7 +44,7 @@ export const DomicilioDeclarante = memo(({}) => {
          </Ngif>
          <Text
             col={12}
-            name="ColoniaLocalidad"
+            name="CiudadLocalidad"
             label="Colonia / Localidad"
             color={"green"}
             // Otras props opcionales como color, mask, etc., si es necesario

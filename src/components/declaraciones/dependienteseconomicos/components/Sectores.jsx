@@ -1,14 +1,35 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { CustomRadio } from "../../../Reusables/radiobutton/Radio";
 import { Ngif } from "../../../Reusables/conditionals/Ngif";
 import { ComponetPrivadouOtro } from "./componentsectores/ComponetPrivadouOtro";
 import { ComponentPublico } from "./componentsectores/ComponentPublico";
 import { Text } from "../../../Reusables/input/Input";
+import { configValidationsDependiente } from "../../../../redux/DependientesEconomicos7/DependientesEconomicos";
+import { useDispatch, useSelector } from "react-redux";
+// import { configValidationsDependiente } from "../../../../redux/DependientesEconomicos7/DependientesEconomicos";
 
-export const Sectores = memo(({}) => {
+export const Sectores = memo(({ validations}) => {
    const [sector, setSector] = useState(1);
+
+   const dispatch = useDispatch();
+   useEffect(() => {
+   }, [useSelector((state) => state.DependientesEconomicos.validationSchema)]);
    const handleGetValue = (name, value) => {
       setSector(value);
+      switch (value) {
+         case 1:
+            dispatch(configValidationsDependiente({ tipo: "Privado", validaciones: validations }));
+            break;
+         case 2:
+            dispatch(configValidationsDependiente({ tipo: "Publico", validaciones: validations }));
+            break;
+         case 3:
+            dispatch(configValidationsDependiente({ tipo: "Ninguno", validaciones: validations }));
+            break;
+         case 4:
+            dispatch(configValidationsDependiente({ tipo: "Otro", validaciones: validations }));
+            break;
+      }
    };
    return (
       <>

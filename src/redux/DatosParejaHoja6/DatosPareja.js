@@ -37,6 +37,7 @@ const initialState = {
     ValorSalarioMensualNeto:0,
     AreaAdscripcion:"",
     FuncionPrincipal:"",
+    NumeroInterior:0,
     Aclaraciones:"",
 }
 let validationSchema = {
