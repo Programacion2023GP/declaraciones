@@ -1,10 +1,12 @@
+import { FormikInitialValues } from "./components/FormikInitialValues";
 import { FormikIngresosNetos } from "./formik/FormikIngresosNetos";
 
 export const IngresosNetos = ({ next, previous, title }) => {
    return (
       <>
-         <FormikIngresosNetos initialValues={{}} validationSchema={{}} title={title}>
-        </FormikIngresosNetos>
+         <FormikIngresosNetos title={title}>
+            <FormikInitialValues />
+         </FormikIngresosNetos>
       </>
    );
 };
