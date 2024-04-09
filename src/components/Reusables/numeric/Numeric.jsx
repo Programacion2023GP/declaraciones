@@ -25,7 +25,7 @@ export const Numeric = ({
    initial
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
-   const [number, setNumber] = useState(initial || 0);
+   const [number, setNumber] = useState(formik.values[name] || initial);
    useEffect(() => {}, [name]); // Observa los cambios en el nombre y el valor del campo
 
    const errors = formik.errors; // Obtiene los errores de Formik
@@ -34,20 +34,27 @@ export const Numeric = ({
    const isError = formik.touched[name] && formik.errors[name];
    const pattern = allowDecimal ? "^\\d*\\.?\\d*$" : "\\d*";
    const handleMore = () => {
-      setNumber(parseInt(number) + 1);
+      setNumber(isNaN(number) ? 1 : number + 1);
+      formik.setFieldValue(name, isNaN(number) ? 1 : number + 1); // Actualiza el valor solo si es un número o está vacío
    };
-   const handleMinius = () => {
-      setNumber(parseInt(number) - 1);
+
+   const handleMinus = () => {
+      setNumber(isNaN(number) || number <= 0 ? 0 : number - 1);
+      formik.setFieldValue(name, isNaN(number) ? 1 : number - 1); // Actualiza el valor solo si es un número o está vacío
    };
+
    return (
       <>
          <Grid
-            style={{ margin: marginBoton ? `${marginBoton} 0` : "1rem 0" }}
+            style={{ margin: marginBoton ? `${marginBoton} 0` : "0 .5rem" }}
             item
-            xs={col}
+            lg={col}
+            xl={col}
+            xs={12}
+            md={12}
             sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", position: "relative" }}
          >
-            <Grid style={{ margin: marginBoton ? `${marginBoton} 0` : "1rem 0" }} item>
+            <Grid style={{ margin: marginBoton ? `${marginBoton} 0` : "0rem 0" }} item>
                <Paper sx={{ p: "4px 4px", display: "flex", alignItems: "center", width: "100%" }}>
                   <IconButton onClick={handleMore} color="primary" sx={{ p: "10px" }} aria-label="menu">
                      <AddIcon />
@@ -56,6 +63,7 @@ export const Numeric = ({
 
                   <TextField
                      key={"text_" + name}
+                     disabled={disabled}
                      name={name}
                      value={number}
                      label={label}
@@ -73,18 +81,18 @@ export const Numeric = ({
 
                         if (isNumber || inputValue === "") {
                            setNumber(parseInt(inputValue));
-                           //    formik.setFieldValue(name, inputValue); // Actualiza el valor solo si es un número o está vacío
+                           formik.setFieldValue(name, inputValue); // Actualiza el valor solo si es un número o está vacío
                         }
                      }}
                   />
                   <Divider sx={{ height: 28, m: 0 }} orientation="vertical" />
-                  <IconButton onClick={handleMinius} color="error" sx={{ p: "10px" }} aria-label="menu">
+                  <IconButton onClick={handleMinus} color="error" sx={{ p: "10px" }} aria-label="menu">
                      <RemoveIcon />
                   </IconButton>
                </Paper>
                {/* Mueve el Typography aquí para que esté al mismo nivel que el Paper */}
                <Typography sx={{ color: formik.errors[name] ? "red" : "gray" }} variant="subtitle2" color="initial">
-                  {isError ? formik.errors[name] : placeholder}
+                  {formik.errors[name] || placeholder}
                </Typography>
                {loading && <CircularProgress sx={{ position: "absolute", top: "40%", left: "40%" }} />}
             </Grid>

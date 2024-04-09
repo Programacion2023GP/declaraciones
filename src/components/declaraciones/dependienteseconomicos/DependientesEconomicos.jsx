@@ -99,7 +99,7 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
    };
    const handleChange = (event) => {
       setChecked(event.target.checked);
-   };
+   };setValidationSchema
    const edit = (row) => {
       const item = datasRedux.filter((item) => item.id == row.id);
       handleChange("HabitaDomicilioDeclarante", item.HabitaDomicilioDeclarante);
@@ -110,7 +110,6 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
       setDatasTable(itemTable);
    };
    useEffect(() => {
-      console.log("regenerada", datasRedux);
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.DependientesEconomicos.validationSchema), datasRedux]);
    return (
