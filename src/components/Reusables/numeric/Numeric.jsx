@@ -25,7 +25,7 @@ export const Numeric = ({
    initial
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
-   const [number, setNumber] = useState(formik.values[name] || initial);
+   const [number, setNumber] = useState(formik.values[name] || initial || 0);
    useEffect(() => {}, [name]); // Observa los cambios en el nombre y el valor del campo
 
    const errors = formik.errors; // Obtiene los errores de Formik

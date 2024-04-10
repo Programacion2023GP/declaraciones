@@ -19,13 +19,15 @@ export const FormikIngresosNetos = ({ initialValues, validationSchema, submit, t
                         }
                         return (
                            <>
-                              <Box component={"form"} onSubmit={handleSubmit}>
-                                 {children}
+                              <Grid container>
+                                 <Grid item xs={12} component={"form"} onSubmit={handleSubmit}>
+                                       {children}
 
-                                 <Button type="submit" variant="contained" color="primary">
-                                    Registrar
-                                 </Button>
-                              </Box>
+                                       <Button type="submit" variant="contained" color="primary">
+                                          Registrar
+                                       </Button>
+                                 </Grid>
+                              </Grid>
                            </>
                         );
                      }}

@@ -23,38 +23,49 @@ export const IngresosII = ({}) => {
       <>
          <Numeric
             col={12}
-            name={""}
+            name={"AICE_RemuneracionTotal"}
             label={"II.1 Por actividad industrial, comercial y/o empresarial"}
             placeholder={`"II.1 Por actividad industrial, comercial y/o empresarial (Después de impuestos)`}
          />
-         <Text name="" label="Nombre o Razón Social" />
-         <Text name="" label="Tipo de Negocio" />
+         <Text name="AICE_NombreRazonSocial" label="Nombre o Razón Social" />
+         <Text name="AICE_TipoNegocio" label="Tipo de Negocio" />
          <Numeric
             col={12}
-            name={""}
+            name={"AF_RemuneracionTotal"}
             label={"II.2 Por actividad financiera (Rendimientos o ganancias)"}
             placeholder={`II.2 Por actividad financiera (Rendimientos o ganancias) Después de impuestos`}
          />
-         {/* <AutoComplete handleGetValue={handleGetValue} options={instrumentos} name="" label={"Tipo de instrumento que generó el rendimiento o ganancia"} col={12} /> */}
+         <AutoComplete
+            handleGetValue={handleGetValue}
+            options={instrumentos}
+            name="AF_Id_TipoInstrumento"
+            label={"Tipo de instrumento que generó el rendimiento o ganancia"}
+            col={12}
+         />
          <Ngif condition={other}>
-            <Text />
+            <Text name="AF_EspecifiqueOtroTipo" label={"Especifique otro tipo"} />
          </Ngif>
          <Numeric
             col={12}
-            name={""}
+            name={"SP_RemuneracionTotal"}
             label={"II.3 Por servicios profesionales, consejos, consultorías, y/o asesorías"}
             placeholder={`II.3 Por servicios profesionales, consejos, consultorías, y/o asesorías`}
          />
-         <Text name="" label="Tipo de servicio prestado" />
-         <Numeric col={12} name={""} label={"II.4 Por enajenacion de bienes"} placeholder={`II.4 Por enajenacion de bienes`} />
-         {/* <AutoComplete options={bienenAjenacion} name="" label={"Tipo de bien enajenado"} col={12} /> */}
+         <Text name="SP_TipoServicioPrestado" label="Tipo de servicio prestado" />
+         <Numeric col={12} name={"EB_RemuneracionTotal"} label={"II.4 Por enajenacion de bienes"} placeholder={`II.4 Por enajenacion de bienes`} />
+         <AutoComplete options={bienenAjenacion} name="EB_Id_TipoBienEnajenado" label={"Tipo de bien enajenado"} col={12} />
          <Numeric
             col={12}
-            name={""}
+            name={"OINC_RemuneracionTotal"}
             label={"II.5 Otros ingresos no considerados a los anteriores"}
             placeholder={`II.5 Otros ingresos no considerados a los anteriores`}
          />
-         <Text name="" label="Especificar tipo de ingreso" placeholder={"Arrendamiento, regalía, sorteos, concursos, donaciones, seguros de vida, etc."} />
+
+         <Text
+            name="OINC_EspecificarTipoIngreso"
+            label="Especificar tipo de ingreso"
+            placeholder={"Arrendamiento, regalía, sorteos, concursos, donaciones, seguros de vida, etc."}
+         />
       </>
    );
 };
