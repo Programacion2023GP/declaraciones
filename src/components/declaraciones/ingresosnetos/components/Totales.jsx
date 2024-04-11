@@ -1,12 +1,13 @@
 import { Text } from "../../../Reusables/input/Input";
+import { Numeric } from "../../../Reusables/numeric/Numeric";
 
 export const Totales = ({}) => {
    return (
       <>
-         <Text disabled={true} name="IngresoMensualAnualConclusionNeto" label="II. Otros ingresos del declarante (Suma del II.1 al II.5)" />
-         <Text
+         <Numeric disabled={true} name="IngresoMensualAnualConclusionNeto" label="II. Otros ingresos del declarante (Suma del II.1 al II.5)" />
+         <Numeric
             disabled={true}
-            name="IngresoNetoParejaDependiente"
+            name="TotalIngresosNetos"
             label="C. Total de ingresos anuales netos percibidos por el declarante, pareja y/o dependientes economicos (suma de los apartados A y B)."
          />
 

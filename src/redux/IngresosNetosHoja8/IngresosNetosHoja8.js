@@ -3,7 +3,7 @@ import * as Yup from "yup";
 const initialState = {
     Id_SituacionPatrimonial: parseInt(localStorage.getItem("id_SituacionPatrimonial")),
     RemuneracionMensualAnualConclusionCargoPublico:"",
-    OtrosIngresosMensualesAnualesConclusionTotal:"",//numericos
+    // OtrosIngresosMensualesAnualesConclusionTotal:"",//numericos
     AICE_RemuneracionTotal:"",//numericos
     AICE_Id_RemuneracionTotal:"",//numericos
     AICE_NombreRazonSocial:"",
@@ -21,9 +21,9 @@ const initialState = {
     OINC_RemuneracionTotal:"",//numericos
     OINC_Id_RemuneracionTotal:"",//numericos
     OINC_EspecificarTipoIngreso:"",
-    IngresoMensualAnualConclusionNeto:"",
     IngresoNetoParejaDependiente:"",
-    TotalIngresosNetos:"",
+    IngresoMensualAnualConclusionNeto:0,
+    TotalIngresosNetos:0,
     Aclaraciones:"",
 
 }
@@ -36,14 +36,17 @@ const validationSchema ={
     AF_Id_TipoInstrumento:Yup.number("El tipo de instrumento es requerido").required("El tipo de instrumento es requerido"),
     SP_RemuneracionTotal:Yup.string("La renumeración es requerida").required("La renumeración es requerida"),
     SP_TipoServicioPrestado:Yup.string("El tipo del servicio prestado es requerido").required("El tipo del servicio prestado es requerido"),    
-    OtrosIngresosMensualesAnualesConclusionTotal: Yup.number().required("El nombre es requerido"),
+    // OtrosIngresosMensualesAnualesConclusionTotal: Yup.number().required("El nombre es requerido"),
     EB_RemuneracionTotal:Yup.number("La renumeración es numerica").required("La renumeración es requerida"),
     EB_Id_TipoBienEnajenado:Yup.number("El tipo de bien es requerido").required("El tipo de bien es requerido"),
     OINC_RemuneracionTotal:Yup.number("La renumeración es numerica").required("La renumeración es requerida"),
     OINC_EspecificarTipoIngreso:Yup.string("La especificacion del tipo de ingreo es requerida").required("La especificacion del tipo de ingreo es requerida"),
     IngresoNetoParejaDependiente:Yup.number("Los ingresos netos de la pareja son requeridos").required("Los ingresos netos de la pareja son requeridos"),
-    IngresoMensualAnualConclusionNeto:Yup.number("Otros Ingresos del declarante son requeridos").required("Otros Ingresos del declarante son requeridos"),
-    TotalIngresosNetos:Yup.number("Es requerido el total de ingresos").required("Es requerido el total de ingresos")
+    IngresoMensualAnualConclusionNeto:Yup.number("Otros Ingresos del declarante son requeridos").min(1,"Debe ser mayor a 0").required("Otros Ingresos del declarante son requeridos"),
+    TotalIngresosNetos:Yup.number("Es requerido el total de ingresos").min(1,"Debe ser mayor a 0").required("Es requerido el total de ingresos")
+}
+const TipoInstrumentoOtro = {
+    AF_EspecifiqueOtroTipo:Yup.string("Especifique otro tipo es requerido").required("Especifique otro tipo es requerido")
 }
 const data ={
     initialState:initialState,
@@ -52,8 +55,47 @@ const data ={
 export const IngresosNetosHoja8 = createSlice({
     name:"DependientesEconomicos",
     initialState:data,
-    reducers:{}
-})
-export const {} = IngresosNetosHoja8.actions
+    reducers:{
+        addDatosDependientesEconomicos:(state,action)=>{
+            Object.assign(state.initialState, action.payload);
+            state.initialState.Id_SituacionPatrimonial =parseInt(localStorage.getItem("id_SituacionPatrimonial"));
+         },
+        configValidationsDependientesEconomicos:(state,action)=>{
+            switch (action.payload.tipo) {
+                case "OtroTipo":
+                    delete state.validationSchema['AF_EspecifiqueOtroTipo'];
+                    
+                    break;
+                case "EspecifiqueTipo":
+                        
+                    Object.assign(state.validationSchema,TipoInstrumentoOtro)
+                    
+                    break;
+                 case "Totales":
+                 state.initialState.IngresoMensualAnualConclusionNeto = action.payload.total
+                 state.initialState.TotalIngresosNetos = state.initialState.IngresoMensualAnualConclusionNeto
+                 break;
+                 case "TotalGeneral":
+                    state.initialState.TotalIngresosNetos = total
 
+                 break;
+
+                   
+            }
+    }
+}
+})
+const eliminarPropiedades = (objeto1, objeto2) => {
+    if (Object.isFrozen(objeto1)) {
+        objeto1 = { ...objeto1 };
+    }
+    for (let key in objeto2) {
+        if (objeto1.hasOwnProperty(key)) {
+            delete objeto1[key];
+        }
+    }
+    return objeto1;
+};
+
+export const {configValidationsDependientesEconomicos,addDatosDependientesEconomicos} = IngresosNetosHoja8.actions
 export default IngresosNetosHoja8.reducer

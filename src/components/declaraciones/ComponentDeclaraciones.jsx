@@ -108,3 +108,4 @@ const ComponentDeclaraciones = () => {
    );
 };
 export default ComponentDeclaraciones;
+

@@ -20,6 +20,7 @@ export const Numeric = ({
    rows,
    hidden,
    mask,
+   handleGetValue,
    marginBoton,
    allowDecimal = false,
    initial
@@ -42,7 +43,9 @@ export const Numeric = ({
       setNumber(isNaN(number) || number <= 0 ? 0 : number - 1);
       formik.setFieldValue(name, isNaN(number) ? 1 : number - 1); // Actualiza el valor solo si es un número o está vacío
    };
-
+   const handleValue = (name, value) => {
+      handleGetValue && handleGetValue(name, value);
+   };
    return (
       <>
          <Grid
@@ -54,9 +57,9 @@ export const Numeric = ({
             md={12}
             sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", position: "relative" }}
          >
-            <Grid style={{ margin: marginBoton ? `${marginBoton} 0` : "0rem 0" }} item>
+            <Grid style={{ margin: marginBoton ? `${marginBoton} 0` : "0rem 0", width: "100%" }} item>
                <Paper sx={{ p: "4px 4px", display: "flex", alignItems: "center", width: "100%" }}>
-                  <IconButton onClick={handleMore} color="primary" sx={{ p: "10px" }} aria-label="menu">
+                  <IconButton disabled={disabled} onClick={handleMore} color="primary" sx={{ p: "10px" }} aria-label="menu">
                      <AddIcon />
                   </IconButton>
                   <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
@@ -78,21 +81,21 @@ export const Numeric = ({
                         let inputValue = e.target.value;
                         let isNumber = /^\d*\.?\d*$/.test(inputValue); // Verifica si el valor ingresado es un número o un número decimal
                         inputValue = inputValue.replace(/[^\d.]/g, ""); // Elimina todos los caracteres no numéricos ni puntos
-
                         if (isNumber || inputValue === "") {
-                           setNumber(parseInt(inputValue));
-                           formik.setFieldValue(name, inputValue); // Actualiza el valor solo si es un número o está vacío
+                           formik.setFieldValue(name, parseInt(inputValue));
+                           handleValue(name, parseInt(inputValue));
+                           setNumber(inputValue === "" ? 0 : parseInt(inputValue)); // Asigna cero si el valor es vacío
                         }
                      }}
                   />
                   <Divider sx={{ height: 28, m: 0 }} orientation="vertical" />
-                  <IconButton onClick={handleMinus} color="error" sx={{ p: "10px" }} aria-label="menu">
+                  <IconButton disabled={disabled} onClick={handleMinus} color="error" sx={{ p: "10px" }} aria-label="menu">
                      <RemoveIcon />
                   </IconButton>
                </Paper>
                {/* Mueve el Typography aquí para que esté al mismo nivel que el Paper */}
-               <Typography sx={{ color: formik.errors[name] ? "red" : "gray" }} variant="subtitle2" color="initial">
-                  {formik.errors[name] || placeholder}
+               <Typography sx={{ color: isError ? "red" : "gray" }} variant="subtitle2" color="initial">
+                  {isError || placeholder}
                </Typography>
                {loading && <CircularProgress sx={{ position: "absolute", top: "40%", left: "40%" }} />}
             </Grid>
