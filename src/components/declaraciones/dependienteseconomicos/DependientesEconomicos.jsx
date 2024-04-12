@@ -72,7 +72,6 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
       }
    };
    const adDataTable = (values) => {
-      console.log("ff");
       const parentesco = parentescos.find((item) => item.id === values.Id_ParentescoRelacion)?.text;
       const newDatasVisuales = [
          ...datasTable,

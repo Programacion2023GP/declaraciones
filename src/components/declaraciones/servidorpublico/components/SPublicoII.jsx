@@ -5,17 +5,17 @@ import { GetAxios } from "../../../../services/services";
 import { AutoComplete } from "../../../Reusables/autocomplete/autocomplete";
 import { Ngif } from "../../../Reusables/conditionals/Ngif";
 import { useDispatch } from "react-redux";
-import { configValidationsDependientesEconomicos } from "../../../../redux/IngresosNetosHoja8/IngresosNetosHoja8";
 import { useFormikContext } from "formik";
+import { configValidationServidorPublico } from "../../../../redux/ServidorPublicoHoja9/ServidorPublicoHoja9";
 
-export const IngresosII = ({}) => {
+export const SPublicoII = ({}) => {
    const [other, setOther] = useState(false);
    const [instrumentos, SetInstrumentos] = useState([]);
    const [bienenAjenacion, setBieneAjenacion] = useState([]);
    const dispatch = useDispatch();
    const formik = useFormikContext();
    const handleGetValue = (name, value) => {
-      dispatch(configValidationsDependientesEconomicos({ tipo: value == 7 ? "EspecifiqueTipo" : "OtroTipo" }));
+      dispatch(configValidationServidorPublico({ tipo: value == 7 ? "EspecifiqueTipo" : "OtroTipo" }));
       setOther(value == 7 ? true : false);
    };
    const [AICE_RemuneracionTotal, setAice] = useState(0);
@@ -45,7 +45,7 @@ export const IngresosII = ({}) => {
    };
    const total = () => {
       return (
-         formik.values.RemuneracionMensualAnualConclusionCargoPublico +
+         formik.values.RemuneracionNetaCargoPublico +
          formik.values.AICE_RemuneracionTotal +
          formik.values.AF_RemuneracionTotal +
          formik.values.SP_RemuneracionTotal +
@@ -55,8 +55,8 @@ export const IngresosII = ({}) => {
    };
    const event = () => {
       const Tot = total();
-      dispatch(configValidationsDependientesEconomicos({ tipo: "Totales", total: parseInt(Tot) }));
-      formik.setFieldValue("IngresoMensualAnualConclusionNeto", Tot);
+      dispatch(configValidationServidorPublico({ tipo: "Totales", total: parseInt(Tot) }));
+      formik.setFieldValue("IngresoMensualConclusionNeto", Tot);
 
       formik.setFieldValue(
          "TotalIngresosNetos",

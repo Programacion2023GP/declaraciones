@@ -6,11 +6,13 @@ import { IngresosIII } from "./IngresosIII";
 import { useState } from "react";
 
 export const FormikInitialValues = ({}) => {
-  const [names,setNames]=useState([])
+   //   const [names,setNames]=useState([])
+   let { declaracion } = useParams();
+   declaracion = parseInt(declaracion);
    return (
       <>
          <Segmento>
-            <tabSegmento label="Renumeración Anual">
+            <tabSegmento label={`Renumeración  ${declaracion === 2 || declaracion === 4 ? "mensual" : declaracion === 1 || declaracion === 3 ? "anual" : "hasta la fecha"}`}>
                <IngresosI />
             </tabSegmento>
             <tabSegmento label="Otros ingresos del declarante">

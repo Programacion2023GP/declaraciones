@@ -16,6 +16,8 @@ import { DebugerContext } from "../../context/DebuggerContext";
 import { DatosParejas } from "./datospareja/DatosPareja";
 import { DependientesEconomicos } from "./dependienteseconomicos/DependientesEconomicos";
 import { IngresosNetos } from "./ingresosnetos/IngresosNetos";
+import { ServidorPublico } from "./servidorpublico/ServidorPublico";
+import { Pruebas } from "./pruebas/Pruebas";
 
 // Importa aquí los componentes correspondientes a cada paso
 
@@ -25,7 +27,7 @@ const ComponentDeclaraciones = () => {
    const { declaracion } = useParams();
 
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(7);
+   const [activeStep, setActiveStep] = React.useState(9);
 
    const handleNext = () => {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -57,7 +59,19 @@ const ComponentDeclaraciones = () => {
          label: "Ingresos netos",
          subtitule: "Del declarante, pareja y/o dependientes economicos",
          component: <IngresosNetos next={handleNext} previous={handleBack} title={Titles(declaracion)} />
+      },
+      {
+         label: "Servidor Publico",
+         component: <ServidorPublico next={handleNext} previous={handleBack} title={Titles(declaracion)} />
+      },
+      {
+         label: "PRUEBAS",
+         component: <Pruebas nombre={23} />
       }
+      // {
+      //    label: "Bienes Inmuebles (Situación Actual)",
+      //    component: <></>
+      // }
    ];
 
    // Función para obtener el título del paso actual
@@ -69,9 +83,18 @@ const ComponentDeclaraciones = () => {
    };
    return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
-         <React.Fragment>
+         <>
             {/* Contenido del MobileStepper */}
-            <div style={{ border: "2px solid #007bff", borderRadius: "10px", padding: "20px", boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)", marginBottom: "20px" }}>
+            <div
+               style={{
+                  overflowX: "hidden",
+                  border: "2px solid #007bff",
+                  borderRadius: "10px",
+                  padding: "20px 0",
+                  boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+                  marginBottom: "20px"
+               }}
+            >
                {/* Título del paso con estilos mejorados */}
                <Typography variant="h4" align="center" gutterBottom style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}>
                   {getStepTitle()}
@@ -103,9 +126,8 @@ const ComponentDeclaraciones = () => {
                {/* Componente correspondiente al paso actual */}
                {steps[activeStep].component}
             </div>
-         </React.Fragment>
+         </>
       </div>
    );
 };
 export default ComponentDeclaraciones;
-

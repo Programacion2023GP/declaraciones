@@ -26,7 +26,8 @@ export const Numeric = ({
    initial
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
-   const [number, setNumber] = useState(formik.values[name] || initial || 0);
+   const [isElevated, setIsElevated] = useState(false); // Variable de estado para controlar la elevación de las letras
+   const [number, setNumber] = useState(formik.values[name] || initial || null);
    useEffect(() => {}, [name]); // Observa los cambios en el nombre y el valor del campo
 
    const errors = formik.errors; // Obtiene los errores de Formik
@@ -35,11 +36,18 @@ export const Numeric = ({
    const isError = formik.touched[name] && formik.errors[name];
    const pattern = allowDecimal ? "^\\d*\\.?\\d*$" : "\\d*";
    const handleMore = () => {
+      setIsElevated(true); // Eleva las letras cuando se presiona el botón
+
       setNumber(isNaN(number) ? 1 : number + 1);
       formik.setFieldValue(name, isNaN(number) ? 1 : number + 1); // Actualiza el valor solo si es un número o está vacío
    };
 
    const handleMinus = () => {
+      setIsElevated(true); // Eleva las letras cuando se presiona el botón
+
+      if (number == "") {
+         setNumber(parseInt(0));
+      }
       setNumber(isNaN(number) || number <= 0 ? 0 : number - 1);
       formik.setFieldValue(name, isNaN(number) ? 1 : number - 1); // Actualiza el valor solo si es un número o está vacío
    };
@@ -75,7 +83,8 @@ export const Numeric = ({
                      fullWidth
                      InputLabelProps={{
                         style: color ? { color: color } : {},
-                        pattern
+                        pattern,
+                        shrink: isElevated
                      }}
                      onChange={(e) => {
                         let inputValue = e.target.value;
