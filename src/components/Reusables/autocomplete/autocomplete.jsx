@@ -6,7 +6,22 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Field, useFormikContext } from "formik";
 import PropTypes from "prop-types";
 import { DebugerContext } from "../../../context/DebuggerContext";
+import Interface from "../../../services/interface";
 
+const schema ={
+   helperText:"string?",
+   loading:"boolean?",
+   handleGetValue:"function?",
+   col:"number",
+   label:"string",
+   name:"string",
+   options:"any",
+   disabled:"boolean?",
+   optional:"any?",
+   color:"string?",
+   hidden:"boolean?",
+
+}
 export const AutoComplete = ({ helperText, loading = false, handleGetValue = null, col, label, name = "name", options = [], disabled, optional, color, hidden }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const { agregarVariables, agregarEventos } = useContext(DebugerContext);
@@ -14,7 +29,9 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
    const [inputValue, setInputValue] = useState("");
    const [loadingData, setLoadingData] = useState(true);
    const [progress, setProgress] = useState(10);
-
+   const props ={
+      helperText, loading, handleGetValue, col, label, name, options, disabled, optional, color, hidden
+   }
    const handleValue = (name, value) => {
       if (handleGetValue) {
          handleGetValue(name, value);
@@ -29,7 +46,8 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
          options = [];
          setLoadingData(false);
       }
-   }, [options]);
+      Interface(props,schema)
+   }, [options,props]);
 
    return (
       <Grid style={{ margin: "1rem 0" }} item xs={col} container sx={{ display: "flex", position: "relative" }}>

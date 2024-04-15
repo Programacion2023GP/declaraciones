@@ -79,6 +79,7 @@ export const IngresosII = ({}) => {
             label={"II.1 Por actividad industrial, comercial y/o empresarial"}
             placeholder={`"II.1 Por actividad industrial, comercial y/o empresarial (Después de impuestos)`}
             handleGetValue={handleingresosNetos}
+            
          />
          <Text name="AICE_NombreRazonSocial" label="Nombre o Razón Social" />
          <Text name="AICE_TipoNegocio" label="Tipo de Negocio" />

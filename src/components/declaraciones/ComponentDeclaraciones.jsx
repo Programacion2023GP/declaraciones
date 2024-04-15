@@ -17,7 +17,8 @@ import { DatosParejas } from "./datospareja/DatosPareja";
 import { DependientesEconomicos } from "./dependienteseconomicos/DependientesEconomicos";
 import { IngresosNetos } from "./ingresosnetos/IngresosNetos";
 import { ServidorPublico } from "./servidorpublico/ServidorPublico";
-import { Pruebas } from "./pruebas/Pruebas";
+// import { Pruebas } from "./pruebas/Pruebas";
+import { BienesInmuebles } from "./bienesinmuebles/BienesInmuebles";
 
 // Importa aquí los componentes correspondientes a cada paso
 
@@ -65,9 +66,10 @@ const ComponentDeclaraciones = () => {
          component: <ServidorPublico next={handleNext} previous={handleBack} title={Titles(declaracion)} />
       },
       {
-         label: "PRUEBAS",
-         component: <Pruebas nombre={23} />
+         label: "Bienes Inmuebles (Situación Actual)",
+         component: <BienesInmuebles next={handleNext} previous={handleBack} title={Titles(declaracion)} />
       }
+
       // {
       //    label: "Bienes Inmuebles (Situación Actual)",
       //    component: <></>

@@ -52,6 +52,7 @@ export const ServidorPublico = ({ next, previous, title }) => {
                label={"¿Te desempeñaste como servidor público en el año inmediato anterior?"}
             />
          </FormGroup>
+      
          <Ngif condition={checked}>
             <FormikServidorPublico submit={submit} validationSchema={validationSchema} initialValues={dataForm} title={title}>
                <FormikInitialValues />

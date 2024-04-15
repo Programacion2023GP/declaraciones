@@ -68,7 +68,6 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
          next();
 
          Success("Continuemos llenando los formularios");
-
       }
    };
    const adDataTable = (values) => {
@@ -98,7 +97,8 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
    };
    const handleChange = (event) => {
       setChecked(event.target.checked);
-   };setValidationSchema
+   };
+   setValidationSchema;
    const edit = (row) => {
       const item = datasRedux.filter((item) => item.id == row.id);
       handleChange("HabitaDomicilioDeclarante", item.HabitaDomicilioDeclarante);
@@ -118,6 +118,7 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
                headers={["Parentesco o relación con el declarante", "RFC", "Empleo, cargo o comisión"]}
                dataHidden={["id"]}
                data={datasTable}
+               
                // handleEdit={edit}
                // editButton={true}
                deleteButton={true}
@@ -145,6 +146,9 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
                Continuar
             </Button>
          </Ngif>
+         <button variant="contained" color="secondary" onClick={next}>
+            CONTINUAR DESAROLLO DE PAGINA
+         </button>
       </>
    );
 };

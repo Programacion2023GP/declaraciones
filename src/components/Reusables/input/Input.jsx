@@ -4,11 +4,39 @@ import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Field, useFormikContext } from "formik"; // Importa el hook useFormikContext
 import InputMask from "react-input-mask";
-
+import Interface from "../../../services/interface";
+const schema = {
+   loading: "boolean?",
+   col: "number",
+   label: "string",
+   name: "string",
+   disabled: "boolean?",
+   placeholder: "string?",
+   color: "string?",
+   rows: "number?",
+   hidden: "boolean?",
+   mask: "string?",
+   marginBoton: "any?"
+};
 export const Text = ({ loading = false, col, label, name = "name", type = null, disabled, placeholder, color, rows, hidden, mask, marginBoton }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
-
-   useEffect(() => {}, [name]); // Observa los cambios en el nombre y el valor del campo
+   const props = {
+      loading,
+      col,
+      label,
+      name,
+      type,
+      disabled,
+      placeholder,
+      color,
+      rows,
+      hidden,
+      mask,
+      marginBoton
+   };
+   useEffect(() => {
+      Interface(props, schema);
+   }, [props, name]); // Observa los cambios en el nombre y el valor del campo
 
    const errors = formik.errors; // Obtiene los errores de Formik
 

@@ -145,6 +145,7 @@ export const DatosGenerales = ({ next, previous, title }) => {
                               name="Nombre"
                               label="Nombre(s)"
                               placeholder="Sin abreviaturas, sin acentos, ni signos especiales"
+                              //   mask={''}
                               // Otras props opcionales como color, mask, etc., si es necesario
                            />
                            <Text col={12} name="PrimerApellido" label="Primer apellido" placeholder={"Sin abreviaturas, sin acentos, ni signos especiales"} />

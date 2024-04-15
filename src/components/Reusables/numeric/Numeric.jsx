@@ -7,19 +7,35 @@ import InputMask from "react-input-mask";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import Paper from "@mui/material/Paper";
-
+import { symbol } from "prop-types";
+import Interface from "../../../services/interface";
+const schema = {
+   loading: "boolean?",
+   max: "number?",
+   min: "number?",
+   label: "string",
+   col: "number",
+   name: "string",
+   disabled: "boolean?",
+   placeholder: "string?",
+   hidden: "boolean?",
+   handleGetValue: "function?",
+   initial: "number?",
+   color: "string?",
+   marginBoton: "any?",
+   allowDecimal: "boolean?"
+};
 export const Numeric = ({
    loading = false,
    col,
+   max,
+   min,
    label,
    name = "name",
-   type = null,
    disabled,
    placeholder,
    color,
-   rows,
    hidden,
-   mask,
    handleGetValue,
    marginBoton,
    allowDecimal = false,
@@ -28,7 +44,25 @@ export const Numeric = ({
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const [isElevated, setIsElevated] = useState(false); // Variable de estado para controlar la elevación de las letras
    const [number, setNumber] = useState(formik.values[name] || initial || null);
-   useEffect(() => {}, [name]); // Observa los cambios en el nombre y el valor del campo
+   const props = {
+      loading,
+      col,
+      max,
+      min,
+      label,
+      name,
+      disabled,
+      placeholder,
+      color,
+      hidden,
+      handleGetValue,
+      marginBoton,
+      allowDecimal,
+      initial
+   };
+   useEffect(() => {
+      Interface(props, schema);
+   }, [name, props]); // Observa los cambios en el nombre y el valor del campo
 
    const errors = formik.errors; // Obtiene los errores de Formik
 
@@ -37,14 +71,18 @@ export const Numeric = ({
    const pattern = allowDecimal ? "^\\d*\\.?\\d*$" : "\\d*";
    const handleMore = () => {
       setIsElevated(true); // Eleva las letras cuando se presiona el botón
-
+      if (number + 1 > max) {
+         return;
+      }
       setNumber(isNaN(number) ? 1 : number + 1);
       formik.setFieldValue(name, isNaN(number) ? 1 : number + 1); // Actualiza el valor solo si es un número o está vacío
    };
 
    const handleMinus = () => {
       setIsElevated(true); // Eleva las letras cuando se presiona el botón
-
+      if (number - 1 > min) {
+         return;
+      }
       if (number == "") {
          setNumber(parseInt(0));
       }
@@ -57,7 +95,7 @@ export const Numeric = ({
    return (
       <>
          <Grid
-            style={{ margin: marginBoton ? `${marginBoton} 0` : "0 .5rem" }}
+            style={{ margin: marginBoton ? `${marginBoton} 0` : "1rem .5rem" }}
             item
             lg={col}
             xl={col}
@@ -78,25 +116,40 @@ export const Numeric = ({
                      name={name}
                      value={number}
                      label={label}
+                     // onClick={setIsElevated(true)}
                      type={"text"} // Utiliza type si está definido, de lo contrario, usa "text"
                      variant="standard"
                      fullWidth
+                     onClick={() => {
+                        setIsElevated(true);
+                     }}
                      InputLabelProps={{
                         style: color ? { color: color } : {},
                         pattern,
-                        shrink: isElevated
+                        shrink: disabled ? true : formik.values[name] ? formik.values[name] : isElevated
                      }}
                      onChange={(e) => {
                         let inputValue = e.target.value;
                         let isNumber = /^\d*\.?\d*$/.test(inputValue); // Verifica si el valor ingresado es un número o un número decimal
                         inputValue = inputValue.replace(/[^\d.]/g, ""); // Elimina todos los caracteres no numéricos ni puntos
                         if (isNumber || inputValue === "") {
-                           formik.setFieldValue(name, parseInt(inputValue));
-                           handleValue(name, parseInt(inputValue));
-                           setNumber(inputValue === "" ? 0 : parseInt(inputValue)); // Asigna cero si el valor es vacío
+                           const parsedValue = parseInt(inputValue); // Convertir el valor a entero
+                           if (parsedValue > max) {
+                              // Si el valor ingresado es mayor que el máximo permitido
+                              // Aquí podrías mostrar un mensaje de error o realizar alguna otra acción para notificar al usuario
+                           } else if (parsedValue < min) {
+                              // Si el valor ingresado es menor que el mínimo permitido
+                              // Aquí podrías mostrar un mensaje de error o realizar alguna otra acción para notificar al usuario
+                           } else {
+                              // Si el valor ingresado está dentro del rango permitido
+                              formik.setFieldValue(name, parsedValue);
+                              handleValue(name, parsedValue);
+                              setNumber(parsedValue === "" ? 0 : parsedValue); // Asigna cero si el valor es vacío
+                           }
                         }
                      }}
                   />
+
                   <Divider sx={{ height: 28, m: 0 }} orientation="vertical" />
                   <IconButton disabled={disabled} onClick={handleMinus} color="error" sx={{ p: "10px" }} aria-label="menu">
                      <RemoveIcon />
