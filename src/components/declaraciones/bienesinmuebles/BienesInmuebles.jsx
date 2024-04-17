@@ -5,7 +5,8 @@ import DataTable from "../../Reusables/table/DataTable";
 import { InitialValues } from "./components/InitialValues";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
-import { Request } from "./request/Request";
+import { Stack } from "@mui/material";
+import { Request } from "../../Reusables/request/Request";
 
 const schema = {
    next: "function",
@@ -17,7 +18,7 @@ export const BienesInmuebles = ({ next, previous, title }) => {
    const dataForm = useSelector((state) => state.BienesInmuebles.initialState);
    const dispatch = useDispatch();
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
-   const { inmuebles, titular, relacion, adquisicion, pago } = Request();
+   const { inmuebles, titular, relacion, adquisicion, pago, monedas, conforme, motivobaja } = Request();
 
    const props = { next, previous, title };
    const message = `Todos los datos de Bienes Inmuebles declarados a nombre de la pareja, 
@@ -31,8 +32,18 @@ export const BienesInmuebles = ({ next, previous, title }) => {
    return (
       <>
          {/* <DataTable /> */}
-         <FormikForm initialValues={dataForm} validationSchema={validationSchema} title={title} message={message}>
-            <InitialValues inmuebles={inmuebles} titular={titular} relacion={relacion} adquisicion={adquisicion} pago={pago} />
+
+         <FormikForm initialValues={dataForm} validationSchema={validationSchema} title={title} message={message} button={false}>
+            <InitialValues
+               inmuebles={inmuebles}
+               titular={titular}
+               relacion={relacion}
+               adquisicion={adquisicion}
+               pago={pago}
+               monedas={monedas}
+               conforme={conforme}
+               motivobaja={motivobaja}
+            />
          </FormikForm>
       </>
    );

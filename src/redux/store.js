@@ -4,8 +4,16 @@ import { DependientesEconomicos7 } from "./DependientesEconomicos7/DependientesE
 import { IngresosNetosHoja8 } from "./IngresosNetosHoja8/IngresosNetosHoja8";
 import { ServidorPublicoHoja9 } from "./ServidorPublicoHoja9/ServidorPublicoHoja9";
 import { BienesInmueblesHoja10 } from "./BienesInmueblesHoja10/BienesInmueblesHoja10";
+import { DatosGeneralesHoja1 } from "./DatosGeneralesHoja1/DatosGenerales";
+import { DomicilioDeclaranteHoja2 } from "./DomicilioDeclaranteHoja2/DomicilioDeclarante";
+import { DatosCurricularesHoja3 } from "./DatosCurricularesHoja3/DatosCurriculares";
+import { DatosEmpleosHoja4 } from "./DatosEmpleoHoja4/DatosEmpleo";
  const store = configureStore({
     reducer:{
+        DatosGenerales:DatosGeneralesHoja1.reducer,
+        DomicilioDeclarante:DomicilioDeclaranteHoja2.reducer,
+        DatosCurriculares:DatosCurricularesHoja3.reducer,
+        DatosEmpleo:DatosEmpleosHoja4.reducer,
         DatosPareja :DatosParejaHoja6.reducer,
         DependientesEconomicos:DependientesEconomicos7.reducer,
         IngresosNetos:IngresosNetosHoja8.reducer,

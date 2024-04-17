@@ -6,23 +6,23 @@ import { ComponenteMexico } from "./componentesdomicilios/ComponenteMexico";
 import { ComponenteExtranjero } from "./componentesdomicilios/ComponenteExtranjero";
 import { useDispatch } from "react-redux";
 import { configValidationsDependiente } from "../../../../redux/DependientesEconomicos7/DependientesEconomicos";
+import { configValidationsEmpleo } from "../../../../redux/DatosEmpleoHoja4/DatosEmpleo";
 export const DomicilioDeclarante = memo(({}) => {
    const [mexico, setMexico] = useState(true);
    const dispatch = useDispatch();
    const handleGetValue = (name, value) => {
       setMexico(value == 1 ? true : false);
-      dispatch(configValidationsDependiente({ tipo: (value == 1 ? "DomicilioDeclaranteNULL" : "DomicilioDeclarante") }));
+      dispatch(configValidationsEmpleo({ tipo: (value == 1 ? "Mexico" : "NoesMexico") }));
    };
    return (
       <>
          <CustomRadio
-            hidden={false}
             col={12}
-            name="Id_LugarDondeReside" 
-            title="¿Es de México el dependiente economicó?"
+            title={"Ubicación del Inmueble"}
+            name={"EsEnMexico"}
             options={[
-               { value: 1, label: "Si" },
-               { value: 0, label: "No" }
+               { value: 1, label: "En México" },
+               { value: 0, label: "En el extranjero" }
             ]}
             handleGetValue={handleGetValue}
          />

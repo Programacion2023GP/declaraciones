@@ -129,6 +129,10 @@ export const Numeric = ({
                         shrink: disabled ? true : formik.values[name] ? formik.values[name] : isElevated
                      }}
                      onChange={(e) => {
+                        if(e.target.value ==[empty]){
+                           setNumber(0)
+                           // console.log(e.target.value)
+                        }
                         let inputValue = e.target.value;
                         let isNumber = /^\d*\.?\d*$/.test(inputValue); // Verifica si el valor ingresado es un número o un número decimal
                         inputValue = inputValue.replace(/[^\d.]/g, ""); // Elimina todos los caracteres no numéricos ni puntos

@@ -3,13 +3,13 @@ import { GetAxios } from "../../../../../services/services";
 import { AutoComplete } from "../../../../Reusables/autocomplete/autocomplete";
 import { Text } from "../../../../Reusables/input/Input";
 import { useDispatch } from "react-redux";
-import { configValidationsDependiente } from "../../../../../redux/DependientesEconomicos7/DependientesEconomicos";
+import { validationDomicilioDeclarante } from "../../../../../redux/DomicilioDeclaranteHoja2/DomicilioDeclarante";
 export const ComponenteExtranjero = memo(({}) => {
    const dispatch = useDispatch();
 
    const [paises, setPaises] = useState([]);
    useEffect(() => {
-      dispatch(configValidationsDependiente({ tipo: "NoesMexico" }));
+      dispatch(validationDomicilioDeclarante({ tipo: "NoesMexico" }));
       const init = async () => {
          setPaises(await GetAxios("/paises/show"));
       };
@@ -18,7 +18,7 @@ export const ComponenteExtranjero = memo(({}) => {
    return (
       <>
          <AutoComplete col={12} label="Pais de nacimiento" name="Id_Pais" options={paises} color="green" />
-         <Text col={12} name="EstadoProvincia" label="Estado / Provincia" color={"green"} />
+         <Text col={12} name="EstadoProvincia" label="Estado / Provincia"  color={"green"} />
       </>
    );
 });

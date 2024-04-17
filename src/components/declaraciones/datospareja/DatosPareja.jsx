@@ -260,7 +260,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                                     // getValue={getValue}
                                  />
                                  <AutoComplete hidden={!mexico} col={12} label="Pais de nacimiento" name="Id_Pais" options={paises} color="green" />
-                                 <Text hidden={!mexico} col={12} name="EstadoProvincia" label="Estado / Provincia" type={"number"} color={"green"} />
+                                 <Text hidden={!mexico} col={12} name="EstadoProvincia" label="Estado / Provincia"  color={"green"} />
 
                                  <Text col={12} name="ColoniaLocalidad" label="Colonia / Localidad" color={"green"} />
                               </Ngif>

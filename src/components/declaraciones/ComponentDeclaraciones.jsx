@@ -28,8 +28,10 @@ const ComponentDeclaraciones = () => {
    const { declaracion } = useParams();
 
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(9);
-
+   const [activeStep, setActiveStep] = React.useState(4);
+   React.useEffect(() => {
+      // console.log("cambio", activeStep);
+   }, []);
    const handleNext = () => {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
    };
@@ -123,7 +125,7 @@ const ComponentDeclaraciones = () => {
                   ))}
                </div>
                <Typography variant="subtitle1" align="center" gutterBottom style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}>
-                  Paso {activeStep + 1} de {steps.length}
+                  {/* Paso {activeStep + 1} de {steps.length} */}
                </Typography>
                {/* Componente correspondiente al paso actual */}
                {steps[activeStep].component}

@@ -16,13 +16,12 @@ export const DomicilioDeclarante = memo(({}) => {
    return (
       <>
          <CustomRadio
-            hidden={false}
             col={12}
-            name="Id_LugarDondeReside" 
-            title="¿Es de México el dependiente economicó?"
+            title={"Ubicación del Inmueble"}
+            name={"T_Id_TipoPersona"}
             options={[
-               { value: 1, label: "Si" },
-               { value: 0, label: "No" }
+               { value: 1, label: "En México" },
+               { value: 0, label: "En el extranjero" }
             ]}
             handleGetValue={handleGetValue}
          />
