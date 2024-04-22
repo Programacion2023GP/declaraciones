@@ -28,7 +28,7 @@ export const ComponenteMexico = memo(({}) => {
    return (
       <>
          <AutoComplete
-            col={12}
+            col={6}
             label="Entidad Federativa"
             name="Id_EntidadFederativa"
             options={entidades}
@@ -38,7 +38,7 @@ export const ComponenteMexico = memo(({}) => {
          <AutoComplete
             disabled={activeMunicipios}
             loading={loadingMuncipios}
-            col={12}
+            col={6}
             otro={23}
             label="Municipio / Alcaldía"
             name="Id_MunicipioAlcaldia"

@@ -98,7 +98,6 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
    const handleChange = (event) => {
       setChecked(event.target.checked);
    };
-   setValidationSchema;
    const edit = (row) => {
       const item = datasRedux.filter((item) => item.id == row.id);
       handleChange("HabitaDomicilioDeclarante", item.HabitaDomicilioDeclarante);

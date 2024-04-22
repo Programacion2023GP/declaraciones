@@ -54,7 +54,7 @@ export const ServidorPublico = ({ next, previous, title }) => {
          </FormGroup>
       
          <Ngif condition={checked}>
-            <FormikServidorPublico submit={submit} validationSchema={validationSchema} initialValues={dataForm} title={title}>
+            <FormikServidorPublico previous={previous} submit={submit} validationSchema={validationSchema} initialValues={dataForm} title={title}>
                <FormikInitialValues />
             </FormikServidorPublico>
          </Ngif>

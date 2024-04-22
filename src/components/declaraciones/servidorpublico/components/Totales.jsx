@@ -1,14 +1,20 @@
+import { useParams } from "react-router-dom";
 import { Text } from "../../../Reusables/input/Input";
 import { Numeric } from "../../../Reusables/numeric/Numeric";
+import { labelSumaIyII, labelTotal } from "../../funciones/ingresosEservidor/labels";
 
 export const Totales = ({}) => {
+   let { declaracion } = useParams();
+   declaracion = parseInt(declaracion);
    return (
       <>
-         <Numeric disabled={true} name="IngresoMensualConclusionNeto" label="II. Otros ingresos del declarante (Suma del II.1 al II.5)" />
+         <Numeric disabled={true} name="IngresoMensualConclusionNeto" label={labelSumaIyII(declaracion)} placeholder={labelSumaIyII(declaracion)} />
          <Numeric
             disabled={true}
             name="TotalIngresosNetos"
-            label="C. Total de ingresos anuales netos percibidos por el declarante, pareja y/o dependientes economicos (suma de los apartados A y B)."
+            label={labelTotal(declaracion)}
+            placeholder={labelTotal(declaracion)}
+
          />
 
          <Text col={12} name="Aclaraciones" label="Aclaraciones" rows={10} color={"green"} />

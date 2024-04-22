@@ -3,14 +3,15 @@ import { AutoComplete } from "../../../Reusables/autocomplete/autocomplete";
 import DatePickerComponent from "../../../Reusables/datepicker/DatePickerComponent";
 import { Text } from "../../../Reusables/input/Input";
 import { CustomRadio } from "../../../Reusables/radiobutton/Radio";
+import { Grid } from "@mui/material";
 
 export const InitialValues = ({nivelEstudios,estatus,documentosObtenidos}) => {
     const formik = useFormikContext()
     const {values,setFieldValue,handleChange,handleBlur,errors,touched} = formik
    return (
-      <>
-         <AutoComplete col={12} label="Nivel de estudios" name="Id_Nivel" options={nivelEstudios} />
-         <Text col={12} name="NombreInstitucionEducativa" label="Institución educativa" />
+      <Grid container spacing={1}>
+         <AutoComplete col={6} label="Nivel de estudios" name="Id_Nivel" options={nivelEstudios} />
+         <Text col={6} name="NombreInstitucionEducativa" label="Institución educativa" />
          <Text col={12} name="CarreraAreaConocimiento" label="Aerea de conocimiento" />
          <CustomRadio
             // getValue={}
@@ -22,8 +23,8 @@ export const InitialValues = ({nivelEstudios,estatus,documentosObtenidos}) => {
                { value: 0, label: "En el extranjero" }
             ]} // Opciones para los radio buttons
          />
-         <AutoComplete col={12} label="Estatus" name="Id_Estatus" options={estatus} />
-         <AutoComplete col={12} label="Documento obtenido" name="Id_DocumentoObtenido" options={documentosObtenidos} />
+         <AutoComplete col={6} label="Estatus" name="Id_Estatus" options={estatus} />
+         <AutoComplete col={6} label="Documento obtenido" name="Id_DocumentoObtenido" options={documentosObtenidos} />
          <DatePickerComponent
             idName={"FechaObtencion"}
             label={"Fecha de obtención del documento"}
@@ -37,6 +38,6 @@ export const InitialValues = ({nivelEstudios,estatus,documentosObtenidos}) => {
             showErrorInput={null}
          />
          <Text col={12} name="Aclaraciones" label="Aclaraciones/Observaciones" rows={10} color={"green"} />
-      </>
+      </Grid>
    );
 };

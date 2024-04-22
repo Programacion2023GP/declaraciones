@@ -33,7 +33,7 @@ export const IngresosNetos = ({ next, previous, title }) => {
    }, [useSelector((state) => state.IngresosNetos.validationSchema), useSelector((state) => state.IngresosNetos.initialState)]);
    return (
       <>
-         <FormikIngresosNetos initialValues={dataForm} validationSchema={validationSchema} title={title} submit={submit}>
+         <FormikIngresosNetos previous={previous} initialValues={dataForm} validationSchema={validationSchema} title={title} submit={submit}>
             <FormikInitialValues />
          </FormikIngresosNetos>
       </>

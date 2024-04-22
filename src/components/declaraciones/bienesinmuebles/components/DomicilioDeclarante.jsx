@@ -6,6 +6,7 @@ import { ComponenteMexico } from "./componentesdomicilios/ComponenteMexico";
 import { ComponenteExtranjero } from "./componentesdomicilios/ComponenteExtranjero";
 import { useDispatch } from "react-redux";
 import { configValidationsDependiente } from "../../../../redux/DependientesEconomicos7/DependientesEconomicos";
+import { Grid } from "@mui/material";
 export const DomicilioDeclarante = memo(({}) => {
    const [mexico, setMexico] = useState(true);
    const dispatch = useDispatch();
@@ -14,7 +15,8 @@ export const DomicilioDeclarante = memo(({}) => {
       dispatch(configValidationsDependiente({ tipo: (value == 1 ? "DomicilioDeclaranteNULL" : "DomicilioDeclarante") }));
    };
    return (
-      <>
+      <Grid container spacing={1}>
+
          <CustomRadio
             col={12}
             title={"Ubicación del Inmueble"}
@@ -26,15 +28,15 @@ export const DomicilioDeclarante = memo(({}) => {
             handleGetValue={handleGetValue}
          />
          <Text
-            col={12}
+            col={4}
             name="Calle"
             label="Calle"
             color={"green"}
             // Otras props opcionales como color, mask, etc., si es necesario
          />
-         <Text col={12} name="NumeroExterior" label="Número Exterior" type={"number"} color={"green"} />
-         <Text col={12} name="NumeroInterior" label="Número Interior" type={"number"} color={"green"} />
-         <Text col={12} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} />
+         <Text col={4} name="NumeroExterior" label="Número Exterior" type={"number"} color={"green"} />
+         <Text col={4} name="NumeroInterior" label="Número Interior" type={"number"} color={"green"} />
+         <Text col={4} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} />
          <Ngif condition={mexico}>
             <ComponenteMexico />
          </Ngif>
@@ -48,6 +50,6 @@ export const DomicilioDeclarante = memo(({}) => {
             color={"green"}
             // Otras props opcionales como color, mask, etc., si es necesario
          />
-      </>
+      </Grid>
    );
 });

@@ -5,6 +5,7 @@ import { Text } from "../../../Reusables/input/Input";
 import { ComponenteMexico } from "./componentesdomicilios/ComponenteMexico";
 import { ComponenteExtranjero } from "./componentesdomicilios/ComponenteExtranjero";
 import { Numeric } from "../../../Reusables/numeric/Numeric";
+import { Grid } from "@mui/material";
 // import { useDispatch } from "react-redux";
 // import { configValidationsDependiente } from "../../../../redux/DependientesEconomicos7/DependientesEconomicos";
 export const DomicilioDeclaranteGeneral = memo(({}) => {
@@ -15,7 +16,7 @@ export const DomicilioDeclaranteGeneral = memo(({}) => {
       // dispatch(configValidationsDependiente({ tipo: (value = 1 ? "Mexico" : "NoesMexico") }));
    };
    return (
-      <>
+      <Grid container spacing={1}>
          <CustomRadio
             hidden={false}
             col={12}
@@ -28,15 +29,15 @@ export const DomicilioDeclaranteGeneral = memo(({}) => {
             handleGetValue={handleGetValue}
          />
          <Text
-            col={12}
+            col={6}
             name="Calle"
             label="Calle"
             color={"green"}
             // Otras props opcionales como color, mask, etc., si es necesario
          />
-         <Numeric col={12} name="NumeroExterior" label="Número Exterior" type={"number"} color={"green"} />
-         <Numeric col={12} name="NumeroInterior" label="Número Interior" type={"number"} color={"green"} />
-         <Numeric col={12} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} />
+         <Numeric col={6} name="NumeroExterior" label="Número Exterior" type={"number"} color={"green"} />
+         <Numeric col={6} name="NumeroInterior" label="Número Interior" type={"number"} color={"green"} />
+         <Numeric col={6} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} />
          <Ngif condition={mexico}>
             <ComponenteMexico />
          </Ngif>
@@ -50,6 +51,6 @@ export const DomicilioDeclaranteGeneral = memo(({}) => {
             color={"green"}
             // Otras props opcionales como color, mask, etc., si es necesario
          />
-      </>
+      </Grid>
    );
 });

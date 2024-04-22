@@ -120,7 +120,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
       }
    };
    return (
-      <>
+      <Grid container spacing={1}>
          <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
             <CardContent>
                <Typography variant="h3" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
@@ -139,7 +139,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                      {
                      }
                      return (
-                        <Box component={"form"} onSubmit={handleSubmit}>
+                        <Grid container spacing={1} component={"form"} onSubmit={handleSubmit}>
                            <CustomRadio
                               col={12}
                               name="Pareja"
@@ -343,7 +343,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                            <Button type="submit" variant="contained" color="primary">
                               Registrar y Continuar
                            </Button>
-                        </Box>
+                        </Grid>
                      );
                   }}
                </Formik>
@@ -352,6 +352,6 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                </button>
             </CardContent>
          </Card>
-      </>
+      </Grid>
    );
 };

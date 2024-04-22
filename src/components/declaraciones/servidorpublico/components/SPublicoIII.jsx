@@ -3,11 +3,13 @@ import { Numeric } from "../../../Reusables/numeric/Numeric";
 import { useFormikContext } from "formik";
 import { useDispatch } from "react-redux";
 import { configValidationServidorPublico } from "../../../../redux/ServidorPublicoHoja9/ServidorPublicoHoja9";
+import { labelPareja } from "../../funciones/ingresosEservidor/labels";
 
 export const SPublicoIII = ({}) => {
    const formik = useFormikContext();
    const dispatch = useDispatch();
-
+   let { declaracion } = useParams();
+   declaracion = parseInt(declaracion);
    const [start, setStart] = useState(false);
    const handleGetValue = () => {
       setStart(!start);
@@ -17,7 +19,7 @@ export const SPublicoIII = ({}) => {
          parseInt(formik.values.IngresoMensualAnualConclusionNeto) > 0
             ? parseInt(formik.values.IngresoMensualAnualConclusionNeto) + parseInt(formik.values.IngresoNetoParejaDependiente)
             : parseInt(formik.values.IngresoNetoParejaDependiente);
-      formik.setFieldValue("TotalIngresosNetos",total);
+      formik.setFieldValue("TotalIngresosNetos", total);
       dispatch(configValidationServidorPublico({ tipo: "TotalesGeneral", total: total }));
    };
    useEffect(() => {
@@ -29,8 +31,8 @@ export const SPublicoIII = ({}) => {
          col={12}
          name={"IngresoNetoParejaDependiente"}
          color="green"
-         label={"B. Ingresos anual neto de la pareja y o dependientes economicos (despues de impuestos)."}
-         placeholder={`B. Ingresos anual neto de la pareja y o dependientes economicos (despues de impuestos)`}
+         label={labelPareja(declaracion)}
+         placeholder={labelPareja(declaracion)}
          handleGetValue={handleGetValue}
       />
    );

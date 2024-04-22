@@ -128,7 +128,6 @@ export const DependientesEconomicos7 = createSlice({
             state.validationSchema = validationSchema
             state.initialState = state.initialState            
            state.datas.push(action.payload)
-           console.warn(state.datas)
         },
         deleteDatosDependiente :(state,action)=>{
             state.validationSchema = validationSchema

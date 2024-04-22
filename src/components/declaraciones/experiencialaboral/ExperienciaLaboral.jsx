@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Text } from "../../Reusables/input/Input";
 import { AutoComplete } from "../../Reusables/autocomplete/autocomplete";
 import { CustomRadio } from "../../Reusables/radiobutton/Radio";
-import { Box, Button, Card, CardContent, Grid, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, FormControlLabel, FormGroup, Grid, Switch, TextField, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { Axios, GetAxios, PostAxios } from "../../../services/services";
 import { Formik, useFormikContext } from "formik";
@@ -11,6 +11,8 @@ import DatePickerComponent from "../../Reusables/datepicker/DatePickerComponent"
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import DataTable from "../../Reusables/table/DataTable";
 import { Error, Success } from "../../../toasts/toast";
+import { useDispatch } from "react-redux";
+import { addExperienciaLaboral } from "../../../redux/ExperienciaLaboralHoja5/ExperienciaLaboralHoja5";
 
 // import DataTable from "../../Reusables/table/DataTable";
 
@@ -27,7 +29,9 @@ export const ExperienciaLaboral = ({ next, previous, title, debugerClear }) => {
    const [idUnique, setIdUnique] = useState(1);
    const formikRef = useRef();
    const [continuar, setContinuar] = useState(false);
+   const [checked, setChecked] = useState(true);
 
+   const dispatch = useDispatch();
    const dataForm = {
       Id_AmbitoSector: 1,
       Id_AmbitoPublico: 0,
@@ -69,7 +73,6 @@ export const ExperienciaLaboral = ({ next, previous, title, debugerClear }) => {
       Rfc: activeAmbitoPublico && Yup.string().length(12, "Debe contar con 12 caracteres").trim().required("El RFC de la empresa es requerido"),
       Puesto: activeAmbitoPublico && Yup.string().required("El puesto de la empresa es requerido"),
       Id_Sector: activeAmbitoPublico && Yup.number().required("El sector es requerido"),
-
       FechaIngreso: Yup.date().typeError("El formato de fecha es inválido").required("La fecha de ingreso es requerida"),
       FechaEngreso: Yup.date().typeError("El formato de fecha es inválido").required("La fecha de egreso es requerida"),
       FueEnMexico: Yup.number().typeError("Debe ser numérico").required("Es requerido que seleccione una opción")
@@ -143,6 +146,7 @@ export const ExperienciaLaboral = ({ next, previous, title, debugerClear }) => {
       try {
          const newDatas = [...datas];
          for (let i = 0; i < newDatas.length; i++) {
+            dispatch(addExperienciaLaboral(newDatas[i]));
             delete newDatas[i].identificador;
          }
          const response = await PostAxios("/experiencialaboral/create", newDatas);
@@ -175,6 +179,9 @@ export const ExperienciaLaboral = ({ next, previous, title, debugerClear }) => {
    const Delete = (row) => {
       const newDatasVisuales = datasVisuales.filter((elemento) => elemento.identificador !== row.id);
       setDatasVisuales(newDatasVisuales);
+   };
+   const handleChange = (event) => {
+      setChecked(event.target.checked);
    };
    useEffect(() => {
       const init = async () => {
@@ -212,120 +219,127 @@ export const ExperienciaLaboral = ({ next, previous, title, debugerClear }) => {
                   {title}
                </Typography>
                <Typography variant="h6" align="start" color="textPrimary" style={{ fontWeight: "500" }}>
-                  Los datos que no serán públicos estarán resaltados de color
+                  Los datos que no serán públicos estarán resaltados de color &nbsp;
                   <span style={{ color: "green" }}>verde</span>
                </Typography>
                <br />
                <Typography variant="body2" color="text.secondary">
                   <Grid container spacing={2}></Grid>
                </Typography>
-               <Formik innerRef={formikRef} initialValues={dataForm} validationSchema={validationSchema} onSubmit={submit}>
-                  {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues }) => {
-                     {
-                     }
-                     return (
-                        <Box component={"form"} onSubmit={handleSubmit}>
-                           <CustomRadio
-                              handleGetValue={handleGetValue}
-                              hidden={false}
-                              col={12}
-                              name="Id_AmbitoSector" // Nombre del campo en el formulario
-                              title="Ámbito / sector en el que laboraste"
-                              options={[
-                                 { value: 1, label: "PÚBLICO" },
-                                 { value: 2, label: "PRIVADO" }
-                              ]} // Opciones para los radio buttons
-                           />
-                           <Ngif condition={!activeAmbitoPublico}>
-                              <AutoComplete col={12} label="Ámbito público" name="Id_AmbitoPublico" options={ambitoPublico} />
-                              <Text col={12} name="NombreEntePublico" label="Nombre del ente público" />
-                              <Text
-                                 col={12}
-                                 name="AreaAdscripcion"
-                                 label="Área de adscripción"
-                                 placeholder={
-                                    "Especificar el nombre de la Unidad Administrativa u homóloga superior inmediata de su adscripción. (Superior jerárquico)"
-                                 }
-                              />
-                              <Text col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión" />
-                              <Text
-                                 col={12}
-                                 name="FuncionPrincipal"
-                                 label="Especifique función principal"
-                                 placeholder={"Señalar cuál es la función o actividad principal que desempeña en su empleo, cargo o comisión"}
-                              />
-                           </Ngif>
-                           <Ngif condition={activeAmbitoPublico}>
-                              <Text col={12} name="NombreEntePublico" label="Nombre de la empresa" />
-                              <Text col={12} name="Rfc" label="Rfc de la empresa" />
-                              <Text col={12} name="AreaAdscripcion" label="Aerea" />
-                              <Text col={12} name="Puesto" label="Puesto" />
+               <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
+                  <FormControlLabel
+                     control={<Switch checked={checked} onChange={handleChange} name="gilad" color={"primary"} />}
+                     label={"¿Deseas seguir agregando experiencias laborales?"}
+                  />
+               </FormGroup>
+               <Ngif condition={checked}>
+                  <Formik innerRef={formikRef} initialValues={dataForm} validationSchema={validationSchema} onSubmit={submit}>
+                     {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues }) => {
+                        {
+                        }
+                        return (
+                           <Grid container spacing={1} component={"form"} onSubmit={handleSubmit}>
                               <CustomRadio
                                  handleGetValue={handleGetValue}
+                                 hidden={false}
                                  col={12}
-                                 name="Id_Sector" // Nombre del campo en el formulario
-                                 title="Sector al que pertenece"
+                                 name="Id_AmbitoSector" // Nombre del campo en el formulario
+                                 title="Ámbito / sector en el que laboraste"
                                  options={[
-                                    { value: 1, label: "Empresa" },
-                                    { value: 2, label: "Sociedad o Asociación" },
-                                    { value: 0, label: "Otro especifique ..." }
+                                    { value: 1, label: "PÚBLICO" },
+                                    { value: 2, label: "PRIVADO" }
                                  ]} // Opciones para los radio buttons
                               />
-                           </Ngif>
-                           <Ngif condition={activeSector}>
-                              <Text col={12} name="SectorEspecificado" label="Especifica el sector" />
-                           </Ngif>
-                           <DatePickerComponent
-                              idName={"FechaIngreso"}
-                              label={"Fecha de ingreso"}
-                              format={"DD/MM/YYYY"}
-                              // value={values.FechaIngreso}
-                              setFieldValue={setFieldValue}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              error={errors.FechaIngreso}
-                              touched={touched.FechaIngreso}
-                              showErrorInput={null}
-                           />
-                           <DatePickerComponent
-                              idName={"FechaEngreso"}
-                              label={"Fecha de egreso"}
-                              format={"DD/MM/YYYY"}
-                              // value={values.FechaEngreso}
-                              setFieldValue={setFieldValue}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              error={errors.FechaEngreso}
-                              touched={touched.FechaEngreso}
-                              showErrorInput={null}
-                           />
-                           <CustomRadio
-                              hidden={false}
-                              col={12}
-                              name="FueEnMexico" // Nombre del campo en el formulario
-                              title="¿Es de México?"
-                              options={[
-                                 { value: 1, label: "Si" },
-                                 { value: 0, label: "No" }
-                              ]} // Opciones para los radio buttons
-                           />
-                           <Text col={12} name="Aclaraciones" label="Aclaraciones" rows={10} color={"green"} />
-
-                           <Button type="submit" variant="contained" color="primary">
-                              Registrar
-                           </Button>
-                           {continuar && (
-                              <Button sx={{ marginLeft: "1rem" }} variant="contained" color="primary" onClick={saveDatabase}>
-                                 Continuar
+                              <Ngif condition={!activeAmbitoPublico}>
+                                 <AutoComplete col={12} label="Ámbito público" name="Id_AmbitoPublico" options={ambitoPublico} />
+                                 <Text col={12} name="NombreEntePublico" label="Nombre del ente público" />
+                                 <Text
+                                    col={12}
+                                    name="AreaAdscripcion"
+                                    label="Área de adscripción"
+                                    placeholder={
+                                       "Especificar el nombre de la Unidad Administrativa u homóloga superior inmediata de su adscripción. (Superior jerárquico)"
+                                    }
+                                 />
+                                 <Text col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión" />
+                                 <Text
+                                    col={12}
+                                    name="FuncionPrincipal"
+                                    label="Especifique función principal"
+                                    placeholder={"Señalar cuál es la función o actividad principal que desempeña en su empleo, cargo o comisión"}
+                                 />
+                              </Ngif>
+                              <Ngif condition={activeAmbitoPublico}>
+                                 <Text col={12} name="NombreEntePublico" label="Nombre de la empresa" />
+                                 <Text col={12} name="Rfc" label="Rfc de la empresa" />
+                                 <Text col={12} name="AreaAdscripcion" label="Aerea" />
+                                 <Text col={12} name="Puesto" label="Puesto" />
+                                 <CustomRadio
+                                    handleGetValue={handleGetValue}
+                                    col={12}
+                                    name="Id_Sector" // Nombre del campo en el formulario
+                                    title="Sector al que pertenece"
+                                    options={[
+                                       { value: 1, label: "Empresa" },
+                                       { value: 2, label: "Sociedad o Asociación" },
+                                       { value: 0, label: "Otro especifique ..." }
+                                    ]} // Opciones para los radio buttons
+                                 />
+                              </Ngif>
+                              <Ngif condition={activeSector}>
+                                 <Text col={12} name="SectorEspecificado" label="Especifica el sector" />
+                              </Ngif>
+                              <DatePickerComponent
+                                 idName={"FechaIngreso"}
+                                 label={"Fecha de ingreso"}
+                                 format={"DD/MM/YYYY"}
+                                 // value={values.FechaIngreso}
+                                 setFieldValue={setFieldValue}
+                                 onChange={handleChange}
+                                 onBlur={handleBlur}
+                                 error={errors.FechaIngreso}
+                                 touched={touched.FechaIngreso}
+                                 showErrorInput={null}
+                              />
+                              <DatePickerComponent
+                                 idName={"FechaEngreso"}
+                                 label={"Fecha de egreso"}
+                                 format={"DD/MM/YYYY"}
+                                 // value={values.FechaEngreso}
+                                 setFieldValue={setFieldValue}
+                                 onChange={handleChange}
+                                 onBlur={handleBlur}
+                                 error={errors.FechaEngreso}
+                                 touched={touched.FechaEngreso}
+                                 showErrorInput={null}
+                              />
+                              <CustomRadio
+                                 hidden={false}
+                                 col={12}
+                                 name="FueEnMexico" // Nombre del campo en el formulario
+                                 title="¿Es de México?"
+                                 options={[
+                                    { value: 1, label: "Si" },
+                                    { value: 0, label: "No" }
+                                 ]} // Opciones para los radio buttons
+                              />
+                              <Text col={12} name="Aclaraciones" label="Aclaraciones" rows={10} color={"green"} />
+                              <Button sx={{ marginRight: "1rem" }} type="button" onClick={previous} variant="contained" color="secondary">
+                                 Regresar a la pagina anterior
                               </Button>
-                           )}
-                        </Box>
-                     );
-                  }}
-               </Formik>
-               <button variant="contained" color="secondary" onClick={next}>
-                  CONTINUAR DESAROLLO DE PAGINA
-               </button>
+                              <Button type="submit" variant="contained" color="primary">
+                                 Agregar
+                              </Button>
+                           </Grid>
+                        );
+                     }}
+                  </Formik>
+               </Ngif>
+               <Ngif condition={!checked}>
+                  <Button onClick={next} type="submit" variant="contained" color="primary">
+                    Registrar y Continuar
+                  </Button>
+               </Ngif>
             </CardContent>
          </Card>
       </>

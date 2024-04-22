@@ -17,8 +17,8 @@ export const ComponenteExtranjero = memo(({}) => {
    }, []);
    return (
       <>
-         <AutoComplete col={12} label="Pais de nacimiento" name="Id_Pais" options={paises} color="green" />
-         <Text col={12} name="EstadoProvincia" label="Estado / Provincia"  color={"green"} />
+         <AutoComplete col={6} label="Pais de nacimiento" name="Id_Pais" options={paises} color="green" />
+         <Text col={6} name="EstadoProvincia" label="Estado / Provincia"  color={"green"} />
       </>
    );
 });

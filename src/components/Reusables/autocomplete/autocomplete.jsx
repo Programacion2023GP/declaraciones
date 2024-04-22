@@ -5,33 +5,14 @@ import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Field, useFormikContext } from "formik";
 import PropTypes from "prop-types";
-import { DebugerContext } from "../../../context/DebuggerContext";
-import Interface from "../../../services/interface";
 
-const schema ={
-   helperText:"string?",
-   loading:"boolean?",
-   handleGetValue:"function?",
-   col:"number",
-   label:"string",
-   name:"string",
-   options:"any",
-   disabled:"boolean?",
-   optional:"any?",
-   color:"string?",
-   hidden:"boolean?",
-
-}
-export const AutoComplete = ({ helperText, loading = false, handleGetValue = null, col, label, name = "name", options = [], disabled, optional, color, hidden }) => {
+export const AutoComplete = ({ helperText, loading = false, handleGetValue = null, col, label, name = "name", options = [], disabled, hidden }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
-   const { agregarVariables, agregarEventos } = useContext(DebugerContext);
 
    const [inputValue, setInputValue] = useState("");
    const [loadingData, setLoadingData] = useState(true);
    const [progress, setProgress] = useState(10);
-   const props ={
-      helperText, loading, handleGetValue, col, label, name, options, disabled, optional, color, hidden
-   }
+
    const handleValue = (name, value) => {
       if (handleGetValue) {
          handleGetValue(name, value);
@@ -46,11 +27,10 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
          options = [];
          setLoadingData(false);
       }
-      Interface(props,schema)
-   }, [options,props]);
+   }, [options, formik.values[name]]);
 
    return (
-      <Grid style={{ margin: "1rem 0" }} item xs={col} container sx={{ display: "flex", position: "relative" }}>
+      <Grid style={{ margin: "0 0" }} item lg={col} xl={col} xs={12} md={12} container sx={{ display: "flex", position: "relative" }}>
          <Field name={name}>
             {({ field }) => (
                <Autocomplete
@@ -64,8 +44,6 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
                   onChange={(event, newValue) => {
                      const selectedOption = options.find((option) => option.text.trim() === newValue.text.trim());
                      handleValue(name, selectedOption.id);
-                     agregarVariables(label, selectedOption.id);
-                     agregarEventos(`${name}`, "cambiando valor");
                      formik.setFieldValue(name, selectedOption ? selectedOption.id : "");
                   }}
                   inputValue={
@@ -82,7 +60,7 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
                      <TextField
                         {...params}
                         {...field}
-                        disabled={loading || disabled || loadingData} // Asegúrate de que el componente no esté deshabilitado
+                        disabled={loading || disabled || loadingData}
                         fullWidth
                         label={label}
                         onBlur={formik.handleBlur}
@@ -90,7 +68,6 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
                         error={formik.touched[name] && formik.errors[name]}
                         helperText={formik.touched[name] && formik.errors[name] ? formik.errors[name] : helperText}
                         InputProps={{
-                           style: optional ? { color: "green" } : {},
                            ...params.InputProps,
                            endAdornment: (
                               <>

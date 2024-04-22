@@ -5,6 +5,7 @@ import { IngresosI } from "./IngresosI";
 import { IngresosIII } from "./IngresosIII";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
+import { labelRenumeracion } from "../../funciones/ingresosEservidor/labels";
 
 export const FormikInitialValues = ({}) => {
    //   const [names,setNames]=useState([])
@@ -14,34 +15,7 @@ export const FormikInitialValues = ({}) => {
       <>
          <Segmento>
             <tabSegmento
-               label={`Renumeración  ${
-                  declaracion === 1 || declaracion === 4
-                     ? `
-                     mensual neta del
-declarante por su cargo público (por
-concepto de sueldos, honorarios,
-compensaciones, bonos y otras
-prestaciones) (cantidades netas después de
-impuestos)
-
-                     `
-                     : declaracion === 2 || declaracion === 5
-                       ? `Anual neta del declarante
-                       por su cargo público (por concepto de
-                       sueldos, honorarios, compensaciones, bonos
-                       y otras prestaciones) (cantidades netas
-                       después de impuestos)
-                       `
-                       : `
-               del año en curso a la
-               fecha de conclusión del empleo, cargo o
-               comisión del declarante por su cargo
-               público (por concepto de sueldos,
-               honorarios, compensaciones, bonos y otras
-               prestaciones) (cantidades netas después de
-               impuestos)
-               `
-               }`}
+               label={labelRenumeracion(declaracion)}
             >
                <IngresosI />
             </tabSegmento>

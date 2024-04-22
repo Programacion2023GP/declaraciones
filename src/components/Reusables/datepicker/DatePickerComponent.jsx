@@ -2,6 +2,7 @@ import { FormControl, FormHelperText } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { Field } from "formik";
+import 'dayjs/locale/es'; // Importa el idioma español
 
 /**
  * 
@@ -42,6 +43,8 @@ const DatePickerComponent = ({
    formData,
    disabled
 }) => {
+   dayjs.locale('es');
+
    // const handleChangeDatePicker = (date, setFieldValue) => {
    //    // console.log("valor del datePicker en daysjs", date);
    //    const dateFormated = dayjs(date).format("YYYY-MM-DD");

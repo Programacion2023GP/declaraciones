@@ -2,18 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { Grid, RadioGroup, FormControlLabel, Radio, Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Field, useFormikContext } from "formik"; // Importar Field y useFormikContext de Formik
-import { DebugerContext } from "../../../context/DebuggerContext";
-import Interface from "../../../services/interface";
-const schema = {
-   loading: "boolean?",
-   col: "number",
-   name: "string",
-   title: "string",
-   hidden: "boolean?",
-   options: "any",
-   handleGetValue: "function?",
-   rowLayout: "boolean?"
-};
+
 export const CustomRadio = ({
    loading = false,
    col,
@@ -26,22 +15,8 @@ export const CustomRadio = ({
    rowLayout = true // Cambiar a false para poner en columnas
 }) => {
    const { values, errors, touched, handleChange, handleBlur } = useFormikContext(); // Obtener valores, errores y funciones de Formik
-   const { variables, agregarVariables, agregarEventos } = useContext(DebugerContext);
-   const props = {
-      loading,
-      col,
 
-      name,
-      title,
-      hidden,
-      options,
-      handleGetValue,
-      rowLayout
-   };
-   useEffect(() => {
-      Interface(props, schema);
-      agregarVariables(title, values[name]);
-   }, [title, name, values[name], props]);
+   useEffect(() => {}, [title, name, values[name]]);
 
    const isError = touched[name] && errors[name];
    const handleValue = (name, value) => {
@@ -50,7 +25,7 @@ export const CustomRadio = ({
       }
    };
    return (
-      <Grid item xs={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center" }}>
+      <Grid item lg={col} xl={col} xs={12} md={12} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center" }}>
          <Typography
             variant="subtitle1"
             align="center"
@@ -72,7 +47,6 @@ export const CustomRadio = ({
                   value={option.value}
                   onClick={() => {
                      //  console.log("hola", handleGetValue);
-                     agregarVariables(title, values[name]);
                      handleValue(name, option.value);
                   }}
                   control={<Radio />}

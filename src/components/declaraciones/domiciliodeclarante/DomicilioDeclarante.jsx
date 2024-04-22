@@ -32,6 +32,7 @@ export const DomicilioDeclarante = ({ next, previous, title }) => {
             message={"Los datos que no serán públicos estarán resaltados de color verde"}
          >
             <DomicilioDeclaranteGeneral />
+            <br />
             <Text col={12} name="Aclaraciones" label="Aclaraciones/Observaciones" rows={10} color={"green"} />
 
          </FormikForm>

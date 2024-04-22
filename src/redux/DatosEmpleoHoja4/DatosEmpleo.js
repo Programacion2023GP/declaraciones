@@ -25,6 +25,7 @@ const initialState ={
     Id_SituacionPatrimonial: parseInt(localStorage.getItem("id_SituacionPatrimonial")),
     Aclaraciones: "",
     EstadoProvincia:"",
+    OtroEntePublico:"",
 }
 const validationSchema ={
     Id_NivelOrdenGobierno: Yup.number().min(1, "El nivel de orden y de gobierno es requerido").required("El nivel de orden y de gobierno es requerido"),
@@ -71,6 +72,9 @@ const mexico ={
       EstadoProvincia:Yup.string().required("El estado / provincia es obligatorio").max(80, "El limite son 80 caracteres"),
   
   }
+  const OtroEntePublico ={
+    OtroEntePublico:Yup.string("El otro ente público es requerido").required("El otro ente público es requerido")
+  }
 const data ={
     initialState,validationSchema
 }
@@ -99,6 +103,12 @@ export const DatosEmpleosHoja4 = createSlice({
             break;
             case "NoRegimenPublico":
                 delete state.validationSchema['NivelEmpleoCargoComisionText'];
+            break;
+            case "OtroEntePublico":
+                Object.assign(state.validationSchema,OtroEntePublico)
+            break;
+            case "NoOtroEntePublico":
+                delete state.validationSchema['OtroEntePublico'];
             break;
         }
     },

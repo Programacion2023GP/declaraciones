@@ -3,9 +3,7 @@ import { Formik } from "formik";
 import { Ngif } from "../conditionals/Ngif";
 import { useEffect } from "react";
 export const FormikForm = ({ initialValues, validationSchema, submit, title, children, ref, message, button, previousButton, handlePrevious }) => {
-   useEffect(() => {
-      console.log("renderizado")
-   }, []);
+   useEffect(() => {}, []);
    return (
       <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
          <CardContent>
@@ -25,21 +23,19 @@ export const FormikForm = ({ initialValues, validationSchema, submit, title, chi
                         }
                         return (
                            <>
-                              <Grid container>
-                                 <Grid item xs={12} component={"form"} onSubmit={handleSubmit}>
-                                    {children}
-                                    <br />
-                                    <Ngif condition={previousButton && handlePrevious}>
-                                       <Button sx={{ marginRight: "1rem" }} type="button" onClick={handlePrevious} variant="contained" color="secondary">
-                                          Regresar a la pagina anterior
-                                       </Button>
-                                    </Ngif>
-                                    <Ngif condition={button}>
-                                       <Button type="submit" variant="contained" color="primary">
-                                          Registrar y Continuar
-                                       </Button>
-                                    </Ngif>
-                                 </Grid>
+                              <Grid  component={"form"} onSubmit={handleSubmit}>
+                                 {children}
+                              <br />
+                              <Ngif condition={previousButton && handlePrevious}>
+                                 <Button sx={{ marginRight: "1rem" }} type="button" onClick={handlePrevious} variant="contained" color="secondary">
+                                    Regresar a la pagina anterior
+                                 </Button>
+                              </Ngif>
+                              <Ngif condition={button}>
+                                 <Button type="submit" variant="contained" color="primary">
+                                    Registrar y Continuar
+                                 </Button>
+                              </Ngif>
                               </Grid>
                            </>
                         );

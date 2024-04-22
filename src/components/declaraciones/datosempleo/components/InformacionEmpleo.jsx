@@ -5,6 +5,7 @@ import { Text } from "../../../Reusables/input/Input";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { configValidationsEmpleo } from "../../../../redux/DatosEmpleoHoja4/DatosEmpleo";
+import { Grid } from "@mui/material";
 
 export const InformacionEmpleo = ({}) => {
    const formik = useFormikContext();
@@ -22,7 +23,7 @@ export const InformacionEmpleo = ({}) => {
       }
    };
    return (
-      <>
+      <Grid container spacing={1}>
          <AutoComplete
             col={12}
             label="Nivel del empleo, cargo o comisión"
@@ -74,6 +75,6 @@ export const InformacionEmpleo = ({}) => {
             label="Extensión del teléfono de oficina"
             placeholder={`Proporcionar la extensión del teléfono laboral según corresponda (Si aplica)`}
          />
-      </>
+      </Grid>
    );
 };

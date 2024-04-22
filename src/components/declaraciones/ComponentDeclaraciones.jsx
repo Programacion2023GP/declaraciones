@@ -28,9 +28,8 @@ const ComponentDeclaraciones = () => {
    const { declaracion } = useParams();
 
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(4);
+   const [activeStep, setActiveStep] = React.useState(9);
    React.useEffect(() => {
-      // console.log("cambio", activeStep);
    }, []);
    const handleNext = () => {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -86,11 +85,12 @@ const ComponentDeclaraciones = () => {
       return steps[activeStep].subtitule;
    };
    return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "10px" }}>
          <>
             {/* Contenido del MobileStepper */}
             <div
                style={{
+                  width:"90%",
                   overflowX: "hidden",
                   border: "2px solid #007bff",
                   borderRadius: "10px",

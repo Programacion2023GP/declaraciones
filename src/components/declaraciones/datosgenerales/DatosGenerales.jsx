@@ -15,6 +15,7 @@ export const DatosGenerales = ({ next, previous, title }) => {
    const dataForm = useSelector((state) => state.DatosGenerales.initialState);
    const validations = useSelector((state) => state.DatosGenerales.validationSchema);
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
+   const [active,setActive] = useState(false)
    const dispatch = useDispatch();
    let { declaracion } = useParams();
    declaracion = parseInt(declaracion);
@@ -51,7 +52,7 @@ export const DatosGenerales = ({ next, previous, title }) => {
       },
       {
          label: "Datos Extras",
-         component: <DatosExtras validaciones={validations} estadocivil={estadocivil} nacionalidades={nacionalidades} paises={paises} regimenes={regimenes} />
+         component: <DatosExtras handleActive ={setActive} active={active} validaciones={validations} estadocivil={estadocivil} nacionalidades={nacionalidades} paises={paises} regimenes={regimenes} />
       }
    ];
    return (

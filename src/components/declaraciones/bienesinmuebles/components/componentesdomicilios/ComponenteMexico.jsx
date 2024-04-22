@@ -39,7 +39,6 @@ export const ComponenteMexico = memo(({}) => {
             disabled={activeMunicipios}
             loading={loadingMuncipios}
             col={12}
-            otro={23}
             label="Municipio / Alcaldía"
             name="Id_MunicipioAlcaldia"
             options={municipios}

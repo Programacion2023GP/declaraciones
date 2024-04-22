@@ -32,7 +32,7 @@ function App() {
       <>
          <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DebugerContextProvider>
-               <RouterProvider router={router}></RouterProvider>
+               <RouterProvider  router={router}></RouterProvider>
             </DebugerContextProvider>
          </LocalizationProvider>
          {/* <Router>

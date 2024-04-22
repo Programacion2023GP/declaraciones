@@ -1,17 +1,18 @@
+import { Grid } from "@mui/material";
 import { Text } from "../../../Reusables/input/Input";
 
 export const DatosGeneral = ({}) => {
    return (
-      <>
+      <Grid container spacing={1}>
          <Text
-            col={12}
+            col={6}
             name="Nombre"
             label="Nombre(s)"
             placeholder="Sin abreviaturas, sin acentos, ni signos especiales"
             //   mask={''}
             // Otras props opcionales como color, mask, etc., si es necesario
          />
-         <Text col={12} name="PrimerApellido" label="Primer apellido" placeholder={"Sin abreviaturas, sin acentos, ni signos especiales"} />
+         <Text col={6} name="PrimerApellido" label="Primer apellido" placeholder={"Sin abreviaturas, sin acentos, ni signos especiales"} />
 
          <Text
             col={12}
@@ -27,6 +28,6 @@ export const DatosGeneral = ({}) => {
          <Text col={12} name="Curp" label="Curp" />
          <Text col={12} name="Rfc" label="Rfc" />
          <Text col={12} name="Homoclave" label="Homoclave" />
-      </>
+      </Grid>
    );
 };

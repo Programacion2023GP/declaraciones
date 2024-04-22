@@ -8,12 +8,14 @@ import { DatosGeneralesHoja1 } from "./DatosGeneralesHoja1/DatosGenerales";
 import { DomicilioDeclaranteHoja2 } from "./DomicilioDeclaranteHoja2/DomicilioDeclarante";
 import { DatosCurricularesHoja3 } from "./DatosCurricularesHoja3/DatosCurriculares";
 import { DatosEmpleosHoja4 } from "./DatosEmpleoHoja4/DatosEmpleo";
+import { ExperienciaLaboralHoja5 } from "./ExperienciaLaboralHoja5/ExperienciaLaboralHoja5";
  const store = configureStore({
     reducer:{
         DatosGenerales:DatosGeneralesHoja1.reducer,
         DomicilioDeclarante:DomicilioDeclaranteHoja2.reducer,
         DatosCurriculares:DatosCurricularesHoja3.reducer,
         DatosEmpleo:DatosEmpleosHoja4.reducer,
+        ExperenciaLaboral:ExperienciaLaboralHoja5.reducer,
         DatosPareja :DatosParejaHoja6.reducer,
         DependientesEconomicos:DependientesEconomicos7.reducer,
         IngresosNetos:IngresosNetosHoja8.reducer,

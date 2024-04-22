@@ -18,7 +18,8 @@ export const DatosEmpleo = ({ next, previous, title }) => {
    const dataForm = useSelector((state) => state.DatosEmpleo.initialState);
    const validations = useSelector((state) => state.DatosEmpleo.validationSchema);
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
-   const { nivelOrdenGobierno, ambitoPublico } = Request();
+   const [active,setActive] =useState(false)
+   const { nivelOrdenGobierno, ambitoPublico,nombreEntePublico } = Request();
    useEffect(() => {
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.DatosEmpleo.initialState), useSelector((state) => state.DatosEmpleo.validationSchema)]);
@@ -33,8 +34,10 @@ export const DatosEmpleo = ({ next, previous, title }) => {
       }
       Post("/datoscargoscomision/create", data, next);
    };
+
    const steps = [
-      { label: "Nivel orden del gobierno", component: <NivelGobierno ambitoPublico={ambitoPublico} nivelOrdenGobierno={nivelOrdenGobierno} /> },
+      { label: "Nivel orden del gobierno",
+       component: <NivelGobierno active={active} handleActive={setActive} ambitoPublico={ambitoPublico} nivelOrdenGobierno={nivelOrdenGobierno} nombreEntePublico={nombreEntePublico} /> },
       { label: "Datos empleo", component: <InformacionEmpleo /> },
       { label: "Domicilio", component: <DomicilioDeclarante /> }
    ];

@@ -1,6 +1,6 @@
 import { Box, Button, Card, CardContent, Grid, Typography } from "@mui/material";
 import { Formik } from "formik";
-export const FormikIngresosNetos = ({ initialValues, validationSchema, submit, title, children, ref }) => {
+export const FormikIngresosNetos = ({ initialValues, validationSchema, submit, title, children, ref,previous }) => {
    return (
       <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
          <CardContent>
@@ -22,7 +22,9 @@ export const FormikIngresosNetos = ({ initialValues, validationSchema, submit, t
                               <Grid container>
                                  <Grid item xs={12} component={"form"} onSubmit={handleSubmit}>
                                     {children}
-
+                                    <Button sx={{marginRight:"1rem"}} type="button" onClick={previous} variant="contained" color="secondary">
+                                       Regresar a la pagina anterior
+                                    </Button>
                                     <Button type="submit" variant="contained" color="primary">
                                        Registrar y Continuar
                                     </Button>

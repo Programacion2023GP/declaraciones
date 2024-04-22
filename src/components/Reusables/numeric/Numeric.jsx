@@ -9,22 +9,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import Paper from "@mui/material/Paper";
 import { symbol } from "prop-types";
 import Interface from "../../../services/interface";
-const schema = {
-   loading: "boolean?",
-   max: "number?",
-   min: "number?",
-   label: "string",
-   col: "number",
-   name: "string",
-   disabled: "boolean?",
-   placeholder: "string?",
-   hidden: "boolean?",
-   handleGetValue: "function?",
-   initial: "number?",
-   color: "string?",
-   marginBoton: "any?",
-   allowDecimal: "boolean?"
-};
+
 export const Numeric = ({
    loading = false,
    col,
@@ -44,25 +29,9 @@ export const Numeric = ({
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const [isElevated, setIsElevated] = useState(false); // Variable de estado para controlar la elevación de las letras
    const [number, setNumber] = useState(formik.values[name] || initial || null);
-   const props = {
-      loading,
-      col,
-      max,
-      min,
-      label,
-      name,
-      disabled,
-      placeholder,
-      color,
-      hidden,
-      handleGetValue,
-      marginBoton,
-      allowDecimal,
-      initial
-   };
+  
    useEffect(() => {
-      Interface(props, schema);
-   }, [name, props]); // Observa los cambios en el nombre y el valor del campo
+   }, [name,formik.values[name]]); // Observa los cambios en el nombre y el valor del campo
 
    const errors = formik.errors; // Obtiene los errores de Formik
 
@@ -95,7 +64,7 @@ export const Numeric = ({
    return (
       <>
          <Grid
-            style={{ margin: marginBoton ? `${marginBoton} 0` : "1rem .5rem" }}
+            style={{ margin: marginBoton ? `${marginBoton} 0` : "0" }}
             item
             lg={col}
             xl={col}

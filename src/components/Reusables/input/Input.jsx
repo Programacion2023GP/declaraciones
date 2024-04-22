@@ -5,51 +5,26 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Field, useFormikContext } from "formik"; // Importa el hook useFormikContext
 import InputMask from "react-input-mask";
 import Interface from "../../../services/interface";
-const schema = {
-   loading: "boolean?",
-   col: "number",
-   label: "string",
-   name: "string",
-   disabled: "boolean?",
-   placeholder: "string?",
-   color: "string?",
-   rows: "number?",
-   hidden: "boolean?",
-   mask: "string?",
-   marginBoton: "any?"
-};
+
 export const Text = ({ loading = false, col, label, name = "name", type = null, disabled, placeholder, color, rows, hidden, mask, marginBoton }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
-   const props = {
-      loading,
-      col,
-      label,
-      name,
-      type,
-      disabled,
-      placeholder,
-      color,
-      rows,
-      hidden,
-      mask,
-      marginBoton
-   };
-   useEffect(() => {
-      Interface(props, schema);
-   }, [props, name]); // Observa los cambios en el nombre y el valor del campo
 
-   const errors = formik.errors; // Obtiene los errores de Formik
+   useEffect(() => {}, [name]);
 
-   // Determinar si hay un error para este campo
+   const errors = formik.errors;
+
    const isError = formik.touched[name] && formik.errors[name];
 
    return (
       <>
          <Grid
-            style={{ margin: marginBoton ? `${marginBoton} 0` : "1rem 0" }}
+            style={{ margin: marginBoton ? `${marginBoton} 0` : "0rem 0" }}
             item
-            xs={col}
-            sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", position: "relative" }}
+            lg={col}
+            xl={col}
+            xs={12}
+            md={12}
+            sx={{ display: hidden ? "none" : "flex",  }}
          >
             {mask ? (
                <Field name={name}>

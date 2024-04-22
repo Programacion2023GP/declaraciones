@@ -9,14 +9,9 @@ import { Login } from "../components/autenticacion/login";
 import ComponentDeclaraciones from "../components/declaraciones/ComponentDeclaraciones";
 import { Provider } from "react-redux";
 import store from "../redux/store";
-// import Declaraciones from "../components/declaraciones/declaraciones";
-// import { Declaraciones } from "../Declaraciones/Declaraciones";
-// import StepperContextProvider from "../../context/StepperContext";
-// import StepperContextProvider from "../../context/StepperContext";
+import { element } from "prop-types";
 export const router = createHashRouter([
-   // {path:"/", element:<StepperContextProvider>
-   //   <Declaraciones/>
-   // </StepperContextProvider>},
+
    {
       path: "/",
       element: (
@@ -42,6 +37,7 @@ export const router = createHashRouter([
                   )
                },
                {
+
                   path: ":declaracion",
                   element: (
                      <Provider store={store}>
@@ -58,3 +54,4 @@ export const router = createHashRouter([
       element: <Login />
    }
 ]);
+
