@@ -1,17 +1,67 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Box, Grid, LinearProgress, Typography } from "@mui/material";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
-import CircularProgress from "@mui/material/CircularProgress";
+import Grid from "@mui/system/Unstable_Grid/Grid";
+import { Autocomplete, CircularProgress, FormControl, FormHelperText, IconButton, LinearProgress, TextField, Tooltip, Typography } from "@mui/material";
+// import Toast from "../../utils/Toast";
+import { useEffect, useState } from "react";
 import { Field, useFormikContext } from "formik";
-import PropTypes from "prop-types";
+// import { IconReload } from "@tabler/icons";
+import { Box } from "@mui/system";
 
-export const AutoComplete = ({ helperText, loading = false, handleGetValue = null, col, label, name = "name", options = [], disabled, hidden }) => {
+/**
+ *
+ * {/* Marca *}
+   <Grid xs={12} md={6} sx={{ mb: 2 }}>
+      <Select2Component
+         name={"brand_id"}
+         label={"Marca *"}
+         valueLabel={values.brand}
+         formDataLabel={"brand"}
+         placeholder={"Selecciona una opción..."}
+         options={dataBrands}
+         fullWidth={true}
+         // handleChangeValueSuccess={handleChangeBrands}
+         handleBlur={handleBlur}
+         error={errors.brand_id}
+         touched={touched.brand_id}
+         disabled={false}
+         pluralName={""}
+         refreshSelect={getSelectIndex}
+      />
+   </Grid>
+ */
+
+// =================== COMPONENTE =======================
+
+export const AutoComplete = ({
+   col,
+   name,
+   label,
+   placeholder,
+   options = [{ id: 0, text: "Selecciona una opción..." }],
+   // options = ["Selecciona una opción..."],
+   disabled,
+
+   helperText,
+   loading = false,
+   loadingData,
+   color,
+   hidden,
+   variant = "outlined",
+   marginBoton,
+   fielValue = "text",
+   fullWidth,
+   pluralName,
+   refreshSelect = null,
+   refreshSelectParams = null,
+   handleGetValue = null,
+   handleChangeValueSuccess,
+   ...props
+}) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
+   const errors = formik.errors;
+   const isError = formik.touched[name] ? formik.errors[name] : false;
 
-   const [inputValue, setInputValue] = useState("");
-   const [loadingData, setLoadingData] = useState(true);
-   const [progress, setProgress] = useState(10);
+   const [labelValue, setLabelValue] = useState("Selecciona una opción...");
+   const [loader, setLoader] = useState(false);
 
    const handleValue = (name, value) => {
       if (handleGetValue) {
@@ -19,102 +69,175 @@ export const AutoComplete = ({ helperText, loading = false, handleGetValue = nul
       }
    };
 
+   const isOptionEqualToValue = (option, value) => {
+      if (option.label) {
+         // console.log("option", option);
+         // console.log("value", option.label === value);
+         if (typeof value === "string") return option.label === value;
+         else {
+            // console.log(value);
+            // value = option.label;
+            // .lconsoleog(value);
+            return option.id === value;
+         }
+      } else return option === value;
+   };
+   // const handleChangeValue = async (value, setValues) => {
+   const handleChangeValue = async (value, setFieldValue) => {
+      try {
+         console.log("Select2Component->handleChangeValue->value", value);
+
+         if (!value) {
+            formik.setFieldValue(name, 0);
+            setLabelValue("Selecciona una opción...");
+            return;
+         }
+         const selectedOption = dataOptions.find((option) =>
+            typeof value === "object" ? option.label.trim() === value.label.trim() : option.trim() === value.trim()
+         );
+         handleValue(name, typeof value === "object" ? selectedOption.id : selectedOption);
+         formik.setFieldValue(name, typeof value === "object" ? selectedOption.id : selectedOption);
+         setLabelValue(typeof value === "object" ? selectedOption.label : selectedOption);
+         // console.log("values", values);
+         // // await setFormData(values);
+         // // await setValues(values);
+
+         if (handleChangeValueSuccess) handleChangeValueSuccess(value, setFieldValue); //en esta funcion
+      } catch (error) {
+         console.log(error);
+         // Toast.Error(error);
+      }
+   };
+
+   const handleClickRefresh = async () => {
+      try {
+         setLoader(true);
+         await refreshSelect(refreshSelectParams);
+         setLoader(false);
+         // Toast.Success("Actualizada");
+      } catch (error) {
+         console.log(error);
+         // Toast.Error(error);
+      }
+   };
+
+   // useEffect(() => {
+   //    // console.log("useEffect");
+   // }, [options, formik.values[name]]);
+   const [dataOptions, setDataOptions] = useState([]);
+
    useEffect(() => {
+      const items = [];
+      items.push({ id: 0, label: "Selecciona una opción..." });
+
+      options.map((item) => {
+         items.push({ id: item.id, label: item[fielValue] });
+      });
+      setDataOptions(items);
+      // console.log("useEffectg del Select2", formik.values[name]);
+      Number(formik.values[name]) == 0 && setLabelValue("Selecciona una opción...");
       if (Array.isArray(options) && options.length > 0) {
-         setLoadingData(false);
+         setLoader(false);
       }
       if (!Array.isArray(options)) {
          options = [];
-         setLoadingData(false);
+         setLoader(false);
       }
    }, [options, formik.values[name]]);
 
    return (
-      <Grid style={{ margin: "0 0" }} item lg={col} xl={col} xs={12} md={12} container sx={{ display: "flex", position: "relative" }}>
-         <Field name={name}>
-            {({ field }) => (
-               <Autocomplete
-                  disabled={loading || disabled || loadingData} // Asegúrate de que el componente no esté deshabilitado
-                  sx={{ minWidth: "100%", display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center" }}
-                  disablePortal
-                  id={`${name}-autocomplete`}
-                  options={options}
-                  getOptionLabel={(option) => option.text}
-                  isOptionEqualToValue={(option, value) => option && value && option.id === value.id}
-                  onChange={(event, newValue) => {
-                     const selectedOption = options.find((option) => option.text.trim() === newValue.text.trim());
-                     handleValue(name, selectedOption.id);
-                     formik.setFieldValue(name, selectedOption ? selectedOption.id : "");
-                  }}
-                  inputValue={
-                     inputValue
-                        ? inputValue
-                        : formik.values[name] && options.find((option) => option.id === formik.values[name])
-                          ? options.find((option) => option.id === formik.values[name]).text
-                          : ""
-                  }
-                  onInputChange={(event, newInputValue) => {
-                     setInputValue(String(newInputValue));
-                  }}
-                  renderInput={(params) => (
-                     <TextField
-                        {...params}
-                        {...field}
-                        disabled={loading || disabled || loadingData}
-                        fullWidth
+      <Grid style={{ margin: "1rem 0" }} item lg={col} xl={col} xs={12} md={12} container sx={{ display: "flex", position: "relative" }}>
+         <FormControl fullWidth>
+            <Box display={"flex"}>
+               <Field id={name} name={name}>
+                  {({ field }) => (
+                     <Autocomplete
+                        sx={{ minWidth: "100%", display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center" }}
+                        key={`select_${name}`}
+                        disablePortal
+                        openOnFocus
                         label={label}
-                        onBlur={formik.handleBlur}
-                        variant="outlined"
-                        error={formik.touched[name] && formik.errors[name]}
-                        helperText={formik.touched[name] && formik.errors[name] ? formik.errors[name] : helperText}
-                        InputProps={{
-                           ...params.InputProps,
-                           endAdornment: (
-                              <>
-                                 {loading || loadingData ? (
-                                    <>
-                                       {loading && (
-                                          <Box sx={{ position: "absolute", display: "inline-flex", top: "15%", left: "50%" }}>
-                                             <CircularProgress color="primary" size={35} />
-                                          </Box>
-                                       )}
-
-                                       {loadingData && !disabled && (
-                                          <Box
-                                             sx={{
-                                                position: "absolute",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                top: "15%",
-                                                left: "50%",
-                                                transform: "translateX(-50%)"
-                                             }}
-                                          >
-                                             <Typography
-                                                variant="caption"
-                                                component="div"
-                                                color="text.secondary"
-                                                sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}
-                                             >
-                                                Cargando informacion...
-                                                <Box sx={{ mt: 1 }}>
-                                                   <LinearProgress value={progress} sx={{ width: "100px" }} />
-                                                </Box>
-                                             </Typography>
-                                          </Box>
-                                       )}
-                                    </>
-                                 ) : null}
-
-                                 {params.InputProps.endAdornment}
-                              </>
-                           )
+                        loadingText={true}
+                        placeholder={placeholder}
+                        options={dataOptions}
+                        {...field}
+                        value={Number(formik.values[name]) > 0 ? dataOptions.find((option) => option.id === formik.values[name]).label : labelValue}
+                        onChange={(_, newValue) => {
+                           console.log("angel", newValue);
+                           handleChangeValue(newValue, formik.setFieldValue);
                         }}
+                        onBlur={formik.handleBlur}
+                        fullWidth={fullWidth || true}
+                        isOptionEqualToValue={isOptionEqualToValue}
+                        renderInput={(params) => (
+                           <TextField
+                              {...params}
+                              label={label}
+                              InputProps={{
+                                 ...params.InputProps,
+                                 endAdornment: (
+                                    <>
+                                       {loading || loadingData ? (
+                                          <>
+                                             {loading && (
+                                                <Box sx={{ position: "absolute", display: "inline-flex", top: "15%", left: "50%" }}>
+                                                   <CircularProgress color="primary" size={35} />
+                                                </Box>
+                                             )}
+
+                                             {loadingData && !disabled && (
+                                                <Box
+                                                   sx={{
+                                                      position: "absolute",
+                                                      display: "flex",
+                                                      alignItems: "center",
+                                                      top: "15%",
+                                                      left: "50%",
+                                                      transform: "translateX(-50%)"
+                                                   }}
+                                                >
+                                                   <Typography
+                                                      variant="caption"
+                                                      component="div"
+                                                      color="text.secondary"
+                                                      sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}
+                                                   >
+                                                      Cargando informacion...
+                                                      <Box sx={{ mt: 1 }}>
+                                                         <LinearProgress value={progress} sx={{ width: "100px" }} />
+                                                      </Box>
+                                                   </Typography>
+                                                </Box>
+                                             )}
+                                          </>
+                                       ) : null}
+
+                                       {params.InputProps.endAdornment}
+                                    </>
+                                 )
+                              }}
+                           />
+                        )}
+                        disabled={disabled}
+                        error={isError}
                      />
                   )}
-               />
+               </Field>
+               {refreshSelect && (
+                  <Tooltip title={`Actualizar ${pluralName}`} placement="top">
+                     {/* <IconButton type="button" variant="text" color="primary" sx={{ borderRadius: "12px", mr: 1 }} onClick={handleClickRefresh}>
+                        <IconReload />
+                     </IconButton> */}
+                  </Tooltip>
+               )}
+            </Box>
+
+            {isError && (
+               <FormHelperText error id={`ht-${name}`}>
+                  {isError ? formik.errors[name] : helperText}
+               </FormHelperText>
             )}
-         </Field>
+         </FormControl>
       </Grid>
    );
 };

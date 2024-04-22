@@ -1,75 +1,65 @@
-import {
-  Grid,
-  FormControlLabel,
-  Checkbox,
-  CircularProgress,
-} from "@mui/material";
-import React from "react";
+import  { useEffect, useState } from "react";
+import { Grid, FormControlLabel, Checkbox, CircularProgress, Typography } from "@mui/material";
+import { useFormikContext } from "formik";
 
-export const Inpcheckbox = ({ text, checked, handleCheckbox }) => {
-  const handleChange = (e) => {
-    handleCheckbox(e.target.checked);
-  };
 
-  return (
-    <FormControlLabel
-      control={<Checkbox checked={checked} onChange={handleChange} />}
-      label={text}
-    />
-  );
-};
+
 
 export const CustomCheckbox = ({
   loading = false,
   col,
   label,
-  name = "name",
-  onChange,
-  value = [],
-  data,
+  name,
+  checked=false,
+  value,
   rowLayout = true,
 }) => {
+  const [checkedComponent, setCheckedComponent] = useState(checked); // Estado inicializado como falso
+  const formik = useFormikContext();
+  const isError = formik.touched[name] && formik.errors[name];
+
+  useEffect(() => {
+    if(checked){
+      formik.setFieldValue(name,value);
+
+    }
+    console.warn("aqui", formik.values[name]);
+  }, [checked,formik.values[name]]);
+
   return (
     <>
       {rowLayout && <Grid item xs={12} />}
-      <Grid item xs={col} sx={{ display: "flex", alignItems: "center" }}>
+      <Grid item xs={col} sx={{ display: "flex", alignItems: "center", position: "relative" }}>
         <FormControlLabel
           control={
             <Checkbox
               name={name}
-              checked={value.includes(data.value)}
+              checked={checkedComponent}
               onChange={(e) => {
                 const checked = e.target.checked;
-                let newValue;
-                if (checked) {
-                  newValue = data.value;
-                } else {
-                  newValue = value.filter((val) => val !== String(data.value));
-                }
-                console.warn("valor", newValue);
-                onChange(name, newValue);
+                setCheckedComponent(checked); // Actualiza el estado del componente
+                formik.setFieldValue(name, checked ? value : undefined);
               }}
               disabled={loading}
               color="primary"
             />
           }
-          label={data.text}
+          label={label}
           sx={{
             marginRight: rowLayout ? "16px" : 0,
             marginBottom: rowLayout ? 0 : "8px",
             "& .MuiSvgIcon-root": {
-              fontSize: "1.5rem",
+              fontSize: "1.5rem"
             },
             "& .MuiTypography-body1": {
-              fontSize: "14px",
-            },
+              fontSize: "14px"
+            }
           }}
         />
-        {loading && (
-          <CircularProgress
-            sx={{ position: "absolute", top: "40%", left: "40%" }}
-          />
-        )}
+        {loading && <CircularProgress sx={{ position: "absolute", top: "40%", left: "40%" }} />}
+        <Typography sx={{ color: isError ? "red" : "gray" }} variant="subtitle2" color="initial">
+          {isError}
+        </Typography>
       </Grid>
     </>
   );

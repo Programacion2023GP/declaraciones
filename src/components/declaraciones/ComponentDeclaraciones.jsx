@@ -28,7 +28,7 @@ const ComponentDeclaraciones = () => {
    const { declaracion } = useParams();
 
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(9);
+   const [activeStep, setActiveStep] = React.useState(0);
    React.useEffect(() => {
    }, []);
    const handleNext = () => {
