@@ -29,9 +29,10 @@ export const Numeric = ({
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const [isElevated, setIsElevated] = useState(false); // Variable de estado para controlar la elevación de las letras
    const [number, setNumber] = useState(formik.values[name] || initial || null);
-  
+
    useEffect(() => {
-   }, [name,formik.values[name]]); // Observa los cambios en el nombre y el valor del campo
+      formik.values[name]>0 ?? setNumber(parseInt(formik.values[name]));
+   }, [name, formik.values[name]]); // Observa los cambios en el nombre y el valor del campo
 
    const errors = formik.errors; // Obtiene los errores de Formik
 
@@ -98,10 +99,7 @@ export const Numeric = ({
                         shrink: disabled ? true : formik.values[name] ? formik.values[name] : isElevated
                      }}
                      onChange={(e) => {
-                        if(e.target.value ==[empty]){
-                           setNumber(0)
-                           // console.log(e.target.value)
-                        }
+                   
                         let inputValue = e.target.value;
                         let isNumber = /^\d*\.?\d*$/.test(inputValue); // Verifica si el valor ingresado es un número o un número decimal
                         inputValue = inputValue.replace(/[^\d.]/g, ""); // Elimina todos los caracteres no numéricos ni puntos

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, cloneElement, forwardRef, useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -7,29 +7,43 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { pink } from "@mui/material/colors";
 
-import Interface from "../../../services/interface";
 import { useFormikContext } from "formik";
 import { Ngif } from "../conditionals/Ngif";
-import { Alert, AlertTitle } from "@mui/material";
+import { Alert, AlertTitle, Typography } from "@mui/material";
+import { ref } from "yup";
+import { element } from "prop-types";
 
 const color = pink[300];
-const schema = {
-   steps: "any",
-   endButton: "string",
-   buttonContinue: "string",
-   buttonAfter: "string"
-   // submit: "function"
-};
 
 export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter }) => {
    const formik = useFormikContext();
-   const { errors, touched,values } = formik;
-   const props = { steps, endButton, buttonContinue, buttonAfter };
-   useEffect(() => {
-      Interface(props, schema);
-   }, [props, errors]);
-
+   const { errors, touched, values,isSubmitting } = formik;
+   const componentRef = useRef(null);
    const [activeStep, setActiveStep] = useState(0);
+   const [errorStepper, setErrorStepper] = useState([]);
+   useEffect(() => {
+      const errorsFormik = Object.keys(errors).filter((key) => touched[key] && errors[key]);
+      const names = Array.from(componentRef.current.querySelectorAll("[name]"))
+         .map((element) => element.name)
+         .filter((name) => name !== undefined);
+
+      if (errorsFormik.some((item) => names.includes(item))) {
+         if (!errorStepper.includes(activeStep)) {
+            setErrorStepper([...errorStepper, activeStep]);
+         }
+      } else {
+         setErrorStepper(errorStepper.filter((step) => step !== activeStep));
+      }
+
+
+      // const firstElementName = names[0];
+      // const firstInputElement = componentRef.current.querySelector(`[name="${firstElementName}"]`);
+
+      // if (firstInputElement) {
+      //    firstInputElement.focus();
+      // }
+   }, [errors, touched, componentRef, activeStep, errorStepper.length]);
+
    const [skipped, setSkipped] = useState(new Set());
 
    const isStepOptional = (step) => {
@@ -48,7 +62,6 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
       }
       if (activeStep === steps.length - 1) {
          // setActiveStep(0);
-         console.log("fini")
          submit(formik.values);
       }
       if (activeStep < steps.length - 1) {
@@ -61,7 +74,7 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
    const handleBack = () => {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
    };
-  
+
    const handleSkip = () => {
       if (!isStepOptional(activeStep)) {
          throw new Error("You can't skip a step that isn't optional.");
@@ -75,30 +88,32 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
       });
    };
 
-   const handleReset = () => {
-      setActiveStep(0);
-   };
-
    return (
       <Box sx={{ width: "100%" }}>
-         <Ngif condition={Object.keys(errors).length > 0 && Object.keys(touched).some((key) => touched[key] && errors[key])}>
-            <Alert severity="warning">
-               <AlertTitle>Error</AlertTitle>
-               Verifica los campos.
-            </Alert>
-         </Ngif>
          <Stepper activeStep={activeStep}>
-            {steps.map((step, index) => (
-               <Step key={step.label}>
-                  <StepLabel>{step.label}</StepLabel>
-               </Step>
-            ))}
+            {steps.map((step, index) => {
+               const labelProps = {};
+               if (errorStepper.includes(index)) {
+                  labelProps.optional = (
+                     <Typography variant="caption" color="error">
+                        Hay un campo invalido en esta sección.
+                     </Typography>
+                  );
+
+                  labelProps.error = true;
+               }
+               return (
+                  <Step key={step} sx={{ color: "red" }}>
+                     <StepLabel {...labelProps} color="error">
+                        {step.label}
+                     </StepLabel>
+                  </Step>
+               );
+            })}
          </Stepper>
          <Box>
             <br />
-            <br />
-
-            {steps[activeStep] && steps[activeStep].component}
+            {steps[activeStep] && <ComponentRefStepper ref={componentRef} component={steps[activeStep].component} />}
          </Box>
          <Box
             sx={{
@@ -146,3 +161,6 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
       </Box>
    );
 };
+const ComponentRefStepper = forwardRef(({ component }, ref) => {
+   return <div ref={ref}>{component}</div>;
+});

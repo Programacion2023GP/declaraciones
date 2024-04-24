@@ -3,13 +3,13 @@ import { GetAxios } from "../../../../../services/services";
 import { AutoComplete } from "../../../../Reusables/autocomplete/autocomplete";
 import { Text } from "../../../../Reusables/input/Input";
 import { useDispatch } from "react-redux";
-import { configValidationsDependiente } from "../../../../../redux/DependientesEconomicos7/DependientesEconomicos";
+import { validationBienesInmuebles } from "../../../../../redux/BienesInmueblesHoja10/BienesInmueblesHoja10";
 export const ComponenteExtranjero = memo(({}) => {
    const dispatch = useDispatch();
 
    const [paises, setPaises] = useState([]);
    useEffect(() => {
-      dispatch(configValidationsDependiente({ tipo: "NoesMexico" }));
+      dispatch(validationBienesInmuebles({ tipo: "NoesMexico" }));
       const init = async () => {
          setPaises(await GetAxios("/paises/show"));
       };

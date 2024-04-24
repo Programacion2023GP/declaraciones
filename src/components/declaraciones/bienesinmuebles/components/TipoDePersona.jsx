@@ -24,7 +24,7 @@ export const TipoDePersona = ({ adquisicion, pago, monedas, conforme }) => {
          <Text label={"Rfc"} name="TR_Rfc" col={6} />
          <AutoComplete col={6} options={adquisicion} name="Id_FormaAdquisicion" label={"Forma de adquisición"} />
          <AutoComplete col={6} options={pago} name="Id_FormaPago" label={"Forma de pago"} />
-         <Numeric label={"Valor de adquisición"} name="PorcentajePropiedad" col={6} />
+         <Text type={'text'} label={"Valor de adquisición"} name="ValorAdquisicion" col={6} />
          <AutoComplete col={6} options={monedas} name="Id_MonedaValorAdquisicion" label={"Tipo de moneda"} />
          <DatePickerComponent
             idName={"FechaAdquisicion"}
@@ -38,8 +38,9 @@ export const TipoDePersona = ({ adquisicion, pago, monedas, conforme }) => {
             touched={formik.touched.FechaAdquisicion}
             showErrorInput={null}
          />
-         <Numeric label={"Folio real u otro dato que permita su identifiación"} name="DatoIdentificacion" col={6} />
+         <Text label={"Folio real u otro dato que permita su identifiación"} name="DatoIdentificacion" col={6} />
          <AutoComplete col={6} options={conforme} name="Id_ValorConformeA" label={"¿El valor de adquisición de Inmueble es conforme a?"} />
       </Grid>
    );
 };
+

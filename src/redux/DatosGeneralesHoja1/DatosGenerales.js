@@ -16,7 +16,8 @@ const initialState ={
       Id_PaisNacimiento: 0,
       Id_Nacionalidad: 0,
       Aclaraciones: "",
-      FueServidorPublicoAnioAnterior: 0
+      FueServidorPublicoAnioAnterior: 0,
+      fernando:"",
 }
 const validationSchema={
   Nombre: Yup.string().required("El Nombre es obligatorio"),
