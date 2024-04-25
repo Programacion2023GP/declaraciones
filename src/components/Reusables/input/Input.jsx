@@ -13,7 +13,7 @@ export const Text = ({ loading = false, col, label, name = "name", type = null, 
 
    const errors = formik.errors;
 
-   const isError = formik.touched[name] && formik.errors[name];
+   const isError = formik.touched[name] && !!formik.errors[name];
 
    return (
       <>

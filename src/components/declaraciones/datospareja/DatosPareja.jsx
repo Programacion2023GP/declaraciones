@@ -121,7 +121,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
    };
    return (
       <Grid container spacing={1}>
-         <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
+         <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}>
             <CardContent>
                <Typography variant="h3" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
                   {title}
@@ -260,7 +260,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                                     // getValue={getValue}
                                  />
                                  <AutoComplete hidden={!mexico} col={12} label="Pais de nacimiento" name="Id_Pais" options={paises} color="green" />
-                                 <Text hidden={!mexico} col={12} name="EstadoProvincia" label="Estado / Provincia"  color={"green"} />
+                                 <Text hidden={!mexico} col={12} name="EstadoProvincia" label="Estado / Provincia" color={"green"} />
 
                                  <Text col={12} name="ColoniaLocalidad" label="Colonia / Localidad" color={"green"} />
                               </Ngif>

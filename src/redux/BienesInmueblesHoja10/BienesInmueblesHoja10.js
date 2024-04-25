@@ -74,8 +74,10 @@ const mexico ={
       EstadoProvincia:Yup.string().required("El estado / provincia es obligatorio").max(80, "El limite son 80 caracteres"),
   
   }
-const otroMotivoBaja ={
+const incluirMotivo ={
     Id_ValorConformeA:Yup.number("El formato es numerico").min(1,"El motivo de baja es requerido").required("El motivo de baja es requerido"),
+}
+const otroMotivoBaja ={
     OtroMotivoBaja:Yup.string("El formato es texto").required("El motivo de baja es requerido"),
 }
 const data ={
@@ -87,11 +89,25 @@ const data ={
     initialState:data,
     reducers:{
         addBienesInmuebles:(state,action)=>{
-            datas.push(action.payload)
+           state.datas.push(action.payload)
+        },
+        // editBienesInmuebles: (state, action) => {
+        //     console.log(action.payload)
+        //     state.initialState = { ...action.payload };
+
+        //  },
+         
+        restartBienesInmuebles:(state,action)=>{
+            state.initialState = initialState
+            
         },
         validationBienesInmuebles:(state,action)=>{
             switch(action.payload.tipo){
-                case "Mexico":
+                case "restart":
+                    state.validationSchema=validationSchema
+
+                    break;
+                    case "Mexico":
                     Object.assign(state.validationSchema,mexico)
                     delete state.validationSchema['Id_Pais'];
                     delete state.validationSchema['EstadoProvincia'];
@@ -100,7 +116,23 @@ const data ={
                     Object.assign(state.validationSchema,noMexico)
                     delete state.validationSchema['Id_EntidadFederativa'];
                     delete state.validationSchema['Id_MunicipioAlcaldia'];
- 
+                break;
+                case "IncluirMotivo":
+                    Object.assign(state.validationSchema,incluirMotivo)
+
+                break;
+                case "NoIncluirOtroMotivo":
+                    delete state.validationSchema['OtroMotivoBaja'];
+                    delete state.validationSchema['OtroMotivoBaja'];
+
+                break;
+                case "OtroMotivoBaja":
+                    Object.assign(state.validationSchema,otroMotivoBaja)
+
+                break;
+                case "NoIncluirOtroMotivoBaja":
+                    delete state.validationSchema['OtroMotivoBaja'];
+
                 break;
             }
         }
@@ -109,7 +141,7 @@ const data ={
                 
     }
 })
-export  const {addBienesInmuebles,validationBienesInmuebles} = BienesInmueblesHoja10.actions
+export  const {addBienesInmuebles,restartBienesInmuebles,validationBienesInmuebles,editBienesInmuebles} = BienesInmueblesHoja10.actions
 export default BienesInmueblesHoja10.reducer
 615165
 

@@ -3,7 +3,7 @@ import { Formik } from "formik";
 
 export const FormikDependientes = ({ initialValues, validationSchema, submit, title, children, ref }) => {
    return (
-      <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
+      <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}>
          <CardContent>
             <Typography variant="h3" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
                {title}

@@ -16,7 +16,7 @@ import { addExperienciaLaboral } from "../../../redux/ExperienciaLaboralHoja5/Ex
 
 // import DataTable from "../../Reusables/table/DataTable";
 
-export const ExperienciaLaboral = ({ next, previous, title, debugerClear }) => {
+export const ExperienciaLaboral = ({ next, previous, title }) => {
    let { declaracion } = useParams();
    const [save, setSave] = useState(true);
    const [idRow, setIdRow] = useState(null);
@@ -140,7 +140,6 @@ export const ExperienciaLaboral = ({ next, previous, title, debugerClear }) => {
          clearForm();
       }
       setSave(true);
-      debugerClear();
    };
    const saveDatabase = async () => {
       try {
@@ -168,9 +167,7 @@ export const ExperienciaLaboral = ({ next, previous, title, debugerClear }) => {
       setSave(false);
       const finData = datas.filter((elemento) => elemento.identificador == row.id);
       const item = finData[0];
-      console.log("id", item.identificador);
       setIdRow(item.identificador);
-      console.log("id", idRow);
 
       clearForm(item.Id_AmbitoPublico != 0, item.SectorEspecificado != "" && item.Id_Sector == 0);
       formikRef.current.setValues(item);
@@ -196,7 +193,7 @@ export const ExperienciaLaboral = ({ next, previous, title, debugerClear }) => {
       <>
          {/* {console.log("la datas", datas)} */}
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
-            <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
+            <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem" }}>
                <DataTable
                   headers={["Sector", "Ente publico o Nombre de la empresa", "Lugar", "Fecha de ingreso", "Fecha de salida"]}
                   dataHidden={["id"]}
@@ -213,7 +210,7 @@ export const ExperienciaLaboral = ({ next, previous, title, debugerClear }) => {
 
          <Box sx={{ maxWidth: "90%", margin: "auto" }}>{/* <DataTable data={datas} /> */}</Box>
          <br />
-         <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
+         <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}>
             <CardContent>
                <Typography variant="h3" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
                   {title}
@@ -337,7 +334,7 @@ export const ExperienciaLaboral = ({ next, previous, title, debugerClear }) => {
                </Ngif>
                <Ngif condition={!checked}>
                   <Button onClick={next} type="submit" variant="contained" color="primary">
-                    Registrar y Continuar
+                     Registrar y Continuar
                   </Button>
                </Ngif>
             </CardContent>

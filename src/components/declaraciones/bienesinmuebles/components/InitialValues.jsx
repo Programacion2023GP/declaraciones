@@ -15,30 +15,38 @@ import { ComponentStepper } from "../../../Reusables/componentstepper/ComponentS
 import { TipoDePersona } from "./TipoDePersona";
 import { Inmuebles } from "./Inmueble";
 
-export const InitialValues = ({ titular, inmuebles, relacion, adquisicion, pago, monedas, conforme, motivobaja }) => {
+export const InitialValues = ({ titular, inmuebles, relacion, adquisicion, pago, monedas, conforme, motivobaja,postStepper }) => {
    const [inmueblesOtro,handleInmueblesOtro]= useState(true)
-   const [motivo,setMotivo] = useState(true)
+   const [motivo,setMotivo] = useState(false)
    const [openMunicio,setOpenMunicipio] = useState(true)
    const [estado,setEstado]= useState(true)
+   const [checked, setChecked] = useState(true);
+
+   const formik = useFormikContext()
+   useEffect(()=>{
+      setMotivo(true)
+      handleInmueblesOtro(true)
+   },[formik.isSubmitting])
    const steps = [
       {
          label: "Datos del inmueble",
-         component: <Inmuebles incluirmotivo={setMotivo} motivo={motivo} inmuebles={inmuebles} relacion={relacion} titular={titular} motivobaja={motivobaja} inmueblesOtro={inmueblesOtro}  handleInmueblesOtro={handleInmueblesOtro}/>
+         component: <Inmuebles key={'inmbuebles'} incluirmotivo={setMotivo} motivo={motivo} inmuebles={inmuebles} relacion={relacion} titular={titular} motivobaja={motivobaja} inmueblesOtro={inmueblesOtro}  handleInmueblesOtro={handleInmueblesOtro}/>
       },
       {
          label: "Tipo de persona",
-         component: <TipoDePersona adquisicion={adquisicion} monedas={monedas} pago={pago} conforme={conforme} />
+         component: <TipoDePersona key={'TipoDePersona'}  adquisicion={adquisicion} monedas={monedas} pago={pago} conforme={conforme} />
       },
       {
          label: "Domicilio",
-         component: <DomicilioDeclarante openMunicipio={openMunicio}  setOpenMunicipio={setOpenMunicipio} setEstado={setEstado} estado={estado}/>
-      }
+         component: <DomicilioDeclarante key={'DomicilioDeclarante'} openMunicipio={openMunicio}  setOpenMunicipio={setOpenMunicipio} setEstado={setEstado} estado={estado}/>
+      },
+     
    ];
    useEffect(() => {}, []);
    return (
       <>
             
-         <ComponentStepper steps={steps} buttonContinue={"Continuar"} endButton={"finalizar"} buttonAfter={"regresar"} />
+         <ComponentStepper postStepper={postStepper} steps={steps} buttonContinue={"Continuar"} endButton={"finalizar"} buttonAfter={"regresar"} />
       </>
    );
 };

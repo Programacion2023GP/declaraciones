@@ -44,10 +44,10 @@ export const Plazos = () => {
                 Dentro de los sesenta días naturales siguientes a la toma de
                 posesión con motivo del:
               </p>
-              <ul>
+              <p>
                 <li>Ingreso al servicio público por primera vez</li>
                 <li>Reingreso al servicio público después de sesenta días</li>
-              </ul>
+              </p>
 
               <h3>
                 <strong>Modificación:</strong>

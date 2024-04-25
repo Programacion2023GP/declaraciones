@@ -24,7 +24,7 @@ export const TipoDePersona = ({ adquisicion, pago, monedas, conforme }) => {
          <Text label={"Rfc"} name="TR_Rfc" col={6} />
          <AutoComplete col={6} options={adquisicion} name="Id_FormaAdquisicion" label={"Forma de adquisición"} />
          <AutoComplete col={6} options={pago} name="Id_FormaPago" label={"Forma de pago"} />
-         <Text type={'text'} label={"Valor de adquisición"} name="ValorAdquisicion" col={6} />
+         <Text type={'number'} label={"Valor de adquisición"} name="ValorAdquisicion" col={6} />
          <AutoComplete col={6} options={monedas} name="Id_MonedaValorAdquisicion" label={"Tipo de moneda"} />
          <DatePickerComponent
             idName={"FechaAdquisicion"}

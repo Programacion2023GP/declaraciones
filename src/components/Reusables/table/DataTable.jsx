@@ -12,6 +12,8 @@ import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { v4 as uuidv4 } from 'uuid';
+
 const SearchInput = ({ column, data, getData, previousData }) => {
    const [searchText, setSearchText] = useState("");
    const [previousDataFilter, setPreviousDataFilter] = useState(data);
@@ -77,22 +79,22 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
          <thead>
             <tr style={{ background: "#F9FAFB", width: "100%" }}>
                {headersMap.map((title) => {
-                  return <th style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>{title.charAt(0).toUpperCase() + title.slice(1)}</th>;
+                  return <th key={'headers' +title} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>{title.charAt(0).toUpperCase() + title.slice(1)}</th>;
                })}
                {headersMap.length > 0 && (editButton || deleteButton) && (
-                  <th style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>Acciones</th>
+                  <th key={'headersMap' +uuidv4()} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>Acciones</th>
                )}
             </tr>
             <tr>
                {filter &&
                   titlesMap.map((title) => {
                      return (
-                        <th style={{ border: "1px solid #BDBDBD", padding: ".5rem .5rem" }}>
+                        <th key={'titlesMap' +title} style={{ border: "1px solid #BDBDBD", padding: ".5rem .5rem" }}>
                            <SearchInput previousData={previousData} column={title} data={data} getData={filterData} />
                         </th>
                      );
                   })}
-               {filter && (editButton || deleteButton) && <th style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}></th>}
+{filter && (editButton || deleteButton) && <th key={uuidv4()} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}></th>}
             </tr>
          </thead>
       </>

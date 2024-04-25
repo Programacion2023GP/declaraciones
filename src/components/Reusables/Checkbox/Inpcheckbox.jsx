@@ -10,19 +10,23 @@ export const Inpcheckbox = ({ text, checked, handleCheckbox }) => {
    return <FormControlLabel control={<Checkbox checked={checked} onChange={handleChange} />} label={text} />;
 };
 
-export const CustomCheckbox = ({ loading = false, col, label, name, checked = false, value, rowLayout = true,handleGetvalue }) => {
+export const CustomCheckbox = ({ loading = false, col, label, name, checked = false, value, rowLayout = true, handleGetvalue }) => {
    const [checkedComponent, setCheckedComponent] = useState(checked); // Estado inicializado como falso
    const formik = useFormikContext();
    const isError = formik.touched[name] && formik.errors[name];
-   const handleGet=(name,value)=>{
-      handleGetvalue(name,value)
-   }
+   const handleGet = (name, value) => {
+      handleGetvalue(name, value);
+   };
    useEffect(() => {
       if (checked) {
          formik.setFieldValue(name, value);
       }
-   }, [checked, formik.values[name]]);
-
+   }, [checked]);
+   useEffect(()=>{
+      if (formik.values[name]!=1) {
+         setCheckedComponent(false);
+      }
+   },[formik.values[name]])
    return (
       <>
          {rowLayout && <Grid item xs={12} />}
@@ -34,8 +38,8 @@ export const CustomCheckbox = ({ loading = false, col, label, name, checked = fa
                      checked={checkedComponent}
                      onChange={(e) => {
                         const checked = e.target.checked;
-                        setCheckedComponent(checked); 
-                        handleGet(name, checked ? value : null)
+                        setCheckedComponent(checked);
+                        handleGet(name, checked ? value : null);
                         formik.setFieldValue(name, checked ? value : undefined);
                      }}
                      disabled={loading}

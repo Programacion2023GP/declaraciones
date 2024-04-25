@@ -60,7 +60,7 @@ export const AutoComplete = ({
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const errors = formik.errors;
-   const isError = formik.touched[name] ? formik.errors[name] : false;
+   const isError = formik.touched[name] && !!formik.errors[name];
 
    const [labelValue, setLabelValue] = useState("Selecciona una opción...");
    const [loader, setLoader] = useState(false);
@@ -147,11 +147,12 @@ export const AutoComplete = ({
          options = [];
          setLoader(false);
       }
-   }, [options]);
+   }, [options, formik.values[name]]);
 
    return (
       <Ngif condition={true}>
          <Grid
+            key={`Grid_Container_${name}`}
             style={{ margin: ".5rem 0", padding: " 0 .05rem 0 .4rem" }}
             item
             lg={col}
@@ -161,8 +162,8 @@ export const AutoComplete = ({
             container
             sx={{ display: "flex", position: "relative" }}
          >
-            <FormControl fullWidth>
-               <Box display={"flex"}>
+            <FormControl key={`FormControl_${name}`} fullWidth>
+               <Box key={`Box_${name}`} display={"flex"}>
                   <Field id={name} name={name}>
                      {({ field }) => (
                         <Autocomplete
@@ -171,7 +172,6 @@ export const AutoComplete = ({
                            key={`select_${name}`}
                            disablePortal
                            openOnFocus
-                           
                            label={label}
                            loadingText={true}
                            placeholder={placeholder}
@@ -187,16 +187,13 @@ export const AutoComplete = ({
                            onBlur={formik.handleBlur}
                            fullWidth={fullWidth || true}
                            isOptionEqualToValue={isOptionEqualToValue}
-                           
                            renderInput={(params) => (
                               <TextField
+                                 key={`TextField_Selected_${name}`}
                                  {...params}
                                  name={name}
                                  error={isError}
                                  label={label}
-                                 
-
-                                 
                                  InputProps={{
                                     ...params.InputProps,
                                     endAdornment: (
@@ -204,13 +201,17 @@ export const AutoComplete = ({
                                           {loading || loadingData ? (
                                              <>
                                                 {loading && (
-                                                   <Box sx={{ position: "absolute", display: "inline-flex", top: "15%", left: "50%" }}>
-                                                      <CircularProgress color="primary" size={35} />
+                                                   <Box
+                                                      key={`Box_TextField_Selected_${name}`}
+                                                      sx={{ position: "absolute", display: "inline-flex", top: "15%", left: "50%" }}
+                                                   >
+                                                      <CircularProgress key={`CircularProgress_TextField_Selected_${name}`} color="primary" size={35} />
                                                    </Box>
                                                 )}
 
                                                 {loadingData && !disabled && (
                                                    <Box
+                                                      key={`loadingData_TextField_Selected_${name}`}
                                                       sx={{
                                                          position: "absolute",
                                                          display: "flex",
@@ -221,14 +222,15 @@ export const AutoComplete = ({
                                                       }}
                                                    >
                                                       <Typography
+                                                         key={`Typography_TextField_Selected_${name}`}
                                                          variant="caption"
                                                          component="div"
                                                          color="text.secondary"
                                                          sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}
                                                       >
                                                          Cargando informacion...
-                                                         <Box sx={{ mt: 1 }}>
-                                                            <LinearProgress value={progress} sx={{ width: "100px" }} />
+                                                         <Box key={`Box_LinearProgress_Selected_${name}`} sx={{ mt: 1 }}>
+                                                            <LinearProgress key={`Box_LinearProgress_Selected_${name}`} value={progress} sx={{ width: "100px" }} />
                                                          </Box>
                                                       </Typography>
                                                    </Box>

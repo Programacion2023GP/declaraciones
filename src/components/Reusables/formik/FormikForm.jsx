@@ -1,11 +1,11 @@
 import { Box, Button, Card, CardContent, Grid, Typography } from "@mui/material";
 import { Formik } from "formik";
 import { Ngif } from "../conditionals/Ngif";
-import { useEffect } from "react";
-export const FormikForm = ({ initialValues, validationSchema, submit, title, children, ref, message, button, previousButton, handlePrevious }) => {
+import { forwardRef, useEffect } from "react";
+export const FormikForm = forwardRef(({ className,initialValues, validationSchema, submit, title, children, message, button, previousButton, handlePrevious }, ref) => {
    useEffect(() => {}, []);
    return (
-      <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
+      <Card className={className} sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}>
          <CardContent>
             <Typography variant="h3" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
                {title}
@@ -23,19 +23,19 @@ export const FormikForm = ({ initialValues, validationSchema, submit, title, chi
                         }
                         return (
                            <>
-                              <Grid  component={"form"} onSubmit={handleSubmit}>
+                              <Grid component={"form"} onSubmit={handleSubmit}>
                                  {children}
-                              <br />
-                              <Ngif condition={previousButton && handlePrevious}>
-                                 <Button sx={{ marginRight: "1rem" }} type="button" onClick={handlePrevious} variant="contained" color="secondary">
-                                    Regresar a la pagina anterior
-                                 </Button>
-                              </Ngif>
-                              <Ngif condition={button}>
-                                 <Button type="submit" variant="contained" color="primary">
-                                    Registrar y Continuar
-                                 </Button>
-                              </Ngif>
+                                 <br />
+                                 <Ngif condition={previousButton && handlePrevious}>
+                                    <Button sx={{ marginRight: "1rem" }} type="button" onClick={handlePrevious} variant="contained" color="secondary">
+                                       Regresar a la pagina anterior
+                                    </Button>
+                                 </Ngif>
+                                 <Ngif condition={button}>
+                                    <Button type="submit" variant="contained" color="primary">
+                                       Registrar y Continuar
+                                    </Button>
+                                 </Ngif>
                               </Grid>
                            </>
                         );
@@ -46,4 +46,4 @@ export const FormikForm = ({ initialValues, validationSchema, submit, title, chi
          </CardContent>
       </Card>
    );
-};
+});

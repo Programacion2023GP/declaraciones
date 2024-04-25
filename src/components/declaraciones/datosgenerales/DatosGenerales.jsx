@@ -11,7 +11,7 @@ import { useParams } from "react-router-dom";
 import { addDatosGenerales, addValidacioneServidorPublico } from "../../../redux/DatosGeneralesHoja1/DatosGenerales";
 import { PostAxios } from "../../../services/services";
 import { Error, Success } from "../../../toasts/toast";
-export const DatosGenerales = ({ next, previous, title }) => {
+export const DatosGenerales = ({ next, previous, title,setSend }) => {
    const dataForm = useSelector((state) => state.DatosGenerales.initialState);
    const validations = useSelector((state) => state.DatosGenerales.validationSchema);
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
@@ -25,6 +25,7 @@ export const DatosGenerales = ({ next, previous, title }) => {
    }, [useSelector((state) => state.DatosGenerales.initialState), useSelector((state) => state.DatosGenerales.validationSchema)]);
 
    const submit = async (values) => {
+      // next()
       let data = { ...values };
       data.Id_User = parseInt(localStorage.getItem("Id_User"));
       data.Id_Plazo = parseInt(declaracion);
@@ -34,6 +35,7 @@ export const DatosGenerales = ({ next, previous, title }) => {
          localStorage.setItem("id_SituacionPatrimonial", response.data.result);
          Success(response.data.message);
          next();
+         setSend(true)
 
          return response.data;
       } catch (error) {

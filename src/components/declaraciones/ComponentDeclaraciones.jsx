@@ -12,27 +12,28 @@ import { DatosEmpleo } from "./datosempleo/DatosEmpleo";
 import { ExperienciaLaboral } from "./experiencialaboral/ExperienciaLaboral";
 import { Titles } from "./funciones/titles";
 import { useParams } from "react-router-dom";
-import { DebugerContext } from "../../context/DebuggerContext";
 import { DatosParejas } from "./datospareja/DatosPareja";
 import { DependientesEconomicos } from "./dependienteseconomicos/DependientesEconomicos";
 import { IngresosNetos } from "./ingresosnetos/IngresosNetos";
 import { ServidorPublico } from "./servidorpublico/ServidorPublico";
 // import { Pruebas } from "./pruebas/Pruebas";
 import { BienesInmuebles } from "./bienesinmuebles/BienesInmuebles";
+import { Box } from "@mui/material";
 
 // Importa aquí los componentes correspondientes a cada paso
 
 const ComponentDeclaraciones = () => {
-   const { clearDebug } = React.useContext(DebugerContext);
-
    const { declaracion } = useParams();
-
+   const [send, setSend] = React.useState(false);
    const theme = useTheme();
    const [activeStep, setActiveStep] = React.useState(9);
-   React.useEffect(() => {
-   }, []);
+   React.useEffect(() => {}, [activeStep]);
    const handleNext = () => {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      setTimeout(() => {
+         setSend(false);
+         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+         
+      }, 500);
    };
 
    const handleBack = () => {
@@ -41,17 +42,17 @@ const ComponentDeclaraciones = () => {
 
    // Define aquí la lista de pasos con sus títulos y componentes correspondientes
    const steps = [
-      { label: `Datos generales`, component: <DatosGenerales next={handleNext} previous={handleBack} title={Titles(declaracion)} /> },
+      { label: `Datos generales`, component: <DatosGenerales next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} /> },
       { label: `Domicilio Declarante`, component: <DomicilioDeclarante next={handleNext} previous={handleBack} title={Titles(declaracion)} /> },
       { label: `Datos Curriculares del Declarante`, component: <DatosCurriculares next={handleNext} previous={handleBack} title={Titles(declaracion)} /> },
       { label: `Datos del empleo, cargo o comisión que inicia`, component: <DatosEmpleo next={handleNext} previous={handleBack} title={Titles(declaracion)} /> },
       {
          label: `Experiencia laboral (últimos cinco empleos)`,
-         component: <ExperienciaLaboral next={handleNext} previous={handleBack} title={Titles(declaracion)} debugerClear={clearDebug} />
+         component: <ExperienciaLaboral next={handleNext} previous={handleBack} title={Titles(declaracion)} />
       },
       {
          label: "Datos de la pareja",
-         component: <DatosParejas next={handleNext} previous={handleBack} title={Titles(declaracion)} debugerClear={clearDebug} />
+         component: <DatosParejas next={handleNext} previous={handleBack} title={Titles(declaracion)} />
       },
       {
          label: "Datos del dependiente económicos",
@@ -68,7 +69,11 @@ const ComponentDeclaraciones = () => {
       },
       {
          label: "Bienes Inmuebles (Situación Actual)",
-         component: <BienesInmuebles next={handleNext} previous={handleBack} title={Titles(declaracion)} />
+         component: <BienesInmuebles next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />
+      },
+      {
+         label: "Prueba",
+         component: <></>
       }
 
       // {
@@ -90,7 +95,7 @@ const ComponentDeclaraciones = () => {
             {/* Contenido del MobileStepper */}
             <div
                style={{
-                  width:"90%",
+                  width: "90%",
                   overflowX: "hidden",
                   border: "2px solid #007bff",
                   borderRadius: "10px",
@@ -100,11 +105,23 @@ const ComponentDeclaraciones = () => {
                }}
             >
                {/* Título del paso con estilos mejorados */}
-               <Typography variant="h4" align="center" gutterBottom style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}>
+               <Typography
+                  className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
+                  variant="h4"
+                  align="center"
+                  gutterBottom
+                  style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}
+               >
                   {getStepTitle()}
                </Typography>
                <br />
-               <Typography variant="h5" align="center" gutterBottom style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}>
+               <Typography
+                  className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
+                  variant="h5"
+                  align="center"
+                  gutterBottom
+                  style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}
+               >
                   {getStepSubtitule()}
                </Typography>
 
@@ -112,6 +129,7 @@ const ComponentDeclaraciones = () => {
                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
                   {steps.map((step, index) => (
                      <div
+                        className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
                         key={index}
                         style={{
                            width: "10px",
@@ -128,7 +146,7 @@ const ComponentDeclaraciones = () => {
                   {/* Paso {activeStep + 1} de {steps.length} */}
                </Typography>
                {/* Componente correspondiente al paso actual */}
-               {steps[activeStep].component}
+               <Box className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>{steps[activeStep].component}</Box>
             </div>
          </>
       </div>

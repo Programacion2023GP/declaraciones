@@ -1,8 +1,8 @@
 import { Box, Button, Card, CardContent, Grid, Typography } from "@mui/material";
 import { Formik } from "formik";
-export const FormikServidorPublico = ({ initialValues, validationSchema, submit, title, children, ref,previous }) => {
+export const FormikServidorPublico = ({ initialValues, validationSchema, submit, title, children, ref, previous }) => {
    return (
-      <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }} TouchRippleProps={{ disabled: true }}>
+      <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}>
          <CardContent>
             <Typography variant="h3" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
                {title}
@@ -22,7 +22,7 @@ export const FormikServidorPublico = ({ initialValues, validationSchema, submit,
                               <Grid container>
                                  <Grid item xs={12} component={"form"} onSubmit={handleSubmit}>
                                     {children}
-                                    <Button sx={{marginRight:"1rem"}} onClick={previous} type="button" variant="contained" color="secondary">
+                                    <Button sx={{ marginRight: "1rem" }} onClick={previous} type="button" variant="contained" color="secondary">
                                        Regresar a la pagina anterior
                                     </Button>
                                     <Button type="submit" variant="contained" color="primary">
