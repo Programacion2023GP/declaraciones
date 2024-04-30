@@ -1,9 +1,10 @@
+import { Box } from "@mui/material"
 
 const PageNotFound = () => {
   return (
-    <div>
+    <Box>
       Page Not Found
-    </div>
+    </Box>
   )
 }
 

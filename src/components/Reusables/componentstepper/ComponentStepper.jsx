@@ -16,29 +16,32 @@ import { v4 as uuidv4 } from "uuid";
 
 const color = pink[300];
 
-export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter, postStepper=1 }) => {
+export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter, postStepper = 1 }) => {
    const formik = useFormikContext();
    const { errors, touched, values, isSubmitting } = formik;
    const componentRef = useRef(null);
-   const [activeStep, setActiveStep] = useState(0);
+   const [activeStep, setActiveStep] = useState(3);
    const [errorStepper, setErrorStepper] = useState([]);
 
    useEffect(() => {
       const errorsFormik = Object.keys(errors).filter((key) => touched[key] && errors[key]);
-      const names = Array.from(componentRef.current.querySelectorAll("[name]"))
-         .map((element) => element.name)
-         .filter((name) => name !== undefined);
-
-      if (errorsFormik.some((item) => names.includes(item))) {
-         if (!errorStepper.includes(activeStep)) {
-            setErrorStepper([...errorStepper, activeStep]);
+      const names = componentRef.current
+         ? Array.from(componentRef.current.querySelectorAll("[name]"))
+              .map((element) => element.name)
+              .filter((name) => name !== undefined)
+         : [];
+      if (names.length > 0) {
+         if (errorsFormik.some((item) => names.includes(item))) {
+            if (!errorStepper.includes(activeStep)) {
+               setErrorStepper([...errorStepper, activeStep]);
+            }
+         } else {
+            setErrorStepper(errorStepper.filter((step) => step !== activeStep));
          }
-      } else {
-         setErrorStepper(errorStepper.filter((step) => step !== activeStep));
       }
    }, [errors, touched, componentRef, activeStep, errorStepper.length]);
    useEffect(() => {
-      setActiveStep(0)      
+      setActiveStep(0);
    }, [postStepper]);
 
    const [skipped, setSkipped] = useState(new Set());
@@ -86,7 +89,7 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
    };
 
    return (
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ minWidth: "100%" }}>
          <Stepper activeStep={activeStep}>
             {steps.map((step, index) => {
                const labelProps = {};
@@ -133,7 +136,7 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
                {buttonAfter}
             </Button>
 
-            <div>
+            <Box>
                <Ngif condition={activeStep === steps.length - 1}>
                   <Button
                      type="submit"
@@ -153,7 +156,7 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
                      {buttonContinue}
                   </Button>
                </Ngif>
-            </div>
+            </Box>
          </Box>
       </Box>
    );

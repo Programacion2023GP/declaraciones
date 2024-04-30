@@ -50,7 +50,7 @@ export const BienesInmuebles = ({ next, previous, title, setSend }) => {
          })
       );
       dispatch(restartBienesInmuebles());
-      // formik.current.resetForm();
+      formik.current.resetForm();
 
       setPostStepper(!postStepper);
       setIdUnique(idUnique + 1);

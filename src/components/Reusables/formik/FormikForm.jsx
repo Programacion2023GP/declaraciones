@@ -2,19 +2,18 @@ import { Box, Button, Card, CardContent, Grid, Typography } from "@mui/material"
 import { Formik } from "formik";
 import { Ngif } from "../conditionals/Ngif";
 import { forwardRef, useEffect } from "react";
-export const FormikForm = forwardRef(({ className,initialValues, validationSchema, submit, title, children, message, button, previousButton, handlePrevious }, ref) => {
+export const FormikForm = forwardRef(({ className, initialValues, validationSchema, submit, title, children, message, button, previousButton, handlePrevious }, ref) => {
    useEffect(() => {}, []);
    return (
       <Card className={className} sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}>
          <CardContent>
-            <Typography variant="h3" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
+            <Typography  variant="h3" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
                {title}
             </Typography>
-            <Typography variant="h6" align="start" color="textPrimary" style={{ fontWeight: "500" }}>
+            <Typography variant="h6" align="left" color="textPrimary" style={{ fontWeight: "500" }}>
                {message}
             </Typography>
             <br />
-            <Typography variant="body2" color="text.secondary">
                <Grid container spacing={2}>
                   <Formik innerRef={ref} initialValues={initialValues} validationSchema={validationSchema} onSubmit={submit}>
                      {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues }) => {
@@ -23,7 +22,7 @@ export const FormikForm = forwardRef(({ className,initialValues, validationSchem
                         }
                         return (
                            <>
-                              <Grid component={"form"} onSubmit={handleSubmit}>
+                              <Grid container   component={"form"} onSubmit={handleSubmit}>
                                  {children}
                                  <br />
                                  <Ngif condition={previousButton && handlePrevious}>
@@ -42,7 +41,6 @@ export const FormikForm = forwardRef(({ className,initialValues, validationSchem
                      }}
                   </Formik>
                </Grid>
-            </Typography>
          </CardContent>
       </Card>
    );

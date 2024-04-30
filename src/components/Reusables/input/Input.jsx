@@ -6,7 +6,7 @@ import { Field, useFormikContext } from "formik"; // Importa el hook useFormikCo
 import InputMask from "react-input-mask";
 import Interface from "../../../services/interface";
 
-export const Text = ({ loading = false, col, label, name = "name", type = null, disabled, placeholder, color, rows, hidden, mask, marginBoton }) => {
+export const Text = ({ loading = false, col, label, name = "name", type = null, disabled, placeholder, color, rows, hidden, mask, marginBoton,textStyleCase=null }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
 
    useEffect(() => {}, [name]);
@@ -15,23 +15,18 @@ export const Text = ({ loading = false, col, label, name = "name", type = null, 
 
    const isError = formik.touched[name] && !!formik.errors[name];
 
-   return (
+   return (                
       <>
-         <Grid
-            style={{ margin: marginBoton ? `${marginBoton} 0` : "0rem 0" }}
-            item
-            lg={col}
-            xl={col}
-            xs={12}
-            md={12}
-            sx={{ display: hidden ? "none" : "flex",  }}
-         >
+         <Grid style={{ margin: marginBoton ? `${marginBoton} 0` : "0rem 0" }} item lg={col} xl={col} xs={12} md={12} sx={{ display: hidden ? "none" : "flex" }}>
             {mask ? (
                <Field name={name}>
                   {({ field }) => (
                      <InputMask
                         mask={mask}
                         value={formik.values && formik.values[name] ? formik.values[name] : ""}
+                        onInput={(e) => {
+                           textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
+                        }}
                         onChange={(e) => field.onChange(e)} // Utiliza field.onChange para actualizar el valor en Formik
                         onBlur={(e) => field.onBlur(e)} // Utiliza field.onBlur para manejar el desenfoque y activar la validación
                         disabled={loading || disabled}
@@ -72,7 +67,7 @@ export const Text = ({ loading = false, col, label, name = "name", type = null, 
                   }}
                   disabled={loading || disabled}
                   fullWidth
-                  multiline={type === null || type === undefined} // Habilita multiline solo si type no está definido
+                  multiline={rows} // Habilita multiline solo si type no está definido
                   rows={type === null || type === undefined ? rows : undefined} // Establece las filas solo si type no está definido
                   error={isError}
                   helperText={isError ? formik.errors[name] : placeholder}
@@ -85,4 +80,13 @@ export const Text = ({ loading = false, col, label, name = "name", type = null, 
          </Grid>
       </>
    );
+};
+const handleInputFormik = async (e, setFieldValue, input, toUpper = true) => {
+   try {
+      const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
+      setFieldValue(input, newText);
+   } catch (error) {
+      console.log(error);
+      Toast.Error(error);
+   }
 };

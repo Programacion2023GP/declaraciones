@@ -4,17 +4,9 @@ import { LIGHT_THEME } from "../../constants/themeConstants";
 import LogoBlue from "../../assets/images/logo_blue.svg";
 import LogoWhite from "../../assets/images/logo_white.svg";
 import {
-  MdOutlineAttachMoney,
-  MdOutlineBarChart,
+
   MdOutlineClose,
-  MdOutlineCurrencyExchange,
-  MdOutlineGridView,
-  MdOutlineLogout,
-  MdOutlineMessage,
-  MdOutlinePeople,
-  MdOutlineSettings,
-  MdOutlineShoppingBag,
-  MdOutlineArrowDropDown,
+
 } from "react-icons/md";
 import { Link } from "react-router-dom";
 import "./Sidebar.scss";

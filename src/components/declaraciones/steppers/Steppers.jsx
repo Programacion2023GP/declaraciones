@@ -142,7 +142,7 @@ export const Steppers = () => {
           Regresar
         </Button>
 
-        <div>
+        <Box>
           <Button
             color="primary" // Cambia el color del botón a primario (azul por defecto)
             variant="contained"
@@ -150,7 +150,7 @@ export const Steppers = () => {
           >
             {activeStep === steps.length - 1 ? "Comenzar" : "Continuar"}
           </Button>
-        </div>
+        </Box>
       </Box>
     </Box>
   );

@@ -77,7 +77,7 @@ export const AutoComplete = ({
       //    formik.setFieldValue(name, Number(formik.values[name]));
       //    setLabelValue(item);
       // }
-
+      
       if (option[fielValue]) {
          if (typeof value === "string") return option[fielValue] === value;
          else {
@@ -147,10 +147,10 @@ export const AutoComplete = ({
          options = [];
          setLoader(false);
       }
+      console.log(errors,formik.touched)
    }, [options, formik.values[name]]);
 
    return (
-      <Ngif condition={true}>
          <Grid
             key={`Grid_Container_${name}`}
             style={{ margin: ".5rem 0", padding: " 0 .05rem 0 .4rem" }}
@@ -164,8 +164,7 @@ export const AutoComplete = ({
          >
             <FormControl key={`FormControl_${name}`} fullWidth>
                <Box key={`Box_${name}`} display={"flex"}>
-                  <Field id={name} name={name}>
-                     {({ field }) => (
+                
                         <Autocomplete
                            // {...dataOptions}
                            sx={{ minWidth: "100%", display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center" }}
@@ -173,12 +172,11 @@ export const AutoComplete = ({
                            disablePortal
                            openOnFocus
                            label={label}
-                           loadingText={true}
                            placeholder={placeholder}
                            options={dataOptions}
-                           {...field}
+                           // {...field}
                            getOptionLabel={(option) => (typeof option === "string" ? option : option[fielValue])}
-                           getOptionKey={(option) => option.id}
+                           // getOptionKey={(option) => option.id}
                            // getOptionSelected={(option, value) => option[fielValue] === value}
                            value={labelValue}
                            onChange={(_, newValue) => {
@@ -192,7 +190,8 @@ export const AutoComplete = ({
                                  key={`TextField_Selected_${name}`}
                                  {...params}
                                  name={name}
-                                 error={isError}
+                                 error={isError ? 'true' : undefined}
+
                                  label={label}
                                  InputProps={{
                                     ...params.InputProps,
@@ -245,10 +244,10 @@ export const AutoComplete = ({
                               />
                            )}
                            disabled={disabled}
-                           error={isError}
+                           error={isError ? 'true' : undefined}
+
                         />
-                     )}
-                  </Field>
+                
                   {refreshSelect && (
                      <Tooltip title={`Actualizar ${pluralName}`} placement="top">
                         {/* <IconButton type="button" variant="text" color="primary" sx={{ borderRadius: "12px", mr: 1 }} onClick={handleClickRefresh}>
@@ -265,6 +264,5 @@ export const AutoComplete = ({
                )}
             </FormControl>
          </Grid>
-      </Ngif>
    );
 };

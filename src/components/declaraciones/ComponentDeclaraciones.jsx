@@ -19,6 +19,7 @@ import { ServidorPublico } from "./servidorpublico/ServidorPublico";
 // import { Pruebas } from "./pruebas/Pruebas";
 import { BienesInmuebles } from "./bienesinmuebles/BienesInmuebles";
 import { Box } from "@mui/material";
+import { TipoVehiculo } from "./tipodevehiculo/TipoVehiculo";
 
 // Importa aquí los componentes correspondientes a cada paso
 
@@ -26,7 +27,7 @@ const ComponentDeclaraciones = () => {
    const { declaracion } = useParams();
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(9);
+   const [activeStep, setActiveStep] = React.useState(10);
    React.useEffect(() => {}, [activeStep]);
    const handleNext = () => {
       setTimeout(() => {
@@ -72,8 +73,8 @@ const ComponentDeclaraciones = () => {
          component: <BienesInmuebles next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />
       },
       {
-         label: "Prueba",
-         component: <></>
+         label: "Tipo de vehiculo",
+         component: <TipoVehiculo next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend}/>
       }
 
       // {
