@@ -14,7 +14,23 @@ export const Text = ({ loading = false, col, label, name = "name", type = null, 
    const errors = formik.errors;
 
    const isError = formik.touched[name] && !!formik.errors[name];
-
+   const handleKeyPress = (event) => {
+      // Obtener el valor actual del campo de entrada
+      if(type=="number"){
+         const currentValue = event.target.value;
+         // Obtener el carácter ingresado
+         const char = String.fromCharCode(event.which);
+         // Verificar si el carácter es un número o un punto decimal
+         if (!/[0-9.]/.test(char)) {
+           event.preventDefault();
+         }
+         // Evitar que se ingresen más de un punto decimal
+         if (char === "." && currentValue.includes(".")) {
+           event.preventDefault();
+         }
+      }
+    };
+  
    return (                
       <>
          <Grid style={{ margin: marginBoton ? `${marginBoton} 0` : "0rem 0" }} item lg={col} xl={col} xs={12} md={12} sx={{ display: hidden ? "none" : "flex" }}>
@@ -55,7 +71,7 @@ export const Text = ({ loading = false, col, label, name = "name", type = null, 
                   key={"text_" + name}
                   name={name}
                   label={label}
-                  type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
+                  type={type == null?"text" : type} // Utiliza type si está definido, de lo contrario, usa "text"
                   variant="outlined"
                   value={formik.values && formik.values[name] ? formik.values[name] : ""}
                   onChange={formik.handleChange} // Utiliza el handleChange de Formik
@@ -67,6 +83,8 @@ export const Text = ({ loading = false, col, label, name = "name", type = null, 
                   }}
                   disabled={loading || disabled}
                   fullWidth
+                  onKeyDown={handleKeyPress}
+
                   multiline={rows} // Habilita multiline solo si type no está definido
                   rows={type === null || type === undefined ? rows : undefined} // Establece las filas solo si type no está definido
                   error={isError}

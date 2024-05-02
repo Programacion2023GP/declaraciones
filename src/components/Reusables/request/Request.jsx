@@ -23,6 +23,7 @@ export const Request = () => {
    const [entidades, setEntidades] = useState([]);
    const [nombreEntePublico, setNombreEntePublico] = useState([]);
    const [vehiculos, setVehiculos] = useState([]);
+   const [titularVehiculos,setTitutarVehiculos]= useState([])
    useEffect(() => {
       const responses = async () => {
          setInmuebles(await GetAxios("tipoinmueble/show"));
@@ -46,6 +47,7 @@ export const Request = () => {
          setPaises(await GetAxios("/paises/show"));
          setNombreEntePublico(await GetAxios("/nombrentepublico/show"));
          setVehiculos(await GetAxios("tipovehiculos/show"));
+         setTitutarVehiculos(await GetAxios("titularvehiculos/show"))
          setCached(true);
       };
       if (!cached) {
@@ -72,6 +74,7 @@ export const Request = () => {
       ambitoPublico,
       entidades,
       nombreEntePublico,
-      vehiculos
+      vehiculos,
+      titularVehiculos
    };
 };

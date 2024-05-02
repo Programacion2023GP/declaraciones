@@ -147,7 +147,6 @@ export const AutoComplete = ({
          options = [];
          setLoader(false);
       }
-      console.log(errors,formik.touched)
    }, [options, formik.values[name]]);
 
    return (

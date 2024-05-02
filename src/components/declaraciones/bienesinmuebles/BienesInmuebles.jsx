@@ -105,7 +105,6 @@ export const BienesInmuebles = ({ next, previous, title, setSend }) => {
             display={"flex"}
          >
             <DataTable
-               key={"DataTable"}
                dataHidden={["identificador"]}
                headers={["Tipo de Inmueble", "Forma de Adquisición", "Nombre Tercero"]}
                data={datas}

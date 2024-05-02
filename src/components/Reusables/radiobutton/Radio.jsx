@@ -1,10 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Grid, RadioGroup, FormControlLabel, Radio, Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Field, useFormikContext } from "formik"; // Importar Field y useFormikContext de Formik
+import { Ngif } from "../conditionals/Ngif";
 
 export const CustomRadio = ({
-   loading = false,
+   // loading = false,
    col,
 
    name,
@@ -15,8 +16,25 @@ export const CustomRadio = ({
    rowLayout = true // Cambiar a false para poner en columnas
 }) => {
    const { values, errors, touched, handleChange, handleBlur } = useFormikContext(); // Obtener valores, errores y funciones de Formik
+   const [loading,setLoading]= useState(false)
+   useEffect(() => {
+      if (Array.isArray(options) && options.length > 0) {
 
-   useEffect(() => {}, [title, name, values[name]]);
+         setLoading(false)
+
+      }
+      if (Array.isArray(options) && options.length ==0) {
+         setLoading(true)
+
+      }
+      if (!Array.isArray(options)) {
+         setLoading(true)
+         options = [];
+
+      }
+
+
+   }, [title, name, values[name],options]);
 
    const isError = touched[name] && errors[name];
    const handleValue = (name, value) => {
@@ -41,6 +59,8 @@ export const CustomRadio = ({
             onBlur={handleBlur} // Usar la función de desenfoque de Formik
             sx={{ flexDirection: rowLayout ? "row" : "column" }} // Ajustar la dirección del grupo de radio
          >
+            <Ngif condition={options.length>0}>
+             
             {options.map((option, index) => (
                <FormControlLabel
                   key={index}
@@ -67,13 +87,14 @@ export const CustomRadio = ({
                   }}
                />
             ))}
+            </Ngif>
          </RadioGroup>
          {isError && (
             <Typography variant="body2" color="error">
                {errors[name]}
             </Typography>
          )}
-         {loading && <CircularProgress sx={{ position: "absolute", top: "40%", left: "40%" }} />}
+         {loading && <CircularProgress sx={{ position: "absolute", bottom: "20%", left: "50%" }} />}
       </Grid>
    );
 };

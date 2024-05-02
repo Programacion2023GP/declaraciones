@@ -73,7 +73,7 @@ const ComponentDeclaraciones = () => {
          component: <BienesInmuebles next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />
       },
       {
-         label: "Tipo de vehiculo",
+         label: "Vehículos (Situación actual)",
          component: <TipoVehiculo next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend}/>
       }
 
