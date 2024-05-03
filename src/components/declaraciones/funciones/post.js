@@ -1,11 +1,11 @@
 import { PostAxios } from "../../../services/services";
 import { Error, Success } from "../../../toasts/toast";
 
-export const Post =async(url,values,next)=>{
+export const Post =async(url,values,next=null)=>{
     try {
         const response = await PostAxios(url, values);
       Success(response.data.message);
-      next()
+      next && next()
       // setInterval(()=>{
       //    next();
 

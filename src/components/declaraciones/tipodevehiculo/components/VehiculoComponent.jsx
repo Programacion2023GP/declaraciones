@@ -3,7 +3,7 @@ import { AutoComplete } from "../../../Reusables/autocomplete/autocomplete";
 import { Text } from "../../../Reusables/input/Input";
 import { CustomRadio } from "../../../Reusables/radiobutton/Radio";
 import { useDispatch } from "react-redux";
-import { configValidatorsVehiculos } from "../../../../redux/VehiculosHoja11/VehiculosHoja11";
+import { addVehiculo, configValidatorsVehiculos } from "../../../../redux/VehiculosHoja11/VehiculosHoja11";
 import { Ngif } from "../../../Reusables/conditionals/Ngif";
 
 export const VehiculoComponent = ({
@@ -24,10 +24,11 @@ export const VehiculoComponent = ({
       dispatch(configValidatorsVehiculos({ tipo: value == 4 ? "OtroVehiculo" : "NoOtroVehiculo" }));
    };
    const TitularVehiculo = (name, value) => {
-  
       seTitularVehiculo(value);
       dispatch(configValidatorsVehiculos({ tipo: value == 0 ? "DeclaranteTitular" : value == 1 ? "TerceroTitular" : "TransmisorTitular", validaciones: validations }));
    };
+ 
+
    return (
       <Grid container spacing={1}>
          <AutoComplete col={12} name={"Id_TipoVehiculo"} label={"Tipo de vehiculo"} options={vehiculos} handleGetValue={handleGetValue} />

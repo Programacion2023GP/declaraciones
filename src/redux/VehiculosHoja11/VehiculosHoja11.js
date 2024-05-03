@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import * as Yup from "yup";
 const initialState ={
+    Id_SituacionPatrimonial: parseInt(localStorage.getItem("id_SituacionPatrimonial")),
     Id_TipoVehiculo: 0,
     Id_Titular:0,
     Marca:"",
@@ -20,6 +21,7 @@ const initialState ={
     T_Id_TipoPersona:0,
     T_NombreRazonSocial:"",
     T_Rfc:"",
+    EspecifiqueMotivoBaja:"",
 }
 const validationSchema={
     Id_TipoVehiculo:Yup.number("El formato numerico es obligatorio").min(1,"El tipo de vehiculo es requerido").required("El tipo de vehiculo es requerido"),
@@ -43,15 +45,20 @@ const Tercero={
     Id_Relacion:Yup.number("El formato numerico es obligatorio").min(1,"La relación es requerida").required("La relación es requerida"),
     T_Id_TipoPersona:Yup.number("El formato numerico es obligatorio").required("El titular es requerido"),
     T_NombreRazonSocial:Yup.string("El formato es texto").required("El Nombre de tercero o terceros es requerido"),
-    T_Rfc:Yup.string("El formato es texto").required("El Nombre de tercero o terceros es requerido"),
+    T_Rfc:Yup.string("El formato es texto").required("El Nombre de tercero o terceros es requerido") .matches(/^[A-ZÑ&]{3,4}\d{6}(?:[A-Z\d]{3})?$/, "El rfc no cumple el formato")
+    .length(13, "El rfc debe contar con 13 caracteres"),
 }
 const Titular ={
     TR_Id_TipoPersona:Yup.number("El formato numerico es obligatorio").required("El titular es requerido"),
     TR_NombreRazonSocial:Yup.string("El formato es texto").required("El Nombre o razon social del transmitor es requerida"),
-    TR_Rfc:Yup.string("El formato es texto").required("El Nombre de tercero o terceros es requerido"),
+    TR_Rfc:Yup.string("El formato es texto").required("El Nombre de tercero o terceros es requerido") .matches(/^[A-ZÑ&]{3,4}\d{6}(?:[A-Z\d]{3})?$/, "El rfc no cumple el formato")
+    .length(13, "El rfc debe contar con 13 caracteres"),
 }
  const data ={
         initialState,validationSchema,datas:[]
+}
+const motivoBaja ={
+    EspecifiqueMotivoBaja:Yup.string("El formato es texto").required("El motivo de baja es requerido"),
 }
 
 export const VehiculosHoja11 = createSlice({
@@ -84,6 +91,12 @@ export const VehiculosHoja11 = createSlice({
             case "DeclaranteTitular":
                 state.validationSchema = eliminarPropiedades(action.payload.validaciones,{...Tercero,...Titular})
 
+            break;
+            case "MotivoBaja":
+                Object.assign(state.validationSchema,motivoBaja)
+            break;
+            case "NoMotivoBaja":
+                delete state.validationSchema['EspecifiqueMotivoBaja'];
             break;
         }
       }

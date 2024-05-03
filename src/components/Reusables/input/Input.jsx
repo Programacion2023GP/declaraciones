@@ -1,10 +1,9 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Grid } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Field, useFormikContext } from "formik"; // Importa el hook useFormikContext
+import { Field, useFormikContext } from "formik"; 
 import InputMask from "react-input-mask";
-import Interface from "../../../services/interface";
 
 export const Text = ({
    loading = false,
@@ -21,7 +20,7 @@ export const Text = ({
    marginBoton,
    textStyleCase = null
 }) => {
-   const formik = useFormikContext(); // Obtiene el contexto de Formik
+   const formik = useFormikContext(); 
 
    useEffect(() => {}, [name]);
 
@@ -31,21 +30,15 @@ export const Text = ({
    const handleInput = (event) => {
       const { type } = event.target;
    
-      // Verificar si el tipo de campo es "number"
       if (type === "number") {
-         // Obtener el valor actual del campo de entrada
          let value = event.target.value;
    
-         // Filtrar el valor para permitir solo dígitos y un punto decimal
          value = value.replace(/[^0-9.]/g, '');
    
-         // Verificar si hay más de un punto decimal y eliminar los extras
          const decimalCount = value.split('.').length - 1;
          if (decimalCount > 1) {
             value = value.slice(0, value.lastIndexOf('.'));
          }
-   
-         // Actualizar el valor del campo de entrada con el valor filtrado
          event.target.value = value;
       }
    };
@@ -67,8 +60,8 @@ export const Text = ({
                         onInput={(e) => {
                            textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
                         }}
-                        onChange={(e) => field.onChange(e)} // Utiliza field.onChange para actualizar el valor en Formik
-                        onBlur={(e) => field.onBlur(e)} // Utiliza field.onBlur para manejar el desenfoque y activar la validación
+                        onChange={(e) => field.onChange(e)} 
+                        onBlur={(e) => field.onBlur(e)}
                         disabled={loading || disabled}
                      >
                         {(inputProps) => (
@@ -77,7 +70,7 @@ export const Text = ({
                               key={"text_" + name}
                               name={name}
                               label={label}
-                              type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
+                              type={type !== null && type !== undefined ? type : "text"}
                               variant="outlined"
                               fullWidth
                               error={isError}
@@ -95,21 +88,18 @@ export const Text = ({
                   key={"text_" + name}
                   name={name}
                   label={label}
-                  type={type == null ? "text" : type} // Utiliza type si está definido, de lo contrario, usa "text"
+                  type={type == null ? "text" : type}
                   variant="outlined"
                   value={formik.values && formik.values[name] ? formik.values[name] : ""}
-                  onChange={formik.handleChange} // Utiliza el handleChange de Formik
+                  onChange={formik.handleChange}
                   onBlur={(e) => {
-                     formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur
-
-                     // Agrega tu lógica adicional aquí
-                     // Por ejemplo, puedes agregar variables o eventos al contexto DebugerContext
+                     formik.handleBlur(e); 
                   }}
                   disabled={loading || disabled}
                   fullWidth
                   onInput={handleInput}
-                  multiline={rows} // Habilita multiline solo si type no está definido
-                  rows={type === null || type === undefined ? rows : undefined} // Establece las filas solo si type no está definido
+                  multiline={rows} 
+                  rows={type === null || type === undefined ? rows : undefined} 
                   error={isError}
                   helperText={isError ? formik.errors[name] : placeholder}
                   InputLabelProps={{

@@ -9,8 +9,11 @@ import { ComponentStepper } from "../../Reusables/componentstepper/ComponentStep
 import { useParams } from "react-router-dom";
 import { Adquisicion } from "./components/Adquisicion";
 import DataTable from "../../Reusables/table/DataTable";
-import { Box } from "@mui/material";
+import { Box, Button, FormControlLabel, FormGroup, Switch } from "@mui/material";
 import { Success } from "../../../toasts/toast";
+import { Ngif } from "../../Reusables/conditionals/Ngif";
+import { Post } from "../funciones/post";
+import { addVehiculo } from "../../../redux/VehiculosHoja11/VehiculosHoja11";
 
 export const TipoVehiculo = ({ next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.Vehiculos.initialState);
@@ -27,6 +30,8 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
    declaracion = parseInt(declaracion);
    const { vehiculos, titularVehiculos, adquisicion, pago, monedas, motivobaja, relacion } = Request();
    const [postStepper, setPostStepper] = useState(false);
+   const [otroMotivoBaja, SetMotivoBaja] = useState(true);
+   const [checked, setChecked] = useState(true);
 
    const message = ` Todos los datos de Vehículos declarados a nombre de la pareja, dependientes económicos y/o terceros o que sean en copropiedad con el declarante no serán públicos. `;
    const submit = async (values) => {
@@ -34,7 +39,7 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
       values.identificador = idUnique;
       setDatas(datas.concat(values));
       const json = {
-         "identificador":values.identificador,
+         identificador: values.identificador,
          "Tipo de Vehículo": values.Id_TipoVehiculo != 4 ? vehiculos.filter((item) => item.id === values.Id_TipoVehiculo)[0]?.text : values.EspecifiqueVehiculo,
          "Forma de Adquisición": adquisicion.filter((item) => item.id === values.Id_FormaAdquisicion)[0]?.text,
          "Forma de Pago": pago.filter((item) => item.id === values.Id_FormaPago)[0]?.text
@@ -63,11 +68,37 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
       setDatas(datas.filter((element) => element.identificador != row.identificador));
       setDataTable(dataTable.filter((element) => element.identificador != row.identificador));
       Success("Se borro de la tabla");
-     
    };
 
    // Obtener el array de años
    const yearOptions = generateYearOptions();
+   const handleChange = (event) => {
+      setChecked(event.target.checked);
+   };
+   const sendData = async () => {
+      const newDatas = [...datas];
+      const sendApi = async () => {
+         for (let i = 0; i < newDatas.length; i++) {
+            console.log("durante");
+            dispatch(addVehiculo(newDatas[i]));
+            // delete newDatas[i].identificador;
+            await Post("/vehiculos/create", newDatas[i]);
+         }
+      };
+      console.log("antes");
+      await sendApi();
+      // next();
+      console.log("final");
+      // setSend(true);
+      console.log("termino");
+
+      // newDatas.forEach(element => {
+
+      // });
+
+      // next()
+   };
+
    const steps = [
       {
          label: "Tipo de vehiculo",
@@ -87,27 +118,55 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
       },
       {
          label: "Forma de adquisicion",
-         component: <Adquisicion monedas={monedas} adquisicion={adquisicion} pago={pago} motivobaja={motivobaja} />
+         component: (
+            <Adquisicion
+               monedas={monedas}
+               adquisicion={adquisicion}
+               pago={pago}
+               motivobaja={motivobaja}
+               otroMotivoBaja={otroMotivoBaja}
+               SetMotivoBaja={SetMotivoBaja}
+            />
+         )
       }
    ];
    return (
       <>
          <Box key={"box"} alignItems={"center"} justifyContent={"center"} display={"flex"}>
-            <DataTable  dataHidden={['identificador']} data={dataTable} headers={["Tipo de Vehículo", "Forma de Adquisición", "Forma de Pago"]} deleteButton={true} handleDelete={deleteRow} />
+            <DataTable
+               dataHidden={["identificador"]}
+               data={dataTable}
+               headers={["Tipo de Vehículo", "Forma de Adquisición", "Forma de Pago"]}
+               deleteButton={true}
+               handleDelete={deleteRow}
+            />
          </Box>
-         <FormikForm
-            ref={formik}
-            submit={submit}
-            previousButton={true}
-            handlePrevious={previous}
-            initialValues={dataForm}
-            validationSchema={validationSchema}
-            title={title}
-            message={message}
-            button={false}
-         >
-            <ComponentStepper postStepper={postStepper} steps={steps} buttonContinue={"Continuar"} endButton={"finalizar"} buttonAfter={"regresar"} />
-         </FormikForm>
+         <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
+            <FormControlLabel
+               control={<Switch checked={checked} onChange={handleChange} name="gilad" color={dataTable.length > 0 ? "secondary" : "primary"} />}
+               label={dataTable.length > 0 ? "¿Deseas seguir agregando vehiculos?" : "¿Tiene vehiculo?"}
+            />
+         </FormGroup>
+         <Ngif condition={checked}>
+            <FormikForm
+               ref={formik}
+               submit={submit}
+               previousButton={true}
+               handlePrevious={previous}
+               initialValues={dataForm}
+               validationSchema={validationSchema}
+               title={title}
+               message={message}
+               button={false}
+            >
+               <ComponentStepper postStepper={postStepper} steps={steps} buttonContinue={"Continuar"} endButton={"finalizar"} buttonAfter={"regresar"} />
+            </FormikForm>
+         </Ngif>
+         <Ngif condition={!checked}>
+            <Button onClick={sendData}  type="submit" variant="contained" color="primary">
+               Registrar y Continuar
+            </Button>
+         </Ngif>
       </>
    );
 };

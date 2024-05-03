@@ -11,7 +11,7 @@ import { useFormikContext } from "formik";
 import { Ngif } from "../conditionals/Ngif";
 import { Alert, AlertTitle, Typography } from "@mui/material";
 import { ref } from "yup";
-import { element } from "prop-types";
+import { array, element } from "prop-types";
 import { v4 as uuidv4 } from "uuid";
 
 const color = pink[300];
@@ -20,9 +20,9 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
    const formik = useFormikContext();
    const { errors, touched, values, isSubmitting } = formik;
    const componentRef = useRef(null);
-   const [activeStep, setActiveStep] = useState(3);
+   const [activeStep, setActiveStep] = useState(0);
    const [errorStepper, setErrorStepper] = useState([]);
-
+   const [pagesNames, setPagesNames] = useState([]);
    useEffect(() => {
       const errorsFormik = Object.keys(errors).filter((key) => touched[key] && errors[key]);
       const names = componentRef.current
@@ -30,16 +30,33 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
               .map((element) => element.name)
               .filter((name) => name !== undefined)
          : [];
-      if (names.length > 0) {
-         if (errorsFormik.some((item) => names.includes(item))) {
-            if (!errorStepper.includes(activeStep)) {
-               setErrorStepper([...errorStepper, activeStep]);
-            }
+      setPagesNames((prevPagesNames) => {
+         const existingPage = prevPagesNames.find((page) => page.hasOwnProperty(activeStep));
+         if (existingPage) {
+            return prevPagesNames;
          } else {
-            setErrorStepper(errorStepper.filter((step) => step !== activeStep));
+            return [...prevPagesNames, { [activeStep]: names }];
          }
+      });
+
+      const errorPages = [];
+      if (pagesNames.length > 0) {
+         pagesNames.forEach((element, index) => {
+            const page = element[index];
+            if (errorsFormik.some((item) => page.includes(item))) {
+               if (!errorPages.includes(index)) {
+                  errorPages.push(index);
+               }
+            }
+         });
       }
-   }, [errors, touched, componentRef, activeStep, errorStepper.length]);
+
+         setErrorStepper(errorPages)
+      
+      // console.log("Páginas con errores:", errorPages);
+
+    
+   }, [errors, touched, componentRef, activeStep]);
    useEffect(() => {
       setActiveStep(0);
    }, [postStepper]);
