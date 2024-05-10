@@ -128,7 +128,7 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
                );
             })}
          </Stepper>
-         <Box>
+         <Box >
             <br />
             {steps[activeStep] && <ComponentRefStepper ref={componentRef} activeStep={activeStep} component={steps[activeStep].component} />}
          </Box>

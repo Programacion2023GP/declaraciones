@@ -11,6 +11,8 @@ import { DatosEmpleosHoja4 } from "./DatosEmpleoHoja4/DatosEmpleo";
 import { ExperienciaLaboralHoja5 } from "./ExperienciaLaboralHoja5/ExperienciaLaboralHoja5";
 import { loggerMiddleware } from "./Middlewares/middlewares";
 import { VehiculosHoja11 } from "./VehiculosHoja11/VehiculosHoja11";
+import { BienesMueblesHoja12 } from "./BienesMueblesHoja12/BienesMuebles";
+import { InversionesCuentasValoresHoja13 } from "./InversionesCuentasValoresHoja13/InversionesCuentasValores";
  const store = configureStore({
     reducer:{
 
@@ -24,7 +26,9 @@ import { VehiculosHoja11 } from "./VehiculosHoja11/VehiculosHoja11";
         IngresosNetos:IngresosNetosHoja8.reducer,
         ServidorPublico:ServidorPublicoHoja9.reducer,        
         BienesInmuebles:BienesInmueblesHoja10.reducer,
-        Vehiculos:VehiculosHoja11.reducer
+        Vehiculos:VehiculosHoja11.reducer,
+        BienesMuebles:BienesMueblesHoja12.reducer,
+        InversionesCuentasValores:InversionesCuentasValoresHoja13.reducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(loggerMiddleware)
 })

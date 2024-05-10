@@ -87,7 +87,7 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
       };
       console.log("antes");
       await sendApi();
-      // next();
+      next();
       console.log("final");
       // setSend(true);
       console.log("termino");
@@ -163,8 +163,8 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
             </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>
-            <Button onClick={sendData}  type="submit" variant="contained" color="primary">
-               Registrar y Continuar
+            <Button onClick={sendData} type="submit" variant="contained" color="primary">
+               {sendData.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>

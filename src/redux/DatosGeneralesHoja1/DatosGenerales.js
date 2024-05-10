@@ -69,12 +69,10 @@ export const DatosGeneralesHoja1 = createSlice({
                     Object.assign(state.validationSchema,servidorPublico);
                 break;
                 case "RegimenMatrimonial":
-                    console.log("holas")
                     Object.assign(state.validationSchema,RegimenMatrimonial);
 
                 break;
                 case "QuitarRegimenMatrimonial":
-                    console.log("aquiddd",action.payload.validaciones)
                     state.validationSchema = eliminarPropiedades(action.payload.validaciones,RegimenMatrimonial)
                 break;
             }

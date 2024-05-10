@@ -77,7 +77,7 @@ export const AutoComplete = ({
       //    formik.setFieldValue(name, Number(formik.values[name]));
       //    setLabelValue(item);
       // }
-      
+
       if (option[fielValue]) {
          if (typeof value === "string") return option[fielValue] === value;
          else {
@@ -150,118 +150,114 @@ export const AutoComplete = ({
    }, [options, formik.values[name]]);
 
    return (
-         <Grid
-            key={`Grid_Container_${name}`}
-            style={{ margin: ".5rem 0", padding: " 0 .05rem 0 .4rem" }}
-            item
-            lg={col}
-            xl={col}
-            xs={12}
-            md={12}
-            container
-            sx={{ display: "flex", position: "relative" }}
-         >
-            <FormControl key={`FormControl_${name}`} fullWidth>
-               <Box key={`Box_${name}`} display={"flex"}>
-                
-                        <Autocomplete
-                           // {...dataOptions}
-                           sx={{ minWidth: "100%", display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center" }}
-                           key={`select_${name}`}
-                           disablePortal
-                           openOnFocus
-                           label={label}
-                           placeholder={placeholder}
-                           options={dataOptions}
-                           // {...field}
-                           getOptionLabel={(option) => (typeof option === "string" ? option : option[fielValue])}
-                           // getOptionKey={(option) => option.id}
-                           // getOptionSelected={(option, value) => option[fielValue] === value}
-                           value={labelValue}
-                           onChange={(_, newValue) => {
-                              handleChangeValue(newValue, formik.setFieldValue);
-                           }}
-                           onBlur={formik.handleBlur}
-                           fullWidth={fullWidth || true}
-                           isOptionEqualToValue={isOptionEqualToValue}
-                           renderInput={(params) => (
-                              <TextField
-                                 key={`TextField_Selected_${name}`}
-                                 {...params}
-                                 name={name}
-                                 error={isError ? 'true' : undefined}
+      <Grid
+         key={`Grid_Container_${name}`}
+         style={{ margin: ".5rem 0", padding: " 0 .05rem 0 .4rem" }}
+         item
+         lg={col}
+         xl={col}
+         xs={12}
+         md={12}
+         container
+         sx={{ display: "flex", position: "relative" }}
+      >
+         <FormControl key={`FormControl_${name}`} fullWidth>
+            <Box key={`Box_${name}`} display={"flex"}>
+               <Autocomplete
+                  disabled={ disabled||loading}
+                  autoHighlight={true}
+                  // {...dataOptions}
+                  sx={{ minWidth: "100%", display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center" }}
+                  key={`select_${name}`}
+                  disablePortal
+                  openOnFocus
+                  label={label}
+                  placeholder={placeholder}
+                  options={dataOptions}
+                  // {...field}
+                  getOptionLabel={(option) => (typeof option === "string" ? option : option[fielValue])}
+                  // getOptionKey={(option) => option.id}
+                  // getOptionSelected={(option, value) => option[fielValue] === value}
+                  value={labelValue}
+                  onChange={(_, newValue) => {
+                     handleChangeValue(newValue, formik.setFieldValue);
+                  }}
+                  onBlur={formik.handleBlur}
+                  fullWidth={fullWidth || true}
+                  isOptionEqualToValue={isOptionEqualToValue}
+                  renderInput={(params) => (
+                     <TextField
+                        disabled={loading}
+                        key={`TextField_Selected_${name}`}
+                        {...params}
+                        name={name}
+                        error={isError ? "true" : undefined}
+                        label={label}
+                        InputProps={{
+                           ...params.InputProps,
+                           endAdornment: (
+                              <>
+                                 {loading || loadingData ? (
+                                    <>
+                                       {loading && (
+                                          <Box key={`Box_TextField_Selected_${name}`} sx={{ position: "absolute", display: "inline-flex", top: "15%", left: "50%" }}>
+                                             <CircularProgress key={`CircularProgress_TextField_Selected_${name}`} color="primary" size={35} />
+                                          </Box>
+                                       )}
 
-                                 label={label}
-                                 InputProps={{
-                                    ...params.InputProps,
-                                    endAdornment: (
-                                       <>
-                                          {loading || loadingData ? (
-                                             <>
-                                                {loading && (
-                                                   <Box
-                                                      key={`Box_TextField_Selected_${name}`}
-                                                      sx={{ position: "absolute", display: "inline-flex", top: "15%", left: "50%" }}
-                                                   >
-                                                      <CircularProgress key={`CircularProgress_TextField_Selected_${name}`} color="primary" size={35} />
-                                                   </Box>
-                                                )}
+                                       {loadingData && !disabled && (
+                                          <Box
+                                             key={`loadingData_TextField_Selected_${name}`}
+                                             sx={{
+                                                position: "absolute",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                top: "15%",
+                                                left: "50%",
+                                                transform: "translateX(-50%)"
+                                             }}
+                                          >
+                                             <Typography
+                                                key={`Typography_TextField_Selected_${name}`}
+                                                variant="caption"
+                                                component="div"
+                                                color="text.secondary"
+                                                sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}
+                                             >
+                                                Cargando informacion...
+                                                <Box key={`Box_LinearProgress_Selected_${name}`} sx={{ mt: 1 }}>
+                                                   <LinearProgress key={`Box_LinearProgress_Selected_${name}`} value={progress} sx={{ width: "100px" }} />
+                                                </Box>
+                                             </Typography>
+                                          </Box>
+                                       )}
+                                    </>
+                                 ) : null}
 
-                                                {loadingData && !disabled && (
-                                                   <Box
-                                                      key={`loadingData_TextField_Selected_${name}`}
-                                                      sx={{
-                                                         position: "absolute",
-                                                         display: "flex",
-                                                         alignItems: "center",
-                                                         top: "15%",
-                                                         left: "50%",
-                                                         transform: "translateX(-50%)"
-                                                      }}
-                                                   >
-                                                      <Typography
-                                                         key={`Typography_TextField_Selected_${name}`}
-                                                         variant="caption"
-                                                         component="div"
-                                                         color="text.secondary"
-                                                         sx={{ display: "flex", alignItems: "center", flexDirection: "column" }}
-                                                      >
-                                                         Cargando informacion...
-                                                         <Box key={`Box_LinearProgress_Selected_${name}`} sx={{ mt: 1 }}>
-                                                            <LinearProgress key={`Box_LinearProgress_Selected_${name}`} value={progress} sx={{ width: "100px" }} />
-                                                         </Box>
-                                                      </Typography>
-                                                   </Box>
-                                                )}
-                                             </>
-                                          ) : null}
+                                 {params.InputProps.endAdornment}
+                              </>
+                           )
+                        }}
+                     />
+                  )}
+                  error={isError ? "true" : undefined}
+               />
 
-                                          {params.InputProps.endAdornment}
-                                       </>
-                                    )
-                                 }}
-                              />
-                           )}
-                           disabled={disabled}
-                           error={isError ? 'true' : undefined}
-
-                        />
-                
-                  {refreshSelect && (
-                     <Tooltip title={`Actualizar ${pluralName}`} placement="top">
-                        {/* <IconButton type="button" variant="text" color="primary" sx={{ borderRadius: "12px", mr: 1 }} onClick={handleClickRefresh}>
+               {refreshSelect && (
+                  <Tooltip title={`Actualizar ${pluralName}`} placement="top">
+                     {/* <IconButton type="button" variant="text" color="primary" sx={{ borderRadius: "12px", mr: 1 }} onClick={handleClickRefresh}>
                         <IconReload />
                      </IconButton> */}
-                     </Tooltip>
-                  )}
-               </Box>
-
-               {isError && (
-                  <FormHelperText error id={`ht-${name}`}>
-                     {isError ? formik.errors[name] : helperText}
-                  </FormHelperText>
+                  </Tooltip>
                )}
-            </FormControl>
-         </Grid>
+            </Box>
+
+            {isError && (
+               <FormHelperText error id={`ht-${name}`}>
+                  {isError ? formik.errors[name] : helperText}
+               </FormHelperText>
+            )}
+         </FormControl>
+      </Grid>
    );
 };

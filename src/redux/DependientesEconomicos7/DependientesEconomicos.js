@@ -132,7 +132,6 @@ export const DependientesEconomicos7 = createSlice({
         deleteDatosDependiente :(state,action)=>{
             state.validationSchema = validationSchema
             state.initialState = state.initialState       
-            console.log("def",action.payload.id)
             state.datas = state.datas.filter(item => item.id !== action.payload.id);
 
         },

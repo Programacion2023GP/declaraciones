@@ -20,6 +20,8 @@ import { ServidorPublico } from "./servidorpublico/ServidorPublico";
 import { BienesInmuebles } from "./bienesinmuebles/BienesInmuebles";
 import { Box } from "@mui/material";
 import { TipoVehiculo } from "./tipodevehiculo/TipoVehiculo";
+import { BienesMuebles } from "./bienesmuebles/BienesMuebles";
+import { InversionesCuentasValores } from "./inversionescuentasvalores/InversionesCuentasValores";
 
 // Importa aquí los componentes correspondientes a cada paso
 
@@ -27,7 +29,7 @@ const ComponentDeclaraciones = () => {
    const { declaracion } = useParams();
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(10);
+   const [activeStep, setActiveStep] = React.useState(12);
    React.useEffect(() => {}, [activeStep]);
    const handleNext = () => {
       setTimeout(() => {
@@ -75,6 +77,23 @@ const ComponentDeclaraciones = () => {
       {
          label: "Vehículos (Situación actual)",
          component: <TipoVehiculo next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend}/>
+      },
+      {
+         label: "Bienes Muebles",
+         component: <BienesMuebles next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend}/>
+      },
+      {
+         label:"Inversiones",
+         subtitule: "Cuentas y otro tipo de valores / activos (Situación Actual)",
+         component:<InversionesCuentasValores next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend}/>,
+      },
+      {
+         label:"Adeudos / Pasivos (Situación Actual)",
+         component:<></>,
+      },
+      {
+         label:"Préstamo o Comodato por Terceros (Situación actual)",
+         component:<></>,
       }
 
       // {
