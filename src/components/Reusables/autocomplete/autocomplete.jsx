@@ -39,6 +39,7 @@ export const AutoComplete = ({
    label,
    placeholder,
    options,
+   reset,
    // options = ["Selecciona una opción..."],
    disabled,
 
@@ -148,6 +149,13 @@ export const AutoComplete = ({
          setLoader(false);
       }
    }, [options, formik.values[name]]);
+
+   useEffect(()=>{
+      formik.setFieldValue(name, 0);
+      setLabelValue("Selecciona una opción...");
+
+   },[reset])
+
 
    return (
       <Grid

@@ -26,8 +26,8 @@ export const Request = () => {
    const [titularVehiculos,setTitutarVehiculos]= useState([])
    const [tiposbienesmuebles,setTiposBienesMuebles] = useState([])
    const [tipoinversion,setTipoInversion] = useState([])
+   const [tipoAdeudos,setTipoAdeudos] = useState([])
 
-   
    useEffect(() => {
       const responses = async () => {
          setInmuebles(await GetAxios("tipoinmueble/show"));
@@ -54,6 +54,7 @@ export const Request = () => {
          setTitutarVehiculos(await GetAxios("titularvehiculos/show"))
          setTiposBienesMuebles(await GetAxios("tiposbienesmuebles/show"))
          setTipoInversion(await GetAxios("tipoinversion/show"))
+         setTipoAdeudos(await GetAxios("tiposadeudos/show"))
 
          setCached(true);
       };
@@ -84,6 +85,7 @@ export const Request = () => {
       vehiculos,
       titularVehiculos,
       tiposbienesmuebles,
-      tipoinversion
+      tipoinversion,
+      tipoAdeudos
    };
 };

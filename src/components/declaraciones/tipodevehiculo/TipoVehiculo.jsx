@@ -64,6 +64,7 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
 
       return years;
    };
+   const yearOptions = generateYearOptions();
    const deleteRow = (row) => {
       setDatas(datas.filter((element) => element.identificador != row.identificador));
       setDataTable(dataTable.filter((element) => element.identificador != row.identificador));
@@ -71,7 +72,6 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
    };
 
    // Obtener el array de años
-   const yearOptions = generateYearOptions();
    const handleChange = (event) => {
       setChecked(event.target.checked);
    };

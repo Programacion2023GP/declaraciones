@@ -22,6 +22,8 @@ import { Box } from "@mui/material";
 import { TipoVehiculo } from "./tipodevehiculo/TipoVehiculo";
 import { BienesMuebles } from "./bienesmuebles/BienesMuebles";
 import { InversionesCuentasValores } from "./inversionescuentasvalores/InversionesCuentasValores";
+import { AdeudosPasivos } from "./adeudospasivos/AdeudosPasivos";
+import { PrestamosComodatos } from "./prestamos/PrestamosComodatos";
 
 // Importa aquí los componentes correspondientes a cada paso
 
@@ -29,7 +31,7 @@ const ComponentDeclaraciones = () => {
    const { declaracion } = useParams();
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(12);
+   const [activeStep, setActiveStep] = React.useState(14);
    React.useEffect(() => {}, [activeStep]);
    const handleNext = () => {
       setTimeout(() => {
@@ -89,11 +91,11 @@ const ComponentDeclaraciones = () => {
       },
       {
          label:"Adeudos / Pasivos (Situación Actual)",
-         component:<></>,
+         component:<AdeudosPasivos next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
       },
       {
          label:"Préstamo o Comodato por Terceros (Situación actual)",
-         component:<></>,
+         component:<PrestamosComodatos next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
       }
 
       // {

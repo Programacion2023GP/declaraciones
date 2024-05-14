@@ -63,23 +63,19 @@ export const BienesInmuebles = ({ next, previous, title, setSend }) => {
       const newDatas = [...sendDatas];
       const sendApi = async () => {
          for (let i = 0; i < newDatas.length; i++) {
-            console.log("durante")
             dispatch(addBienesInmuebles(newDatas[i]));
             // delete newDatas[i].identificador;
-            await Post("/bienesinmuebles/create", newDatas, next);
+            await Post("/bienesinmuebles/create", newDatas);
          }
       };
-      console.log("antes")
       await sendApi();
-      console.log("final")
-      // setSend(true); 
-      console.log("termino")
+
 
       // newDatas.forEach(element => {
 
       // });
 
-      // next()
+      next()
    };
 
    const deleteRow = (row) => {

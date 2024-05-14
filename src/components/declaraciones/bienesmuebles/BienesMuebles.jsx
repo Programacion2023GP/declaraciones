@@ -64,13 +64,7 @@ export const BienesMuebles = ({ next, previous, title, setSend }) => {
       await sendApi();
       setDatas([])
       next();
-      // setSend(true);
-
-      // newDatas.forEach(element => {
-
-      // });
-
-      // next()
+    
    };
    const steps = [
       {

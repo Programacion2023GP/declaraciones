@@ -50,7 +50,7 @@ export const Text = ({
 
    return (
       <>
-         <Grid style={{ margin: marginBoton ? `${marginBoton} 0` : "0rem 0" }} item lg={col} xl={col} xs={12} md={12} sx={{ display: hidden ? "none" : "flex" }}>
+         <Grid style={{ margin: marginBoton ? `${marginBoton} 0` : "0rem 0",paddingLeft:".4rem",paddingTop:".5rem" }} item lg={col} xl={col} xs={12} md={12} sx={{ display: hidden ? "none" : "flex" }}>
             {mask ? (
                <Field name={name}>
                   {({ field }) => (

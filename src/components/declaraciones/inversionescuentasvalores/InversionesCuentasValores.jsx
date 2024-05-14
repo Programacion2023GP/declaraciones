@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { FormikForm } from "../../Reusables/formik/FormikForm";
 import { InitialValues } from "./components/InitialValues";
 import { Request } from "../../Reusables/request/Request";
 import DataTable from "../../Reusables/table/DataTable";
-import { Box, Button } from "@mui/material";
+import { Box, Button, FormControlLabel, FormGroup, Switch } from "@mui/material";
 import { Success } from "../../../toasts/toast";
+import { Ngif } from "../../Reusables/conditionals/Ngif";
+import { addInversionesCuentasValores } from "../../../redux/InversionesCuentasValoresHoja13/InversionesCuentasValores";
+import { Post } from "../funciones/post";
 
 export const InversionesCuentasValores = ({ next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.InversionesCuentasValores.initialState);
@@ -17,11 +20,14 @@ export const InversionesCuentasValores = ({ next, previous, title, setSend }) =>
    const [idUnique, setIdUnique] = useState(1);
    const { titular, tipoinversion, monedas } = Request();
    const formik = useRef(null);
-
+   const [checked, setChecked] = useState(true);
+   const dispatch = useDispatch()
+   const handleChange = (event) => {
+      setChecked(event.target.checked);
+   };
    const submit = async (values, { resetForm }) => {
       values.indentificador = idUnique;
       setDatas(datas.concat(values));
-      console.log("aqui");
       setDatasTable(
          datasTable.concat({
             identificador: values.indentificador,
@@ -36,6 +42,7 @@ export const InversionesCuentasValores = ({ next, previous, title, setSend }) =>
 
       formik.current.resetForm();
    };
+   
    const deleteRow = (row) => {
       setDatas(datas.filter((element) => element.identificador != row.identificador));
       setDatasTable(datasTable.filter((element) => element.identificador != row.identificador));
@@ -46,23 +53,17 @@ export const InversionesCuentasValores = ({ next, previous, title, setSend }) =>
 
       const sendApi = async () => {
          for (let i = 0; i < newDatas.length; i++) {
-            // dispatch(addValidacionesBienesMuebles(newDatas[i]));
-            // delete newDatas[i].identificador;
-            await Post("/bienesmuebles/create", newDatas[i]);
+            dispatch(addInversionesCuentasValores(newDatas[i]));
+            await Post("/inversionescuentas/create", newDatas[i]);
          }
       };
       await sendApi();
       setDatas([]);
       next();
-      // setSend(true);
-
-      // newDatas.forEach(element => {
-
-      // });
-
-      // next()
+    
    };
    useEffect(() => {
+  
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.InversionesCuentasValores.validationSchema), useSelector((state) => state.InversionesCuentasValores.initialState)]);
 
@@ -77,15 +78,29 @@ export const InversionesCuentasValores = ({ next, previous, title, setSend }) =>
                deleteButton={true}
             />
          </Box>
-         <FormikForm ref={formik} initialValues={dataForm} validationSchema={validationSchema} title={title} submit={submit}>
-            <InitialValues titular={titular} tipoinversion={tipoinversion} monedas={monedas} />
-            <Button onClick={previous} sx={{ marginTop: "1rem", marginRight: "1rem" }} type="button" variant="contained" color="secondary">
-               Regresar
+         <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
+            <FormControlLabel
+               control={<Switch checked={checked} onChange={handleChange} name="gilad" color={datasTable.length > 0 ? "secondary" : "primary"} />}
+               label={datasTable.length > 0 ? "¿Deseas seguir agregando inversiones cuentas y valores?" : "¿Tiene inversiones cuentas y valores?"}
+            />
+         </FormGroup>
+         <Ngif condition={checked}>
+            <FormikForm ref={formik} initialValues={dataForm} validationSchema={validationSchema} title={title} submit={submit}>
+               <InitialValues titular={titular} tipoinversion={tipoinversion} monedas={monedas} />
+               <Button onClick={previous} sx={{ marginTop: "1rem", marginRight: "1rem" }} type="button" variant="contained" color="secondary">
+                  Regresar
+               </Button>
+               <Button sx={{ marginTop: "1rem" }} type="submit" variant="contained" color="primary">
+                  Agregar a la tabla
+               </Button>
+            </FormikForm>
+         </Ngif>
+         <Ngif condition={!checked}>
+            <Button onClick={sendData} sx={{ marginTop: "1rem",marginLeft:"1rem" }} type="submit" variant="contained" color="primary">
+            {datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
+
             </Button>
-            <Button sx={{ marginTop: "1rem" }} type="submit" variant="contained" color="primary">
-               Agregar a la tabla
-            </Button>
-         </FormikForm>
+         </Ngif>
       </>
    );
 };

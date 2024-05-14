@@ -19,7 +19,7 @@ const DatePickerComponentV2 = ({
    useEffect(() => {
    }, [errors[name], touched[name]]);
    return (
-      <FormControl fullWidth sx={{ margin: "1rem 0" }}>
+      <FormControl fullWidth sx={{ margin: "1rem 0",paddingLeft:".4rem"  }}>
          <Field name={name} id={name}>
             {({ field, form }) => (
                <>
