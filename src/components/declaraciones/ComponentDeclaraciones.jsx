@@ -31,7 +31,7 @@ const ComponentDeclaraciones = () => {
    const { declaracion } = useParams();
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(14);
+   const [activeStep, setActiveStep] = React.useState(0);
    React.useEffect(() => {}, [activeStep]);
    const handleNext = () => {
       setTimeout(() => {
@@ -48,7 +48,7 @@ const ComponentDeclaraciones = () => {
    // Define aquí la lista de pasos con sus títulos y componentes correspondientes
    const steps = [
       { label: `Datos generales`, component: <DatosGenerales next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} /> },
-      { label: `Domicilio Declarante`, component: <DomicilioDeclarante next={handleNext} previous={handleBack} title={Titles(declaracion)} /> },
+      { label: `Domicilio Declarante`, component: <DomicilioDeclarante  next={handleNext} previous={handleBack} title={Titles(declaracion)} /> },
       { label: `Datos Curriculares del Declarante`, component: <DatosCurriculares next={handleNext} previous={handleBack} title={Titles(declaracion)} /> },
       { label: `Datos del empleo, cargo o comisión que inicia`, component: <DatosEmpleo next={handleNext} previous={handleBack} title={Titles(declaracion)} /> },
       {

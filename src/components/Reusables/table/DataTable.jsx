@@ -12,7 +12,7 @@ import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const SearchInput = ({ column, data, getData, previousData }) => {
    const [searchText, setSearchText] = useState("");
@@ -79,22 +79,28 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
          <thead>
             <tr style={{ background: "#F9FAFB", width: "100%" }}>
                {headersMap.map((title) => {
-                  return <th key={'headers' +title} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>{title.charAt(0).toUpperCase() + title.slice(1)}</th>;
+                  return (
+                     <th key={"headers" + title} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>
+                        {title.charAt(0).toUpperCase() + title.slice(1)}
+                     </th>
+                  );
                })}
                {headersMap.length > 0 && (editButton || deleteButton) && (
-                  <th key={'headersMap' +uuidv4()} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>Acciones</th>
+                  <th key={"headersMap" + uuidv4()} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>
+                     Acciones
+                  </th>
                )}
             </tr>
             <tr>
                {filter &&
                   titlesMap.map((title) => {
                      return (
-                        <th key={'titlesMap' +title} style={{ border: "1px solid #BDBDBD", padding: ".5rem .5rem" }}>
+                        <th key={"titlesMap" + title} style={{ border: "1px solid #BDBDBD", padding: ".5rem .5rem" }}>
                            <SearchInput previousData={previousData} column={title} data={data} getData={filterData} />
                         </th>
                      );
                   })}
-{filter && (editButton || deleteButton) && <th key={uuidv4()} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}></th>}
+               {filter && (editButton || deleteButton) && <th key={uuidv4()} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}></th>}
             </tr>
          </thead>
       </>
@@ -157,7 +163,64 @@ const PaginatorSelect = ({ pagination, selectOption }) => {
    );
 };
 
-const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filter, editButton, deleteButton, handleEdit, handleDelete }) => {
+const FilterGlobal = ({ data = [],setFilteredData }) => {
+   const [searchText, setSearchText] = useState("");
+   useEffect(() => {
+   
+   },[]);
+   const searchData = (event) => {
+      const newValue = event.target.value;
+      setSearchText(newValue);
+  
+      // Filtrar los datos basados en el texto de búsqueda
+      const newFilteredData = data.filter(item => {
+        for (const key in item) {
+          if (item.hasOwnProperty(key) && String(item[key]).toLowerCase().includes(newValue.toLowerCase())) {
+            return true;
+          }
+        }
+        return false;
+      });
+
+      // console.log(newFilteredData,data);
+      setFilteredData(newFilteredData);
+    };
+  
+
+   const handleClear = () => {
+      setSearchText("");
+      if (previousData) {
+         getData(previousData);
+      }
+   };
+
+   return (
+      <Box sx={{ "& > :not(style)": { m: 1 }, width: "100%" }}>
+         <Box sx={{ display: "flex", alignItems: "flex-end" }}>
+            <SearchIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
+            <TextField
+               fullWidth
+               value={searchText}
+               onChange={searchData}
+               id="input-with-sx"
+               label="Buscador"
+               variant="standard"
+               InputProps={{
+                  endAdornment: (
+                     <InputAdornment position="end">
+                        {/* <IconButton onClick={handleClear}>
+                  <ClearIcon />
+                </IconButton> */}
+                     </InputAdornment>
+                  )
+               }}
+            />
+         </Box>
+      </Box>
+   );
+};
+
+const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filter, editButton, deleteButton, handleEdit, handleDelete, filterGlobal,conditionExistEditButton=[] }) => {
    const [totalData, setTotalData] = useState(data);
    const [dataFilter, setDataFilter] = useState(data);
    const [titles, setTitles] = useState([]);
@@ -174,12 +237,9 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filte
 
    const applyFilters = (page = null) => {
       const filters = data.filter((item) => {
-         // Verificamos si todos los criterios de filtro se cumplen para este elemento
          return Object.entries(objectValues).every(([col, val]) => {
-            // Convertimos el valor de la propiedad a cadena y lo normalizamos (mayúsculas y minúsculas, sin espacios en blanco al principio o al final)
             const itemValue = String(item[col]).toUpperCase().trim();
             const filterValue = String(val).toUpperCase().trim();
-            // Comparamos el valor del elemento con el valor del filtro
             return itemValue.includes(filterValue);
          });
       });
@@ -189,7 +249,12 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filte
          modifiedData(filters);
       }
    };
+   const applyfilterGlobal = (data,page=null)=>{
+      modifiedData(data);
+
+   }
    const filterData = (column, value) => {
+     
       // Actualizamos el estado de objectValues con los nuevos valores de filtro
       setObjectValues((prevState) => ({
          ...prevState,
@@ -270,6 +335,33 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filte
       handleShowData(pagina, datas);
    };
 
+   const checkConditions = (item) => {
+      return conditionExistEditButton.every(condition => {
+        const match = condition.match(/(.+?)\s*(==|!=|>=|<=|>|<)\s*'([^']+)'/);
+        if (!match) return false;
+    
+        const [, key, operator, value] = match;
+        const itemValue = item[key.trim()];
+    
+    
+        switch (operator) {
+          case '!=':
+            return itemValue != value;
+          case '==':
+            return itemValue == value;
+          case '>=':
+            return itemValue >= value;
+          case '<=':
+            return itemValue <= value;
+          case '>':
+            return itemValue > value;
+          case '<':
+            return itemValue < value;
+          default:
+            return false;
+        }
+      });
+    };
    useEffect(() => {
       setDataFilter(data);
 
@@ -287,6 +379,11 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filte
    return (
       <>
          <div className="" style={{ maxWidth: "fit-content", display: "flex", flexDirection: "column" }}>
+            {filterGlobal && (
+               <>
+                  <FilterGlobal data={data} setFilteredData={applyfilterGlobal} />
+               </>
+            )}
             <table style={{ borderCollapse: "collapse" }}>
                {titles.length > 0 || headers.length > 0 ? (
                   <Title
@@ -339,7 +436,7 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filte
                               })}
                               {(editButton || deleteButton) && (
                                  <td style={{ textAlign: "center", border: "1px solid #BDBDBD", padding: 0, margin: 0 }}>
-                                    {editButton && (
+                                    {editButton && checkConditions(item) && (
                                        <IconButton
                                           aria-label="edit"
                                           color="warning"

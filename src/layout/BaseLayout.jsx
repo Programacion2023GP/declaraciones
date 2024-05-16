@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { createBrowserRouter, createHashRouter, RouterProvider } from "react-router-dom";
 import { Header } from "../components/header/Header";
 import { Grid } from "@mui/material";
@@ -6,11 +6,24 @@ import { MenuContext } from "react-pro-sidebar";
 import { useMenuContext } from "../context/MenuContext";
 import TemporaryDrawer from "../components/sidebar/Sidebar";
 import { Inspector } from "../components/Reusables/Inspector/Inspector";
+import { useEffect, useState } from "react";
+import { Ngif } from "../components/Reusables/conditionals/Ngif";
+import { useDispatch } from "react-redux";
+import { locationAuth } from "../user/auth/auth";
 
 const BaseLayout = () => {
+   const location = useLocation();
+   const [loading,setLoading]=useState(false)
+   const dispatch = useDispatch()
+   useEffect(() => {
+      dispatch(locationAuth())
+      setLoading(true)
+
+      // Coloca aquí el código que deseas ejecutar cuando cambie la ruta
+   }, [location.pathname]);
    const { open } = useMenuContext();
    return (
-      <>
+      <Ngif condition={loading}>
          <Grid container style={{ width: "100%", overflow: "exist" }}>
             {" "}
             {/* Establecer el estilo height en 100vh para que ocupe toda la altura de la ventana */}
@@ -33,7 +46,7 @@ const BaseLayout = () => {
                <Outlet />
             </Grid>
          </Grid>
-      </>
+      </Ngif>
    );
 };
 

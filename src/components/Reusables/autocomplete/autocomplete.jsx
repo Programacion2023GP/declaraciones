@@ -150,11 +150,11 @@ export const AutoComplete = ({
       }
    }, [options, formik.values[name]]);
 
-   useEffect(()=>{
-      formik.setFieldValue(name, 0);
-      setLabelValue("Selecciona una opción...");
+   // useEffect(()=>{
+   //    formik.setFieldValue(name, 0);
+   //    setLabelValue("Selecciona una opción...");
 
-   },[reset])
+   // },[reset])
 
 
    return (

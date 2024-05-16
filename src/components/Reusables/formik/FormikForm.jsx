@@ -34,12 +34,14 @@ export const FormikForm = forwardRef(
                                  {children}
 
                                  <Ngif condition={previousButton && handlePrevious}>
-                                    <Button sx={{ marginRight: "1rem" }} type="button" onClick={handlePrevious} variant="contained" color="secondary">
-                                       Regresar a la pagina anterior
+                                  
+                                    <Button sx={{ marginTop: "1rem",marginRight:"1ren" }} type="button" onClick={handlePrevious} variant="contained" color="secondary">
+                                    Regresar a la pagina anterior
                                     </Button>
                                  </Ngif>
                                  <Ngif condition={button}>
-                                    <Button sx={{ marginTop: "1rem" }} type="submit" variant="contained" color="primary">
+                                     
+                                    <Button sx={{ marginLeft:"1rem",marginTop: "1rem" }} type="submit" variant="contained" color="primary">
                                        Registrar y Continuar
                                     </Button>
                                  </Ngif>

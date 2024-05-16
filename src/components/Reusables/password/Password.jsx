@@ -43,6 +43,7 @@ export const Password = ({
         type={showPassword ? "text" : "password"}
         variant="outlined"
         InputProps={{
+          
           endAdornment: (
             <InputAdornment position="end">
               <IconButton

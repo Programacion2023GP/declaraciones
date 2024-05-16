@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Grid } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Field, useFormikContext } from "formik"; 
+import { Field, useFormikContext } from "formik";
 import InputMask from "react-input-mask";
 
 export const Text = ({
@@ -20,7 +20,25 @@ export const Text = ({
    marginBoton,
    textStyleCase = null
 }) => {
-   const formik = useFormikContext(); 
+   const handleInputFormik = async (e, setFieldValue, input, toUpper = true) => {
+      try {
+         const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
+         console.log(newText);
+         setFieldValue(input, newText);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+   const formatToLowerCase = (event) => {
+      const newText = event.target.value.toLowerCase();
+      return newText;
+   };
+   const formatToUpperCase = (event) => {
+      const newText = event.target.value.toUpperCase();
+      return newText;
+   };
+   const formik = useFormikContext();
 
    useEffect(() => {}, [name]);
 
@@ -29,28 +47,31 @@ export const Text = ({
    const isError = formik.touched[name] && !!formik.errors[name];
    const handleInput = (event) => {
       const { type } = event.target;
-   
+
       if (type === "number") {
          let value = event.target.value;
-   
-         value = value.replace(/[^0-9.]/g, '');
-   
-         const decimalCount = value.split('.').length - 1;
+
+         value = value.replace(/[^0-9.]/g, "");
+
+         const decimalCount = value.split(".").length - 1;
          if (decimalCount > 1) {
-            value = value.slice(0, value.lastIndexOf('.'));
+            value = value.slice(0, value.lastIndexOf("."));
          }
          event.target.value = value;
       }
    };
-   
-   
-   
-   
-   
 
    return (
       <>
-         <Grid style={{ margin: marginBoton ? `${marginBoton} 0` : "0rem 0",paddingLeft:".4rem",paddingTop:".5rem" }} item lg={col} xl={col} xs={12} md={12} sx={{ display: hidden ? "none" : "flex" }}>
+         <Grid
+            style={{ margin: marginBoton ? `${marginBoton} 0` : "0rem 0", paddingLeft: ".4rem", paddingTop: ".5rem" }}
+            item
+            lg={col}
+            xl={col}
+            xs={12}
+            md={12}
+            sx={{ display: hidden ? "none" : "flex" }}
+         >
             {mask ? (
                <Field name={name}>
                   {({ field }) => (
@@ -58,9 +79,10 @@ export const Text = ({
                         mask={mask}
                         value={formik.values && formik.values[name] ? formik.values[name] : ""}
                         onInput={(e) => {
-                           textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
+                           console.log(e.target.value);
+                           textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, name, textStyleCase) : null;
                         }}
-                        onChange={(e) => field.onChange(e)} 
+                        onChange={(e) => field.onChange(e)}
                         onBlur={(e) => field.onBlur(e)}
                         disabled={loading || disabled}
                      >
@@ -93,13 +115,17 @@ export const Text = ({
                   value={formik.values && formik.values[name] ? formik.values[name] : ""}
                   onChange={formik.handleChange}
                   onBlur={(e) => {
-                     formik.handleBlur(e); 
+                     formik.handleBlur(e);
+                  }}
+                  onInput={(e) => {
+                     handleInput(e)
+                     textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, name, textStyleCase) : null;
                   }}
                   disabled={loading || disabled}
                   fullWidth
-                  onInput={handleInput}
-                  multiline={rows} 
-                  rows={type === null || type === undefined ? rows : undefined} 
+                  // onInput={handleInput}
+                  multiline={rows}
+                  rows={type === null || type === undefined ? rows : undefined}
                   error={isError}
                   helperText={isError ? formik.errors[name] : placeholder}
                   InputLabelProps={{
@@ -111,13 +137,4 @@ export const Text = ({
          </Grid>
       </>
    );
-};
-const handleInputFormik = async (e, setFieldValue, input, toUpper = true) => {
-   try {
-      const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
-      setFieldValue(input, newText);
-   } catch (error) {
-      console.log(error);
-      Toast.Error(error);
-   }
 };

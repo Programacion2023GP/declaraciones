@@ -46,7 +46,7 @@ export const DatosGenerales = ({ next, previous, title,setSend }) => {
          }
       }
    };
-   const { nacionalidades, paises, estadocivil, regimenes } = Request();
+   const { nacionalidades, paises, estadocivil, regimenes } = Request({peticiones:["nacionalidades","paises","estadocivil","regimenes"]});
    const steps = [
       {
          label: "Datos Generales",

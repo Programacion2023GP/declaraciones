@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { configValidationsEmpleo } from "../../../../redux/DatosEmpleoHoja4/DatosEmpleo";
 import { Grid } from "@mui/material";
+import { CustomRadio } from "../../../Reusables/radiobutton/Radio";
 
 export const InformacionEmpleo = ({}) => {
    const formik = useFormikContext();
@@ -24,7 +25,19 @@ export const InformacionEmpleo = ({}) => {
    };
    return (
       <Grid container spacing={1}>
-         <AutoComplete
+          <CustomRadio
+            rowLayout={false}
+            col={12}
+            name="NivelEmpleoCargoComision"
+            title="Nivel del empleo, cargo o comisión"
+            options={[
+               { value: 1, label: "1 Presidente Municipal,Regidores,Tesorero,Contralor, Oficil Mayor." },
+               { value: 2, label: "2 Encargados, Jefes, Supervisores,Administradores, Sub Directores, Directores, Juez, Coordinadores." },
+               { value: 3, label: "3 Operativos(secretaría,auxiliares,limpieza,administrativos,veladores,chofer,intendencia,fajineros, etc.)." },
+            ]}
+
+/>
+         {/* <AutoComplete
             col={12}
             label="Nivel del empleo, cargo o comisión"
             name="NivelEmpleoCargoComision"
@@ -32,10 +45,9 @@ export const InformacionEmpleo = ({}) => {
                { id: 1, text: "1 Presidente Municipal,Regidores,Tesorero,Contralor, Oficil Mayor." },
                { id: 2, text: "2 Encargados, Jefes, Supervisores,Administradores, Sub Directores, Directores, Juez, Coordinadores." },
                { id: 3, text: "3 Operativos(secretaría,auxiliares,limpieza,administrativos,veladores,chofer,intendencia,fajineros, etc.)." },
-               { id: 4, text: "Otro especifique..." }
             ]}
             handleGetValue={handleGetValue}
-         />
+         /> */}
          <Text
             hidden={activeEspecificarEmpleo}
             col={12}

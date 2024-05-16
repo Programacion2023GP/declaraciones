@@ -7,19 +7,20 @@ import { useDispatch } from "react-redux";
 import { addValidacioneServidorPublico } from "../../../../redux/DatosGeneralesHoja1/DatosGenerales";
 import { Grid } from "@mui/material";
 
-export const DatosExtras = ({ estadocivil, regimenes, nacionalidades, paises,validaciones,handleActive,active }) => {
+export const DatosExtras = ({ estadocivil, regimenes, nacionalidades, paises, validaciones, handleActive, active }) => {
    let { declaracion } = useParams();
    const dispatch = useDispatch();
    declaracion = parseInt(declaracion);
    const [activeRegimen, setActiveRegimen] = useState(active);
    const handleGetValue = (name, value) => {
       setActiveRegimen(value == 2 ? false : true);
-      dispatch(addValidacioneServidorPublico({validaciones,tipo:value==2? "RegimenMatrimonial":"QuitarRegimenMatrimonial"}))
-      handleActive(value == 2 ? false : true)
+      dispatch(addValidacioneServidorPublico({ validaciones, tipo: value == 2 ? "RegimenMatrimonial" : "QuitarRegimenMatrimonial" }));
+      handleActive(value == 2 ? false : true);
    };
    return (
       <Grid container spacing={1}>
          <Text
+            textStyleCase={true}
             col={12}
             name="CorreoInstitucional"
             label="Correo electrónico institucional"
@@ -27,14 +28,15 @@ export const DatosExtras = ({ estadocivil, regimenes, nacionalidades, paises,val
             placeholder={"En caso de no contar con correo institucional ingresar el correo personal."}
          />
          <Text
+            textStyleCase={true}
             col={12}
             name="CorreoPersonal"
             label="Correo electrónico Personal"
             type={"email"}
             placeholder={"En caso de no contar con correo institucional ingresar el correo personal."}
          />
-         <Text col={6} name="TelefonoCasa" label="Ingresa el telefono de tu casa" mask="(999) 999-9999" />
-         <Text col={6} name="TelefonoCelularPersonal" label="Ingresa tu numero de telefono" mask="(999) 999-9999" />
+         <Text textStyleCase={true} col={6} name="TelefonoCasa" label="Ingresa el telefono de tu casa" mask="(999) 999-9999" />
+         <Text textStyleCase={true} col={6} name="TelefonoCelularPersonal" label="Ingresa tu numero de telefono" mask="(999) 999-9999" />
          <AutoComplete col={6} label="Situación personal / Estado civil" name="Id_EstadoCivil" handleGetValue={handleGetValue} options={estadocivil} />
          <AutoComplete col={6} label="Regimen matrimonial" name="Id_RegimenMatrimonial" disabled={activeRegimen} options={regimenes} />
          <AutoComplete
@@ -44,7 +46,7 @@ export const DatosExtras = ({ estadocivil, regimenes, nacionalidades, paises,val
             options={paises} //
          />
          <AutoComplete col={6} label="Nacionalidad" name="Id_Nacionalidad" options={nacionalidades} />
-         <Text col={12} name="Aclaraciones" label="Aclaraciones" rows={10} color={"green"} />
+         <Text textStyleCase={true} col={12} name="Aclaraciones" label="Aclaraciones" rows={10} color={"green"} />
          <CustomRadio
             hidden={declaracion == 2 ? false : true}
             col={12}

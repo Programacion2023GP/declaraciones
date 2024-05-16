@@ -35,9 +35,9 @@ export const DomicilioDeclaranteGeneral = memo(({}) => {
             color={"green"}
             // Otras props opcionales como color, mask, etc., si es necesario
          />
-         <Numeric col={6} name="NumeroExterior" label="Número Exterior" type={"number"} color={"green"} />
-         <Numeric col={6} name="NumeroInterior" label="Número Interior" type={"number"} color={"green"} />
-         <Numeric col={6} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} />
+         <Text  col={6} name="NumeroExterior" label="Número Exterior" type={"number"} color={"green"} />
+         <Text  col={6} name="NumeroInterior" label="Número Interior" type={"number"} color={"green"} />
+         <Text  col={6} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} />
          <Ngif condition={mexico}>
             <ComponenteMexico />
          </Ngif>

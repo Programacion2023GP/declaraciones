@@ -73,7 +73,7 @@ export const Steppers = () => {
       setDialog(false);
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
       if (activeStep === steps.length - 1) {
-        window.location.hash = `declaraciones/${selected}`;
+        window.location.hash = `dashboard/declaraciones/${selected}`;
       }
       setSkipped(newSkipped);
     } else {

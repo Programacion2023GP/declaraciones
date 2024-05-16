@@ -6,15 +6,17 @@ export const DatosGeneral = ({}) => {
       <Grid container spacing={1}>
          <Text
             col={6}
+            textStyleCase={true}
             name="Nombre"
             label="Nombre(s)"
             placeholder="Sin abreviaturas, sin acentos, ni signos especiales"
             //   mask={''}
             // Otras props opcionales como color, mask, etc., si es necesario
          />
-         <Text col={6} name="PrimerApellido" label="Primer apellido" placeholder={"Sin abreviaturas, sin acentos, ni signos especiales"} />
+         <Text textStyleCase={true} col={6} name="PrimerApellido" label="Primer apellido" placeholder={"Sin abreviaturas, sin acentos, ni signos especiales"} />
 
          <Text
+            textStyleCase={true}
             col={12}
             name="SegundoApellido"
             label="Segundo apellido"
@@ -25,9 +27,9 @@ export const DatosGeneral = ({}) => {
                     `}
          />
 
-         <Text col={12} name="Curp" label="Curp" />
-         <Text col={12} name="Rfc" label="Rfc" />
-         <Text col={12} name="Homoclave" label="Homoclave" />
+         <Text textStyleCase={true} col={12} name="Curp" label="Curp" />
+         <Text textStyleCase={true} col={12} name="Rfc" label="Rfc" />
+         <Text textStyleCase={true} col={12} name="Homoclave" label="Homoclave" />
       </Grid>
    );
 };

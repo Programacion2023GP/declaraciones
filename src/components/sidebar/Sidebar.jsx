@@ -3,6 +3,7 @@ import { ThemeContext } from "../../context/ThemeContext";
 import { LIGHT_THEME } from "../../constants/themeConstants";
 import LogoBlue from "../../assets/images/logo_blue.svg";
 import LogoWhite from "../../assets/images/logo_white.svg";
+import Gomez from  "../../assets/icons/logo-gpd.png";
 import {
 
   MdOutlineClose,
@@ -25,7 +26,7 @@ const Sidebar = () => {
       active: false,
       children: [
         {
-          path: "Mis declaraciones",
+          path: "misdeclaraciones",
           text: "Mis declaraciones",
           active: false,
         },
@@ -82,8 +83,7 @@ const Sidebar = () => {
     >
       <div className="sidebar-top">
         <div className="sidebar-brand">
-          <img src={theme === LIGHT_THEME ? LogoBlue : LogoWhite} alt="" />
-          <span className="sidebar-brand-text">tabernam.</span>
+          <img src={Gomez} alt="" style={{height: 100, objectFit: "contain"}} />
         </div>
         <button className="sidebar-close-btn" onClick={closeSidebar}>
           <MdOutlineClose size={24} />

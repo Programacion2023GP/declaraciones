@@ -19,7 +19,7 @@ export const DatosEmpleo = ({ next, previous, title }) => {
    const validations = useSelector((state) => state.DatosEmpleo.validationSchema);
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
    const [active,setActive] =useState(false)
-   const { nivelOrdenGobierno, ambitoPublico,nombreEntePublico } = Request();
+   const { nivelOrdenGobierno, ambitoPublico,nombreEntePublico } = Request({peticiones:["nivelOrdenGobierno","ambitoPublico","nombreEntePublico"]});
    useEffect(() => {
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.DatosEmpleo.initialState), useSelector((state) => state.DatosEmpleo.validationSchema)]);

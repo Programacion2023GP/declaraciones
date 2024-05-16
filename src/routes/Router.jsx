@@ -10,21 +10,17 @@ import ComponentDeclaraciones from "../components/declaraciones/ComponentDeclara
 import { Provider } from "react-redux";
 import store from "../redux/store";
 import { element } from "prop-types";
+import { MisDeclaraciones } from "../components/misdeclaraciones/MisDeclaraciones";
 export const router = createHashRouter([
-
    {
-      path: "/",
+      path: "/dashboard",
       element: (
          <MenuContextProvider>
             <BaseLayout />
          </MenuContextProvider>
       ),
-      errorElement: <h1>Error</h1>,
+      errorElement: <p>Error</p>,
       children: [
-         {
-            element: <h1>Home</h1>
-         },
-
          {
             path: "declaraciones",
             children: [
@@ -37,7 +33,6 @@ export const router = createHashRouter([
                   )
                },
                {
-
                   path: ":declaracion",
                   element: (
                      <Provider store={store}>
@@ -46,12 +41,18 @@ export const router = createHashRouter([
                   )
                }
             ]
+         },
+         {
+            path: "misdeclaraciones",
+            index: true,
+            element: <MisDeclaraciones/>
          }
       ]
    },
    {
-      path: "login",
-      element: <Login />
+      path: "/",
+      element: <Login/>,
+      index: true,
+      errorElement: <p>Error</p>
    }
 ]);
-

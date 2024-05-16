@@ -3,6 +3,7 @@ import "./Header.scss";
 import { Link } from "react-router-dom"; // Importa Link si estás utilizando React Router
 import { MenuContext } from "react-pro-sidebar";
 import { useMenuContext } from "../../context/MenuContext";
+import MenuHeader from "./MenuHeader";
 
 export const Header = () => {
   const { open, setOpen } = useMenuContext();
@@ -36,8 +37,10 @@ export const Header = () => {
         <div className="navbar-right">
           <ul className="navbar-menu">
             <li className="navbar-item">
+              <MenuHeader/>
+
               {/* <Link to="/contact" className="navbar-link">
-                
+                as
               </Link> */}
             </li>
           </ul>

@@ -15,7 +15,7 @@ export const DatosCurriculares = ({ next, previous, title }) => {
       values.EsEnMexico = parseInt(values.EsEnMexico);
       Post("/datoscurriculares/create", values, next());
    };
-   const { nivelEstudios, estatus, documentosObtenidos } = Request();
+   const { nivelEstudios, estatus, documentosObtenidos } = Request({peticiones:["nivelEstudios","estatus","documentosObtenidos"]});
    useEffect(() => {
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.DatosGenerales.initialState), useSelector((state) => state.DatosGenerales.validationSchema)]);
