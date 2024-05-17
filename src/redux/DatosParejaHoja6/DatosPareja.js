@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import * as Yup from "yup";
 
 const initialState = {
+    Pareja:1,
     Id_SituacionPatrimonial: parseInt(localStorage.getItem("id_SituacionPatrimonial")),
     Nombre:"",
     PrimerApellido:"",

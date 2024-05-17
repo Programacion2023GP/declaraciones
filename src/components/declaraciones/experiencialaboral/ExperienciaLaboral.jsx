@@ -13,6 +13,7 @@ import DataTable from "../../Reusables/table/DataTable";
 import { Error, Success } from "../../../toasts/toast";
 import { useDispatch } from "react-redux";
 import { addExperienciaLaboral } from "../../../redux/ExperienciaLaboralHoja5/ExperienciaLaboralHoja5";
+import { Post } from "../funciones/post";
 
 // import DataTable from "../../Reusables/table/DataTable";
 
@@ -115,10 +116,6 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                }
             ];
             setDatasVisuales(newDatasVisuales);
-            if (datas.length >= 2) {
-               setContinuar(true);
-               Success("Ya puedes continunar abajo del formulario o seguir ingresando");
-            }
          } else {
             Error("cuentas con el limite de experiencias laborales");
          }
@@ -138,28 +135,38 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
          };
          setDatasVisuales(newDatasVisuales);
          clearForm();
+         Success("se agrego a la tabla");
       }
       setSave(true);
    };
-   const saveDatabase = async () => {
-      try {
-         const newDatas = [...datas];
+
+   const sendData = async () => {
+     if (datas.length>0) {
+      const newDatas = [...datas];
+      const sendApi = async () => {
          for (let i = 0; i < newDatas.length; i++) {
             dispatch(addExperienciaLaboral(newDatas[i]));
-            delete newDatas[i].identificador;
-         }
-         const response = await PostAxios("/experiencialaboral/create", newDatas);
-         next();
-         Success(response.data.message);
+            // delete newDatas[i].identificador;
 
-         return response.data;
-      } catch (error) {
-         if (error.response?.data?.data?.message) {
-            Error(error.response.data.data.message);
-         } else {
-            console.error("error", error);
-            Error("NO EXISTE CONEXION A LA DB");
+            await Post("/experiencialaboral/create", newDatas[i]);
          }
+      };
+      await sendApi();
+
+      setDatas([]);
+      setDatasVisuales([]);
+      next();
+     }
+     else if(datas.length==0){
+      try {
+         const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${5}`);
+         Success(response.data.data.message);
+         setDatas([]);
+         setDatasVisuales([]);
+         next();
+      } catch (error) {
+         Error(error.response.data.data.message);
+      }
       }
    };
 
@@ -174,8 +181,13 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
       // formikRef.current.setFieldValue("Id_AmbitoPublico", finData[0].Id_AmbitoPublico);
    };
    const Delete = (row) => {
-      const newDatasVisuales = datasVisuales.filter((elemento) => elemento.identificador !== row.id);
+      console.log('====================================');
+      console.log(row.id);
+      console.log('====================================');
+      const newDatasVisuales = datasVisuales.filter((elemento) => elemento.id !== row.id);
+      setDatas(datas.filter((elemento) => elemento.identificador !== row.id));
       setDatasVisuales(newDatasVisuales);
+      Success("se elimino de la tabla");
    };
    const handleChange = (event) => {
       setChecked(event.target.checked);
@@ -225,8 +237,8 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                </Typography>
                <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
                   <FormControlLabel
-                     control={<Switch checked={checked} onChange={handleChange} name="gilad" color={"primary"} />}
-                     label={"¿Deseas seguir agregando experiencias laborales?"}
+                     control={<Switch checked={checked} onChange={handleChange} name="gilad" color={datasVisuales.length > 0 ? "secondary" : "primary"} />}
+                     label={datasVisuales.length > 0 ? "¿Deseas seguir agregando experiencias laborales?" : "¿Tienes experiencias laborales?"}
                   />
                </FormGroup>
                <Ngif condition={checked}>
@@ -321,11 +333,11 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                                  ]} // Opciones para los radio buttons
                               />
                               <Text col={12} name="Aclaraciones" label="Aclaraciones" rows={10} color={"green"} />
-                              <Button sx={{ marginRight: "1rem" }} type="button" onClick={previous} variant="contained" color="secondary">
+                              <Button sx={{ marginRight: "1rem",marginTop:"1rem" }} type="button" onClick={previous} variant="contained" color="secondary">
                                  Regresar a la pagina anterior
                               </Button>
-                              <Button type="submit" variant="contained" color="primary">
-                                 Agregar
+                              <Button sx={{ marginRight: "1rem",marginTop:"1rem" }} type="submit" variant="contained" color="primary">
+                                 Agregar a la tabla
                               </Button>
                            </Grid>
                         );
@@ -333,8 +345,8 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                   </Formik>
                </Ngif>
                <Ngif condition={!checked}>
-                  <Button onClick={next} type="submit" variant="contained" color="primary">
-                     Registrar y Continuar
+                  <Button onClick={sendData} type="submit" variant="contained" color="primary">
+                     {datasVisuales.length > 0 ? "Registrar y Continuar" : "Continuar"}
                   </Button>
                </Ngif>
             </CardContent>

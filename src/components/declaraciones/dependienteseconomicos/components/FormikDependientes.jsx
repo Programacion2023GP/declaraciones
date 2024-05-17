@@ -3,7 +3,7 @@ import { Formik } from "formik";
 
 export const FormikDependientes = ({ initialValues, validationSchema, submit, title, children, ref }) => {
    return (
-      <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}>
+      <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem",display:"flex", justifyContent:"center" }}>
          <CardContent>
             <Typography variant="h3" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
                {title}
@@ -24,8 +24,8 @@ export const FormikDependientes = ({ initialValues, validationSchema, submit, ti
                               <Box component={"form"} onSubmit={handleSubmit}>
                                  {children}
 
-                                 <Button type="submit" variant="contained" color="primary">
-                                    Registrar
+                                 <Button sx={{marginTop:"1rem"}} type="submit" variant="contained" color="primary">
+                                    Agregar a la tabla
                                  </Button>
                               </Box>
                            </>

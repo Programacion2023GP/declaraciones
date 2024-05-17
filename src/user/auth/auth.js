@@ -16,8 +16,7 @@ export const Auth = createSlice({
 
          state.idUser = parseInt(localStorage.getItem("Id_User"));
          state.idRol =  parseInt(localStorage.getItem("Id_Role"));
-         state.location = window.location.hash.split("#")[1]
-
+         state.location = "/"
          if(state.idUser>0 && state.idRol>0){
             state.status ="login"
          }

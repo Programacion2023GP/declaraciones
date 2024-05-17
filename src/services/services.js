@@ -3,7 +3,7 @@ import { Success,Error,Info,Warning } from '../toasts/toast';
 
 export const Axios = axios.create({
     baseURL:'http://127.0.0.1:8000/api',
-    timeout:5000,
+    timeout:500000,
     headers:{
         Accept:'application/json',
         'Content-Type': 'application/json',

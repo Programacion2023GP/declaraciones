@@ -320,6 +320,11 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filte
       let index = 0;
       let page = 0;
       const datas = [];
+    
+      if (!Array.isArray(data)) {
+         return
+      }
+
       data.map((item, i) => {
          if (selectRow === index || i === 0) {
             index = 0;

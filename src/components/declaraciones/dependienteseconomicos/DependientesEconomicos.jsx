@@ -11,7 +11,10 @@ import { DomicilioDeclarante } from "./components/DomicilioDeclarante";
 import { Sectores } from "./components/Sectores";
 import { addDatosDependiente, clearData, configValidationsDependiente, deleteDatosDependiente } from "../../../redux/DependientesEconomicos7/DependientesEconomicos";
 import { CustomRadio } from "../../Reusables/radiobutton/Radio";
-import { PostAxios } from "../../../services/services";
+import { Axios, PostAxios } from "../../../services/services";
+import { addDatosDependientesEconomicos } from "../../../redux/IngresosNetosHoja8/IngresosNetosHoja8";
+import { Success } from "../../../toasts/toast";
+import { Post } from "../funciones/post";
 
 export const DependientesEconomicos = ({ next, previous, title }) => {
    let { declaracion } = useParams();
@@ -32,42 +35,58 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
 
    const submit = async (values, { resetForm }) => {
       values.id = idUnique;
-      dispatch(addDatosDependiente(values));
+      setDatas(datas.concat(values))
+      // dispatch(addDatosDependiente(values));
       adDataTable(values);
+      Success("se agrego a la tabla")
    };
 
-   const sendData = async () => {
+ 
+
+   const sendDatass = async () => {
+      
+ 
+      const newDatas = [...datas];
       if (datasTable.length > 0) {
          try {
-            const newDatas = datasRedux.map((item) => {
-               const newItem = { ...item };
-               delete newItem.id;
-               return newItem;
-            });
+            const sendApi = async () => {
+               for (let i = 0; i < newDatas.length; i++) {
+                  dispatch(addDatosDependientesEconomicos(newDatas[i]));
+                  // delete newDatas[i].identificador;
+      
+                  await Post("/dependienteseconomicos/create", newDatas[i]);
+               }
+            };
+            await sendApi();
+      
+           
 
-            const response = await PostAxios("/dependienteseconomicos/create", newDatas);
             dispatch(clearData());
             setDatasTable([]);
             next();
-            Success(response.data.message);
 
-            return response.data;
          } catch (error) {
-            if (error.response?.data?.data?.message) {
-               Error(error.response.data.data.message);
+            if (error.response?.data?.message) {
+               Error(error.response.data.message);
             } else {
                console.error("error", error);
-               Error("NO EXISTE CONEXION A LA DB");
+               Error("Ocurrio un error");
             }
-            dispatch(clearData());
-            setDatasTable([]);
+            // dispatch(clearData());
+            // setDatasTable([]);
          }
       } else {
-         dispatch(clearData());
-         setDatasTable([]);
-         next();
+         try {
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${7}`);
+            Success(response.data.message);
+            dispatch(clearData());
+            setDatasTable([]);
+            next();
+            Success("Continuemos llenando los formularios");
+         } catch (error) {
+            Error(error.response.data.message);
+         }
 
-         Success("Continuemos llenando los formularios");
       }
    };
    const adDataTable = (values) => {
@@ -100,12 +119,16 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
    };
    const edit = (row) => {
       const item = datasRedux.filter((item) => item.id == row.id);
+
       handleChange("HabitaDomicilioDeclarante", item.HabitaDomicilioDeclarante);
    };
    const deleteRow = (row) => {
-      dispatch(deleteDatosDependiente({ id: row.id }));
+      // dispatch(deleteDatosDependiente({ id: row.id }));
+      setDatas(datas.filter((item) => item.id != row.id))
       const itemTable = datasTable.filter((item) => item.id != row.id);
       setDatasTable(itemTable);
+      Success("se elimino de la tabla")
+
    };
    useEffect(() => {
       setValidationSchema(Yup.object().shape(validations));
@@ -141,13 +164,11 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
             </FormikDependientes>
          </Ngif>
          <Ngif condition={!checked}>
-            <Button type="submit" variant="contained" color="primary" onClick={sendData}>
-               Continuar
+            <Button sx={{marginLeft:"1rem"}} type="submit" variant="contained" color="primary" onClick={sendDatass}>
+              Registrar y Continuar
             </Button>
          </Ngif>
-         <button variant="contained" color="secondary" onClick={next}>
-            CONTINUAR DESAROLLO DE PAGINA
-         </button>
+       
       </>
    );
 };

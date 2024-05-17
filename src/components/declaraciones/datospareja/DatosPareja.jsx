@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addDatosPareja, configValidations, validationDatosPareja } from "../../../redux/DatosParejaHoja6/DatosPareja";
 import { useEffect, useRef, useState } from "react";
 import { AutoComplete } from "../../Reusables/autocomplete/autocomplete";
-import { GetAxios, PostAxios } from "../../../services/services";
+import { Axios, GetAxios, PostAxios } from "../../../services/services";
 import { CustomRadio } from "../../Reusables/radiobutton/Radio";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Success } from "../../../toasts/toast";
@@ -23,8 +23,8 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
       if (pareja) {
          try {
             const response = await PostAxios("/datospareja/create", values);
-            // next();
             Success(response.data.message);
+            next();
 
             return response.data;
          } catch (error) {
@@ -35,7 +35,13 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
             }
          }
       } else {
-         Success("Continuemos");
+         try {
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${6}`);
+            Success(response.data.message);
+            return response.data;
+         } catch (error) {
+            Error(error.response.data.message);
+         }
       }
    };
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
@@ -53,7 +59,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
    const [monedas, setMonedas] = useState([]);
    const [ambitosPublicos, setAmbitosPublicos] = useState([]);
    const [nivelGobierno, setNivelGobiernos] = useState([]);
-   const [pareja, setPareja] = useState(false);
+   const [pareja, setPareja] = useState(true);
    useEffect(() => {
       const init = async () => {
          setRelacionDeclarante(await GetAxios("/relacioncondeclarante/show"));
@@ -347,9 +353,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                      );
                   }}
                </Formik>
-               <button variant="contained" color="secondary" onClick={next}>
-                  CONTINUAR DESAROLLO DE PAGINA
-               </button>
+             
             </CardContent>
          </Card>
       </Grid>

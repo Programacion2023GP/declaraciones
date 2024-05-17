@@ -83,7 +83,7 @@ export const Text = ({
                            textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, name, textStyleCase) : null;
                         }}
                         onChange={(e) => field.onChange(e)}
-                        onBlur={(e) => field.onBlur(e)}
+                        onBlur={(e) => field.onBlur(e)}  
                         disabled={loading || disabled}
                      >
                         {(inputProps) => (
@@ -115,7 +115,7 @@ export const Text = ({
                   value={formik.values && formik.values[name] ? formik.values[name] : ""}
                   onChange={formik.handleChange}
                   onBlur={(e) => {
-                     formik.handleBlur(e);
+                     formik.handleBlur(e); 
                   }}
                   onInput={(e) => {
                      handleInput(e)

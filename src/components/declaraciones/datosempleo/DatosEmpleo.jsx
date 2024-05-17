@@ -35,6 +35,9 @@ export const DatosEmpleo = ({ next, previous, title }) => {
       Post("/datoscargoscomision/create", data, next);
    };
 
+
+
+
    const steps = [
       { label: "Nivel orden del gobierno",
        component: <NivelGobierno active={active} handleActive={setActive} ambitoPublico={ambitoPublico} nivelOrdenGobierno={nivelOrdenGobierno} nombreEntePublico={nombreEntePublico} /> },
