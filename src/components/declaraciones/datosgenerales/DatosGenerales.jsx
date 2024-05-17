@@ -11,11 +11,11 @@ import { useParams } from "react-router-dom";
 import { addDatosGenerales, addValidacioneServidorPublico } from "../../../redux/DatosGeneralesHoja1/DatosGenerales";
 import { PostAxios } from "../../../services/services";
 import { Error, Success } from "../../../toasts/toast";
-export const DatosGenerales = ({ next, previous, title,setSend }) => {
+export const DatosGenerales = ({ next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.DatosGenerales.initialState);
    const validations = useSelector((state) => state.DatosGenerales.validationSchema);
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
-   const [active,setActive] = useState(false)
+   const [active, setActive] = useState(false);
    const dispatch = useDispatch();
    let { declaracion } = useParams();
    declaracion = parseInt(declaracion);
@@ -35,18 +35,18 @@ export const DatosGenerales = ({ next, previous, title,setSend }) => {
          localStorage.setItem("id_SituacionPatrimonial", response.data.result);
          Success(response.data.message);
          next();
-         setSend(true)
+         setSend(true);
 
          return response.data;
       } catch (error) {
          if (error.response?.data?.data?.message) {
             Error(error.response.data.message);
          } else {
-            Error("NO EXISTE CONEXION A LA DB");
+            Error("Ocurrio un error");
          }
       }
    };
-   const { nacionalidades, paises, estadocivil, regimenes } = Request({peticiones:["nacionalidades","paises","estadocivil","regimenes"]});
+   const { nacionalidades, paises, estadocivil, regimenes } = Request({ peticiones: ["nacionalidades", "paises", "estadocivil", "regimenes"] });
    const steps = [
       {
          label: "Datos Generales",
@@ -54,7 +54,17 @@ export const DatosGenerales = ({ next, previous, title,setSend }) => {
       },
       {
          label: "Datos Extras",
-         component: <DatosExtras handleActive ={setActive} active={active} validaciones={validations} estadocivil={estadocivil} nacionalidades={nacionalidades} paises={paises} regimenes={regimenes} />
+         component: (
+            <DatosExtras
+               handleActive={setActive}
+               active={active}
+               validaciones={validations}
+               estadocivil={estadocivil}
+               nacionalidades={nacionalidades}
+               paises={paises}
+               regimenes={regimenes}
+            />
+         )
       }
    ];
    return (

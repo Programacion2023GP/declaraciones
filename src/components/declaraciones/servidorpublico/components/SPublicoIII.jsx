@@ -4,6 +4,7 @@ import { useFormikContext } from "formik";
 import { useDispatch } from "react-redux";
 import { configValidationServidorPublico } from "../../../../redux/ServidorPublicoHoja9/ServidorPublicoHoja9";
 import { labelPareja } from "../../funciones/ingresosEservidor/labels";
+import { useParams } from "react-router-dom";
 
 export const SPublicoIII = ({}) => {
    const formik = useFormikContext();

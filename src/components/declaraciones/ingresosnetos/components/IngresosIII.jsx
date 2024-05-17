@@ -5,6 +5,7 @@ import { configValidationsDependientesEconomicos } from "../../../../redux/Ingre
 import { useDispatch } from "react-redux";
 import { labelPareja } from "../../funciones/ingresosEservidor/labels";
 import { useParams } from "react-router-dom";
+import { Text } from "../../../Reusables/input/Input";
 
 export const IngresosIII = ({}) => {
    const formik = useFormikContext();
@@ -16,6 +17,7 @@ export const IngresosIII = ({}) => {
       setStart(!start);
    };
    const init = () => {
+     
       const total =
          parseInt(formik.values.IngresoMensualAnualConclusionNeto) > 0
             ? parseInt(formik.values.IngresoMensualAnualConclusionNeto) + parseInt(formik.values.IngresoNetoParejaDependiente)
@@ -25,10 +27,11 @@ export const IngresosIII = ({}) => {
    };
    useEffect(() => {
       init();
-   }, [start]);
+   }, []);
 
    return (
-      <Numeric
+      <Text
+      type={'number'}
          col={12}
          name={"IngresoNetoParejaDependiente"}
          color="green"

@@ -52,7 +52,7 @@ export const Text = ({
          let value = event.target.value;
 
          value = value.replace(/[^0-9.]/g, "");
-
+   
          const decimalCount = value.split(".").length - 1;
          if (decimalCount > 1) {
             value = value.slice(0, value.lastIndexOf("."));

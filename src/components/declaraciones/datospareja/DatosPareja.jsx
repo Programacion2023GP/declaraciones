@@ -31,7 +31,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
             if (error.response?.data?.data?.message) {
                Error(error.response.data.data.message);
             } else {
-               Error("NO EXISTE CONEXION A LA DB");
+               Error("Ocurrio un error");
             }
          }
       } else {
@@ -353,7 +353,6 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                      );
                   }}
                </Formik>
-             
             </CardContent>
          </Card>
       </Grid>

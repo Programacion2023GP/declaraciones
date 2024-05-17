@@ -73,17 +73,18 @@ export const IngresosII = ({}) => {
    }, [AICE_RemuneracionTotal, AF_RemuneracionTotal, SP_RemuneracionTotal, EB_RemuneracionTotal, OINC_RemuneracionTotal]);
    return (
       <>
-         <Numeric
+         <Text
+            type={"number"}
             col={12}
             name={"AICE_RemuneracionTotal"}
             label={"II.1 Por actividad industrial, comercial y/o empresarial"}
             placeholder={`"II.1 Por actividad industrial, comercial y/o empresarial (Después de impuestos)`}
             handleGetValue={handleingresosNetos}
-            
          />
          <Text name="AICE_NombreRazonSocial" label="Nombre o Razón Social" />
          <Text name="AICE_TipoNegocio" label="Tipo de Negocio" />
-         <Numeric
+         <Text
+            type={"number"}
             col={12}
             name={"AF_RemuneracionTotal"}
             label={"II.2 Por actividad financiera (Rendimientos o ganancias)"}
@@ -100,7 +101,8 @@ export const IngresosII = ({}) => {
          <Ngif condition={other}>
             <Text name="AF_EspecifiqueOtroTipo" label={"Especifique otro tipo"} />
          </Ngif>
-         <Numeric
+         <Text
+            type={"number"}
             col={12}
             name={"SP_RemuneracionTotal"}
             label={"II.3 Por servicios profesionales, consejos, consultorías, y/o asesorías"}
@@ -108,7 +110,8 @@ export const IngresosII = ({}) => {
             handleGetValue={handleingresosNetos}
          />
          <Text name="SP_TipoServicioPrestado" label="Tipo de servicio prestado" />
-         <Numeric
+         <Text
+            type={"number"}
             col={12}
             name={"EB_RemuneracionTotal"}
             label={"II.4 Por enajenacion de bienes"}
@@ -116,7 +119,8 @@ export const IngresosII = ({}) => {
             handleGetValue={handleingresosNetos}
          />
          <AutoComplete options={bienenAjenacion} name="EB_Id_TipoBienEnajenado" label={"Tipo de bien enajenado"} col={12} />
-         <Numeric
+         <Text
+            type={"number"}
             col={12}
             name={"OINC_RemuneracionTotal"}
             label={"II.5 Otros ingresos no considerados a los anteriores"}

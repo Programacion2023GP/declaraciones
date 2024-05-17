@@ -7,7 +7,6 @@ import { addDatosDependientesEconomicos } from "../../../redux/IngresosNetosHoja
 import { PostAxios } from "../../../services/services";
 
 export const IngresosNetos = ({ next, previous, title }) => {
-
    const dataForm = useSelector((state) => state.IngresosNetos.initialState);
    const validations = useSelector((state) => state.IngresosNetos.validationSchema);
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
@@ -24,7 +23,7 @@ export const IngresosNetos = ({ next, previous, title }) => {
          if (error.response?.data?.data?.message) {
             Error(error.response.data.data.message);
          } else {
-            Error("NO EXISTE CONEXION A LA DB");
+            Error("Ocurrio un error");
          }
       }
    };

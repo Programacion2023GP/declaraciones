@@ -36,7 +36,7 @@ export const ServidorPublico = ({ next, previous, title }) => {
             if (error.response?.data?.data?.message) {
                Error(error.response.data.data.message);
             } else {
-               Error("NO EXISTE CONEXION A LA DB");
+               Error("Ocurrio un error");
             }
          }
       }
@@ -52,7 +52,7 @@ export const ServidorPublico = ({ next, previous, title }) => {
                label={"¿Te desempeñaste como servidor público en el año inmediato anterior?"}
             />
          </FormGroup>
-      
+
          <Ngif condition={checked}>
             <FormikServidorPublico previous={previous} submit={submit} validationSchema={validationSchema} initialValues={dataForm} title={title}>
                <FormikInitialValues />

@@ -31,7 +31,7 @@ const ComponentDeclaraciones = () => {
    const { declaracion } = useParams();
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(7);
+   const [activeStep, setActiveStep] = React.useState(0);
    React.useEffect(() => {}, [activeStep]);
    const handleNext = () => {
       setTimeout(() => {
