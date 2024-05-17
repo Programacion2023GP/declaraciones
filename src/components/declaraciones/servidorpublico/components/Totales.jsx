@@ -44,8 +44,8 @@ export const Totales = ({}) => {
    }, []);
    return (
       <>
-         <Numeric disabled={true} name="IngresoMensualConclusionNeto" label={labelSumaIyII(declaracion)} placeholder={labelSumaIyII(declaracion)} />
-         <Numeric disabled={true} name="TotalIngresosNetos" label={labelTotal(declaracion)} placeholder={labelTotal(declaracion)} />
+         <Text type={'number'} disabled={true} name="IngresoMensualConclusionNeto" label={labelSumaIyII(declaracion)} placeholder={labelSumaIyII(declaracion)} />
+         <Text type={'number'} disabled={true} name="TotalIngresosNetos" label={labelTotal(declaracion)} placeholder={labelTotal(declaracion)} />
 
          <Text col={12} name="Aclaraciones" label="Aclaraciones" rows={10} color={"green"} />
       </>

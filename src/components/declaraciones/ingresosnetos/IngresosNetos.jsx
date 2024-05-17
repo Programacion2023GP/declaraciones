@@ -29,6 +29,9 @@ export const IngresosNetos = ({ next, previous, title }) => {
    };
    useEffect(() => {
       setValidationSchema(Yup.object().shape(validations));
+      console.log('====================================');
+      console.log("renderizado");
+      console.log('====================================');
    }, [useSelector((state) => state.IngresosNetos.validationSchema), useSelector((state) => state.IngresosNetos.initialState)]);
    return (
       <>

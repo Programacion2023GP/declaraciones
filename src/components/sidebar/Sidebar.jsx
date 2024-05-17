@@ -37,6 +37,30 @@ const Sidebar = () => {
         },
       ],
     },
+    {
+      path:"",
+      text:"Catalogos",
+      active:false,
+      children:[]
+    },
+    {
+      path:"",
+      text:"Reportes",
+      active:false,
+      children:[]
+    },
+    {
+      path:"",
+      text:"Checador",
+      active:false,
+      children:[]
+    },
+    {
+      path:"",
+      text:"Usuarios",
+      active:false,
+      children:[]
+    },
   ]);
   // closing the navbar when clicked outside the sidebar area
   const handleClickOutside = (event) => {

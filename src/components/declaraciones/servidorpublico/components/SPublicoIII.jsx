@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { configValidationServidorPublico } from "../../../../redux/ServidorPublicoHoja9/ServidorPublicoHoja9";
 import { labelPareja } from "../../funciones/ingresosEservidor/labels";
 import { useParams } from "react-router-dom";
+import { Text } from "../../../Reusables/input/Input";
 
 export const SPublicoIII = ({}) => {
    const formik = useFormikContext();
@@ -28,7 +29,7 @@ export const SPublicoIII = ({}) => {
    }, [start]);
 
    return (
-      <Numeric
+      <Text type={'number'}
          col={12}
          name={"IngresoNetoParejaDependiente"}
          color="green"
