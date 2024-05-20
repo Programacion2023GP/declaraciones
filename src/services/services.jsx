@@ -2,8 +2,8 @@ import axios from 'axios'
 import { Success,Error,Info,Warning } from '../toasts/toast';
 
 export const Axios = axios.create({
-    baseURL:'http://127.0.0.1:8000/api',
-    timeout:500000,
+    baseURL: import.meta.env.VITE_API_URL,
+    // timeout:500000,
     headers:{
         Accept:'application/json',
         'Content-Type': 'application/json',

@@ -53,9 +53,8 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
                for (let i = 0; i < newDatas.length; i++) {
                   dispatch(addDatosDependientesEconomicos(newDatas[i]));
                   // delete newDatas[i].identificador;
-      
-                  await Post("/dependienteseconomicos/create", newDatas[i]);
                }
+               await Post("/dependienteseconomicos/create", newDatas,next);
             };
             await sendApi();
       
@@ -63,7 +62,7 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
 
             dispatch(clearData());
             setDatasTable([]);
-            next();
+            // next();
 
          } catch (error) {
             if (error.response?.data?.message) {
@@ -165,7 +164,7 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{marginLeft:"1rem"}} type="submit" variant="contained" color="primary" onClick={sendDatass}>
-              Registrar y Continuar
+            {datasTable.length > 0 ? "Registrar y continuar" : "Continuar"}
             </Button>
          </Ngif>
        

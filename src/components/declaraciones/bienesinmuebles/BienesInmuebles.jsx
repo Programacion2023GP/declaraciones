@@ -10,13 +10,16 @@ import { addBienesInmuebles, restartBienesInmuebles, validationBienesInmuebles }
 import { Success } from "../../../toasts/toast";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Post } from "../funciones/post";
+import { Axios } from "../../../services/services";
 
 export const BienesInmuebles = ({ next, previous, title, setSend }) => {
    const validations = useSelector((state) => state.BienesInmuebles.validationSchema);
    const dataForm = useSelector((state) => state.BienesInmuebles.initialState);
    const dispatch = useDispatch();
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
-   const { inmuebles, titular, relacion, adquisicion, pago, monedas, conforme, motivobaja } = Request();
+   const { inmuebles, titular, relacion, adquisicion, pago, monedas, conforme, motivobaja } = Request({
+      peticiones: ["inmuebles", "titular", "relacion", "adquisicion", "pago", "monedas", "conforme", "motivobaja"]
+   });
    const [datas, setDatas] = useState([]);
    const [idUnique, setIdUnique] = useState(1);
    const formik = useRef(null);
@@ -60,22 +63,26 @@ export const BienesInmuebles = ({ next, previous, title, setSend }) => {
       // setAnimate(false)
    };
    const sendData = async () => {
-      const newDatas = [...sendDatas];
-      const sendApi = async () => {
-         for (let i = 0; i < newDatas.length; i++) {
-            dispatch(addBienesInmuebles(newDatas[i]));
-            // delete newDatas[i].identificador;
-            await Post("/bienesinmuebles/create", newDatas);
+      if (sendDatas.length > 0) {
+         const newDatas = [...sendDatas];
+         const sendApi = async () => {
+            for (let i = 0; i < newDatas.length; i++) {
+               dispatch(addBienesInmuebles(newDatas[i]));
+               // delete newDatas[i].identificador;
+            }
+            await Post("/bienesinmuebles/create", newDatas, next);
+         };
+         await sendApi();
+      } else {
+         try {
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${10}`);
+            Success(response.data.data.message);
+
+            next();
+         } catch (error) {
+            Error(error.response.data.data.message);
          }
-      };
-      await sendApi();
-
-
-      // newDatas.forEach(element => {
-
-      // });
-
-      next()
+      }
    };
 
    const deleteRow = (row) => {
@@ -93,7 +100,7 @@ export const BienesInmuebles = ({ next, previous, title, setSend }) => {
    return (
       <>
          <Box
-            className={`${animateSend ? "animate__animated animate__backInDown" : ""} ${animateDelete ? "animate__animated animate__flash" : ""}`}
+            // className={`${animateSend ? "animate__animated animate__backInDown" : ""} ${animateDelete ? "animate__animated animate__flash" : ""}`}
             key={"box"}
             alignItems={"center"}
             justifyContent={"center"}
@@ -115,7 +122,7 @@ export const BienesInmuebles = ({ next, previous, title, setSend }) => {
          </FormGroup>
          <Ngif condition={checked}>
             <FormikForm
-               className={animateSend ? "animate__animated animate__backInDown" : ""}
+               // className={animateSend ? "animate__animated animate__backInDown" : ""}
                key={"Formik"}
                ref={formik}
                submit={submit}
@@ -141,7 +148,7 @@ export const BienesInmuebles = ({ next, previous, title, setSend }) => {
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ ml: 2 }} type="button" variant="contained" onClick={sendData} color="primary">
-               Registrar y Continuar
+               {datas.length > 0 ? "Registrar y continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>

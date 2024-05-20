@@ -14,8 +14,9 @@ export const Totales = ({}) => {
    const formik = useFormikContext();
    const dispatch = useDispatch();
    const total = () => {
+
       return (
-         formik.values.RemuneracionMensualAnualConclusionCargoPublico +
+         formik.values.RemuneracionNetaCargoPublico +
          formik.values.AICE_RemuneracionTotal +
          formik.values.AF_RemuneracionTotal +
          formik.values.SP_RemuneracionTotal +
@@ -25,10 +26,12 @@ export const Totales = ({}) => {
    };
    const event = () => {
       const Tot = total();
+      console.log("aqui",Tot);
       dispatch(configValidationServidorPublico({ tipo: "Totales", total: parseInt(Tot) }));
-      formik.setFieldValue("IngresoMensualAnualConclusionNeto", Tot);
+      formik.setFieldValue("IngresoMensualConclusionNeto", Tot);
       dispatch(configValidationServidorPublico({ tipo: "TotalesGeneral", total: parseInt(Tot) + parseInt(formik.values.IngresoNetoParejaDependiente) }));
       formik.setFieldValue("TotalIngresosNetos", parseInt(Tot) + parseInt(formik.values.IngresoNetoParejaDependiente));
+      console.log("suma",Tot);
    };
    useEffect(() => {
       event();

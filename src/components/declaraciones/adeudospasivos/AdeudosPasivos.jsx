@@ -11,6 +11,7 @@ import DataTable from "../../Reusables/table/DataTable";
 import { addAdeudosPasivos } from "../../../redux/AdeudosPasivoshoja14/AdeudosPasivosHoja14";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Post } from "../funciones/post";
+import { Axios } from "../../../services/services";
 
 export const AdeudosPasivos = ({ title, next, previous, setSend }) => {
    const validations = useSelector((state) => state.AdeudosPasivos.validationSchema);
@@ -21,7 +22,7 @@ export const AdeudosPasivos = ({ title, next, previous, setSend }) => {
    const [idUnique, setIdUnique] = useState(1);
    const formik = useRef(null);
    const [checked, setChecked] = useState(true);
-   const { titular, monedas, tipoAdeudos } = Request();
+   const { titular, monedas, tipoAdeudos } = Request({peticiones:["titular","monedas","tipoAdeudos"]});
    const [datasTable, setDatasTable] = useState([]);
 
    let { declaracion } = useParams();
@@ -64,20 +65,32 @@ export const AdeudosPasivos = ({ title, next, previous, setSend }) => {
       formik.current.resetForm();
    };
    const sendData = async () => {
-      const newDatas = [...datas];
-      const sendApi = async () => {
-         for (let i = 0; i < newDatas.length; i++) {
-            dispatch(addAdeudosPasivos(newDatas[i]));
-            // delete newDatas[i].identificador;
+      if(datas.length>0){
+         const newDatas = [...datas];
+         const sendApi = async () => {
+            for (let i = 0; i < newDatas.length; i++) {
+               dispatch(addAdeudosPasivos(newDatas[i]));
+               // delete newDatas[i].identificador;
+   
+            }
+            await Post("/adeudospasivos/create", newDatas,next);
+         };
+         await sendApi();
+   
+         // setDatas([]);
+         // setDatasTable([])
 
-            await Post("/adeudospasivos/create", newDatas[i]);
+      }
+      else{
+         try {
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${14}`);
+            Success(response.data.data.message);
+
+            next();
+         } catch (error) {
+            Error(error.response.data.data.message);
          }
-      };
-      await sendApi();
-
-      setDatas([]);
-      setDatasTable([])
-      next();
+      }
    };
    return (
       <>

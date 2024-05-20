@@ -3,11 +3,12 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { Card, CardContent, CardMedia, Typography, Button, Box } from "@mui/material";
 import { Axios } from "../../services/services";
+
 import { Success, Error } from "../../toasts/toast";
 import { Email } from "../Reusables/email/Email";
 import { Password } from "../Reusables/password/Password";
 import { useDispatch } from "react-redux";
-import { loginAuth } from "../../user/auth/auth";
+import { locationAuth, loginAuth } from "../../user/auth/auth";
 import { Ngif } from "../Reusables/conditionals/Ngif";
 import Gomez from "../../assets/icons/logo-gpd.png";
 // import { Card, CardContent, Typography, CardMedia, Button, Box } from '@mui/material';
@@ -30,9 +31,11 @@ export const Login = () => {
       Password: Yup.string().min(6, "Debe contener al menos 6 caracteres la contraseña").required("La contraseña es obligatoria")
    });
    useEffect(() => {
+      // dispatch(locationAuth());
       dispatch(loginAuth());
+
       setLoading(true);
-   }, [dispatch]);
+   }, []);
    return (
       <Ngif condition={loading}>
          <Box

@@ -5,14 +5,14 @@ import { Text } from "../../../Reusables/input/Input";
 import { CustomRadio } from "../../../Reusables/radiobutton/Radio";
 import { Grid } from "@mui/material";
 
-export const InitialValues = ({nivelEstudios,estatus,documentosObtenidos}) => {
-    const formik = useFormikContext()
-    const {values,setFieldValue,handleChange,handleBlur,errors,touched} = formik
+export const InitialValues = ({ nivelEstudios, estatus, documentosObtenidos }) => {
+   const formik = useFormikContext();
+   const { values, setFieldValue, handleChange, handleBlur, errors, touched } = formik;
    return (
       <Grid container spacing={1}>
          <AutoComplete col={6} label="Nivel de estudios" name="Id_Nivel" options={nivelEstudios} />
-         <Text col={6} name="NombreInstitucionEducativa" label="Institución educativa" />
-         <Text col={12} name="CarreraAreaConocimiento" label="Aerea de conocimiento" />
+         <Text textStyleCase={true} col={6} name="NombreInstitucionEducativa" label="Institución educativa" />
+         <Text textStyleCase={true} col={12} name="CarreraAreaConocimiento" label="Aerea de conocimiento" />
          <CustomRadio
             // getValue={}
             col={12}
@@ -37,7 +37,7 @@ export const InitialValues = ({nivelEstudios,estatus,documentosObtenidos}) => {
             touched={touched.FechaObtencion}
             showErrorInput={null}
          />
-         <Text col={12} name="Aclaraciones" label="Aclaraciones/Observaciones" rows={10} color={"green"} />
+         <Text textStyleCase={true} col={12} name="Aclaraciones" label="Aclaraciones/Observaciones" rows={10} color={"green"} />
       </Grid>
    );
 };

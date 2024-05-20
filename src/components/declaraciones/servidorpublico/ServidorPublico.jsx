@@ -6,7 +6,7 @@ import { Button, FormControlLabel, FormGroup, Switch } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { FormikInitialValues } from "./components/FormikInitialValues";
-import { PostAxios } from "../../../services/services";
+import { Axios, PostAxios } from "../../../services/services";
 import { Success } from "../../../toasts/toast";
 import { addServidorPublico } from "../../../redux/ServidorPublicoHoja9/ServidorPublicoHoja9";
 
@@ -19,8 +19,21 @@ export const ServidorPublico = ({ next, previous, title }) => {
    const handleChange = (event) => {
       setChecked(event.target.checked);
    };
-   const continuar = () => {
-      Success("Continuemos");
+   const continuar = async () => {
+      try {
+         const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${9}`);
+
+         Success(response.data.data.message);
+         // setDatasTable([]);
+         Success("Continuemos llenando los formularios");
+         next();
+      } catch (error) {
+         if (error.response?.data?.data?.message) {
+            Error(error.response.data.data.message);
+         } else {
+            Error("Ocurrio un error");
+         }
+      }
    };
 
    const submit = async (values, { resetForm }) => {
@@ -43,7 +56,7 @@ export const ServidorPublico = ({ next, previous, title }) => {
    };
    useEffect(() => {
       setValidationSchema(Yup.object().shape(validations));
-   }, [useSelector((state) => state.IngresosNetos.validationSchema), useSelector((state) => state.IngresosNetos.initialState)]);
+   }, [useSelector((state) => state.ServidorPublico.validationSchema), useSelector((state) => state.ServidorPublico.initialState)]);
    return (
       <>
          <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
@@ -59,7 +72,7 @@ export const ServidorPublico = ({ next, previous, title }) => {
             </FormikServidorPublico>
          </Ngif>
          <Ngif condition={!checked}>
-            <Button onClick={continuar} type="submit" variant="contained" color="primary">
+            <Button sx={{ marginLeft: "2rem" }} onClick={continuar} type="submit" variant="contained" color="primary">
                Continuar
             </Button>
          </Ngif>

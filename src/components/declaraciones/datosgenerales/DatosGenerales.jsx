@@ -9,8 +9,10 @@ import { Request } from "../../Reusables/request/Request";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addDatosGenerales, addValidacioneServidorPublico } from "../../../redux/DatosGeneralesHoja1/DatosGenerales";
-import { PostAxios } from "../../../services/services";
+// import { PostAxios } from "../../../services/services";
+// PostAxios
 import { Error, Success } from "../../../toasts/toast";
+import { PostAxios } from "../../../services/services";
 export const DatosGenerales = ({ next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.DatosGenerales.initialState);
    const validations = useSelector((state) => state.DatosGenerales.validationSchema);

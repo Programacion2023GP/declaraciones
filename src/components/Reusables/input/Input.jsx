@@ -23,7 +23,7 @@ export const Text = ({
    const handleInputFormik = async (e, setFieldValue, input, toUpper = true) => {
       try {
          const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
-         console.log(newText);
+         // console.log(newText);
          setFieldValue(input, newText);
       } catch (error) {
          console.log(error);
@@ -40,7 +40,10 @@ export const Text = ({
    };
    const formik = useFormikContext();
 
-   useEffect(() => {}, [name]);
+   useEffect(() => {
+    
+
+   }, [name]);
 
    const errors = formik.errors;
 
@@ -119,7 +122,9 @@ export const Text = ({
                   }}
                   onInput={(e) => {
                      handleInput(e)
-                     textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, name, textStyleCase) : null;
+                     textStyleCase= type ==null? handleInputFormik(e, formik.setFieldValue, name, true):false
+                     // console.log("textStyleCase",textStyleCase= type ==null?true:false);
+                     // textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, name, textStyleCase) : null;
                   }}
                   disabled={loading || disabled}
                   fullWidth

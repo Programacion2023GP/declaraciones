@@ -23,6 +23,7 @@ export const SPublicoIII = ({}) => {
             : parseInt(formik.values.IngresoNetoParejaDependiente);
       formik.setFieldValue("TotalIngresosNetos", total);
       dispatch(configValidationServidorPublico({ tipo: "TotalesGeneral", total: total }));
+
    };
    useEffect(() => {
       init();

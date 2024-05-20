@@ -56,6 +56,7 @@ export const SPublicoII = ({}) => {
    const event = () => {
       const Tot = total();
       dispatch(configValidationServidorPublico({ tipo: "Totales", total: parseInt(Tot) }));
+   
       formik.setFieldValue("IngresoMensualConclusionNeto", Tot);
 
       formik.setFieldValue(

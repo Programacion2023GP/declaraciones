@@ -14,6 +14,7 @@ import { addInmueblesPrestamos, addOtroPrestamo, addPrestamos, addVehiculosPrest
 import DataTable from "../../Reusables/table/DataTable";
 import { Success } from "../../../toasts/toast";
 import { Post } from "../funciones/post";
+import { Axios } from "../../../services/services";
 
 export const PrestamosComodatos = ({ title, previous, next, setSend }) => {
    const validations = useSelector((state) => state.PrestamoComodato.validationSchema);
@@ -24,7 +25,7 @@ export const PrestamosComodatos = ({ title, previous, next, setSend }) => {
    const [idUnique, setIdUnique] = useState(1);
    const formik = useRef(null);
    const [checked, setChecked] = useState(true);
-   const { vehiculos, inmuebles, relacion } = Request();
+   const { vehiculos, inmuebles, relacion } = Request({peticiones:["vehiculos","inmuebles","relacion"]});
    const [datasTable, setDatasTable] = useState([]);
    const [especifiqueOtro, setEspecifiqueOtro] = useState(false);
    const [values, setValues] = useState(null);
@@ -83,19 +84,35 @@ export const PrestamosComodatos = ({ title, previous, next, setSend }) => {
       Success("Se borro de la tabla");
    };
    const sendData = async () => {
-      const newDatas = [...datas];
-      const sendApi = async () => {
-         for (let i = 0; i < newDatas.length; i++) {
-            dispatch(addPrestamos(newDatas[i]));
-            // delete newDatas[i].identificador;
+      if(datas.length>0){
 
-            await Post("/prestamoscomodatos/create", newDatas[i]);
+         const newDatas = [...datas];
+         const sendApi = async () => {
+            for (let i = 0; i < newDatas.length; i++) {
+               dispatch(addPrestamos(newDatas[i]));
+               // delete newDatas[i].identificador;
+   
+            }
+            await Post("/prestamoscomodatos/create", newDatas,next);
+         };
+         await sendApi();
+   
+         setDatas([]);
+         setDatasTable([]);
+      }
+      else{
+         try {
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${15}`);
+            Success(response.data.data.message);
+
+            next();
+         } catch (error) {
+            console.log('====================================');
+            console.log(error);
+            console.log('====================================');
+            Error(error.response.data.data.message);
          }
-      };
-      await sendApi();
-
-      setDatas([]);
-      setDatasTable([]);
+      }
       // next();
    };
    const yearOptions = generateYearOptions();

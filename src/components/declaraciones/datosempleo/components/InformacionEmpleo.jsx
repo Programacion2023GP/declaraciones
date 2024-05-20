@@ -12,20 +12,19 @@ export const InformacionEmpleo = ({}) => {
    const formik = useFormikContext();
    const { values, setFieldValue, handleChange, handleBlur, errors, touched } = formik;
    const [activeEspecificarEmpleo, setActiveEspecificarEmpleo] = useState(true);
-   const dispatch = useDispatch()
+   const dispatch = useDispatch();
    const handleGetValue = async (name, value) => {
       if (name == "NivelEmpleoCargoComision" && value == 4) {
          setActiveEspecificarEmpleo(false);
-         dispatch(configValidationsEmpleo({tipo:"RegimenPublico"}))
+         dispatch(configValidationsEmpleo({ tipo: "RegimenPublico" }));
       } else {
          setActiveEspecificarEmpleo(true);
-         dispatch(configValidationsEmpleo({tipo:"NoRegimenPublico"}))
-
+         dispatch(configValidationsEmpleo({ tipo: "NoRegimenPublico" }));
       }
    };
    return (
       <Grid container spacing={1}>
-          <CustomRadio
+         <CustomRadio
             rowLayout={false}
             col={12}
             name="NivelEmpleoCargoComision"
@@ -33,10 +32,9 @@ export const InformacionEmpleo = ({}) => {
             options={[
                { value: 1, label: "1 Presidente Municipal,Regidores,Tesorero,Contralor, Oficil Mayor." },
                { value: 2, label: "2 Encargados, Jefes, Supervisores,Administradores, Sub Directores, Directores, Juez, Coordinadores." },
-               { value: 3, label: "3 Operativos(secretaría,auxiliares,limpieza,administrativos,veladores,chofer,intendencia,fajineros, etc.)." },
+               { value: 3, label: "3 Operativos(secretaría,auxiliares,limpieza,administrativos,veladores,chofer,intendencia,fajineros, etc.)." }
             ]}
-
-/>
+         />
          {/* <AutoComplete
             col={12}
             label="Nivel del empleo, cargo o comisión"
@@ -49,6 +47,7 @@ export const InformacionEmpleo = ({}) => {
             handleGetValue={handleGetValue}
          /> */}
          <Text
+            textStyleCase={true}
             hidden={activeEspecificarEmpleo}
             col={12}
             name="NivelEmpleoCargoComisionText"
@@ -56,6 +55,7 @@ export const InformacionEmpleo = ({}) => {
             placeholder={"Ingrese Nivel del empleo, cargo o comisión"}
          />
          <Text
+            textStyleCase={true}
             col={12}
             name="FuncionPrincipal"
             label="Especifique función principal"
@@ -74,6 +74,7 @@ export const InformacionEmpleo = ({}) => {
             showErrorInput={null}
          />
          <Text
+            textStyleCase={true}
             col={12}
             type="phone"
             name="TelefonoOficina"
@@ -81,6 +82,7 @@ export const InformacionEmpleo = ({}) => {
             placeholder={"Proporcionar el teléfono laboral según corresponda (Si aplica)"}
          />
          <Text
+            textStyleCase={true}
             col={12}
             type="number"
             name="ExtensionTelefonoOficina"

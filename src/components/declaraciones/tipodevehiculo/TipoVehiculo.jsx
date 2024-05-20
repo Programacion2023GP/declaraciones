@@ -14,6 +14,7 @@ import { Success } from "../../../toasts/toast";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Post } from "../funciones/post";
 import { addVehiculo } from "../../../redux/VehiculosHoja11/VehiculosHoja11";
+import { Axios } from "../../../services/services";
 
 export const TipoVehiculo = ({ next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.Vehiculos.initialState);
@@ -28,7 +29,7 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
    const formik = useRef(null);
    let { declaracion } = useParams();
    declaracion = parseInt(declaracion);
-   const { vehiculos, titularVehiculos, adquisicion, pago, monedas, motivobaja, relacion } = Request();
+   const { vehiculos, titularVehiculos, adquisicion, pago, monedas, motivobaja, relacion } = Request({peticiones:["vehiculos","titularVehiculos","adquisicion","pago","monedas","motivobaja","relacion"]});
    const [postStepper, setPostStepper] = useState(false);
    const [otroMotivoBaja, SetMotivoBaja] = useState(true);
    const [checked, setChecked] = useState(true);
@@ -76,21 +77,30 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
       setChecked(event.target.checked);
    };
    const sendData = async () => {
-      const newDatas = [...datas];
-      const sendApi = async () => {
-         for (let i = 0; i < newDatas.length; i++) {
-            console.log("durante");
-            dispatch(addVehiculo(newDatas[i]));
-            // delete newDatas[i].identificador;
-            await Post("/vehiculos/create", newDatas[i]);
+      if(datas.length>0){
+         const newDatas = [...datas];
+         const sendApi = async () => {
+            for (let i = 0; i < newDatas.length; i++) {
+               console.log("durante");
+               dispatch(addVehiculo(newDatas[i]));
+               // delete newDatas[i].identificador;
+            }
+            await Post("/vehiculos/create", newDatas,next);
+         };
+         await sendApi();
+      }
+      else{
+         try {
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${11}`);
+            Success(response.data.data.message);
+
+            next();
+         } catch (error) {
+            Error(error.response.data.data.message);
          }
-      };
-      console.log("antes");
-      await sendApi();
-      next();
-      console.log("final");
+      }
+      // next();
       // setSend(true);
-      console.log("termino");
 
       // newDatas.forEach(element => {
 
@@ -159,12 +169,12 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
                message={message}
                button={false}
             >
-               <ComponentStepper postStepper={postStepper} steps={steps} buttonContinue={"Continuar"} endButton={"finalizar"} buttonAfter={"regresar"} />
+               <ComponentStepper postStepper={postStepper} steps={steps} buttonContinue={"Continuar"} endButton={"agregar a la tabla"} buttonAfter={"regresar"} />
             </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>
-            <Button onClick={sendData} type="submit" variant="contained" color="primary">
-               {sendData.length > 0 ? "Registrar y Continuar" : "Continuar"}
+            <Button sx={{marginLeft:"2rem"}} onClick={sendData} type="submit" variant="contained" color="primary">
+               {dataTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>

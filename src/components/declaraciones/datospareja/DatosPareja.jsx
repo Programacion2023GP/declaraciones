@@ -157,8 +157,16 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                               handleGetValue={handleGetValue}
                            />
                            <Ngif condition={pareja}>
-                              <Text col={12} name="Nombre" label="Nombre (s)" placeholder="Sin abreviaturas, sin acentos, ni signos especiales." color={"green"} />
                               <Text
+                                 textStyleCase={true}
+                                 col={12}
+                                 name="Nombre"
+                                 label="Nombre (s)"
+                                 placeholder="Sin abreviaturas, sin acentos, ni signos especiales."
+                                 color={"green"}
+                              />
+                              <Text
+                                 textStyleCase={true}
                                  col={12}
                                  name="PrimerApellido"
                                  label="Primer apellido"
@@ -166,6 +174,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                                  color={"green"}
                               />
                               <Text
+                                 textStyleCase={true}
                                  col={12}
                                  name="SegundoApellido"
                                  label="Segundo apellido"
@@ -186,9 +195,9 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                                  //   touched={touched.FechaEngreso}
                                  showErrorInput={null}
                               />
-                              <Text col={12} name="RfcPareja" label="RFC" color={"green"} />
-                              <Text col={12} name="Curp" label="Curp" color={"green"} />
-                              <Text col={12} name="Homoclave" label="Homoclave" color={"green"} />
+                              <Text textStyleCase={true} col={12} name="RfcPareja" label="RFC" color={"green"} />
+                              <Text textStyleCase={true} col={12} name="Curp" label="Curp" color={"green"} />
+                              <Text textStyleCase={true} col={12} name="Homoclave" label="Homoclave" color={"green"} />
 
                               {/* <Text col={12} name="Homoclave" label="Homoclave" color={"green"} />
                            <Text col={12} name="curp" label="Curp" color={"green"} /> */}
@@ -235,6 +244,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                                     handleGetValue={handleGetValue}
                                  />
                                  <Text
+                                    textStyleCase={true}
                                     col={12}
                                     name="Calle"
                                     label="Calle"
@@ -266,9 +276,9 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                                     // getValue={getValue}
                                  />
                                  <AutoComplete hidden={!mexico} col={12} label="Pais de nacimiento" name="Id_Pais" options={paises} color="green" />
-                                 <Text hidden={!mexico} col={12} name="EstadoProvincia" label="Estado / Provincia" color={"green"} />
+                                 <Text textStyleCase={true} hidden={!mexico} col={12} name="EstadoProvincia" label="Estado / Provincia" color={"green"} />
 
-                                 <Text col={12} name="ColoniaLocalidad" label="Colonia / Localidad" color={"green"} />
+                                 <Text textStyleCase={true} col={12} name="ColoniaLocalidad" label="Colonia / Localidad" color={"green"} />
                               </Ngif>
                               <CustomRadio
                                  hidden={false}
@@ -284,9 +294,15 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                                  handleGetValue={handleGetValue}
                               />
                               <Ngif condition={ambitoTrabajo == 1 || ambitoTrabajo == 4}>
-                                 <Text col={12} name="NombreEmpresaSociedadAsociacion" label="Nombre de la empresa, sociedad o asociación" color={"green"} />
-                                 <Text col={12} name="RfcEmpresa" label="RFC (empresa)" color={"green"} />
-                                 <Text col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión" color={"green"} />
+                                 <Text
+                                    textStyleCase={true}
+                                    col={12}
+                                    name="NombreEmpresaSociedadAsociacion"
+                                    label="Nombre de la empresa, sociedad o asociación"
+                                    color={"green"}
+                                 />
+                                 <Text textStyleCase={true} col={12} name="RfcEmpresa" label="RFC (empresa)" color={"green"} />
+                                 <Text textStyleCase={true} col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión" color={"green"} />
                                  <AutoComplete col={12} label="Sector al que pertenece" name="Id_Sector" options={sectores} color="green" />
                                  <DatePickerComponent
                                     idName={"FechaIngreso"}
@@ -315,10 +331,10 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                               <Ngif condition={ambitoTrabajo == 2}>
                                  <AutoComplete col={12} label="Nivel / orden de gobierno" name="Id_NivelOrdenGobierno" options={nivelGobierno} color="green" />
                                  <AutoComplete col={12} label="Ámbito público" name="Id_AmbitoPublico" options={ambitosPublicos} color="green" />
-                                 <Text col={12} name="NombreEntePublico" label="Nombre del ente público" color={"green"} />
-                                 <Text col={12} name="AreaAdscripcion" label="Área de adscripción" color={"green"} />
-                                 <Text col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión" color={"green"} />
-                                 <Text col={12} name="FuncionPrincipal" label="Especifique función principal" color={"green"} />
+                                 <Text textStyleCase={true} col={12} name="NombreEntePublico" label="Nombre del ente público" color={"green"} />
+                                 <Text textStyleCase={true} col={12} name="AreaAdscripcion" label="Área de adscripción" color={"green"} />
+                                 <Text textStyleCase={true} col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión" color={"green"} />
+                                 <Text textStyleCase={true} col={12} name="FuncionPrincipal" label="Especifique función principal" color={"green"} />
                                  <DatePickerComponent
                                     idName={"FechaIngreso"}
                                     label={"Fecha de ingreso"}

@@ -46,7 +46,7 @@ export const InitialValues = ({ titular, inmuebles, relacion, adquisicion, pago,
    return (
       <>
             
-         <ComponentStepper postStepper={postStepper} steps={steps} buttonContinue={"Continuar"} endButton={"finalizar"} buttonAfter={"regresar"} />
+         <ComponentStepper postStepper={postStepper} steps={steps} buttonContinue={"Continuar"} endButton={"agregar a la tabla"} buttonAfter={"regresar"} />
       </>
    );
 };

@@ -24,78 +24,121 @@ import { BienesMuebles } from "./bienesmuebles/BienesMuebles";
 import { InversionesCuentasValores } from "./inversionescuentasvalores/InversionesCuentasValores";
 import { AdeudosPasivos } from "./adeudospasivos/AdeudosPasivos";
 import { PrestamosComodatos } from "./prestamos/PrestamosComodatos";
+import { useDispatch } from "react-redux";
+import { locationAuth } from "../../user/auth/auth";
 
 // Importa aquí los componentes correspondientes a cada paso
 
 const ComponentDeclaraciones = () => {
-   const { declaracion } = useParams();
+   let { declaracion } = useParams();
+   declaracion = parseInt(declaracion);
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(7);
+   const [activeStep, setActiveStep] = React.useState(0);
    React.useEffect(() => {}, [activeStep]);
+   const dispatch = useDispatch();
+   const handleExit = () => {
+      dispatch(locationAuth());
+      window.location.hash = "/dashboard/misdeclaraciones";
+   };
    const handleNext = () => {
       setTimeout(() => {
          setSend(false);
-         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-         
+         setActiveStep((prevActiveStep) => {
+            const nextStepIndex = prevActiveStep + 1;
+            // Avanzar solo al siguiente paso visible
+            return filteredSteps[nextStepIndex] ? nextStepIndex : prevActiveStep;
+         });
       }, 500);
    };
 
+   // Método para manejar el paso anterior
    const handleBack = () => {
-      setActiveStep((prevActiveStep) => prevActiveStep - 1);
-   };
+      console.log(filteredSteps);
 
-   // Define aquí la lista de pasos con sus títulos y componentes correspondientes
+      setActiveStep((prevActiveStep) => {
+         const previousStepIndex = prevActiveStep - 1;
+         // Retroceder solo al paso anterior visible
+         return filteredSteps[previousStepIndex] ? previousStepIndex : prevActiveStep;
+      });
+   };
    const steps = [
-      { label: `Datos generales`, component: <DatosGenerales next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} /> },
-      { label: `Domicilio Declarante`, component: <DomicilioDeclarante  next={handleNext} previous={handleBack} title={Titles(declaracion)} /> },
-      { label: `Datos Curriculares del Declarante`, component: <DatosCurriculares next={handleNext} previous={handleBack} title={Titles(declaracion)} /> },
-      { label: `Datos del empleo, cargo o comisión que inicia`, component: <DatosEmpleo next={handleNext} previous={handleBack} title={Titles(declaracion)} /> },
+      {
+         label: `Datos generales`,
+         component: <DatosGenerales next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         exist: [1, 2, 3, 4, 5, 6]
+      },
+      {
+         label: `Domicilio Declarante`,
+         component: <DomicilioDeclarante next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
+         exist: [1, 2, 3, 4, 5, 6]
+      },
+      {
+         label: `Datos Curriculares del Declarante`,
+         component: <DatosCurriculares next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
+         exist: [1, 2, 3, 4, 5, 6]
+      },
+      {
+         label: `Datos del empleo, cargo o comisión que inicia`,
+         component: <DatosEmpleo next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
+         exist: [1, 2, 3, 4, 5, 6]
+      },
       {
          label: `Experiencia laboral (últimos cinco empleos)`,
-         component: <ExperienciaLaboral next={handleNext} previous={handleBack} title={Titles(declaracion)} />
+         component: <ExperienciaLaboral next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
+         exist: [1, 2, 3, 4, 5, 6]
       },
       {
          label: "Datos de la pareja",
-         component: <DatosParejas next={handleNext} previous={handleBack} title={Titles(declaracion)} />
+         component: <DatosParejas next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
+         exist: [1, 2, 3]
       },
       {
          label: "Datos del dependiente económicos",
-         component: <DependientesEconomicos next={handleNext} previous={handleBack} title={Titles(declaracion)} />
+         component: <DependientesEconomicos next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
+         exist: [1, 2, 3]
       },
       {
          label: "Ingresos netos",
          subtitule: "Del declarante, pareja y/o dependientes economicos",
-         component: <IngresosNetos next={handleNext} previous={handleBack} title={Titles(declaracion)} />
+         component: <IngresosNetos next={declaracion>0 && declaracion<=3?handleNext:handleExit} previous={handleBack} title={Titles(declaracion)} />,
+         exist: [1, 2, 3, 4, 5, 6]
       },
       {
          label: "Servidor Publico",
-         component: <ServidorPublico next={handleNext} previous={handleBack} title={Titles(declaracion)} />
+         component: <ServidorPublico next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
+         exist: [1, 3]
       },
       {
          label: "Bienes Inmuebles (Situación Actual)",
-         component: <BienesInmuebles next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />
+         component: <BienesInmuebles next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         exist: [1, 2, 3]
       },
       {
          label: "Vehículos (Situación actual)",
-         component: <TipoVehiculo next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend}/>
+         component: <TipoVehiculo next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         exist: [1, 2, 3]
       },
       {
          label: "Bienes Muebles",
-         component: <BienesMuebles next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend}/>
+         component: <BienesMuebles next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         exist: [1, 2, 3]
       },
       {
-         label:"Inversiones",
+         label: "Inversiones",
          subtitule: "Cuentas y otro tipo de valores / activos (Situación Actual)",
-         component:<InversionesCuentasValores next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend}/>,
+         component: <InversionesCuentasValores next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         exist: [1, 2, 3]
       },
       {
-         label:"Adeudos / Pasivos (Situación Actual)",
-         component:<AdeudosPasivos next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         label: "Adeudos / Pasivos (Situación Actual)",
+         component: <AdeudosPasivos next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         exist: [1, 2, 3]
       },
       {
-         label:"Préstamo o Comodato por Terceros (Situación actual)",
-         component:<PrestamosComodatos next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         label: "Préstamo o Comodato por Terceros (Situación actual)",
+         component: <PrestamosComodatos next={handleExit} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         exist: [1, 2, 3]
       }
 
       // {
@@ -103,13 +146,22 @@ const ComponentDeclaraciones = () => {
       //    component: <></>
       // }
    ];
+   const [filteredSteps, setFiltersStepers] = React.useState(steps.filter((step) => step.exist.includes(declaracion)));
+   // Método para manejar el siguiente paso
+   React.useEffect(() => {
+      setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
+   }, [declaracion]);
+
+
+   // Define aquí la lista de pasos con sus títulos y componentes correspondientes
+
 
    // Función para obtener el título del paso actual
    const getStepTitle = () => {
-      return steps[activeStep].label;
+      return filteredSteps[activeStep].label;
    };
    const getStepSubtitule = () => {
-      return steps[activeStep].subtitule;
+      return filteredSteps[activeStep].subtitule;
    };
    return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "10px" }}>
@@ -149,26 +201,31 @@ const ComponentDeclaraciones = () => {
 
                {/* MobileStepper para navegar entre los pasos */}
                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
-                  {steps.map((step, index) => (
-                     <div
-                        className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
-                        key={index}
-                        style={{
-                           width: "10px",
-                           height: "10px",
-                           borderRadius: "50%",
-                           backgroundColor: index === activeStep ? "#007bff" : "#ccc",
-                           margin: "0 5px",
-                           cursor: "pointer"
-                        }}
-                     />
-                  ))}
+                  {steps.map((step, index) => {
+                     return (
+                        step.exist.includes(declaracion) && (
+                           <div
+                              key={index}
+                              className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
+                              style={{
+                                 width: "10px",
+                                 height: "10px",
+                                 borderRadius: "50%",
+                                 backgroundColor: index === activeStep ? "#007bff" : "#ccc",
+                                 margin: "0 5px",
+                                 cursor: "pointer"
+                              }}
+                           />
+                        )
+                     );
+                  })}
                </div>
                <Typography variant="subtitle1" align="center" gutterBottom style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}>
                   {/* Paso {activeStep + 1} de {steps.length} */}
                </Typography>
                {/* Componente correspondiente al paso actual */}
-               <Box className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>{steps[activeStep].component}</Box>
+               <Box className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>{filteredSteps[activeStep].component}</Box>
+             
             </div>
          </>
       </div>

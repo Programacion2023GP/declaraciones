@@ -13,6 +13,7 @@ import { Success } from "../../../toasts/toast";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { addValidacionesBienesMuebles } from "../../../redux/BienesMueblesHoja12/BienesMuebles";
 import { Post } from "../funciones/post";
+import { Axios } from "../../../services/services";
 
 export const BienesMuebles = ({ next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.BienesMuebles.initialState);
@@ -31,7 +32,7 @@ export const BienesMuebles = ({ next, previous, title, setSend }) => {
    const dispatch = useDispatch();
    const formik = useRef(null);
    let { declaracion } = useParams();
-   const { titular, tiposbienesmuebles, pago, adquisicion, monedas } = Request();
+   const { titular, tiposbienesmuebles, pago, adquisicion, monedas } = Request({ peticiones: ["titular", "tiposbienesmuebles", "pago", "adquisicion", "monedas"] });
    const submit = async (values) => {
       setPostStepper(!postStepper);
       values.identificador = idUnique;
@@ -47,24 +48,32 @@ export const BienesMuebles = ({ next, previous, title, setSend }) => {
       setIdunique(idUnique + 1);
       formik.current.resetForm();
       Success("Se agrego a la tabla");
-
    };
    const sendData = async () => {
-   
-      const newDatas = [...datas];
+      if (datas.length > 0) {
+         const newDatas = [...datas];
 
-      const sendApi = async () => {
-         for (let i = 0; i < newDatas.length; i++) {
-            console.log("durante");
-            dispatch(addValidacionesBienesMuebles(newDatas[i]));
-            // delete newDatas[i].identificador;
-            await Post("/bienesmuebles/create", newDatas[i]);
-         }
-      };
-      await sendApi();
-      setDatas([])
-      next();
+         const sendApi = async () => {
+            for (let i = 0; i < newDatas.length; i++) {
+               console.log("durante");
+               dispatch(addValidacionesBienesMuebles(newDatas[i]));
+               // delete newDatas[i].identificador;
+            }
+            await Post("/bienesmuebles/create", newDatas, next);
+         };
+         await sendApi();
+         setDatas([]);
+      } else {
+         try {
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${12}`);
+            Success(response.data.data.message);
     
+            next();
+         } catch (error) {
+            Error(error.response.data.data.message);
+         }
+      }
+      // next();
    };
    const steps = [
       {
@@ -122,11 +131,11 @@ export const BienesMuebles = ({ next, previous, title, setSend }) => {
          </FormGroup>
          <Ngif condition={checked}>
             <FormikForm ref={formik} initialValues={dataForm} validationSchema={validationSchema} submit={submit}>
-               <ComponentStepper postStepper={postStepper} steps={steps} buttonContinue={"Continuar"} endButton={"finalizar"} buttonAfter={"regresar"} />
+               <ComponentStepper postStepper={postStepper} steps={steps} buttonContinue={"Continuar"} endButton={"agregar a la tabla"} buttonAfter={"regresar"} />
             </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>
-            <Button onClick={sendData} type="submit" variant="contained" color="primary">
+            <Button sx={{ marginLeft: "2rem" }} onClick={sendData} type="submit" variant="contained" color="primary">
                {datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>

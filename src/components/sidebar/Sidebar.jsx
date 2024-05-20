@@ -21,7 +21,7 @@ const Sidebar = () => {
 
   const [routes, setRoutes] = useState([
     {
-      path: "declaraciones",
+      path: "",
       text: "Declaraciones",
       active: false,
       children: [

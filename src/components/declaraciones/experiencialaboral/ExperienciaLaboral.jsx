@@ -103,6 +103,7 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
             setDatas(newDatas);
 
             clearForm(true, false);
+            Success("se agrego a la tabla");
 
             const newDatasVisuales = [
                ...datasVisuales,
@@ -135,38 +136,35 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
          };
          setDatasVisuales(newDatasVisuales);
          clearForm();
-         Success("se agrego a la tabla");
       }
       setSave(true);
    };
 
    const sendData = async () => {
-     if (datas.length>0) {
-      const newDatas = [...datas];
-      const sendApi = async () => {
-         for (let i = 0; i < newDatas.length; i++) {
-            dispatch(addExperienciaLaboral(newDatas[i]));
-            // delete newDatas[i].identificador;
+      if (datas.length > 0) {
+         const newDatas = [...datas];
+         const sendApi = async () => {
+            for (let i = 0; i < newDatas.length; i++) {
+               dispatch(addExperienciaLaboral(newDatas[i]));
+               // delete newDatas[i].identificador;
+            }
+            await Post("/experiencialaboral/create", newDatas,next);
+         };
+         await sendApi();
 
-            await Post("/experiencialaboral/create", newDatas[i]);
-         }
-      };
-      await sendApi();
-
-      setDatas([]);
-      setDatasVisuales([]);
-      next();
-     }
-     else if(datas.length==0){
-      try {
-         const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${5}`);
-         Success(response.data.data.message);
          setDatas([]);
          setDatasVisuales([]);
-         next();
-      } catch (error) {
-         Error(error.response.data.data.message);
-      }
+         // next();
+      } else if (datas.length == 0) {
+         try {
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${10}`);
+            Success(response.data.data.message);
+            setDatas([]);
+            setDatasVisuales([]);
+            next();
+         } catch (error) {
+            Error(error.response.data.data.message);
+         }
       }
    };
 
@@ -181,9 +179,9 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
       // formikRef.current.setFieldValue("Id_AmbitoPublico", finData[0].Id_AmbitoPublico);
    };
    const Delete = (row) => {
-      console.log('====================================');
+      console.log("====================================");
       console.log(row.id);
-      console.log('====================================');
+      console.log("====================================");
       const newDatasVisuales = datasVisuales.filter((elemento) => elemento.id !== row.id);
       setDatas(datas.filter((elemento) => elemento.identificador !== row.id));
       setDatasVisuales(newDatasVisuales);
@@ -261,8 +259,9 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                               />
                               <Ngif condition={!activeAmbitoPublico}>
                                  <AutoComplete col={12} label="Ámbito público" name="Id_AmbitoPublico" options={ambitoPublico} />
-                                 <Text col={12} name="NombreEntePublico" label="Nombre del ente público" />
+                                 <Text textStyleCase={true} col={12} name="NombreEntePublico" label="Nombre del ente público" />
                                  <Text
+                                    textStyleCase={true}
                                     col={12}
                                     name="AreaAdscripcion"
                                     label="Área de adscripción"
@@ -270,8 +269,9 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                                        "Especificar el nombre de la Unidad Administrativa u homóloga superior inmediata de su adscripción. (Superior jerárquico)"
                                     }
                                  />
-                                 <Text col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión" />
+                                 <Text textStyleCase={true} col={12} name="EmpleoCargoComision" label="Empleo, cargo o comisión" />
                                  <Text
+                                    textStyleCase={true}
                                     col={12}
                                     name="FuncionPrincipal"
                                     label="Especifique función principal"
@@ -279,10 +279,10 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                                  />
                               </Ngif>
                               <Ngif condition={activeAmbitoPublico}>
-                                 <Text col={12} name="NombreEntePublico" label="Nombre de la empresa" />
-                                 <Text col={12} name="Rfc" label="Rfc de la empresa" />
-                                 <Text col={12} name="AreaAdscripcion" label="Aerea" />
-                                 <Text col={12} name="Puesto" label="Puesto" />
+                                 <Text textStyleCase={true} col={12} name="NombreEntePublico" label="Nombre de la empresa" />
+                                 <Text textStyleCase={true} col={12} name="Rfc" label="Rfc de la empresa" />
+                                 <Text textStyleCase={true} col={12} name="AreaAdscripcion" label="Aerea" />
+                                 <Text textStyleCase={true} col={12} name="Puesto" label="Puesto" />
                                  <CustomRadio
                                     handleGetValue={handleGetValue}
                                     col={12}
@@ -296,7 +296,7 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                                  />
                               </Ngif>
                               <Ngif condition={activeSector}>
-                                 <Text col={12} name="SectorEspecificado" label="Especifica el sector" />
+                                 <Text textStyleCase={true} col={12} name="SectorEspecificado" label="Especifica el sector" />
                               </Ngif>
                               <DatePickerComponent
                                  idName={"FechaIngreso"}
@@ -332,11 +332,11 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                                     { value: 0, label: "No" }
                                  ]} // Opciones para los radio buttons
                               />
-                              <Text col={12} name="Aclaraciones" label="Aclaraciones" rows={10} color={"green"} />
-                              <Button sx={{ marginRight: "1rem",marginTop:"1rem" }} type="button" onClick={previous} variant="contained" color="secondary">
+                              <Text textStyleCase={true} col={12} name="Aclaraciones" label="Aclaraciones" rows={10} color={"green"} />
+                              <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="contained" color="secondary">
                                  Regresar a la pagina anterior
                               </Button>
-                              <Button sx={{ marginRight: "1rem",marginTop:"1rem" }} type="submit" variant="contained" color="primary">
+                              <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="submit" variant="contained" color="primary">
                                  Agregar a la tabla
                               </Button>
                            </Grid>

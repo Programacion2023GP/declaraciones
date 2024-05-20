@@ -10,6 +10,7 @@ import { Success } from "../../../toasts/toast";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { addInversionesCuentasValores } from "../../../redux/InversionesCuentasValoresHoja13/InversionesCuentasValores";
 import { Post } from "../funciones/post";
+import { Axios } from "../../../services/services";
 
 export const InversionesCuentasValores = ({ next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.InversionesCuentasValores.initialState);
@@ -18,7 +19,7 @@ export const InversionesCuentasValores = ({ next, previous, title, setSend }) =>
    const [datas, setDatas] = useState([]);
    const [datasTable, setDatasTable] = useState([]);
    const [idUnique, setIdUnique] = useState(1);
-   const { titular, tipoinversion, monedas } = Request();
+   const { titular, tipoinversion, monedas } = Request({peticiones:["titular","tipoinversion","monedas"]});
    const formik = useRef(null);
    const [checked, setChecked] = useState(true);
    const dispatch = useDispatch()
@@ -49,17 +50,30 @@ export const InversionesCuentasValores = ({ next, previous, title, setSend }) =>
       Success("Se borro de la tabla");
    };
    const sendData = async () => {
-      const newDatas = [...datas];
+      if (datas.length > 0) {
+         const newDatas = [...datas];
+   
+         const sendApi = async () => {
+            for (let i = 0; i < newDatas.length; i++) {
+               dispatch(addInversionesCuentasValores(newDatas[i]));
+            }
+            await Post("/inversionescuentas/create", newDatas,next);
+   
+   
+         };
+         await sendApi();
+         setDatas([]);
+      }
+      else{
+         try {
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${13}`);
+            Success(response.data.data.message);
 
-      const sendApi = async () => {
-         for (let i = 0; i < newDatas.length; i++) {
-            dispatch(addInversionesCuentasValores(newDatas[i]));
-            await Post("/inversionescuentas/create", newDatas[i]);
+            next();
+         } catch (error) {
+            Error(error.response.data.data.message);
          }
-      };
-      await sendApi();
-      setDatas([]);
-      next();
+      }
     
    };
    useEffect(() => {
@@ -97,7 +111,7 @@ export const InversionesCuentasValores = ({ next, previous, title, setSend }) =>
          </Ngif>
          <Ngif condition={!checked}>
             <Button onClick={sendData} sx={{ marginTop: "1rem",marginLeft:"1rem" }} type="submit" variant="contained" color="primary">
-            {datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
+            {datasTable.length > 0 ? "Registrar y continuar" : "Continuar"}
 
             </Button>
          </Ngif>
