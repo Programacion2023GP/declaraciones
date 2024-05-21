@@ -3,8 +3,9 @@ import { FormikInitialValues } from "./components/FormikInitialValues";
 import { FormikIngresosNetos } from "./formik/FormikIngresosNetos";
 import { useEffect, useState } from "react";
 import * as Yup from "yup";
-import { addDatosDependientesEconomicos } from "../../../redux/IngresosNetosHoja8/IngresosNetosHoja8";
+import { addIngresosNetos } from "../../../redux/IngresosNetosHoja8/IngresosNetosHoja8";
 import { PostAxios } from "../../../services/services";
+import { Post } from "../funciones/post";
 
 export const IngresosNetos = ({ next, previous, title }) => {
    const dataForm = useSelector((state) => state.IngresosNetos.initialState);
@@ -12,11 +13,11 @@ export const IngresosNetos = ({ next, previous, title }) => {
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
    const dispatch = useDispatch();
    const submit = async (values, { resetForm }) => {
-      dispatch(addDatosDependientesEconomicos(values));
+      dispatch(addIngresosNetos(values));
       try {
-         const response = await PostAxios("/ingresos/create", values);
-         next();
-         Success(response.data.message);
+         const response = await Post("/ingresos/create", values,next);
+         // next();
+         // Success(response.data.message);
 
          return response.data;
       } catch (error) {
@@ -29,9 +30,7 @@ export const IngresosNetos = ({ next, previous, title }) => {
    };
    useEffect(() => {
       setValidationSchema(Yup.object().shape(validations));
-      console.log('====================================');
-      console.log("renderizado");
-      console.log('====================================');
+  
    }, [useSelector((state) => state.IngresosNetos.validationSchema), useSelector((state) => state.IngresosNetos.initialState)]);
    return (
       <>

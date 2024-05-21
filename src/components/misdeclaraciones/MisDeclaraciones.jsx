@@ -14,7 +14,7 @@ export const MisDeclaraciones = ({}) => {
                <DataTable
                   filterGlobal={true}
                   filter={true}
-                  headers={["Folio", "Nombre", "Apellido Paterno", "Apellido Materno", "Tipo Declaración", "Status", "Hoja", "Fecha", "Tipo de declaración"]}
+                  headers={["Folio", "Nombre", "Apellido Paterno", "Apellido Materno", "Tipo Declaración", "Status", "Fecha", "Tipo de declaración"]}
                   data={apartados}
                   pagination={[5, 10, 25]}
                   editButton={true}

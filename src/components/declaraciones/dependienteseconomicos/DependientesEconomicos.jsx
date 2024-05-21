@@ -12,9 +12,9 @@ import { Sectores } from "./components/Sectores";
 import { addDatosDependiente, clearData, configValidationsDependiente, deleteDatosDependiente } from "../../../redux/DependientesEconomicos7/DependientesEconomicos";
 import { CustomRadio } from "../../Reusables/radiobutton/Radio";
 import { Axios, PostAxios } from "../../../services/services";
-import { addDatosDependientesEconomicos } from "../../../redux/IngresosNetosHoja8/IngresosNetosHoja8";
 import { Success } from "../../../toasts/toast";
 import { Post } from "../funciones/post";
+import { FormikForm } from "../../Reusables/formik/FormikForm";
 
 export const DependientesEconomicos = ({ next, previous, title }) => {
    let { declaracion } = useParams();
@@ -23,7 +23,7 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
    const dataForm = useSelector((state) => state.DependientesEconomicos.initialState);
    const validations = useSelector((state) => state.DependientesEconomicos.validationSchema);
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
-   const [domicilioDeclarante, setDomicilioDeclarante] = useState(false);
+   const [domicilioDeclarante, setDomicilioDeclarante] = useState(true);
    const dispatch = useDispatch();
    const [datas, setDatas] = useState([]);
    const [datasTable, setDatasTable] = useState([]);
@@ -35,35 +35,29 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
 
    const submit = async (values, { resetForm }) => {
       values.id = idUnique;
-      setDatas(datas.concat(values))
+      setDatas(datas.concat(values));
       // dispatch(addDatosDependiente(values));
       adDataTable(values);
-      Success("se agrego a la tabla")
+      Success("se agrego a la tabla");
    };
-
- 
+   const formik = useRef();
 
    const sendDatass = async () => {
-      
- 
       const newDatas = [...datas];
       if (datasTable.length > 0) {
          try {
             const sendApi = async () => {
                for (let i = 0; i < newDatas.length; i++) {
-                  dispatch(addDatosDependientesEconomicos(newDatas[i]));
+                  dispatch(addDatosDependiente(newDatas[i]));
                   // delete newDatas[i].identificador;
                }
-               await Post("/dependienteseconomicos/create", newDatas,next);
+               await Post("/dependienteseconomicos/create", newDatas, next);
             };
             await sendApi();
-      
-           
 
             dispatch(clearData());
             setDatasTable([]);
             // next();
-
          } catch (error) {
             if (error.response?.data?.message) {
                Error(error.response.data.message);
@@ -85,7 +79,6 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
          } catch (error) {
             Error(error.response.data.message);
          }
-
       }
    };
    const adDataTable = (values) => {
@@ -104,11 +97,12 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
       setRenalize(reinilaize + 1);
    };
    const handleGetValue = (name, value) => {
+      // console.log("aquiiiiiiiiii");
       if (name == "HabitaDomicilioDeclarante" && value == 0) {
          setDomicilioDeclarante(true);
          dispatch(configValidationsDependiente({ tipo: "DomicilioDeclarante" }));
-         dispatch(configValidationsDependiente("DomicilioDeclarante"));
-      } else if (name == "HabitaDomicilioDeclarante") {
+         // dispatch(configValidationsDependiente("DomicilioDeclarante"));
+      } else if (name == "HabitaDomicilioDeclarante" && value ==1) {
          dispatch(configValidationsDependiente({ tipo: "DomicilioDeclaranteNULL" }));
          setDomicilioDeclarante(false);
       }
@@ -123,13 +117,13 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
    };
    const deleteRow = (row) => {
       // dispatch(deleteDatosDependiente({ id: row.id }));
-      setDatas(datas.filter((item) => item.id != row.id))
+      setDatas(datas.filter((item) => item.id != row.id));
       const itemTable = datasTable.filter((item) => item.id != row.id);
       setDatasTable(itemTable);
-      Success("se elimino de la tabla")
-
+      Success("se elimino de la tabla");
    };
    useEffect(() => {
+  
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.DependientesEconomicos.validationSchema), datasRedux]);
    return (
@@ -139,7 +133,6 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
                headers={["Parentesco o relación con el declarante", "RFC", "Empleo, cargo o comisión"]}
                dataHidden={["id"]}
                data={datasTable}
-               
                // handleEdit={edit}
                // editButton={true}
                deleteButton={true}
@@ -153,21 +146,56 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
                label={datasTable.length > 0 ? "¿Deseas seguir agregando dependientes economicos?" : "¿Tiene dependientes economicos?"}
             />
          </FormGroup>
+         {/* key={"Formik"}
+               ref={formik}
+               submit={submit}
+               initialValues={dataForm}
+               validationSchema={validationSchema}
+               title={title}
+               message={message}
+               button={false} */}
          <Ngif condition={checked}>
-            <FormikDependientes key={reinilaize} validationSchema={validationSchema} initialValues={dataForm} submit={submit} title={title}>
+            <FormikForm ref={formik} messageButton={'Agregar a la tabla'} key={reinilaize} validationSchema={validationSchema} initialValues={dataForm} submit={submit} title={title} button={true}>
                <InitialValuesFormik handleGetValue={handleGetValue} getParentescos={setParentescos} />
                <Ngif condition={domicilioDeclarante}>
                   <DomicilioDeclarante />
                </Ngif>
                <Sectores validations={validations} />
-            </FormikDependientes>
+               <button
+               type="button"
+                  onClick={() => {
+                     console.log("====================================");
+                     console.log(formik.current.errors);
+                     console.log("====================================");
+                  }}
+               >
+                  errores
+               </button>
+               <button
+               type="button"
+                  onClick={() => {
+                     console.log("====================================");
+                     console.log(validations);
+                     console.log("====================================");
+                  }}
+               >
+                  validaciones
+               </button>
+               <button
+               type="button"
+                  onClick={
+                    previous
+                  }
+               >
+                  regresar
+               </button>
+            </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>
-            <Button sx={{marginLeft:"1rem"}} type="submit" variant="contained" color="primary" onClick={sendDatass}>
-            {datasTable.length > 0 ? "Registrar y continuar" : "Continuar"}
+            <Button sx={{ marginLeft: "1rem" }} type="submit" variant="contained" color="primary" onClick={sendDatass}>
+               {datasTable.length > 0 ? "Registrar y continuar" : "Continuar"}
             </Button>
          </Ngif>
-       
       </>
    );
 };

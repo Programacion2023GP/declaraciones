@@ -56,7 +56,7 @@ const Sidebar = () => {
       children:[]
     },
     {
-      path:"",
+      path:"usuarios",
       text:"Usuarios",
       active:false,
       children:[]

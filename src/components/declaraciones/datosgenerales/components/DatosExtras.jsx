@@ -6,17 +6,24 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addValidacioneServidorPublico } from "../../../../redux/DatosGeneralesHoja1/DatosGenerales";
 import { Grid } from "@mui/material";
+import {  useFormikContext } from "formik";
 
 export const DatosExtras = ({ estadocivil, regimenes, nacionalidades, paises, validaciones, handleActive, active }) => {
    let { declaracion } = useParams();
    const dispatch = useDispatch();
    declaracion = parseInt(declaracion);
+   const formik = useFormikContext()
    const [activeRegimen, setActiveRegimen] = useState(active);
    const handleGetValue = (name, value) => {
       setActiveRegimen(value == 2 ? false : true);
       dispatch(addValidacioneServidorPublico({ validaciones, tipo: value == 2 ? "RegimenMatrimonial" : "QuitarRegimenMatrimonial" }));
       handleActive(value == 2 ? false : true);
    };
+   const nacionalidad=(name,value)=>{
+
+      formik.values.Id_Nacionalidad =nacionalidades.filter(item=>item.id=value)[0].id
+      // console.log("aqui", formik.values.Id_Nacionalidad);
+   }
    return (
       <Grid container spacing={1}>
          <Text
@@ -44,8 +51,9 @@ export const DatosExtras = ({ estadocivil, regimenes, nacionalidades, paises, va
             label="Pais de nacimiento"
             name="Id_PaisNacimiento"
             options={paises} //
+            handleGetValue={nacionalidad}
          />
-         <AutoComplete col={6} label="Nacionalidad" name="Id_Nacionalidad" options={nacionalidades} />
+         {/* <AutoComplete col={6} label="Nacionalidad" name="Id_Nacionalidad" options={nacionalidades} /> */}
          <Text textStyleCase={true} col={12} name="Aclaraciones" label="Aclaraciones" rows={10} color={"green"} />
          <CustomRadio
             hidden={declaracion == 2 ? false : true}
@@ -57,6 +65,9 @@ export const DatosExtras = ({ estadocivil, regimenes, nacionalidades, paises, va
                { value: 0, label: "No" }
             ]} // Opciones para los radio buttons
          />
+         <button onClick={()=>{
+            console.log(formik.errors);
+         }}>errores</button>
       </Grid>
    );
 };

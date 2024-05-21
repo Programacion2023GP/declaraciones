@@ -18,6 +18,7 @@ export const FormikDependientes = ({ initialValues, validationSchema, submit, ti
                   <Formik innerRef={ref} initialValues={initialValues} validationSchema={validationSchema} onSubmit={submit}>
                      {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues }) => {
                         {
+                           console.log(errors);
                         }
                         return (
                            <>

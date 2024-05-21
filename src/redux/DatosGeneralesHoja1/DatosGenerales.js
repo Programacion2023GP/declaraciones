@@ -77,6 +77,9 @@ export const DatosGeneralesHoja1 = createSlice({
                 break;
             }
          },
+         foundLocalization:(state,action)=>{
+
+         }
 
     },
 })
@@ -91,5 +94,5 @@ const eliminarPropiedades = (objeto1, objeto2) => {
     }
     return objeto1;
 };
-export  const {addDatosGenerales,addValidacioneServidorPublico} = DatosGeneralesHoja1.actions
+export  const {addDatosGenerales,addValidacioneServidorPublico,foundLocalization} = DatosGeneralesHoja1.actions
 export default DatosGeneralesHoja1.reducer

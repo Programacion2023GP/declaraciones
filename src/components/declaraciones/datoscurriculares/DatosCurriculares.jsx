@@ -13,7 +13,7 @@ export const DatosCurriculares = ({ next, previous, title }) => {
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
    const sumbit = async (values, { setSubmitting }) => {
       values.EsEnMexico = parseInt(values.EsEnMexico);
-      Post("/datoscurriculares/create", values, next());
+      Post("/datoscurriculares/create", values, next);
    };
    const { nivelEstudios, estatus, documentosObtenidos } = Request({peticiones:["nivelEstudios","estatus","documentosObtenidos"]});
    useEffect(() => {

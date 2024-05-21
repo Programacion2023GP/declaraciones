@@ -7,18 +7,22 @@ import { GetAxios } from "../../../../services/services";
 import { useDispatch } from "react-redux";
 import { addCopropiedadInversiones, removeCopropiedadInversiones } from "../../../../redux/InversionesCuentasValoresHoja13/InversionesCuentasValores";
 import { Ngif } from "../../../Reusables/conditionals/Ngif";
+import { useFormikContext } from "formik";
 
 export const InitialValues = ({ titular, tipoinversion, monedas }) => {
    const [name, setName] = useState("");
-   const [resetSubtipo,setResetSubTipo]= useState(false);
+   const [resetSubtipo,setResetSubTipo]= useState(0);
    const [subTiposInversion, setSubTipoInversion] = useState([]);
    const [loading, setLoading] = useState(false);
    const [tercero, setTercero] = useState(false);
    const dispatch = useDispatch();
+   const formik = useFormikContext()
    const nameTipoInversion = async (name, value) => {
       setLoading(true);
       setName(tipoinversion.filter((item) => item.id === value)[0]?.text);
-      setResetSubTipo(!resetSubtipo)
+      setResetSubTipo(resetSubtipo+1 )
+      formik.values.Id_SubtipoInversion=0
+      // formik.values[Id_SubtipoInversion]=0
       setSubTipoInversion(await GetAxios(`subtiposinversion/show/${value}`));
       setLoading(false);
    };
@@ -29,7 +33,7 @@ export const InitialValues = ({ titular, tipoinversion, monedas }) => {
    return (
       <Grid spacing={1} container>
          <AutoComplete col={6} name={"Id_TipoInversion"} label={"Tipo de Inversión / Activo"} options={tipoinversion} handleGetValue={nameTipoInversion} />
-         <AutoComplete reset={resetSubtipo} col={6} name={"Id_SubtipoInversion"} label={`Selecciona el tipo de ${name}`} options={subTiposInversion} loading={loading} />
+         <AutoComplete key={'subtipo'+resetSubtipo} col={6} name={"Id_SubtipoInversion"} label={`Selecciona el tipo de ${name}`} options={subTiposInversion} loading={loading} />
 
          <AutoComplete
             col={12}

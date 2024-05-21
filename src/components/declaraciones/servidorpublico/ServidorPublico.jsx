@@ -9,6 +9,7 @@ import { FormikInitialValues } from "./components/FormikInitialValues";
 import { Axios, PostAxios } from "../../../services/services";
 import { Success } from "../../../toasts/toast";
 import { addServidorPublico } from "../../../redux/ServidorPublicoHoja9/ServidorPublicoHoja9";
+import { Post } from "../funciones/post";
 
 export const ServidorPublico = ({ next, previous, title }) => {
    const [checked, setChecked] = useState(true);
@@ -40,9 +41,9 @@ export const ServidorPublico = ({ next, previous, title }) => {
       if (checked) {
          dispatch(addServidorPublico(values));
          try {
-            const response = await PostAxios("/servidorpublico/create", values);
-            next();
-            Success(response.data.message);
+            const response = await Post("/servidorpublico/create", values,next);
+            // next();
+            // Success(response.data.message);
 
             return response.data;
          } catch (error) {

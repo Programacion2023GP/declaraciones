@@ -17,7 +17,7 @@ import { AdeudosPasivosHoja14 } from "./AdeudosPasivoshoja14/AdeudosPasivosHoja1
 import { PrestamoComodatoHoja15 } from "./PrestamoComodatoHoja15/PrestamoComodatoHoja15";
  const store = configureStore({
     reducer:{
-
+        
         DatosGenerales:DatosGeneralesHoja1.reducer,
         DomicilioDeclarante:DomicilioDeclaranteHoja2.reducer,
         DatosCurriculares:DatosCurricularesHoja3.reducer,

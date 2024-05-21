@@ -10,7 +10,7 @@ const initialState = {
     RfcDependiente:"",
     Curp:"",
     Id_ParentescoRelacion:"",
-    HabitaDomicilioDeclarante:1,
+    HabitaDomicilioDeclarante:0,
     EsCiudadanoExtranjero:0,
     NumeroExterior:"",
     Calle:"",
@@ -59,7 +59,6 @@ const validationSchema ={
     Id_ParentescoRelacion:Yup.number("La relacion con el declarante es requerida").min(1,"La relacion con el declarante es requerida").required("La relacion con el declarante es requerida"),
     EsCiudadanoExtranjero:Yup.number("Es requerido  si es Ciudano Extranjero").required("Es requerido  si es Ciudano Extranjero"),
     Id_LugarDondeReside:Yup.number("Es requerido  si es dependiente economicó").required("Es requerido  si es dependiente economicó"),
-    HabitaDomicilioDeclarante:Yup.number("Es requerido  si habita en el domicilio del declarante").required("Es requerido  si habita en el domicilio del declarante"),
     NombreEmpresaSociedadAsociacion:Yup.string().required("El nombre de la empresa o asociación es requerida"),
     RfcEmpresa: Yup.string()
     .required("El RFC es requerido")
@@ -70,6 +69,15 @@ const validationSchema ={
     EmpleoCargoComision:Yup.string().required("El empleo cargo comisión es requerido"),
     FechaIngreso:Yup.date("El formato es invalido").required("Se requiere la fecha"),
     Id_MonedaSalarioMensualNeto:Yup.number().min(1,"La moneda mensual es requerida").required("La moneda mensual es requerida"),
+    EsCiudadanoExtranjero:Yup.number("Debe ser numerico").required("Es requerido que selecione una opcion"),
+    NumeroExterior: Yup.number("Debe ser numerico").required("El numero exterior es requerido").min(1, "El numero exterior debe ser mayor a 0"),
+    Calle: Yup.string().required("La calle es requerida"),
+    CodigoPostal: Yup.string()
+       .matches(/^\d{5}$/, "El código postal debe tener exactamente 5 caracteres numéricos")
+       .required("El código postal es requerido"),
+    CiudadLocalidad: Yup.string().required("La colonia localidad es requerida"),
+    Id_ActividadLaboral:Yup.number("Debe ser numerico").required("Es requerido que selecione una opcion").min(1,"Es requerido que selecione una opcion"),
+    
 }
 const data ={
     initialState:initialState,
@@ -142,6 +150,9 @@ export const DependientesEconomicos7 = createSlice({
                
            switch (action.payload.tipo) {
                case "DomicilioDeclarante":
+                console.log('====================================');
+                console.log("inyectado");
+                console.log('====================================');
                        Object.assign(state.validationSchema,validationsDomicilio)
                        Object.assign(state.validationSchema,mexico)
 

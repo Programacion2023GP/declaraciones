@@ -11,6 +11,7 @@ import { Provider } from "react-redux";
 import store from "../redux/store";
 import { element } from "prop-types";
 import { MisDeclaraciones } from "../components/misdeclaraciones/MisDeclaraciones";
+import { Usuarios } from "../components/usuarios/Usuarios";
 export const router = createHashRouter([
    {
       path: "/dashboard",
@@ -46,6 +47,9 @@ export const router = createHashRouter([
             path: "misdeclaraciones",
             index: true,
             element: <MisDeclaraciones/>
+         },{
+            path:"usuarios",
+            element:<Usuarios/>
          }
       ]
    },

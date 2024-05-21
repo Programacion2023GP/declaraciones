@@ -12,6 +12,7 @@ import { Axios, GetAxios, PostAxios } from "../../../services/services";
 import { CustomRadio } from "../../Reusables/radiobutton/Radio";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Success } from "../../../toasts/toast";
+import { Post } from "../funciones/post";
 
 export const DatosParejas = ({ next, previous, title, debugerClear }) => {
    const dataForm = useSelector((state) => state.DatosPareja.initialState);
@@ -22,9 +23,9 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
       dispatch(addDatosPareja(values));
       if (pareja) {
          try {
-            const response = await PostAxios("/datospareja/create", values);
-            Success(response.data.message);
-            next();
+            const response = await Post("/datospareja/create", values,next);
+            // Success(response.data.message);
+            // next();
 
             return response.data;
          } catch (error) {
@@ -37,10 +38,11 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
       } else {
          try {
             const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${6}`);
-            Success(response.data.message);
+            Success(response.data.data.message);
+            next()
             return response.data;
          } catch (error) {
-            Error(error.response.data.message);
+            Error(error.response.data.data.message);
          }
       }
    };
@@ -362,7 +364,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
 
                               <Text col={12} name="Aclaraciones" label="Aclaraciones/Observaciones" rows={10} color={"green"} />
                            </Ngif>
-                           <Button type="submit" variant="contained" color="primary">
+                           <Button sx={{marginTop:"2rem"}} type="submit" variant="contained" color="primary">
                               Registrar y Continuar
                            </Button>
                         </Grid>

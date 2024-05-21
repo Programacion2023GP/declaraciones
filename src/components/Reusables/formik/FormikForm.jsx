@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import { Ngif } from "../conditionals/Ngif";
 import { forwardRef, useEffect } from "react";
 export const FormikForm = forwardRef(
-   ({ className, initialValues, validationSchema, submit, title, children, message, button, previousButton, handlePrevious, advertence }, ref) => {
+   ({ className, initialValues, validationSchema, submit, title, children, message, button, previousButton, handlePrevious, advertence,messageButton }, ref) => {
       useEffect(() => {}, []);
       return (
          <Card className={className} sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}>
@@ -42,7 +42,7 @@ export const FormikForm = forwardRef(
                                  <Ngif condition={button}>
                                      
                                     <Button sx={{ marginLeft:"1rem",marginTop: "1rem" }} type="submit" variant="contained" color="primary">
-                                       Registrar y Continuar
+                                       {messageButton?messageButton:"Registrar y Continuar"}
                                     </Button>
                                  </Ngif>
                               </Grid>

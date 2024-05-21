@@ -26,6 +26,7 @@ import { AdeudosPasivos } from "./adeudospasivos/AdeudosPasivos";
 import { PrestamosComodatos } from "./prestamos/PrestamosComodatos";
 import { useDispatch } from "react-redux";
 import { locationAuth } from "../../user/auth/auth";
+import { foundLocalization } from "../../redux/DatosGeneralesHoja1/DatosGenerales";
 
 // Importa aquí los componentes correspondientes a cada paso
 
@@ -35,10 +36,13 @@ const ComponentDeclaraciones = () => {
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
    const [activeStep, setActiveStep] = React.useState(0);
-   React.useEffect(() => {}, [activeStep]);
    const dispatch = useDispatch();
+   React.useEffect(() => {
+      dispatch(foundLocalization())
+   }, [activeStep]);
    const handleExit = () => {
       dispatch(locationAuth());
+      localStorage.removeItem("id_SituacionPatrimonial")
       window.location.hash = "/dashboard/misdeclaraciones";
    };
    const handleNext = () => {
@@ -107,7 +111,7 @@ const ComponentDeclaraciones = () => {
       {
          label: "Servidor Publico",
          component: <ServidorPublico next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
-         exist: [1, 3]
+         exist: [2]
       },
       {
          label: "Bienes Inmuebles (Situación Actual)",
@@ -226,9 +230,10 @@ const ComponentDeclaraciones = () => {
                {/* Componente correspondiente al paso actual */}
                <Box className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>{filteredSteps[activeStep].component}</Box>
              
+         <button onClick={handleNext}>Continuar</button>   
             </div>
          </>
       </div>
-   );
+);
 };
 export default ComponentDeclaraciones;

@@ -56,7 +56,7 @@ export const IngresosNetosHoja8 = createSlice({
     name:"DependientesEconomicos",
     initialState:data,
     reducers:{
-        addDatosDependientesEconomicos:(state,action)=>{
+        addIngresosNetos:(state,action)=>{
             Object.assign(state.initialState, action.payload);
             state.initialState.Id_SituacionPatrimonial =parseInt(localStorage.getItem("id_SituacionPatrimonial"));
          },
@@ -97,5 +97,5 @@ const eliminarPropiedades = (objeto1, objeto2) => {
     return objeto1;
 };
 
-export const {configValidationsDependientesEconomicos,addDatosDependientesEconomicos} = IngresosNetosHoja8.actions
+export const {configValidationsDependientesEconomicos,addIngresosNetos} = IngresosNetosHoja8.actions
 export default IngresosNetosHoja8.reducer

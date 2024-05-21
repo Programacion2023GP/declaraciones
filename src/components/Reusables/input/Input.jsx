@@ -18,7 +18,8 @@ export const Text = ({
    hidden,
    mask,
    marginBoton,
-   textStyleCase = null
+   textStyleCase = null,
+   handleGetValue
 }) => {
    const handleInputFormik = async (e, setFieldValue, input, toUpper = true) => {
       try {
@@ -39,11 +40,14 @@ export const Text = ({
       return newText;
    };
    const formik = useFormikContext();
-
+   const handleValue = (name, value) => {
+      if (handleGetValue) {
+         handleGetValue(name, value);
+      }
+   };
    useEffect(() => {
-    
-
-   }, [name]);
+      console.log(formik.values[name]);
+   }, [name, formik.values[name]]);
 
    const errors = formik.errors;
 
@@ -55,7 +59,7 @@ export const Text = ({
          let value = event.target.value;
 
          value = value.replace(/[^0-9.]/g, "");
-   
+
          const decimalCount = value.split(".").length - 1;
          if (decimalCount > 1) {
             value = value.slice(0, value.lastIndexOf("."));
@@ -82,11 +86,10 @@ export const Text = ({
                         mask={mask}
                         value={formik.values && formik.values[name] ? formik.values[name] : ""}
                         onInput={(e) => {
-                           console.log(e.target.value);
                            textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, name, textStyleCase) : null;
                         }}
                         onChange={(e) => field.onChange(e)}
-                        onBlur={(e) => field.onBlur(e)}  
+                        onBlur={(e) => field.onBlur(e)}
                         disabled={loading || disabled}
                      >
                         {(inputProps) => (
@@ -118,11 +121,12 @@ export const Text = ({
                   value={formik.values && formik.values[name] ? formik.values[name] : ""}
                   onChange={formik.handleChange}
                   onBlur={(e) => {
-                     formik.handleBlur(e); 
+                     formik.handleBlur(e);
                   }}
                   onInput={(e) => {
-                     handleInput(e)
-                     textStyleCase= type ==null? handleInputFormik(e, formik.setFieldValue, name, true):false
+                     handleInput(e);
+                     handleValue(name, e.target.value);
+                     textStyleCase = type == null ? handleInputFormik(e, formik.setFieldValue, name, true) : false;
                      // console.log("textStyleCase",textStyleCase= type ==null?true:false);
                      // textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, name, textStyleCase) : null;
                   }}

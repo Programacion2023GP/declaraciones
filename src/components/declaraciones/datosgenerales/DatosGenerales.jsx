@@ -17,7 +17,7 @@ export const DatosGenerales = ({ next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.DatosGenerales.initialState);
    const validations = useSelector((state) => state.DatosGenerales.validationSchema);
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
-   const [active, setActive] = useState(false);
+   const [active, setActive] = useState(true);
    const dispatch = useDispatch();
    let { declaracion } = useParams();
    declaracion = parseInt(declaracion);

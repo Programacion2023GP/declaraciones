@@ -44,7 +44,7 @@ export const TipoDeclaracion = () => {
                   <optgroup label="Situación patrimonial">
                     <option value={1}>Inicial</option>
                     <option value={2}>Modificación</option>
-                    <option value={2}>Conclusión</option>
+                    <option value={3}>Conclusión</option>
                   </optgroup>
                   <optgroup label="Simplificada">
                     <option value={4}>Inicial</option>
