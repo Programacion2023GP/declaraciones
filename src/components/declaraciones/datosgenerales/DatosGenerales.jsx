@@ -33,7 +33,7 @@ export const DatosGenerales = ({ next, previous, title, setSend }) => {
       data.Id_Plazo = parseInt(declaracion);
       dispatch(addDatosGenerales(data));
       try {
-         const response = await PostAxios("/datosgenerales/create", data);
+         const response = await PostAxios("datosgenerales/create", data);
          localStorage.setItem("id_SituacionPatrimonial", response.data.result);
          Success(response.data.message);
          next();

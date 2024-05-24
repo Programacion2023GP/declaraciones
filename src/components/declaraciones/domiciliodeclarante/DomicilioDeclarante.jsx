@@ -13,7 +13,7 @@ export const DomicilioDeclarante = ({ next, previous, title }) => {
    const sumbit = async (values, { setSubmitting }) => {
      values.EsEnMexico = parseInt(values.EsEnMexico);
      
-      Post("/domiciliodeclarante/create", values, next);
+      Post("domiciliodeclarante/create", values, next);
    };
 
    useEffect(() => {

@@ -230,7 +230,7 @@ const ComponentDeclaraciones = () => {
                {/* Componente correspondiente al paso actual */}
                <Box className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>{filteredSteps[activeStep].component}</Box>
              
-         <button onClick={handleNext}>Continuar</button>   
+         {/* <button onClick={handleNext}>Continuar</button>    */}
             </div>
          </>
       </div>

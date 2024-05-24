@@ -12,7 +12,7 @@ export const InitialValuesFormik = memo(({ handleGetValue, getParentescos }) => 
 
    useEffect(() => {
       const init = async () => {
-         const relacionData = await GetAxios("/relacioncondeclarante/show");
+         const relacionData = await GetAxios("relacioncondeclarante/show");
          setRelacionDeclarante(relacionData);
          getParentescos(relacionData);
       };

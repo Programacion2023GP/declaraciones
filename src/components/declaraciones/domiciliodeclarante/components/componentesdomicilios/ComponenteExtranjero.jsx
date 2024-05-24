@@ -11,7 +11,7 @@ export const ComponenteExtranjero = memo(({}) => {
    useEffect(() => {
       dispatch(validationDomicilioDeclarante({ tipo: "NoesMexico" }));
       const init = async () => {
-         setPaises(await GetAxios("/paises/show"));
+         setPaises(await GetAxios("paises/show"));
       };
       init();
    }, []);

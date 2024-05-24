@@ -7,7 +7,7 @@ export const ComponentExceptoNinguno = memo(() => {
    const [monedas, setMonedas] = useState([]);
    useEffect(() => {
       const init = async () => {
-         setMonedas(await GetAxios("/monedas/show"));
+         setMonedas(await GetAxios("monedas/show"));
       };
       init();
    }, []);

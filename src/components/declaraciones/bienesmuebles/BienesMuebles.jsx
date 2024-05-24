@@ -59,7 +59,7 @@ export const BienesMuebles = ({ next, previous, title, setSend }) => {
                dispatch(addValidacionesBienesMuebles(newDatas[i]));
                // delete newDatas[i].identificador;
             }
-            await Post("/bienesmuebles/create", newDatas, next);
+            await Post("bienesmuebles/create", newDatas, next);
          };
          await sendApi();
          setDatas([]);

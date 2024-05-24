@@ -12,8 +12,8 @@ export const ComponentPublico = memo(({}) => {
    const [nivelGobierno, setNivelGobiernos] = useState([]);
    useEffect(() => {
       const init = async () => {
-         setAmbitosPublicos(await GetAxios("/ambitospublicos/show"));
-         setNivelGobiernos(await GetAxios("/nivelordengobierno/show"));
+         setAmbitosPublicos(await GetAxios("ambitospublicos/show"));
+         setNivelGobiernos(await GetAxios("nivelordengobierno/show"));
       };
       init();
    }, []);

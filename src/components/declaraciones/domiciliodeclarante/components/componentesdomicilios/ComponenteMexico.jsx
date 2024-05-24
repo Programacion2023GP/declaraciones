@@ -21,7 +21,7 @@ export const ComponenteMexico = memo(({}) => {
             dispatch(validationDomicilioDeclarante({ tipo: "Mexico" }));
 
       const init = async () => {
-         setEntidades(await GetAxios("/entidades/show"));
+         setEntidades(await GetAxios("entidades/show"));
       };
       init();
    }, []);

@@ -57,7 +57,7 @@ export const InversionesCuentasValores = ({ next, previous, title, setSend }) =>
             for (let i = 0; i < newDatas.length; i++) {
                dispatch(addInversionesCuentasValores(newDatas[i]));
             }
-            await Post("/inversionescuentas/create", newDatas,next);
+            await Post("inversionescuentas/create", newDatas,next);
    
    
          };

@@ -73,7 +73,7 @@ export const AdeudosPasivos = ({ title, next, previous, setSend }) => {
                // delete newDatas[i].identificador;
    
             }
-            await Post("/adeudospasivos/create", newDatas,next);
+            await Post("adeudospasivos/create", newDatas,next);
          };
          await sendApi();
    

@@ -148,7 +148,7 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                dispatch(addExperienciaLaboral(newDatas[i]));
                // delete newDatas[i].identificador;
             }
-            await Post("/experiencialaboral/create", newDatas,next);
+            await Post("experiencialaboral/create", newDatas,next);
          };
          await sendApi();
 
@@ -157,7 +157,7 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
          // next();
       } else if (datas.length == 0) {
          try {
-            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${10}`);
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${5}`);
             Success(response.data.data.message);
             setDatas([]);
             setDatasVisuales([]);
@@ -179,9 +179,7 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
       // formikRef.current.setFieldValue("Id_AmbitoPublico", finData[0].Id_AmbitoPublico);
    };
    const Delete = (row) => {
-      console.log("====================================");
-      console.log(row.id);
-      console.log("====================================");
+
       const newDatasVisuales = datasVisuales.filter((elemento) => elemento.id !== row.id);
       setDatas(datas.filter((elemento) => elemento.identificador !== row.id));
       setDatasVisuales(newDatasVisuales);
@@ -192,10 +190,7 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
    };
    useEffect(() => {
       const init = async () => {
-         // setNivelOrdenGobierno(await GetAxios("/nivelordengobierno/show"));
-         setAmbitoPublico(await GetAxios("/ambitospublicos/show"));
-         // setEntidades(await GetAxios("/entidades/show"));
-         // setPaises(await GetAxios("/paises/show"));
+         setAmbitoPublico(await GetAxios("ambitospublicos/show"));
       };
       init();
    }, [activeAmbitoPublico, activeSector]);

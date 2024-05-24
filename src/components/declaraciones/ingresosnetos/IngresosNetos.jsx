@@ -15,7 +15,7 @@ export const IngresosNetos = ({ next, previous, title }) => {
    const submit = async (values, { resetForm }) => {
       dispatch(addIngresosNetos(values));
       try {
-         const response = await Post("/ingresos/create", values,next);
+         const response = await Post("ingresos/create", values,next);
          // next();
          // Success(response.data.message);
 

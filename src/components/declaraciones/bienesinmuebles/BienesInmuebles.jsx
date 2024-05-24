@@ -70,7 +70,7 @@ export const BienesInmuebles = ({ next, previous, title, setSend }) => {
                dispatch(addBienesInmuebles(newDatas[i]));
                // delete newDatas[i].identificador;
             }
-            await Post("/bienesinmuebles/create", newDatas, next);
+            await Post("bienesinmuebles/create", newDatas, next);
          };
          await sendApi();
       } else {

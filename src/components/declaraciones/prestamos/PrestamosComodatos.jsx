@@ -93,7 +93,7 @@ export const PrestamosComodatos = ({ title, previous, next, setSend }) => {
                // delete newDatas[i].identificador;
    
             }
-            await Post("/prestamoscomodatos/create", newDatas,next);
+            await Post("prestamoscomodatos/create", newDatas,next);
          };
          await sendApi();
    
@@ -107,9 +107,7 @@ export const PrestamosComodatos = ({ title, previous, next, setSend }) => {
 
             next();
          } catch (error) {
-            console.log('====================================');
-            console.log(error);
-            console.log('====================================');
+    
             Error(error.response.data.data.message);
          }
       }

@@ -32,7 +32,7 @@ export const DatosEmpleo = ({ next, previous, title }) => {
       } else {
          delete data.NivelEmpleoCargoComisionText;
       }
-      Post("/datoscargoscomision/create", data, next);
+      Post("datoscargoscomision/create", data, next);
    };
 
 

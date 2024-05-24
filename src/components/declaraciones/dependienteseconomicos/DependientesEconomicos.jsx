@@ -51,7 +51,7 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
                   dispatch(addDatosDependiente(newDatas[i]));
                   // delete newDatas[i].identificador;
                }
-               await Post("/dependienteseconomicos/create", newDatas, next);
+               await Post("dependienteseconomicos/create", newDatas, next);
             };
             await sendApi();
 
@@ -161,34 +161,7 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
                   <DomicilioDeclarante />
                </Ngif>
                <Sectores validations={validations} />
-               <button
-               type="button"
-                  onClick={() => {
-                     console.log("====================================");
-                     console.log(formik.current.errors);
-                     console.log("====================================");
-                  }}
-               >
-                  errores
-               </button>
-               <button
-               type="button"
-                  onClick={() => {
-                     console.log("====================================");
-                     console.log(validations);
-                     console.log("====================================");
-                  }}
-               >
-                  validaciones
-               </button>
-               <button
-               type="button"
-                  onClick={
-                    previous
-                  }
-               >
-                  regresar
-               </button>
+             
             </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>

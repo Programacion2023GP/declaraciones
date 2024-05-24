@@ -13,18 +13,18 @@ import { locationAuth } from "../user/auth/auth";
 
 const BaseLayout = () => {
    const location = useLocation();
-   const [loading,setLoading]=useState(false)
-   const dispatch = useDispatch()
+   const [loading, setLoading] = useState(false);
+   const dispatch = useDispatch();
    useEffect(() => {
-      dispatch(locationAuth())
-      setLoading(true)
+      dispatch(locationAuth());
+      setLoading(true);
 
       // Coloca aquí el código que deseas ejecutar cuando cambie la ruta
    }, [location.pathname]);
    const { open } = useMenuContext();
    return (
       <Ngif condition={loading}>
-         <Grid container style={{ width: "100%", overflow: "exist" }}>
+         <Grid container style={{ width: "100%", overflowX: "hidden" }}>
             {" "}
             {/* Establecer el estilo height en 100vh para que ocupe toda la altura de la ventana */}
             {/* Sidebar */}
@@ -38,11 +38,23 @@ const BaseLayout = () => {
                <Outlet />
             </Grid> */}
             {open && (
-               <Grid item xs={9} sm={4} md={3} lg={3} xl={2} style={{ margin: "0", padding: "0" }}>
+               <Grid item xs={12} sm={12} md={3} lg={3} xl={2} style={{ margin: "0", padding: "0" }}>
                   <TemporaryDrawer />
                </Grid>
             )}
-            <Grid style={{ marginTop: "2rem" }} item xs={open ? 3 : 12} sm={open ? 8 : 12} md={open ? 9 : 12} lg={open ? 9 : 12} xl={open ? 10 : 12}>
+            <Grid
+               item
+               xs={12}
+               sm={12}
+               md={open ? 9 : 12}
+               lg={open ? 9 : 12}
+               xl={open ? 10 : 12}
+               sx={{
+                  marginTop: "2rem",
+                  display: { xs: open ? "none" : "block", sm: open ? "none" : "block", md: "block", lg: "block", xl: "block" }
+               }}
+            >
+               {" "}
                <Outlet />
             </Grid>
          </Grid>

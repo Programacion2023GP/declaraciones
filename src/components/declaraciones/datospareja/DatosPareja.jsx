@@ -64,13 +64,13 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
    const [pareja, setPareja] = useState(true);
    useEffect(() => {
       const init = async () => {
-         setRelacionDeclarante(await GetAxios("/relacioncondeclarante/show"));
-         setEntidades(await GetAxios("/entidades/show"));
-         setPaises(await GetAxios("/paises/show"));
-         setSectores(await GetAxios("/sectores/show"));
-         setMonedas(await GetAxios("/monedas/show"));
-         setAmbitosPublicos(await GetAxios("/ambitospublicos/show"));
-         setNivelGobiernos(await GetAxios("/nivelordengobierno/show"));
+         setRelacionDeclarante(await GetAxios("relacioncondeclarante/show"));
+         setEntidades(await GetAxios("entidades/show"));
+         setPaises(await GetAxios("paises/show"));
+         setSectores(await GetAxios("sectores/show"));
+         setMonedas(await GetAxios("monedas/show"));
+         setAmbitosPublicos(await GetAxios("ambitospublicos/show"));
+         setNivelGobiernos(await GetAxios("nivelordengobierno/show"));
 
          setStart(false);
       };

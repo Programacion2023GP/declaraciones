@@ -148,6 +148,7 @@ export const AutoComplete = ({
          options = [];
          setLoader(false);
       }
+      console.log("d",name);
    }, [options, formik.values[name]]);
 
    // useEffect(()=>{

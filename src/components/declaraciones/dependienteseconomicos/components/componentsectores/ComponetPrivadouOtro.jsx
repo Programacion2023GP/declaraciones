@@ -12,7 +12,7 @@ export const ComponetPrivadouOtro = memo(({}) => {
    const [sectores, setSectores] = useState([]);
    useEffect(() => {
       const init = async () => {
-         setSectores(await GetAxios("/sectores/show"));
+         setSectores(await GetAxios("sectores/show"));
       };
       init();
    }, []);

@@ -12,7 +12,7 @@ export const ComponenteExtranjero = memo(({}) => {
    useEffect(() => {
       dispatch(addExtranjeroPrestamo());
       const init = async () => {
-         setPaises(await GetAxios("/paises/show"));
+         setPaises(await GetAxios("paises/show"));
       };
       init();
    }, []);

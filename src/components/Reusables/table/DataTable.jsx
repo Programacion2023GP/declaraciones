@@ -107,7 +107,7 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
    );
 };
 
-const Paginator = ({ pagination, handleChange, page, pages, previous, next }) => {
+const Paginator = ({ pagination, handleChange, page, pages, previous, next, dataFilter, selectRow }) => {
    useEffect(() => {}, [pagination]);
    const pagesOfItems = (option) => {
       handleChange(option);
@@ -121,7 +121,7 @@ const Paginator = ({ pagination, handleChange, page, pages, previous, next }) =>
 
    return (
       <>
-         <Stack spacing={1} direction="row" alignItems="center" justifyContent="space-between" sx={{ marginRight: ".5rem" }}>
+         <Stack spacing={1} direction="row" alignItems="center" justifyContent="space-between" width={"100%"}>
             <Typography variant="subtitle2">
                Pagina {page} de {pages}
             </Typography>
@@ -132,6 +132,9 @@ const Paginator = ({ pagination, handleChange, page, pages, previous, next }) =>
                <Button onClick={() => nextPage()} variant="outlined">
                   Siguiente
                </Button>
+               <Typography variant="subtitle2">
+                  Mostrando {selectRow >= dataFilter ? dataFilter : selectRow} de {dataFilter}
+               </Typography>
             </Stack>
             {pagination && <PaginatorSelect pagination={pagination} selectOption={pagesOfItems} />}
          </Stack>
@@ -163,29 +166,26 @@ const PaginatorSelect = ({ pagination, selectOption }) => {
    );
 };
 
-const FilterGlobal = ({ data = [],setFilteredData }) => {
+const FilterGlobal = ({ data = [], setFilteredData }) => {
    const [searchText, setSearchText] = useState("");
-   useEffect(() => {
-   
-   },[]);
+   useEffect(() => {}, []);
    const searchData = (event) => {
       const newValue = event.target.value;
       setSearchText(newValue);
-  
+
       // Filtrar los datos basados en el texto de búsqueda
-      const newFilteredData = data.filter(item => {
-        for (const key in item) {
-          if (item.hasOwnProperty(key) && String(item[key]).toLowerCase().includes(newValue.toLowerCase())) {
-            return true;
-          }
-        }
-        return false;
+      const newFilteredData = data.filter((item) => {
+         for (const key in item) {
+            if (item.hasOwnProperty(key) && String(item[key]).toLowerCase().includes(newValue.toLowerCase())) {
+               return true;
+            }
+         }
+         return false;
       });
 
       // console.log(newFilteredData,data);
       setFilteredData(newFilteredData);
-    };
-  
+   };
 
    const handleClear = () => {
       setSearchText("");
@@ -220,7 +220,19 @@ const FilterGlobal = ({ data = [],setFilteredData }) => {
    );
 };
 
-const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filter, editButton, deleteButton, handleEdit, handleDelete, filterGlobal,conditionExistEditButton=[] }) => {
+const DataTable = ({
+   data = [],
+   dataHidden = [],
+   pagination,
+   headers = [],
+   filter,
+   editButton,
+   deleteButton,
+   handleEdit,
+   handleDelete,
+   filterGlobal,
+   conditionExistEditButton = []
+}) => {
    const [totalData, setTotalData] = useState(data);
    const [dataFilter, setDataFilter] = useState(data);
    const [titles, setTitles] = useState([]);
@@ -249,12 +261,11 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filte
          modifiedData(filters);
       }
    };
-   const applyfilterGlobal = (data,page=null)=>{
-      modifiedData(data);
-
-   }
+   const applyfilterGlobal = (data, page = null) => {
+      setDataFilter(data);
+      // modifiedData(data,1);
+   };
    const filterData = (column, value) => {
-     
       // Actualizamos el estado de objectValues con los nuevos valores de filtro
       setObjectValues((prevState) => ({
          ...prevState,
@@ -320,9 +331,9 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filte
       let index = 0;
       let page = 0;
       const datas = [];
-    
+
       if (!Array.isArray(data)) {
-         return
+         return;
       }
 
       data.map((item, i) => {
@@ -341,34 +352,35 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filte
    };
 
    const checkConditions = (item) => {
-      return conditionExistEditButton.every(condition => {
-        const match = condition.match(/(.+?)\s*(==|!=|>=|<=|>|<)\s*'([^']+)'/);
-        if (!match) return false;
-    
-        const [, key, operator, value] = match;
-        const itemValue = item[key.trim()];
-    
-    
-        switch (operator) {
-          case '!=':
-            return itemValue != value;
-          case '==':
-            return itemValue == value;
-          case '>=':
-            return itemValue >= value;
-          case '<=':
-            return itemValue <= value;
-          case '>':
-            return itemValue > value;
-          case '<':
-            return itemValue < value;
-          default:
-            return false;
-        }
+      return conditionExistEditButton.every((condition) => {
+         const match = condition.match(/(.+?)\s*(==|!=|>=|<=|>|<)\s*'([^']+)'/);
+         if (!match) return false;
+
+         const [, key, operator, value] = match;
+         const itemValue = item[key.trim()];
+
+         switch (operator) {
+            case "!=":
+               return itemValue != value;
+            case "==":
+               return itemValue == value;
+            case ">=":
+               return itemValue >= value;
+            case "<=":
+               return itemValue <= value;
+            case ">":
+               return itemValue > value;
+            case "<":
+               return itemValue < value;
+            default:
+               return false;
+         }
       });
-    };
+   };
    useEffect(() => {
-      setDataFilter(data);
+      if (dataFilter.length == 0) {
+         setDataFilter(data);
+      }
 
       const init = () => {
          if (Object.keys(objectValues).length !== 0) {
@@ -383,13 +395,22 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filte
 
    return (
       <>
-         <div className="" style={{ maxWidth: "fit-content", display: "flex", flexDirection: "column" }}>
+         <div
+            className=""
+            // style={{
+            //    maxWidth: "100%",
+            //    display: "flex",
+            //    flexDirection: "column",
+            //    overflowX: "auto", // Asegura que el contenido se ajuste sin desbordar
+            //    alignItems: "center" // Asegura que el contenido esté centrado
+            // }}
+         >
             {filterGlobal && (
                <>
                   <FilterGlobal data={data} setFilteredData={applyfilterGlobal} />
                </>
             )}
-            <table style={{ borderCollapse: "collapse" }}>
+            <table width={"100%"} style={{ borderCollapse: "collapse" }}>
                {titles.length > 0 || headers.length > 0 ? (
                   <Title
                      editButton={editButton}
@@ -426,14 +447,14 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filte
                                  if (dataHidden) {
                                     if (!dataHidden.includes(key)) {
                                        return (
-                                          <td style={{ textAlign: "center", border: "1px solid #BDBDBD", padding: 0, margin: 0 }} key={key} cols={value}>
+                                          <td style={{ textAlign: "center", border: "1px solid #BDBDBD", paddingLeft: "5px",paddingRight: "5px", margin: 0 }} key={key} cols={value}>
                                              {value}
                                           </td>
                                        );
                                     }
                                  } else {
                                     return (
-                                       <td style={{ textAlign: "center", borderBottom: "1px solid", padding: 0, margin: 0 }} key={key} cols={value}>
+                                       <td style={{ textAlign: "center", borderBottom: "1px solid", paddingLeft: "5px",paddingRight: "5px", margin: 0 }} key={key} cols={value}>
                                           {value}
                                        </td>
                                     );
@@ -470,12 +491,51 @@ const DataTable = ({ data = [], dataHidden = [], pagination, headers = [], filte
                      })}
                   </tbody>
                )}
+               {pagination && (
+                  <tfoot>
+                     <tr>
+                        <td
+                           colSpan={headers.length + (editButton || deleteButton ? 1 : 0)}
+                           style={{ border: "1px solid #BDBDBD", padding: "0.5rem", textAlign: "center" }}
+                        >
+                           <Paginator
+                              selectRow={selectRow}
+                              dataFilter={dataFilter.length}
+                              pagination={pagination}
+                              handleChange={handleSeparateData}
+                              pages={totalPages}
+                              previous={previous}
+                              next={next}
+                              page={numberShowPage}
+                           />
+                        </td>
+                     </tr>
+                  </tfoot>
+               )}
             </table>
-            {pagination && (
-               <div style={{ minWidth: "100%", padding: "0.5rem 1rem", alignSelf: "flex-end", border: "1px solid #BDBDBD", background: "#F9FAFB" }}>
-                  <Paginator pagination={pagination} handleChange={handleSeparateData} pages={totalPages} previous={previous} next={next} page={numberShowPage} />
-               </div>
-            )}
+            {/* {pagination && (
+               <div
+               style={{
+                  width: "100%", // Asegura que el paginator ocupe todo el ancho del contenedor
+                  alignSelf: "center", // Centra el paginator
+                  border: "1px solid #BDBDBD",
+                  background: "#F9FAFB",
+                  display: "flex", // Asegura que los elementos internos se alineen correctamente
+                  justifyContent: "center" // Centra los elementos internos
+               }}
+               >
+               <Paginator
+                  selectRow={selectRow}
+                  dataFilter={dataFilter.length}
+                  pagination={pagination}
+                  handleChange={handleSeparateData}
+                  pages={totalPages}
+                  previous={previous}
+                  next={next}
+                  page={numberShowPage}
+               />
+                </div>
+            )} */}
          </div>
       </>
       // (

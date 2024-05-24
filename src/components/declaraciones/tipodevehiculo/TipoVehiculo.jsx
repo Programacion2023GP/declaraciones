@@ -85,7 +85,7 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
                dispatch(addVehiculo(newDatas[i]));
                // delete newDatas[i].identificador;
             }
-            await Post("/vehiculos/create", newDatas,next);
+            await Post("vehiculos/create", newDatas,next);
          };
          await sendApi();
       }

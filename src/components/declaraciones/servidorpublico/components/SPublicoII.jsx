@@ -67,8 +67,8 @@ export const SPublicoII = ({}) => {
    useEffect(() => {
       event();
       const init = async () => {
-         SetInstrumentos(await GetAxios("/tipoinstrumento/show"));
-         setBieneAjenacion(await GetAxios("/bienenajenacion/show"));
+         SetInstrumentos(await GetAxios("tipoinstrumento/show"));
+         setBieneAjenacion(await GetAxios("bienenajenacion/show"));
       };
       init();
    }, [AICE_RemuneracionTotal, AF_RemuneracionTotal, SP_RemuneracionTotal, EB_RemuneracionTotal, OINC_RemuneracionTotal]);

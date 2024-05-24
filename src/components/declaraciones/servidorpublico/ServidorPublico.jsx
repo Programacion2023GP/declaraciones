@@ -41,7 +41,7 @@ export const ServidorPublico = ({ next, previous, title }) => {
       if (checked) {
          dispatch(addServidorPublico(values));
          try {
-            const response = await Post("/servidorpublico/create", values,next);
+            const response = await Post("servidorpublico/create", values,next);
             // next();
             // Success(response.data.message);
 

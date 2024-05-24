@@ -65,7 +65,7 @@ export const Login = () => {
                      onSubmit={async (values, { setSubmitting }) => {
                         setSubmitting(false);
                         try {
-                           const response = await Axios.post("/login", values);
+                           const response = await Axios.post("usuarios/login", values);
                            localStorage.setItem("Id_User", response.data.data.result.user.Id_User);
                            localStorage.setItem("Id_Person", response.data.data.result.user.Id_Person);
                            localStorage.setItem("Id_Role", response.data.data.result.user.Id_Role);

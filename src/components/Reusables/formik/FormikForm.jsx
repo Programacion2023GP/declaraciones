@@ -3,12 +3,12 @@ import { Formik } from "formik";
 import { Ngif } from "../conditionals/Ngif";
 import { forwardRef, useEffect } from "react";
 export const FormikForm = forwardRef(
-   ({ className, initialValues, validationSchema, submit, title, children, message, button, previousButton, handlePrevious, advertence,messageButton }, ref) => {
+   ({ className, initialValues, validationSchema,sizeTitle, submit, title, children, message, button, previousButton, handlePrevious, advertence,messageButton }, ref) => {
       useEffect(() => {}, []);
       return (
          <Card className={className} sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}>
             <CardContent>
-               <Typography variant="h3" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
+               <Typography variant={sizeTitle?sizeTitle:'h3'} align="center" color="textPrimary" style={{ fontWeight: "500" }}>
                   {title}
                </Typography>
                <Typography variant="h6" align="left" color="textPrimary" style={{ fontWeight: "500" }}>

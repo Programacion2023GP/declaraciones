@@ -22,7 +22,7 @@ export const ComponenteMexico = memo(({}) => {
             dispatch(addMexicoPrestamo());
 
       const init = async () => {
-         setEntidades(await GetAxios("/entidades/show"));
+         setEntidades(await GetAxios("entidades/show"));
       };
       init();
    }, []);

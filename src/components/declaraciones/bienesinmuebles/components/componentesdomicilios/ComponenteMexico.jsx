@@ -29,7 +29,7 @@ export const ComponenteMexico = memo(({ openMunicipio, setOpenMunicipio, setEsta
             setMunicipios(await GetAxios(`municipios/show/${estado}`));
             setLoadingMunicipios(false);
          }
-         setEntidades(await GetAxios("/entidades/show"));
+         setEntidades(await GetAxios("entidades/show"));
       };
       init();
    }, []);
