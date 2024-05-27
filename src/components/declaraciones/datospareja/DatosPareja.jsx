@@ -93,10 +93,10 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
 
          setDomicilioPareja(false);
       }
-      if (name == "EsCiudadanoExtranjero" && value == 0) {
+      if (name == "EsCiudadanoExtranjero" && value ==1) {
          setMexico(true);
          dispatch(configValidations({ tipo: "Mexico" }));
-      } else if (name == "EsEnMexico") {
+      } else if (name == "EsCiudadanoExtranjero" && value == 0) {
          dispatch(configValidations({ tipo: "NoesMexico" }));
          setMexico(false);
       }

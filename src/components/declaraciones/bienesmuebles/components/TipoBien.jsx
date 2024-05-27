@@ -30,7 +30,7 @@ export const TipoBien = ({ titular, tiposbienesmuebles, tercero, setTercero, tip
          <Ngif condition={tiposBienes}>
             <Text col={12} name={"EspecifiqueOtroTipo"} label={"Especifique otro tipo de bien"} />
          </Ngif>
-         <Text col={12} name={"DescripcionGeneralBien"} label={"Descripción del Bien"} />
+         {/* <Text col={12} name={"DescripcionGeneralBien"} label={"Descripción del Bien"} /> */}
          <CustomRadio
             col={12}
             title={"¿Cuenta con copropiedad?"}

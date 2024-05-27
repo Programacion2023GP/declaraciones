@@ -35,7 +35,7 @@ const ComponentDeclaraciones = () => {
    declaracion = parseInt(declaracion);
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(0);
+   const [activeStep, setActiveStep] = React.useState(13);
    const dispatch = useDispatch();
    React.useEffect(() => {
       dispatch(foundLocalization())
@@ -228,7 +228,7 @@ const ComponentDeclaraciones = () => {
                   {/* Paso {activeStep + 1} de {steps.length} */}
                </Typography>
                {/* Componente correspondiente al paso actual */}
-               <Box className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>{filteredSteps[activeStep].component}</Box>
+               <Box  className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>{filteredSteps[activeStep].component}</Box>
              
          {/* <button onClick={handleNext}>Continuar</button>    */}
             </div>

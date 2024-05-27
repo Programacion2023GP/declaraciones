@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Catalogo } from "../../Reusables/catalogo/Catalogo";
 import { useParams } from "react-router-dom";
-import { Creacion } from "../creacion/Creacion";
-
+import { Create } from "../create/Create";
 export const ComponentCatalogo = ({pagina}) => {
    const { catalogo } = useParams();
    const [initialized, setInitialized] = useState(false);
@@ -14,7 +13,7 @@ export const ComponentCatalogo = ({pagina}) => {
       }
    }, [catalogo,pagina]);
    
-   const { dataForm, handleDelete, handleEdit, validationSchema, action, Form, title, headersDatable, urlData, dataHiddenDatable, id, setId, table } = Creacion({
+   const { dataForm, handleDelete, handleEdit, validationSchema, action, Form, title, headersDatable, urlData, dataHiddenDatable, id, setId, table } = Create({
       catalogo: (pagina ? pagina : catalogo),
       formik
 });

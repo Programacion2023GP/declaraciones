@@ -59,7 +59,86 @@ const Sidebar = () => {
                text: "Estatus",
                active: false
             },
-          
+            {
+               path: "catalogos/nivelestudios",
+               text: "Nivel de estudio",
+               active: false
+            },
+            {
+               path: "catalogos/documentoobtenido",
+               text: "Documento obtenido",
+               active: false
+            },
+            {
+               path: "catalogos/nivelordengobierno",
+               text: "Nivel de orden de gobierno",
+               active: false
+            },
+            {
+               path: "catalogos/ambitopublico",
+               text: "Ambito público",
+               active: false
+            },
+            {
+               path: "catalogos/aereaadscripcion",
+               text: "Aerea de adscripción",
+               active: false
+            },
+            {
+               path: "catalogos/relaciondeclarante",
+               text: "Parentesco/Relación con declarante",
+               active: false
+            },
+            {
+               path: "catalogos/monedas",
+               text: "Moneda",
+               active: false
+            },
+            {
+               path: "catalogos/sectorpertenece",
+               text: "Sector que pertenece",
+               active: false
+            },
+            {
+               path: "catalogos/tipoinstrumento",
+               text: "Tipo de instrumento",
+               active: false
+            },
+            {
+               path: "catalogos/tipoenajenado",
+               text: "Tipo de bienes enajenado",
+               active: false
+            },
+            {
+               path: "catalogos/tipoinmueble",
+               text: "Tipo de inmueble",
+               active: false
+            },
+            {
+               path: "catalogos/titularbienes",
+               text: "Titular de bienes",
+               active: false
+            },
+            {
+               path: "catalogos/vehiculo",
+               text: "Vehiculo",
+               active: false
+            },
+            {
+               path: "catalogos/pago",
+               text: "Forma de pago",
+               active: false
+            },
+            {
+               path: "catalogos/adquisicion",
+               text: "Forma de adquisición",
+               active: false
+            },
+            {
+               path: "catalogos/baja",
+               text: "Motivo de baja",
+               active: false
+            }
          ]
       },
       {
@@ -175,14 +254,15 @@ const RecursivoMenu = ({ array, i, handleSelect }) => {
    const style = {
       height: "100%",
       background: "linear-gradient(to bottom right, rgba(255, 255, 255, 0.3) 49%, rgba(71, 91, 232, 0.2) 50%)",
-      backdropFilter: "blur(3px)"
+      backdropFilter: "blur(3px)",
+      // padding:".1rem "
    };
    return (
       <>
          {array.map((child, j) => {
             return (
                <li
-                  style={child.active?{}:style}
+                  style={child.active ? {} : style}
                   className="menu-item"
                   key={`${child.path}-${j}`} // Usa una clave única adecuada
                   onClick={() => handleSelect(i, j)}

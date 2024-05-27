@@ -53,19 +53,20 @@ export const Catalogo = forwardRef(
       };
       const [data, setData] = useState([]);
       const init = async () => {
-         setData(await GetAxios(`${urlData}/show`));
+         setData(await GetAxios(`${urlData}/index`));
       };
       useEffect(() => {
          init();
       }, [catalogo]);
+   
       // useEffect(() => {}, [children, urlData, headersDatable, dataHiddenDatable, titleForm, initialValuesForm, handleEdit]);
 
       const handleDelete = async (row) => {
          try {
             const response = await Axios.delete(`${urlData}/delete/${row.id}`);
 
-            init();
             Success(response.data.data.message);
+            init();
             return response.data;
          } catch (error) {
             if (error.message == "Network Error") {

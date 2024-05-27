@@ -233,7 +233,7 @@ const DataTable = ({
    filterGlobal,
    conditionExistEditButton = []
 }) => {
-   const [totalData, setTotalData] = useState(data);
+   const [reinitializedData, setReinitializedData] = useState(data);
    const [dataFilter, setDataFilter] = useState(data);
    const [titles, setTitles] = useState([]);
    const [dataTable, setDataTable] = useState([]);
@@ -381,7 +381,6 @@ const DataTable = ({
       if (dataFilter.length == 0) {
          setDataFilter(data);
       }
-
       const init = () => {
          if (Object.keys(objectValues).length !== 0) {
             applyFilters(objectValues);
@@ -391,8 +390,20 @@ const DataTable = ({
       };
       init();
       setNumberShowPage(1);
-   }, [loading, selectRow, pagination, headers, objectValues, data, dataFilter]);
-
+   }, [loading, selectRow, pagination, headers, objectValues, dataFilter]);
+   useEffect(() => {
+      setDataFilter(data);
+      
+      const init = () => {
+         if (Object.keys(objectValues).length !== 0) {
+            applyFilters(objectValues);
+         } else {
+            modifiedData(dataFilter);
+         }
+      };
+      init();
+      setNumberShowPage(1);
+   }, [data]);
    return (
       <>
          <div
@@ -447,14 +458,22 @@ const DataTable = ({
                                  if (dataHidden) {
                                     if (!dataHidden.includes(key)) {
                                        return (
-                                          <td style={{ textAlign: "center", border: "1px solid #BDBDBD", paddingLeft: "5px",paddingRight: "5px", margin: 0 }} key={key} cols={value}>
+                                          <td
+                                             style={{ textAlign: "center", border: "1px solid #BDBDBD", paddingLeft: "5px", paddingRight: "5px", margin: 0 }}
+                                             key={key}
+                                             cols={value}
+                                          >
                                              {value}
                                           </td>
                                        );
                                     }
                                  } else {
                                     return (
-                                       <td style={{ textAlign: "center", borderBottom: "1px solid", paddingLeft: "5px",paddingRight: "5px", margin: 0 }} key={key} cols={value}>
+                                       <td
+                                          style={{ textAlign: "center", borderBottom: "1px solid", paddingLeft: "5px", paddingRight: "5px", margin: 0 }}
+                                          key={key}
+                                          cols={value}
+                                       >
                                           {value}
                                        </td>
                                     );
