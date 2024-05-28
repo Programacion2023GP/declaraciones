@@ -56,6 +56,7 @@ export const Catalogo = forwardRef(
          setData(await GetAxios(`${urlData}/index`));
       };
       useEffect(() => {
+
          init();
       }, [catalogo]);
    

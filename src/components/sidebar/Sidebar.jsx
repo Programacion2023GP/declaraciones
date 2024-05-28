@@ -138,7 +138,27 @@ const Sidebar = () => {
                path: "catalogos/baja",
                text: "Motivo de baja",
                active: false
+            },
+            {
+               path: "catalogos/tipoinversion",
+               text: "Tipo de inversión",
+               active: false
+            },
+            {
+               path: "catalogos/tiposubinversion",
+               text: "Tipo de sub inversión",
+               active: false
+            },
+            {
+               path: "catalogos/tipobien",
+               text: "Tipo de bien mueble",
+               active: false
+            },{
+               path:"catalogos/tipoadeudo",
+               text:"Tipo de adeudo",
+               active:false
             }
+            
          ]
       },
       {

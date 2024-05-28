@@ -1,7 +1,5 @@
-import { element } from "prop-types";
 import { useEffect, useState } from "react";
 import * as Yup from "yup";
-
 import Usuarios from "../../usuarios/Usuarios";
 import EstadoCivil from "../components/EstadoCivil";
 import RegimenMatrimonial from "../components/RegimenMatrimonial";
@@ -22,7 +20,11 @@ import Vehiculo from "../components/Vehiculo";
 import FormaPago from "../components/FormaPago";
 import Adqusicion from "../components/Adqusicion";
 import MotivoBaja from "../components/MotivoBaja";
-export const Create = ({ catalogo, formik }) => {
+import TipoInversion from "../components/TipoInversion";
+import TipoSubInversion from "../components/TipoSubInversion";
+import TipoBien from "../components/TipoBIen";
+import TipoAdeudo from "../components/TipoAdeudo";
+export const Create = ({ catalogo, formik,peticiones }) => {
    const [id, setId] = useState(0);
    useEffect(() => {}, [formik.current == undefined]);
    const methods = [
@@ -45,11 +47,16 @@ export const Create = ({ catalogo, formik }) => {
       { key: "pago", instance: FormaPago },
       { key: "adquisicion", instance: Adqusicion },
       { key: "baja", instance: MotivoBaja },
-      { key: "tipoinmueble", instance: TipoInmueble }
+      { key: "tipoinmueble", instance: TipoInmueble },
+      { key: "tipoinversion", instance: TipoInversion },
+      { key: "tiposubinversion", instance: TipoSubInversion },
+      { key: "tipobien", instance: TipoBien },
+      { key: "tipoadeudo", instance: TipoAdeudo },
+      
    ];
    const foundMethod = methods.find((element) => element.key === catalogo);
    const { instance } = foundMethod;
-   const { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table } = instance({ formik, setId });
+   const { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table } = instance({ formik, setId,peticiones });
    const dataForm = initialState;
    const validationSchema = Yup.object().shape(validator);
 

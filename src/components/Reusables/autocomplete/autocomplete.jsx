@@ -156,7 +156,6 @@ export const AutoComplete = ({
 
    // },[reset])
 
-
    return (
       <Grid
          key={`Grid_Container_${name}`}
@@ -170,12 +169,11 @@ export const AutoComplete = ({
          sx={{ display: "flex", position: "relative" }}
       >
          <FormControl key={`FormControl_${name}`} fullWidth>
-            <Box  key={`Box_${name}`} display={"flex"}>
+            <Box key={`Box_${name}`} display={"flex"}>
                <Autocomplete
-                  disabled={ disabled||loading}
+                  disabled={disabled || loading}
                   autoHighlight={true}
-                  ListboxProps={{ style: { maxHeight: 120, overflow: 'auto' } }}
-               
+                  ListboxProps={{ style: { maxHeight: 120, overflow: "auto" } }}
                   // {...dataOptions}
                   sx={{ minWidth: "100%", display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center" }}
                   key={`select_${name}`}
