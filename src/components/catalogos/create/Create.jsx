@@ -56,7 +56,7 @@ export const Create = ({ catalogo, formik,peticiones }) => {
    ];
    const foundMethod = methods.find((element) => element.key === catalogo);
    const { instance } = foundMethod;
-   const { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table } = instance({ formik, setId,peticiones });
+   const { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table,key } = instance({ formik, setId,peticiones });
    const dataForm = initialState;
    const validationSchema = Yup.object().shape(validator);
 
@@ -74,6 +74,7 @@ export const Create = ({ catalogo, formik,peticiones }) => {
       urlData,
       dataHiddenDatable,
       setId,
-      table
+      table,
+      key
    };
 };

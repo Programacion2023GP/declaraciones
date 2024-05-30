@@ -123,7 +123,7 @@ const Paginator = ({ pagination, handleChange, page, pages, previous, next, data
       <>
          <Stack spacing={1} direction="row" alignItems="center" justifyContent="space-between" width={"100%"}>
             <Typography variant="subtitle2">
-               Pagina {page} de {pages}
+               Pagina {dataFilter == 0 ? "0" : page} de {pages}
             </Typography>
             <Stack spacing={1} direction="row" alignItems="center">
                <Button onClick={() => previousPage()} variant="outlined">
@@ -166,24 +166,27 @@ const PaginatorSelect = ({ pagination, selectOption }) => {
    );
 };
 
-const FilterGlobal = ({ data = [], setFilteredData }) => {
+const FilterGlobal = ({ data = [], setFilteredData,dataHidden=[] }) => {
    const [searchText, setSearchText] = useState("");
    useEffect(() => {}, []);
    const searchData = (event) => {
       const newValue = event.target.value;
+      if (event.target.value.length<0) {
+         setFilteredData(newFilteredData);
+         return
+      }
       setSearchText(newValue);
 
       // Filtrar los datos basados en el texto de búsqueda
       const newFilteredData = data.filter((item) => {
          for (const key in item) {
-            if (item.hasOwnProperty(key) && String(item[key]).toLowerCase().includes(newValue.toLowerCase())) {
+            if (item.hasOwnProperty(key) && !dataHidden.includes(key) && String(item[key]).toLowerCase().includes(newValue.toLowerCase())) {
                return true;
             }
          }
          return false;
       });
-
-      // console.log(newFilteredData,data);
+      
       setFilteredData(newFilteredData);
    };
 
@@ -250,6 +253,9 @@ const DataTable = ({
    const applyFilters = (page = null) => {
       const filters = data.filter((item) => {
          return Object.entries(objectValues).every(([col, val]) => {
+            if (dataHidden.includes(col)) {
+               return true; // Ignora esta columna para el filtro
+            }
             const itemValue = String(item[col]).toUpperCase().trim();
             const filterValue = String(val).toUpperCase().trim();
             return itemValue.includes(filterValue);
@@ -378,9 +384,9 @@ const DataTable = ({
       });
    };
    useEffect(() => {
-      if (dataFilter.length == 0) {
-         setDataFilter(data);
-      }
+      // if (dataFilter.length == 0) {
+      //    setDataFilter(data);
+      // }
       const init = () => {
          if (Object.keys(objectValues).length !== 0) {
             applyFilters(objectValues);
@@ -393,7 +399,7 @@ const DataTable = ({
    }, [loading, selectRow, pagination, headers, objectValues, dataFilter]);
    useEffect(() => {
       setDataFilter(data);
-      
+
       const init = () => {
          if (Object.keys(objectValues).length !== 0) {
             applyFilters(objectValues);
@@ -418,7 +424,7 @@ const DataTable = ({
          >
             {filterGlobal && (
                <>
-                  <FilterGlobal data={data} setFilteredData={applyfilterGlobal} />
+                  <FilterGlobal data={data} setFilteredData={applyfilterGlobal} dataHidden={dataHidden} />
                </>
             )}
             <table width={"100%"} style={{ borderCollapse: "collapse" }}>
@@ -444,7 +450,6 @@ const DataTable = ({
                   <tbody>
                      <tr>
                         <td colSpan={headers.length + 1} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>
-                           {" "}
                            No hay información suficiente no hay registros
                         </td>
                      </tr>

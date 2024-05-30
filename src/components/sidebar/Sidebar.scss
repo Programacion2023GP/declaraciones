@@ -16,11 +16,13 @@
   transition: transform 0.3s ease; /* Agregar una transición suave al abrir y cerrar */
 
   /* Añadir margen superior solo cuando está abierta */
-  margin-top: 2rem;
+  margin-top: 0rem;
   /* Ajustar el margen izquierdo cuando está abierta */
-  margin-left: 1rem;
+  // margin-left: 1rem;
   margin-bottom: 2rem;
- 
+  @media (max-width: 899px) {
+    height: 100vh;
+  }
 
   .subitem{
     display: none;

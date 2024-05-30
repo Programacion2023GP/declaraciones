@@ -10,21 +10,22 @@ import * as Yup from "yup";
 
 const Usuarios = ({ formik, setId, peticiones }) => {
    const { roles, intengrantes, adscripcion } = peticiones;
+   const key = "Id_User";
    const table = true;
    const title = "Registro de usuarios";
    const urlData = "usuarios";
    const validator = {
-      // Name: Yup.string("El formato es texto").required("El nombre es requerido"),
-      // Email: Yup.string("El formato es texto").required("El correo es requerido"),
-      // Nomina: Yup.number("el formato es numerico").min(100000, "El numero de nomina requiere 6 numeros").required("El numero de nomina es requerido"),
-      // PaternalSurname: Yup.string("El formato es texto").required("El apellido paterno es requerido"),
-      // MaternalSurname: Yup.string("El formato es texto").required("El apellido materno es requerido"),
-      // DenominacionCargo: Yup.string("El formato es texto").required("La Denominación del cargo es requerida"),
-      // DenominacionPuesto: Yup.string("el formato es texto").required("La Denominación del puesto es requerida"),
-      // Id_TipoIntegrante: Yup.number("el valor es numerico").min(1, "El tipo de integrante es requerido").required("El tipo de integrante es requerido"),
-      // ClaseNivelPuesto: Yup.string("el formato es texto").required("El Clase o nivel del puesto es requerido"),
-      // Id_Role: Yup.number("el formato es numerico").min(1, "El tipo de rol es requerido").required("El tipo de rol es requerido"),
-      // AreaAdscripcion: Yup.number("el formato es numerico").min(1, "El tipo de adscripcion es requerido").required("El tipo de adscripcion es requerido")
+      Name: Yup.string("El formato es texto").required("El nombre es requerido"),
+      Email: Yup.string("El formato es texto").required("El correo es requerido"),
+      Nomina: Yup.number("el formato es numerico").min(100000, "El numero de nomina requiere 6 numeros").required("El numero de nomina es requerido"),
+      PaternalSurname: Yup.string("El formato es texto").required("El apellido paterno es requerido"),
+      MaternalSurname: Yup.string("El formato es texto").required("El apellido materno es requerido"),
+      DenominacionCargo: Yup.string("El formato es texto").required("La Denominación del cargo es requerida"),
+      DenominacionPuesto: Yup.string("el formato es texto").required("La Denominación del puesto es requerida"),
+      Id_TipoIntegrante: Yup.number("el valor es numerico").min(1, "El tipo de integrante es requerido").required("El tipo de integrante es requerido"),
+      ClaseNivelPuesto: Yup.string("el formato es texto").required("El Clase o nivel del puesto es requerido"),
+      Id_Role: Yup.number("el formato es numerico").min(1, "El tipo de rol es requerido").required("El tipo de rol es requerido"),
+      AreaAdscripcion: Yup.number("el formato es numerico").min(1, "El tipo de adscripcion es requerido").required("El tipo de adscripcion es requerido")
    };
    const initialState = {
       Nomina: 0,
@@ -63,7 +64,9 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       formik.current.setFieldValue("DenominacionPuesto", "");
    };
    const Form = () => {
-   
+      useEffect(()=>{
+         console.log("render usuarios")
+      },[])
       return (
          <>
             <Ngif condition={roles.length > 0 && intengrantes.length > 0 && adscripcion.length > 0}>
@@ -90,16 +93,23 @@ const Usuarios = ({ formik, setId, peticiones }) => {
                <Text col={12} label={"Denominación del puesto"} name={"DenominacionPuesto"} />
             </Ngif>
             <Ngif condition={roles.length < 1 || intengrantes.length < 1 || adscripcion.length < 1}>
-               <Loading/>
+               <Loading />
             </Ngif>
          </>
       );
    };
    const handleEdit = (row) => {
-      formik.current.setFieldvalues(row);
+      formik.current.resetForm();
+      formik.current.setValues(row);
+      setId(row.Id_User);
+
+      formik.current.setFieldValue("Id_Role", parseInt(row.Id_Role));
+      formik.current.setFieldValue("Id_TipoIntegrante", parseInt(row.Id_TipoIntegrante));
+      formik.current.setFieldValue("ClaseNivelPuesto", parseInt(row.ClaseNivelPuesto));
+      formik.current.setFieldValue("AreaAdscripcion", parseInt(row.AreaAdscripcion));
    };
    const headersDatable = ["Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Rol", "Puesto"];
-   const dataHiddenDatable = [];
-   return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table };
+   const dataHiddenDatable = ["Id_User", "Email", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion"];
+   return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key };
 };
 export default Usuarios;

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Text } from "../../Reusables/input/Input";
 import * as Yup from "yup";
 
@@ -21,6 +22,9 @@ const EstadoCivil = ({ formik, setId }) => {
     };
  
     const Form = () => {
+      useEffect(()=>{
+         console.log("estado civil");
+      },[])
        return (
           <>
              <Text col={12} name={"val"} label={"Escribe el estado civil"} />
