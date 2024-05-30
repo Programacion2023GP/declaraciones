@@ -1,5 +1,5 @@
-import { IconButton, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Grid, IconButton, Typography } from "@mui/material";
+import { forwardRef, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -13,6 +13,13 @@ import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { v4 as uuidv4 } from "uuid";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import Slide from "@mui/material/Slide";
+import { Chart } from "../charts/Charts";
+import { Ngif } from "../../Reusables/conditionals/Ngif";
 
 const SearchInput = ({ column, data, getData, previousData }) => {
    const [searchText, setSearchText] = useState("");
@@ -166,14 +173,14 @@ const PaginatorSelect = ({ pagination, selectOption }) => {
    );
 };
 
-const FilterGlobal = ({ data = [], setFilteredData,dataHidden=[] }) => {
+const FilterGlobal = ({ data = [], setFilteredData, dataHidden = [] }) => {
    const [searchText, setSearchText] = useState("");
    useEffect(() => {}, []);
    const searchData = (event) => {
       const newValue = event.target.value;
-      if (event.target.value.length<0) {
+      if (event.target.value.length < 0) {
          setFilteredData(newFilteredData);
-         return
+         return;
       }
       setSearchText(newValue);
 
@@ -186,7 +193,7 @@ const FilterGlobal = ({ data = [], setFilteredData,dataHidden=[] }) => {
          }
          return false;
       });
-      
+
       setFilteredData(newFilteredData);
    };
 
@@ -226,8 +233,9 @@ const FilterGlobal = ({ data = [], setFilteredData,dataHidden=[] }) => {
 const DataTable = ({
    data = [],
    dataHidden = [],
-   pagination,
    headers = [],
+   pagination,
+   options,
    filter,
    editButton,
    deleteButton,
@@ -356,6 +364,12 @@ const DataTable = ({
       setTotalPages(totalPages);
       handleShowData(pagina, datas);
    };
+   const handleOptions = () => {};
+   const [textModal, setTextModal] = useState("");
+   const [openModal, setOpenModal] = useState(false);
+   const handleTextModal = (event) => {
+      setTextModal(event.target.value);
+   };
 
    const checkConditions = (item) => {
       return conditionExistEditButton.every((condition) => {
@@ -422,12 +436,33 @@ const DataTable = ({
             //    alignItems: "center" // Asegura que el contenido esté centrado
             // }}
          >
-            {filterGlobal && (
-               <>
-                  <FilterGlobal data={data} setFilteredData={applyfilterGlobal} dataHidden={dataHidden} />
-               </>
-            )}
             <table width={"100%"} style={{ borderCollapse: "collapse" }}>
+               <caption>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                     {filterGlobal && <FilterGlobal data={data} setFilteredData={applyfilterGlobal} dataHidden={dataHidden} onChange={handleOptions} />}
+                     <Ngif condition={options}>
+                     <Box sx={{ minWidth: 120, marginLeft: "auto" }}>
+                        <FormControl fullWidth>
+                           <InputLabel id="demo-simple-select-label">Opciones</InputLabel>
+                           <Select
+                              labelId="demo-simple-select-label"
+                              id="demo-simple-select"
+                              value={textModal}
+                              onChange={handleTextModal}
+                              onClick={() => setOpenModal(true)}
+                              label="Opciones"
+                           >
+                              <MenuItem key={"grafica"} selected value={"grafica"}>
+                                 {"grafica"}
+                              </MenuItem>
+                           </Select>
+                        </FormControl>
+                     </Box>
+
+                     </Ngif>
+                  </div>
+               </caption>
+
                {titles.length > 0 || headers.length > 0 ? (
                   <Title
                      editButton={editButton}
@@ -561,6 +596,11 @@ const DataTable = ({
                 </div>
             )} */}
          </div>
+         <Ngif condition={options}>
+            <Modal openModal={openModal} setOpenModal={setOpenModal}>
+               <Component option={textModal} titles={headers} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} />
+            </Modal>
+         </Ngif>
       </>
       // (
       //    <div className="" style={{ maxWidth: "fit-content", display: "flex", flexDirection: "column", overflow: "auto" }}>
@@ -574,4 +614,195 @@ const DataTable = ({
    );
 };
 
+const Transition = forwardRef(function Transition(props, ref) {
+   return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const Modal = ({ children, openModal, setOpenModal }) => {
+   useEffect(() => {}, [openModal]);
+   const handleClose = () => {
+      setOpenModal(false);
+   };
+   return (
+      <>
+         <Dialog
+            fullWidth
+            maxWidth={"xl"}
+            open={openModal}
+            TransitionComponent={Transition} // Corregir la asignación de la transición
+            keepMounted
+            onClose={openModal}
+            aria-describedby="alert-dialog-slide-description"
+         >
+            {/* <DialogTitle>{"Se a presentado un error"}</DialogTitle> */}
+            <DialogContent>
+               <DialogContentText id="alert-dialog-slide-description">{children}</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+               <Button onClick={handleClose}>Cerrar</Button>
+            </DialogActions>
+         </Dialog>
+      </>
+   );
+};
+
+const Charts = ({ titles, dataFilter, headers, dataHidden }) => {
+   const [keys, setKeys] = useState([]);
+   const [counts, setCounts] = useState([]);
+
+   useEffect(() => {}, [keys, counts]);
+   const [chart, setChart] = useState(null);
+   const [name, setName] = useState(null);
+   const handleChangeChart = (event) => {
+      setChart(event.target.value);
+   };
+   const countOccurrences = (array) => {
+      const occurrences = {};
+
+      // Contar las ocurrencias de cada valor en el array
+      array.forEach((value) => {
+         occurrences[value] = (occurrences[value] || 0) + 1;
+      });
+
+      // Convertir el objeto de ocurrencias en dos arrays separados
+      const values = Object.keys(occurrences);
+      const counts = values.map((value) => occurrences[value]);
+
+      return { values, counts };
+   };
+
+   const handleChangeName = (event) => {
+      setName(event.target.value);
+      const index = titles.indexOf(event.target.value);
+
+      // Filtra los datos primero
+      const filteredData = filterData(dataFilter, dataHidden);
+
+      // Extrae los valores correspondientes del array de objetos filtrados
+      const values = filteredData.map((item) => {
+         // Obtiene las claves del objeto como un array
+         const keys = Object.keys(item);
+
+         // Usa el índice para seleccionar la clave correcta y extraer el valor correspondiente
+         return item[keys[index]];
+      });
+
+      // Contar las ocurrencias de cada valor y separar en dos arrays
+      const { values: uniqueValues, counts } = countOccurrences(values);
+
+      // Ahora uniqueValues contiene los valores únicos y counts contiene las ocurrencias de cada valor
+
+      // Hacer lo que necesites con uniqueValues y counts
+      // Por ejemplo, puedes asignarlos a variables separadas o usarlos directamente
+      setKeys(uniqueValues);
+      setCounts(counts);
+
+      // setData(values);
+   };
+
+   const filterData = (dataFilter, dataHidden) => {
+      return dataFilter.map((item) => {
+         const newItem = { ...item };
+         dataHidden.forEach((key) => {
+            delete newItem[key];
+         });
+         return newItem;
+      });
+   };
+
+   return (
+      <Grid container spacing={1} sx={{ marginTop: "2rem" }}>
+         <Grid
+            item
+            xs={12}
+            lg={5}
+            sx={{
+               marginBottom:"2rem",
+               marginLeft: "2rem",
+               marginRight: "2rem",
+               overflow: "hidden", // Cambiar overflow a "hidden" para evitar que la tabla se desborde
+               border: "2px solid #007bff",
+               borderRadius: "10px",
+               padding: "1rem",
+               paddingRight: "2rem",
+               boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)"
+            }}
+         >
+            <Box sx={{ minWidth: 120, marginLeft: "auto" }}>
+               <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Selecciona la grafica</InputLabel>
+                  <Select
+                     labelId="demo-simple-select-label"
+                     id="demo-simple-select"
+                     // value={textModal}
+                     // onChange={handleTextModal}
+                     onChange={handleChangeChart}
+                     label="Selecciona la grafica"
+                  >
+                     <MenuItem key={"column"} selected value={"column"}>
+                        {"columna"}
+                     </MenuItem>
+                     <MenuItem key={"bar"} selected value={"bar"}>
+                        {"barra"}
+                     </MenuItem>
+                     <MenuItem key={"pie"} selected value={"pie"}>
+                        {"pastel"}
+                     </MenuItem>
+                     <MenuItem key={"area"} selected value={"area"}>
+                        {"area"}
+                     </MenuItem>
+                     <MenuItem key={"line"} selected value={"line"}>
+                        {"linea"}
+                     </MenuItem>
+                  </Select>
+               </FormControl>
+            </Box>
+            <Box sx={{ minWidth: 120, marginLeft: "auto", marginTop: "1rem" }}>
+               <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">¿Qué quieres graficar?</InputLabel>
+                  <Select
+                     labelId="demo-simple-select-label"
+                     id="demo-simple-select"
+                     // value={textModal}
+                     onChange={handleChangeName}
+                     label="¿Qué quieres graficar?"
+                  >
+                     {titles.map((item) => (
+                        <MenuItem key={item} value={item}>
+                           {item}
+                        </MenuItem>
+                     ))}
+                  </Select>
+               </FormControl>
+            </Box>
+         </Grid>
+         <Grid
+            item
+            xs={12}
+            lg={6}
+            sx={{
+               marginBottom:"2rem",
+
+               overflow: "hidden", // Cambiar overflow a "hidden" para evitar que la tabla se desborde
+               border: "2px solid #007bff",
+               borderRadius: "10px",
+               padding: "1rem",
+               paddingRight: "2rem",
+               boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)"
+            }}
+         >
+            <Ngif condition={chart != null && name != null}>
+               <Chart chart={chart} name={name} titles={keys} values={counts} card={true} width={12} />
+            </Ngif>
+         </Grid>
+      </Grid>
+   );
+};
+const Component = ({ option, titles, dataFilter, headers, dataHidden }) => {
+   switch (option) {
+      case "grafica":
+         return <Charts titles={titles} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} />;
+         break;
+   }
+};
 export default DataTable;

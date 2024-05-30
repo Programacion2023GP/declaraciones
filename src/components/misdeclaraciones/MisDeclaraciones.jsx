@@ -23,9 +23,12 @@ export const MisDeclaraciones = ({}) => {
                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)"
             }}
          >
+
+
             <Card sx={{ maxWidth: "100%", margin: "auto" }}>
                <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
                   <DataTable
+                     // options
                      filterGlobal={true}
                      filter={true}
                      headers={["Folio", "Nombre", "Apellido Paterno", "Apellido Materno", "Tipo Declaración", "Status", "Fecha", "Tipo de declaración"]}
@@ -33,6 +36,7 @@ export const MisDeclaraciones = ({}) => {
                      pagination={[5, 10, 25]}
                      editButton={true}
                      conditionExistEditButton={["Status !='Terminada'"]}
+
                   />
                </Box>
             </Card>

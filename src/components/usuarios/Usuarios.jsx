@@ -15,17 +15,17 @@ const Usuarios = ({ formik, setId, peticiones }) => {
    const title = "Registro de usuarios";
    const urlData = "usuarios";
    const validator = {
-      Name: Yup.string("El formato es texto").required("El nombre es requerido"),
-      Email: Yup.string("El formato es texto").required("El correo es requerido"),
-      Nomina: Yup.number("el formato es numerico").min(100000, "El numero de nomina requiere 6 numeros").required("El numero de nomina es requerido"),
-      PaternalSurname: Yup.string("El formato es texto").required("El apellido paterno es requerido"),
-      MaternalSurname: Yup.string("El formato es texto").required("El apellido materno es requerido"),
-      DenominacionCargo: Yup.string("El formato es texto").required("La Denominación del cargo es requerida"),
-      DenominacionPuesto: Yup.string("el formato es texto").required("La Denominación del puesto es requerida"),
-      Id_TipoIntegrante: Yup.number("el valor es numerico").min(1, "El tipo de integrante es requerido").required("El tipo de integrante es requerido"),
-      ClaseNivelPuesto: Yup.string("el formato es texto").required("El Clase o nivel del puesto es requerido"),
-      Id_Role: Yup.number("el formato es numerico").min(1, "El tipo de rol es requerido").required("El tipo de rol es requerido"),
-      AreaAdscripcion: Yup.number("el formato es numerico").min(1, "El tipo de adscripcion es requerido").required("El tipo de adscripcion es requerido")
+      // Name: Yup.string("El formato es texto").required("El nombre es requerido"),
+      // Email: Yup.string("El formato es texto").required("El correo es requerido"),
+      // Nomina: Yup.number("el formato es numerico").min(100000, "El numero de nomina requiere 6 numeros").required("El numero de nomina es requerido"),
+      // PaternalSurname: Yup.string("El formato es texto").required("El apellido paterno es requerido"),
+      // MaternalSurname: Yup.string("El formato es texto").required("El apellido materno es requerido"),
+      // DenominacionCargo: Yup.string("El formato es texto").required("La Denominación del cargo es requerida"),
+      // DenominacionPuesto: Yup.string("el formato es texto").required("La Denominación del puesto es requerida"),
+      // Id_TipoIntegrante: Yup.number("el valor es numerico").min(1, "El tipo de integrante es requerido").required("El tipo de integrante es requerido"),
+      // ClaseNivelPuesto: Yup.string("el formato es texto").required("El Clase o nivel del puesto es requerido"),
+      // Id_Role: Yup.number("el formato es numerico").min(1, "El tipo de rol es requerido").required("El tipo de rol es requerido"),
+      // AreaAdscripcion: Yup.number("el formato es numerico").min(1, "El tipo de adscripcion es requerido").required("El tipo de adscripcion es requerido")
    };
    const initialState = {
       Nomina: 0,
@@ -63,9 +63,10 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       formik.current.setFieldValue("MaternalSurname", "");
       formik.current.setFieldValue("DenominacionPuesto", "");
    };
+
    const Form = () => {
       useEffect(()=>{
-         console.log("render usuarios")
+         // console.log("render dd")
       },[])
       return (
          <>

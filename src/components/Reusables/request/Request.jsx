@@ -35,7 +35,6 @@ export const Request = ({ peticiones = [] }) => {
    const [roles, setRoles] = useState([]);
    //mis declaraciones
    const [apartados, setApartados] = useState([]);
-
    useEffect(() => {
       const responses = async () => {
          peticiones.includes("inmuebles") && setInmuebles(await GetAxios("tipoinmueble/show"));

@@ -35,14 +35,14 @@ const ComponentDeclaraciones = () => {
    declaracion = parseInt(declaracion);
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(13);
+   const [activeStep, setActiveStep] = React.useState(1);
    const dispatch = useDispatch();
    React.useEffect(() => {
-      dispatch(foundLocalization())
+      dispatch(foundLocalization());
    }, [activeStep]);
    const handleExit = () => {
       dispatch(locationAuth());
-      localStorage.removeItem("id_SituacionPatrimonial")
+      localStorage.removeItem("id_SituacionPatrimonial");
       window.location.hash = "/dashboard/misdeclaraciones";
    };
    const handleNext = () => {
@@ -55,11 +55,60 @@ const ComponentDeclaraciones = () => {
          });
       }, 500);
    };
-
+   const comparationData = (step) => {
+      let url = "";
+      switch (step) {
+         case 0:
+            url = "datosgenerales";
+            break;
+         case 1:
+            url = "domiciliodeclarante";
+            break;
+         case 2:
+            url = "datoscurriculares";
+            break;
+         case 3:
+            url = "datoscargoscomision";
+            break;
+         case 4:
+            url = "experiencialaboral";
+            break;
+         case 5:
+            url = "datospareja";
+            break;
+         case 6:
+            url = "dependienteseconomicos";
+            break;
+         case 7:
+            url = "ingresos";
+            break;
+         case 8:
+            url = "servidorpublico";
+            break;
+         case 9:
+            url = "bienesinmuebles";
+            break;
+         case 10:
+            url = "vehiculos";
+            break;
+         case 11:
+            url = "bienesmuebles";
+            break;
+         case 12:
+            url = "inversionescuentas";
+            break;
+         case 13:
+            url = "adeudospasivos";
+            break;
+         case 14:
+            url = "prestamoscomodatos";
+            break;
+      }
+   };
    // Método para manejar el paso anterior
    const handleBack = () => {
-      console.log(filteredSteps);
-
+      // console.log("actove",activeStep-1);
+      comparationData(activeStep - 1);
       setActiveStep((prevActiveStep) => {
          const previousStepIndex = prevActiveStep - 1;
          // Retroceder solo al paso anterior visible
@@ -70,7 +119,8 @@ const ComponentDeclaraciones = () => {
       {
          label: `Datos generales`,
          component: <DatosGenerales next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
-         exist: [1, 2, 3, 4, 5, 6]
+         exist: [1, 2, 3, 4, 5, 6],
+         
       },
       {
          label: `Domicilio Declarante`,
@@ -105,7 +155,7 @@ const ComponentDeclaraciones = () => {
       {
          label: "Ingresos netos",
          subtitule: "Del declarante, pareja y/o dependientes economicos",
-         component: <IngresosNetos next={declaracion>0 && declaracion<=3?handleNext:handleExit} previous={handleBack} title={Titles(declaracion)} />,
+         component: <IngresosNetos next={declaracion > 0 && declaracion <= 3 ? handleNext : handleExit} previous={handleBack} title={Titles(declaracion)} />,
          exist: [1, 2, 3, 4, 5, 6]
       },
       {
@@ -156,9 +206,7 @@ const ComponentDeclaraciones = () => {
       setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
    }, [declaracion]);
 
-
    // Define aquí la lista de pasos con sus títulos y componentes correspondientes
-
 
    // Función para obtener el título del paso actual
    const getStepTitle = () => {
@@ -228,12 +276,12 @@ const ComponentDeclaraciones = () => {
                   {/* Paso {activeStep + 1} de {steps.length} */}
                </Typography>
                {/* Componente correspondiente al paso actual */}
-               <Box  className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>{filteredSteps[activeStep].component}</Box>
-             
-         {/* <button onClick={handleNext}>Continuar</button>    */}
+               <Box className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>{filteredSteps[activeStep].component}</Box>
+
+               {/* <button onClick={handleNext}>Continuar</button>    */}
             </div>
          </>
       </div>
-);
+   );
 };
 export default ComponentDeclaraciones;

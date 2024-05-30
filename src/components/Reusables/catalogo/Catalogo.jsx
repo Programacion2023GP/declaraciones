@@ -14,7 +14,7 @@ export const Catalogo = forwardRef(
          dataHiddenDatable = [],
          titleForm = "",
          messageButton = "",
-         Form,
+         children,
          initialValuesForm,
          handleEdit,
          validationSchema,
@@ -42,13 +42,19 @@ export const Catalogo = forwardRef(
 
             return response.data;
          } catch (error) {
+            
             setId(0);
-            if (error.message == "Network Error") {
+            if(error.response.data.data.message){
+
+               Error(error.response.data.data.message);
+            }
+            else if (error.message == "Network Error") {
                Error("Comunicate al aerea de sistemas");
             } else if (error.message == "Request failed with status code 400") {
                Error("Ocurrio un error");
             } else {
-               Error(error.response.data.data.message);
+               Error("Ocurrio un error");
+
             }
          }
          // resetForm()
@@ -62,7 +68,10 @@ export const Catalogo = forwardRef(
          setLoadForm(true)
       }, []);
 
-      // useEffect(() => {}, [children, urlData, headersDatable, dataHiddenDatable, titleForm, initialValuesForm, handleEdit]);
+      useEffect(() => {
+console.log(children);
+
+      }, [children]);
 
       const handleDelete = async (row) => {
          try {
@@ -90,7 +99,7 @@ export const Catalogo = forwardRef(
          return cloneElement(children, { action:isPositive });
       };
       return (
-         <Paper key={catalogo} elevation={12} sx={{ padding: "2rem", marginRight: "3rem", marginBottom: "3rem" }}>
+         <Paper  key={catalogo} elevation={12} sx={{ padding: "2rem", marginRight: "3rem", marginBottom: "3rem" }}>
             <Grid container spacing={4}>
                <Grid item xs={12} xl={table ? 6 : 12}>
                   <Box
@@ -112,10 +121,9 @@ export const Catalogo = forwardRef(
                         submit={submit}
                         messageButton={messageButton}
                      >
-                        {/* <Ngif condition={loadForm}> */}
-                        {/* <p>ss</p> */}
-                           <Form />
-                        {/* </Ngif> */}
+                        <Ngif condition={loadForm}>
+                          {children}
+                        </Ngif>
                      </FormikForm>
                   </Box>
                </Grid>
