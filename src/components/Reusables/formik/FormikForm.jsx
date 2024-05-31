@@ -35,7 +35,7 @@ export const FormikForm = forwardRef(
 
                                  <Ngif condition={previousButton && handlePrevious}>
                                   
-                                    <Button sx={{ marginTop: "1rem",marginRight:"1ren" }} type="button" onClick={handlePrevious} variant="contained" color="secondary">
+                                    <Button sx={{ marginTop: "1rem",marginRight:"1ren" }} type="button" onClick={handlePrevious} variant="outlined" color="secondary">
                                     Regresar a la pagina anterior
                                     </Button>
                                  </Ngif>

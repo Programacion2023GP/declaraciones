@@ -65,9 +65,7 @@ export const DatosExtras = ({ estadocivil, regimenes, nacionalidades, paises, va
                { value: 0, label: "No" }
             ]} // Opciones para los radio buttons
          />
-         <button onClick={()=>{
-            console.log(formik.errors);
-         }}>errores</button>
+      
       </Grid>
    );
 };

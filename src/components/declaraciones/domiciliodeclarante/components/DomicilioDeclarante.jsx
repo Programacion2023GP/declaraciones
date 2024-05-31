@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { CustomRadio } from "../../../Reusables/radiobutton/Radio";
 import { Ngif } from "../../../Reusables/conditionals/Ngif";
 import { Text } from "../../../Reusables/input/Input";
@@ -8,9 +8,13 @@ import { Numeric } from "../../../Reusables/numeric/Numeric";
 import { Grid } from "@mui/material";
 // import { useDispatch } from "react-redux";
 // import { configValidationsDependiente } from "../../../../redux/DependientesEconomicos7/DependientesEconomicos";
-export const DomicilioDeclaranteGeneral = memo(({}) => {
-   const [mexico, setMexico] = useState(true);
-   // const dispatch = useDispatch();
+export const DomicilioDeclaranteGeneral = memo(({mex}) => {
+   const [mexico, setMexico] = useState(mex);
+   useEffect(()=>{
+      setMexico(mex ? true : false);
+
+
+   },[mex])
    const handleGetValue = (name, value) => {
       setMexico(value == 1 ? true : false);
       // dispatch(configValidationsDependiente({ tipo: (value = 1 ? "Mexico" : "NoesMexico") }));

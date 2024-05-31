@@ -27,15 +27,20 @@ import { PrestamosComodatos } from "./prestamos/PrestamosComodatos";
 import { useDispatch } from "react-redux";
 import { locationAuth } from "../../user/auth/auth";
 import { foundLocalization } from "../../redux/DatosGeneralesHoja1/DatosGenerales";
+import { GetAxios } from "../../services/services";
+import { isNumber } from "highcharts";
+import { Ngif } from "../Reusables/conditionals/Ngif";
 
 // Importa aquí los componentes correspondientes a cada paso
 
 const ComponentDeclaraciones = () => {
+   const [dataPage,setDataPage] = React.useState([])
    let { declaracion } = useParams();
    declaracion = parseInt(declaracion);
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(1);
+   const [activeStep, setActiveStep] = React.useState(2);
+   const [loading,setLoading] = React.useState(false)
    const dispatch = useDispatch();
    React.useEffect(() => {
       dispatch(foundLocalization());
@@ -55,60 +60,9 @@ const ComponentDeclaraciones = () => {
          });
       }, 500);
    };
-   const comparationData = (step) => {
-      let url = "";
-      switch (step) {
-         case 0:
-            url = "datosgenerales";
-            break;
-         case 1:
-            url = "domiciliodeclarante";
-            break;
-         case 2:
-            url = "datoscurriculares";
-            break;
-         case 3:
-            url = "datoscargoscomision";
-            break;
-         case 4:
-            url = "experiencialaboral";
-            break;
-         case 5:
-            url = "datospareja";
-            break;
-         case 6:
-            url = "dependienteseconomicos";
-            break;
-         case 7:
-            url = "ingresos";
-            break;
-         case 8:
-            url = "servidorpublico";
-            break;
-         case 9:
-            url = "bienesinmuebles";
-            break;
-         case 10:
-            url = "vehiculos";
-            break;
-         case 11:
-            url = "bienesmuebles";
-            break;
-         case 12:
-            url = "inversionescuentas";
-            break;
-         case 13:
-            url = "adeudospasivos";
-            break;
-         case 14:
-            url = "prestamoscomodatos";
-            break;
-      }
-   };
+   // const comparationData = (step) => {};
    // Método para manejar el paso anterior
-   const handleBack = () => {
-      // console.log("actove",activeStep-1);
-      comparationData(activeStep - 1);
+   const handleBack = async () => {
       setActiveStep((prevActiveStep) => {
          const previousStepIndex = prevActiveStep - 1;
          // Retroceder solo al paso anterior visible
@@ -118,81 +72,95 @@ const ComponentDeclaraciones = () => {
    const steps = [
       {
          label: `Datos generales`,
-         component: <DatosGenerales next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         component: <DatosGenerales data={dataPage} next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
          exist: [1, 2, 3, 4, 5, 6],
-         
+         url: "datosgenerales"
       },
       {
          label: `Domicilio Declarante`,
-         component: <DomicilioDeclarante next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
-         exist: [1, 2, 3, 4, 5, 6]
+         component: <DomicilioDeclarante  next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
+         exist: [1, 2, 3, 4, 5, 6],
+         url: "domiciliodeclarante"
       },
       {
          label: `Datos Curriculares del Declarante`,
          component: <DatosCurriculares next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
-         exist: [1, 2, 3, 4, 5, 6]
+         exist: [1, 2, 3, 4, 5, 6],
+         url: "datoscurriculares"
       },
       {
          label: `Datos del empleo, cargo o comisión que inicia`,
          component: <DatosEmpleo next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
-         exist: [1, 2, 3, 4, 5, 6]
+         exist: [1, 2, 3, 4, 5, 6],
+         url: "datoscargoscomision"
       },
       {
          label: `Experiencia laboral (últimos cinco empleos)`,
          component: <ExperienciaLaboral next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
-         exist: [1, 2, 3, 4, 5, 6]
+         exist: [1, 2, 3, 4, 5, 6],
+         url: "experiencialaboral"
       },
       {
          label: "Datos de la pareja",
          component: <DatosParejas next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
-         exist: [1, 2, 3]
+         exist: [1, 2, 3],
+         url: "datospareja"
       },
       {
          label: "Datos del dependiente económicos",
          component: <DependientesEconomicos next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
-         exist: [1, 2, 3]
+         exist: [1, 2, 3],
+         url: "dependienteseconomicos"
       },
       {
          label: "Ingresos netos",
          subtitule: "Del declarante, pareja y/o dependientes economicos",
          component: <IngresosNetos next={declaracion > 0 && declaracion <= 3 ? handleNext : handleExit} previous={handleBack} title={Titles(declaracion)} />,
-         exist: [1, 2, 3, 4, 5, 6]
+         exist: [1, 2, 3, 4, 5, 6],
+         url: "ingresos"
       },
       {
          label: "Servidor Publico",
          component: <ServidorPublico next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
-         exist: [2]
+         exist: [2],
+         url: "servidorpublico"
       },
       {
          label: "Bienes Inmuebles (Situación Actual)",
          component: <BienesInmuebles next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
-         exist: [1, 2, 3]
+         exist: [1, 2, 3],
+         url: "bienesinmuebles"
       },
       {
          label: "Vehículos (Situación actual)",
          component: <TipoVehiculo next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
-         exist: [1, 2, 3]
+         exist: [1, 2, 3],
+         url: "vehiculos"
       },
       {
          label: "Bienes Muebles",
          component: <BienesMuebles next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
-         exist: [1, 2, 3]
+         exist: [1, 2, 3],
+         url: "bienesmuebles"
       },
       {
          label: "Inversiones",
          subtitule: "Cuentas y otro tipo de valores / activos (Situación Actual)",
          component: <InversionesCuentasValores next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
-         exist: [1, 2, 3]
+         exist: [1, 2, 3],
+         url: "inversionescuentas"
       },
       {
          label: "Adeudos / Pasivos (Situación Actual)",
          component: <AdeudosPasivos next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
-         exist: [1, 2, 3]
+         exist: [1, 2, 3],
+         url: "adeudospasivos"
       },
       {
          label: "Préstamo o Comodato por Terceros (Situación actual)",
          component: <PrestamosComodatos next={handleExit} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
-         exist: [1, 2, 3]
+         exist: [1, 2, 3],
+         url: "prestamoscomodatos"
       }
 
       // {
@@ -202,9 +170,24 @@ const ComponentDeclaraciones = () => {
    ];
    const [filteredSteps, setFiltersStepers] = React.useState(steps.filter((step) => step.exist.includes(declaracion)));
    // Método para manejar el siguiente paso
+
    React.useEffect(() => {
+      
+      
+      isNumber(parseInt(localStorage.getItem("id_SituacionPatrimonial"))) && init();
       setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
-   }, [declaracion]);
+   }, [activeStep,declaracion]);
+   
+   React.useEffect(() => {
+      setLoading(true)
+
+   }, [loading,dataPage]);
+   const init = async (page=null) => {
+      const url = filteredSteps[page==null?activeStep:page].url;
+      const response = await GetAxios(`${url}/index/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
+      setDataPage(response[0])
+
+   };
 
    // Define aquí la lista de pasos con sus títulos y componentes correspondientes
 
@@ -216,7 +199,8 @@ const ComponentDeclaraciones = () => {
       return filteredSteps[activeStep].subtitule;
    };
    return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "10px" }}>
+      <Ngif condition={true}>
+         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "10px" }}>
          <>
             {/* Contenido del MobileStepper */}
             <div
@@ -276,12 +260,15 @@ const ComponentDeclaraciones = () => {
                   {/* Paso {activeStep + 1} de {steps.length} */}
                </Typography>
                {/* Componente correspondiente al paso actual */}
-               <Box className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>{filteredSteps[activeStep].component}</Box>
+               <Box className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>{
+               React.cloneElement(filteredSteps[activeStep].component,{data:dataPage})
+               }</Box>
 
                {/* <button onClick={handleNext}>Continuar</button>    */}
             </div>
          </>
       </div>
+      </Ngif>
    );
 };
 export default ComponentDeclaraciones;

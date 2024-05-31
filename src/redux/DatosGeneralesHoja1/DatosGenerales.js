@@ -69,6 +69,7 @@ export const DatosGeneralesHoja1 = createSlice({
                     Object.assign(state.validationSchema,servidorPublico);
                 break;
                 case "RegimenMatrimonial":
+                        console.log("dddddddddddddd");
                     Object.assign(state.validationSchema,RegimenMatrimonial);
 
                 break;
