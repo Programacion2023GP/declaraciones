@@ -34,13 +34,13 @@ import { Ngif } from "../Reusables/conditionals/Ngif";
 // Importa aquí los componentes correspondientes a cada paso
 
 const ComponentDeclaraciones = () => {
-   const [dataPage,setDataPage] = React.useState([])
+   const [dataPage, setDataPage] = React.useState([]);
    let { declaracion } = useParams();
    declaracion = parseInt(declaracion);
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(2);
-   const [loading,setLoading] = React.useState(false)
+   const [activeStep, setActiveStep] = React.useState(6);
+   const [loading, setLoading] = React.useState(false);
    const dispatch = useDispatch();
    React.useEffect(() => {
       dispatch(foundLocalization());
@@ -78,7 +78,7 @@ const ComponentDeclaraciones = () => {
       },
       {
          label: `Domicilio Declarante`,
-         component: <DomicilioDeclarante  next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
+         component: <DomicilioDeclarante next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
          exist: [1, 2, 3, 4, 5, 6],
          url: "domiciliodeclarante"
       },
@@ -172,21 +172,18 @@ const ComponentDeclaraciones = () => {
    // Método para manejar el siguiente paso
 
    React.useEffect(() => {
-      
-      
       isNumber(parseInt(localStorage.getItem("id_SituacionPatrimonial"))) && init();
       setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
-   }, [activeStep,declaracion]);
-   
+   }, [activeStep, declaracion]);
+
    React.useEffect(() => {
-      setLoading(true)
-
-   }, [loading,dataPage]);
-   const init = async (page=null) => {
-      const url = filteredSteps[page==null?activeStep:page].url;
+      setLoading(true);
+   }, [loading, dataPage]);
+   const init = async (page = null) => {
+      const url = filteredSteps[page == null ? activeStep : page].url;
       const response = await GetAxios(`${url}/index/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
-      setDataPage(response[0])
-
+      const datasArrays = ["experiencialaboral"];
+      setDataPage(datasArrays.includes(url) ? response : response[0]);
    };
 
    // Define aquí la lista de pasos con sus títulos y componentes correspondientes
@@ -201,73 +198,73 @@ const ComponentDeclaraciones = () => {
    return (
       <Ngif condition={true}>
          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "10px" }}>
-         <>
-            {/* Contenido del MobileStepper */}
-            <div
-               style={{
-                  width: "90%",
-                  overflowX: "hidden",
-                  border: "2px solid #007bff",
-                  borderRadius: "10px",
-                  padding: "20px 0",
-                  boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-                  marginBottom: "20px"
-               }}
-            >
-               {/* Título del paso con estilos mejorados */}
-               <Typography
-                  className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
-                  variant="h4"
-                  align="center"
-                  gutterBottom
-                  style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}
+            <>
+               {/* Contenido del MobileStepper */}
+               <div
+                  style={{
+                     width: "90%",
+                     overflowX: "hidden",
+                     border: "2px solid #007bff",
+                     borderRadius: "10px",
+                     padding: "20px 0",
+                     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+                     marginBottom: "20px"
+                  }}
                >
-                  {getStepTitle()}
-               </Typography>
-               <br />
-               <Typography
-                  className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
-                  variant="h5"
-                  align="center"
-                  gutterBottom
-                  style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}
-               >
-                  {getStepSubtitule()}
-               </Typography>
+                  {/* Título del paso con estilos mejorados */}
+                  <Typography
+                     className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
+                     variant="h4"
+                     align="center"
+                     gutterBottom
+                     style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}
+                  >
+                     {getStepTitle()}
+                  </Typography>
+                  <br />
+                  <Typography
+                     className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
+                     variant="h5"
+                     align="center"
+                     gutterBottom
+                     style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}
+                  >
+                     {getStepSubtitule()}
+                  </Typography>
 
-               {/* MobileStepper para navegar entre los pasos */}
-               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
-                  {steps.map((step, index) => {
-                     return (
-                        step.exist.includes(declaracion) && (
-                           <div
-                              key={index}
-                              className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
-                              style={{
-                                 width: "10px",
-                                 height: "10px",
-                                 borderRadius: "50%",
-                                 backgroundColor: index === activeStep ? "#007bff" : "#ccc",
-                                 margin: "0 5px",
-                                 cursor: "pointer"
-                              }}
-                           />
-                        )
-                     );
-                  })}
+                  {/* MobileStepper para navegar entre los pasos */}
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
+                     {steps.map((step, index) => {
+                        return (
+                           step.exist.includes(declaracion) && (
+                              <div
+                                 key={index}
+                                 className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
+                                 style={{
+                                    width: "10px",
+                                    height: "10px",
+                                    borderRadius: "50%",
+                                    backgroundColor: index === activeStep ? "#007bff" : "#ccc",
+                                    margin: "0 5px",
+                                    cursor: "pointer"
+                                 }}
+                              />
+                           )
+                        );
+                     })}
+                  </div>
+                  <Typography variant="subtitle1" align="center" gutterBottom style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}>
+                     {/* Paso {activeStep + 1} de {steps.length} */}
+                  </Typography>
+                  {/* Componente correspondiente al paso actual */}
+                  <Box className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>
+                     {React.cloneElement(filteredSteps[activeStep].component, { data: dataPage })}
+                  </Box>
+
+                  {/* <button onClick={handleNext}>Continuar</button>    */}
                </div>
-               <Typography variant="subtitle1" align="center" gutterBottom style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}>
-                  {/* Paso {activeStep + 1} de {steps.length} */}
-               </Typography>
-               {/* Componente correspondiente al paso actual */}
-               <Box className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>{
-               React.cloneElement(filteredSteps[activeStep].component,{data:dataPage})
-               }</Box>
-
-               {/* <button onClick={handleNext}>Continuar</button>    */}
-            </div>
-         </>
-      </div>
+            </>
+         </div>
       </Ngif>
    );
 };

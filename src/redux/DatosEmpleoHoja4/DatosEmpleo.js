@@ -18,7 +18,7 @@ const initialState ={
     CodigoPostal: "",
     NumeroExterior: "",
     NumeroInterior: "",
-    CiudadLocalidad: "",
+    ColoniaLocalidad: "",
     Id_Pais:0,
     Id_MunicipioAlcaldia: 0,
     Id_EntidadFederativa: 0,
@@ -45,7 +45,7 @@ const validationSchema ={
     CodigoPostal: Yup.string()
        .matches(/^\d{5}$/, "El código postal debe tener exactamente 5 caracteres numéricos")
        .required("El código postal es requerido"),
-    CiudadLocalidad: Yup.string().required("La colonia localidad es requerida"),
+    ColoniaLocalidad: Yup.string().required("La colonia localidad es requerida"),
     Id_EntidadFederativa:Yup.number("Debe ser numerico").required("La entidad federativa es obligatoria").min(1, "La entidad federativa es obligatoria"),
     Id_MunicipioAlcaldia: Yup.number("Debe ser numerico").required("El municipio / alcadia es obligatoria").min(1, "El municipio / alcadia es obligatoria"),
     // Id_EntidadFederativa: !mexico

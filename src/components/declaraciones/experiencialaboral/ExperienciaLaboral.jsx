@@ -17,7 +17,7 @@ import { Post } from "../funciones/post";
 
 // import DataTable from "../../Reusables/table/DataTable";
 
-export const ExperienciaLaboral = ({ next, previous, title }) => {
+export const ExperienciaLaboral = ({ data, next, previous, title }) => {
    let { declaracion } = useParams();
    const [save, setSave] = useState(true);
    const [idRow, setIdRow] = useState(null);
@@ -31,6 +31,37 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
    const formikRef = useRef();
    const [continuar, setContinuar] = useState(false);
    const [checked, setChecked] = useState(true);
+   const [update, setUpdate] = useState(false);
+   useEffect(() => {
+      if (typeof data !== "undefined" && Array.isArray(data)) {
+         setDatas([]);
+         setDatasVisuales([]);
+         setUpdate(true);
+         data.forEach((values, index) => {
+            delete values.Id_ExperienciaLaboral;
+            addDataTableModified(values, index);
+         });
+         // modifiedDataEmpleosCargos();
+      }
+   }, [data]);
+
+   const addDataTableModified = (values, index) => {
+      values.identificador = index;
+
+      const newDatas = [...datas, values];
+      setDatas(newDatas);
+      const newData = {
+         id: index,
+         Id_Sector: parseInt(values.Id_AmbitoSector) === 1 ? "PÚBLICO" : "PRIVADO",
+         "Empleo, Ámbito cargo o comisión": values.NombreEntePublico,
+         Lugar: parseInt(values.FueEnMexico) === 1 ? "Mexico" : "Extranjero",
+         "Fecha ingreso": values.FechaIngreso,
+         "Fecha egreso": values.FechaEngreso
+      };
+
+      setDatasVisuales((prevDatasVisuales) => prevDatasVisuales.concat(newData));
+      setIdUnique(index + 1);
+   };
 
    const dispatch = useDispatch();
    const dataForm = {
@@ -50,19 +81,7 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
       SectorEspecificado: "",
       Id_SituacionPatrimonial: parseInt(localStorage.getItem("id_SituacionPatrimonial"))
    };
-   // if (activeAmbitoPublico) {
-   //    dataForm.Puesto = "";
-   //    dataForm.Id_Sector = "";
-   // } else {
-   //    delete dataForm.Rfc;
-   //    delete dataForm.Puesto;
-   //    delete dataForm.Id_Sector;
-   // }
-   // if (activeSector) {
-   //    dataForm.SectorEspecificado = "";
-   // } else {
-   //    delete dataForm.SectorEspecificado;
-   // }
+
    const validationSchema = Yup.object().shape({
       Id_AmbitoSector: Yup.number().typeError("Debe ser numérico").required("Es requerido que seleccione una opción"),
       Id_AmbitoPublico: !activeAmbitoPublico ? Yup.number().min(1, "El ámbito público es requerido").required("El ámbito público es requerido") : null,
@@ -142,18 +161,20 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
 
    const sendData = async () => {
       if (datas.length > 0) {
+         const url = `experiencialaboral/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
          const newDatas = [...datas];
+
          const sendApi = async () => {
             for (let i = 0; i < newDatas.length; i++) {
                dispatch(addExperienciaLaboral(newDatas[i]));
                // delete newDatas[i].identificador;
             }
-            await Post("experiencialaboral/create", newDatas,next);
+            await Post(url, newDatas, next);
          };
          await sendApi();
 
-         setDatas([]);
-         setDatasVisuales([]);
+         // setDatas([]);
+         // setDatasVisuales([]);
          // next();
       } else if (datas.length == 0) {
          try {
@@ -179,9 +200,10 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
       // formikRef.current.setFieldValue("Id_AmbitoPublico", finData[0].Id_AmbitoPublico);
    };
    const Delete = (row) => {
-
       const newDatasVisuales = datasVisuales.filter((elemento) => elemento.id !== row.id);
+
       setDatas(datas.filter((elemento) => elemento.identificador !== row.id));
+
       setDatasVisuales(newDatasVisuales);
       Success("se elimino de la tabla");
    };
@@ -341,7 +363,7 @@ export const ExperienciaLaboral = ({ next, previous, title }) => {
                </Ngif>
                <Ngif condition={!checked}>
                   <Button onClick={sendData} type="submit" variant="contained" color="primary">
-                     {datasVisuales.length > 0 ? "Registrar y Continuar" : "Continuar"}
+                     {datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
                   </Button>
                </Ngif>
             </CardContent>

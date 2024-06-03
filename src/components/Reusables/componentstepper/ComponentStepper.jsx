@@ -107,7 +107,7 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
 
    return (
       <Box sx={{ minWidth: "100%" }}>
-         <Stepper activeStep={activeStep}>
+         <Stepper activeStep={activeStep} sx={{overflow:"auto"}}>
             {steps.map((step, index) => {
                const labelProps = {};
                if (errorStepper.includes(index)) {

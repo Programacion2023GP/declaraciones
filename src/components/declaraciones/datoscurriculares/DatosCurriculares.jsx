@@ -31,9 +31,7 @@ export const DatosCurriculares = ({ data, next, previous, title }) => {
       }
    }, [data]);
    const modifiedDatosCurriculares = () => {
-      console.log('====================================');
-      console.log(data);
-      console.log('====================================');
+
       setID(parseInt(data.Id_DatosCurriculares));
       insertFormik(formik, data);
    };

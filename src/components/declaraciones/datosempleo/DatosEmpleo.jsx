@@ -11,19 +11,28 @@ import { NivelGobierno } from "./components/NiveldelGobierno";
 import { InformacionEmpleo } from "./components/InformacionEmpleo";
 import { DomicilioDeclarante } from "./components/DomicilioDeclarante";
 import { configValidationsEmpleo } from "../../../redux/DatosEmpleoHoja4/DatosEmpleo";
+import { insertFormik } from "../../FuncionesFormik";
+import { isNumber } from "highcharts";
 
-export const DatosEmpleo = ({ next, previous, title }) => {
+export const DatosEmpleo = ({ data, next, previous, title }) => {
    let { declaracion } = useParams();
-   const dispatch = useDispatch()
+   const [id, setID] = useState(0);
+
+   const dispatch = useDispatch();
+   const formik = useRef();
    const dataForm = useSelector((state) => state.DatosEmpleo.initialState);
    const validations = useSelector((state) => state.DatosEmpleo.validationSchema);
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
-   const [active,setActive] =useState(false)
-   const { nivelOrdenGobierno, ambitoPublico,nombreEntePublico } = Request({peticiones:["nivelOrdenGobierno","ambitoPublico","nombreEntePublico"]});
+   const [active, setActive] = useState(false);
+   const { nivelOrdenGobierno, ambitoPublico, nombreEntePublico } = Request({ peticiones: ["nivelOrdenGobierno", "ambitoPublico", "nombreEntePublico"] });
+   const [mexico,setMexico] = useState(true)
+   const [idEntidad,setIdEntidad] = useState(0)
+   const [activeState,setActiveState] = useState(true)
    useEffect(() => {
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.DatosEmpleo.initialState), useSelector((state) => state.DatosEmpleo.validationSchema)]);
    const submit = async (values) => {
+      const url = `datoscargoscomision/${id > 0 ? `update/${id}` : "create"}`;
       let data = { ...values };
       data.EsEnMexico = parseInt(data.EsEnMexico);
       if (data.NivelEmpleoCargoComision == 4) {
@@ -32,21 +41,41 @@ export const DatosEmpleo = ({ next, previous, title }) => {
       } else {
          delete data.NivelEmpleoCargoComisionText;
       }
-      Post("datoscargoscomision/create", data, next);
+      Post(url, data, next);
+   };
+   useEffect(() => {
+      if (data?.constructor === Object && Object.keys(data).length > 0) {
+         modifiedDataEmpleosCargos();
+      }
+   }, [data]);
+   const modifiedDataEmpleosCargos = () => {
+      setID(parseInt(data.Id_DatosEmpleoCargoComision));
+      setMexico(data.EsEnMexico==0?false:true)
+      setActiveState(isNumber(parseInt(data.Id_MunicipioAlcaldia)) && false)
+      setIdEntidad(isNumber(parseInt(data.Id_EntidadFederativa)) ?parseInt(data.Id_EntidadFederativa):0 )
+      insertFormik(formik, data);
    };
 
-
-
-
    const steps = [
-      { label: "Nivel orden del gobierno",
-       component: <NivelGobierno active={active} handleActive={setActive} ambitoPublico={ambitoPublico} nivelOrdenGobierno={nivelOrdenGobierno} nombreEntePublico={nombreEntePublico} /> },
+      {
+         label: "Nivel orden del gobierno",
+         component: (
+            <NivelGobierno
+               active={active}
+               handleActive={setActive}
+               ambitoPublico={ambitoPublico}
+               nivelOrdenGobierno={nivelOrdenGobierno}
+               nombreEntePublico={nombreEntePublico}
+            />
+         )
+      },
       { label: "Datos empleo", component: <InformacionEmpleo /> },
-      { label: "Domicilio", component: <DomicilioDeclarante /> }
+      { label: "Domicilio", component: <DomicilioDeclarante  mex={mexico} activeState={activeState} idEntidad={idEntidad} /> }
    ];
    return (
       <>
          <FormikForm
+            ref={formik}
             handlePrevious={previous}
             previousButton={true}
             initialValues={dataForm}
@@ -56,7 +85,7 @@ export const DatosEmpleo = ({ next, previous, title }) => {
             submit={submit}
             message={"Los datos que no serán públicos estarán resaltados de color"}
          >
-            <ComponentStepper  steps={steps} endButton={"Registrar y continuar"} buttonAfter={"Regresar"} buttonContinue={"Continuar"} />
+            <ComponentStepper steps={steps} endButton={"Registrar y continuar"} buttonAfter={"Regresar"} buttonContinue={"Continuar"} />
          </FormikForm>
       </>
    );

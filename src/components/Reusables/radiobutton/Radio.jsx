@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Grid, RadioGroup, FormControlLabel, Radio, Typography } from "@mui/material";
+import { Grid, RadioGroup, FormControlLabel, Radio, Typography, Box } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Field, useFormikContext } from "formik"; // Importar Field y useFormikContext de Formik
 import { Ngif } from "../conditionals/Ngif";
@@ -16,25 +16,19 @@ export const CustomRadio = ({
    rowLayout = true // Cambiar a false para poner en columnas
 }) => {
    const { values, errors, touched, handleChange, handleBlur } = useFormikContext(); // Obtener valores, errores y funciones de Formik
-   const [loading,setLoading]= useState(false)
+   const [loading, setLoading] = useState(false);
    useEffect(() => {
       if (Array.isArray(options) && options.length > 0) {
-
-         setLoading(false)
-
+         setLoading(false);
       }
-      if (Array.isArray(options) && options.length ==0) {
-         setLoading(true)
-
+      if (Array.isArray(options) && options.length == 0) {
+         setLoading(true);
       }
       if (!Array.isArray(options)) {
-         setLoading(true)
+         setLoading(true);
          options = [];
-
       }
-
-
-   }, [title, name, values[name],options]);
+   }, [title, name, values[name], options]);
 
    const isError = touched[name] && errors[name];
    const handleValue = (name, value) => {
@@ -57,36 +51,47 @@ export const CustomRadio = ({
             value={values[name]} // Usar el valor del formulario
             onChange={handleChange} // Usar la función de cambio de Formik
             onBlur={handleBlur} // Usar la función de desenfoque de Formik
-            sx={{ flexDirection: rowLayout ? "row" : "column" }} // Ajustar la dirección del grupo de radio
+            sx={{  maxWidth: "100%", flexDirection: rowLayout ? "row" : "column", flexWrap: "wrap", textWrap: "wrap", }} // Ajustar la dirección del grupo de radio
          >
-            <Ngif condition={options.length>0}>
-             
-            {options.map((option, index) => (
-               <FormControlLabel
-                  key={index}
-                  value={option.value}
-                  onClick={() => {
-                     //  console.log("hola", handleGetValue);
-                     handleValue(name, option.value);
-                  }}
-                  control={<Radio />}
-                  label={option.label}
-                  disabled={loading}
+            <Ngif condition={options.length > 0}>
+            <Box
                   sx={{
-                     marginBottom: rowLayout ? 0 : "8px", // Espacio entre los radio buttons si están en columnas
-                     "& .MuiRadio-root": {
-                        color: "#1976d2"
-                     },
-                     "& .MuiFormControlLabel-label": {
-                        color: "#1976d2",
-                        fontSize: "14px"
-                     },
-                     "& .Mui-checked": {
-                        color: "#1976d2"
-                     }
+                     display: 'flex',
+                     flexWrap: 'wrap',
+                     gap: '8px',
+                     width: '100%',
                   }}
-               />
-            ))}
+               >
+               {options.map((option, index) => (
+                  <FormControlLabel
+                     key={index}
+                     value={option.value}
+                     onClick={() => {
+                        //  console.log("hola", handleGetValue);
+                        handleValue(name, option.value);
+                     }}
+                     control={<Radio sx={{ flexWrap: "wrap", textWrap: "wrap" }} />}
+                     label={option.label}
+                     disabled={loading}
+                     sx={{
+                        flexWrap: "wrap",
+                        textWrap: "wrap",
+                        maxWidth: "100%",
+                        marginBottom: rowLayout ? 0 : "8px", // Espacio entre los radio buttons si están en columnas
+                        "& .MuiRadio-root": {
+                           color: "#1976d2"
+                        },
+                        "& .MuiFormControlLabel-label": {
+                           color: "#1976d2",
+                           fontSize: "14px"
+                        },
+                        "& .Mui-checked": {
+                           color: "#1976d2"
+                        }
+                     }}
+                  />
+               ))}
+               </Box>
             </Ngif>
          </RadioGroup>
          {isError && (

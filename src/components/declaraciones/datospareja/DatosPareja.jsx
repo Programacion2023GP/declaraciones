@@ -13,17 +13,44 @@ import { CustomRadio } from "../../Reusables/radiobutton/Radio";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Success } from "../../../toasts/toast";
 import { Post } from "../funciones/post";
+import { insertFormik } from "../../FuncionesFormik";
 
-export const DatosParejas = ({ next, previous, title, debugerClear }) => {
+export const DatosParejas = ({ data, next, previous, title }) => {
    const dataForm = useSelector((state) => state.DatosPareja.initialState);
    const validations = useSelector((state) => state.DatosPareja.validationSchema);
    const formik = useRef(null);
    const dispatch = useDispatch();
+   const [id, setID] = useState(0);
+
+   useEffect(() => {
+      // console.log(data);
+      if (data?.constructor === Object && Object.keys(data).length > 0) {
+         modifiedDataParejas();
+      }
+   }, [data]);
+   const modifiedDataParejas = () => {
+      handleGetValue("Id_ActividadLaboral", parseInt(data.Id_ActividadLaboral));
+      handleGetValue("HabitaDomicilioDeclarante", parseInt(data.HabitaDomicilioDeclarante));
+      handleGetValue("Id_EntidadFederativa", parseInt(data.Id_EntidadFederativa));
+      handleGetValue("EsMexico", parseInt(data.EsMexico));
+      setID(data.Id_DatosPareja);
+      // setID(parseInt(data.Id_DatosEmpleoCargoComision));
+      // setMexico(data.EsEnMexico == 0 ? false : true);
+      // setActiveState(isNumber(parseInt(data.Id_MunicipioAlcaldia)) && false);
+      // setIdEntidad(isNumber(parseInt(data.Id_EntidadFederativa)) ? parseInt(data.Id_EntidadFederativa) : 0);
+      insertFormik(formik, data);
+      formik.current.setFieldValue("Pareja", 1);
+   };
    const submit = async (values, { resetForm }) => {
+      console.log("====================================");
+      console.log("adentro");
+      console.log("====================================");
+      const url = `datospareja/${id > 0 ? `update/${id}` : "create"}`;
+
       dispatch(addDatosPareja(values));
       if (pareja) {
          try {
-            const response = await Post("/datospareja/create", values,next);
+            const response = await Post(url, values, next);
             // Success(response.data.message);
             // next();
 
@@ -39,7 +66,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
          try {
             const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${6}`);
             Success(response.data.data.message);
-            next()
+            next();
             return response.data;
          } catch (error) {
             Error(error.response.data.data.message);
@@ -62,6 +89,9 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
    const [ambitosPublicos, setAmbitosPublicos] = useState([]);
    const [nivelGobierno, setNivelGobiernos] = useState([]);
    const [pareja, setPareja] = useState(true);
+   useEffect(()=>{
+      
+   },[])
    useEffect(() => {
       const init = async () => {
          setRelacionDeclarante(await GetAxios("relacioncondeclarante/show"));
@@ -87,16 +117,16 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
       if (name == "HabitaDomicilioDeclarante" && value == 0) {
          setDomicilioPareja(true);
          dispatch(configValidations({ tipo: "DomicilioDeclarante" }));
-         dispatch(configValidations("DomicilioDeclarante"));
-      } else if (name == "HabitaDomicilioDeclarante") {
+      } else if (name == "HabitaDomicilioDeclarante" && value ==1) {
+
          dispatch(configValidations({ tipo: "DomicilioDeclaranteNULL" }));
 
          setDomicilioPareja(false);
       }
-      if (name == "EsCiudadanoExtranjero" && value ==1) {
+      if (name == "EsMexico" && value == 1) {
          setMexico(true);
          dispatch(configValidations({ tipo: "Mexico" }));
-      } else if (name == "EsCiudadanoExtranjero" && value == 0) {
+      } else if (name == "EsMexico" && value == 0) {
          dispatch(configValidations({ tipo: "NoesMexico" }));
          setMexico(false);
       }
@@ -136,7 +166,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                </Typography>
                <Typography variant="h6" align="start" color="textPrimary" style={{ fontWeight: "500" }}>
                   Los datos que no serán públicos estarán resaltados de color
-                  <span style={{ color: "green" }}>verde</span>
+                  <span style={{ color: "green", marginLeft: ".5rem" }}>verde</span>
                </Typography>
                <br />
                <Typography variant="body2" color="text.secondary">
@@ -237,11 +267,11 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                                  <CustomRadio
                                     hidden={false}
                                     col={12}
-                                    name="EsCiudadanoExtranjero" // Nombre del campo en el formulario
+                                    name="EsMexico" // Nombre del campo en el formulario
                                     title="¿Es de México?"
                                     options={[
-                                       { value: 0, label: "Si" },
-                                       { value: 1, label: "No" }
+                                       { value: 1, label: "Si" },
+                                       { value: 0, label: "No" }
                                     ]} // Opciones para los radio buttons
                                     handleGetValue={handleGetValue}
                                  />
@@ -257,7 +287,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                                  <Text col={12} name="NumeroInterior" label="Número Interior" type={"number"} color={"green"} />
                                  <Text col={12} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} />
                                  <AutoComplete
-                                    hidden={mexico}
+                                    hidden={!mexico}
                                     col={12}
                                     label="Entidad Federativa"
                                     name="Id_EntidadFederativa"
@@ -266,7 +296,7 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                                     handleGetValue={handleGetValue}
                                  />
                                  <AutoComplete
-                                    hidden={mexico}
+                                    hidden={!mexico}
                                     disabled={activeMunicipios}
                                     loading={loadingMuncipios}
                                     col={12}
@@ -277,8 +307,8 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
                                     color="green"
                                     // getValue={getValue}
                                  />
-                                 <AutoComplete hidden={!mexico} col={12} label="Pais de nacimiento" name="Id_Pais" options={paises} color="green" />
-                                 <Text textStyleCase={true} hidden={!mexico} col={12} name="EstadoProvincia" label="Estado / Provincia" color={"green"} />
+                                 <AutoComplete hidden={mexico} col={12} label="Pais de nacimiento" name="Id_Pais" options={paises} color="green" />
+                                 <Text textStyleCase={true} hidden={mexico} col={12} name="EstadoProvincia" label="Estado / Provincia" color={"green"} />
 
                                  <Text textStyleCase={true} col={12} name="ColoniaLocalidad" label="Colonia / Localidad" color={"green"} />
                               </Ngif>
@@ -364,9 +394,10 @@ export const DatosParejas = ({ next, previous, title, debugerClear }) => {
 
                               <Text col={12} name="Aclaraciones" label="Aclaraciones/Observaciones" rows={10} color={"green"} />
                            </Ngif>
-                           <Button sx={{marginTop:"2rem"}} type="submit" variant="contained" color="primary">
+                           <Button sx={{ marginTop: "2rem" }} type="submit" variant="contained" color="primary">
                               Registrar y Continuar
                            </Button>
+                        
                         </Grid>
                      );
                   }}
