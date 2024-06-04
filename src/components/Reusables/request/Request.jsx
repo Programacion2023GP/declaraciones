@@ -73,7 +73,7 @@ export const Request = ({ peticiones = [] }) => {
       if (!cached) {
          responses();
       }
-   }, []);
+   }, [cached]);
    return {
       inmuebles,
       titular,

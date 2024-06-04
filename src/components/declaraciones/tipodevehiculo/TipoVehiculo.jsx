@@ -16,7 +16,7 @@ import { Post } from "../funciones/post";
 import { addVehiculo } from "../../../redux/VehiculosHoja11/VehiculosHoja11";
 import { Axios } from "../../../services/services";
 
-export const TipoVehiculo = ({ next, previous, title, setSend }) => {
+export const TipoVehiculo = ({ data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.Vehiculos.initialState);
    const validations = useSelector((state) => state.Vehiculos.validationSchema);
    const [datas, setDatas] = useState([]);
@@ -29,10 +29,13 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
    const formik = useRef(null);
    let { declaracion } = useParams();
    declaracion = parseInt(declaracion);
-   const { vehiculos, titularVehiculos, adquisicion, pago, monedas, motivobaja, relacion } = Request({peticiones:["vehiculos","titularVehiculos","adquisicion","pago","monedas","motivobaja","relacion"]});
+   const { vehiculos, titularVehiculos, adquisicion, pago, monedas, motivobaja, relacion } = Request({
+      peticiones: ["vehiculos", "titularVehiculos", "adquisicion", "pago", "monedas", "motivobaja", "relacion"]
+   });
    const [postStepper, setPostStepper] = useState(false);
    const [otroMotivoBaja, SetMotivoBaja] = useState(true);
    const [checked, setChecked] = useState(true);
+   const [update, setUpdate] = useState(false);
 
    const message = ` Todos los datos de Vehículos declarados a nombre de la pareja, dependientes económicos y/o terceros o que sean en copropiedad con el declarante no serán públicos. `;
    const submit = async (values) => {
@@ -54,6 +57,35 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
    useEffect(() => {
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.Vehiculos.validationSchema), useSelector((state) => state.Vehiculos.initialState), useSelector((state) => state.Vehiculos.datas)]);
+   useEffect(() => {
+      if (vehiculos.length > 0 && adquisicion.length > 0 && pago.length > 0) {
+         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+            setDatas([]);
+            setDataTable([]);
+            setUpdate(true);
+            data.forEach((values, index) => {
+               delete values.Id_Vehiculos;
+               addDataTableModified(values, index);
+            });
+            // modifiedDataEmpleosCargos();
+         }
+      }
+   }, [data, vehiculos, adquisicion, pago]);
+   const addDataTableModified = (values, index) => {
+      values.id = index;
+      const newDatas = [...datas, values];
+
+      setDatas(newDatas);
+      const newData = {
+         identificador: values.identificador,
+         "Tipo de Vehículo": values.Id_TipoVehiculo != 4 ? vehiculos.filter((item) => item.id === parseInt(values.Id_TipoVehiculo))[0]?.text : values.EspecifiqueVehiculo,
+         "Forma de Adquisición": adquisicion.filter((item) => item.id === parseInt(values.Id_FormaAdquisicion))[0]?.text,
+         "Forma de Pago": pago.filter((item) => item.id === parseInt(values.Id_FormaPago))[0]?.text
+      };
+
+      setDataTable((prevDatasTable) => prevDatasTable.concat(newData));
+      setIdunique(index + 1);
+   };
    const generateYearOptions = () => {
       const currentYear = new Date().getFullYear();
       const years = [];
@@ -77,19 +109,19 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
       setChecked(event.target.checked);
    };
    const sendData = async () => {
-      if(datas.length>0){
+      if (datas.length > 0) {
          const newDatas = [...datas];
+         const url = `vehiculos/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
+
          const sendApi = async () => {
             for (let i = 0; i < newDatas.length; i++) {
-               console.log("durante");
                dispatch(addVehiculo(newDatas[i]));
                // delete newDatas[i].identificador;
             }
-            await Post("vehiculos/create", newDatas,next);
+            await Post(url, newDatas, next);
          };
          await sendApi();
-      }
-      else{
+      } else {
          try {
             const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${11}`);
             Success(response.data.data.message);
@@ -173,8 +205,8 @@ export const TipoVehiculo = ({ next, previous, title, setSend }) => {
             </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>
-            <Button sx={{marginLeft:"2rem"}} onClick={sendData} type="submit" variant="contained" color="primary">
-               {dataTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
+            <Button sx={{ marginLeft: "2rem" }} onClick={sendData} type="submit" variant="contained" color="primary">
+               {datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>

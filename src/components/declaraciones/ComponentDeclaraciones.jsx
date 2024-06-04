@@ -18,7 +18,7 @@ import { IngresosNetos } from "./ingresosnetos/IngresosNetos";
 import { ServidorPublico } from "./servidorpublico/ServidorPublico";
 // import { Pruebas } from "./pruebas/Pruebas";
 import { BienesInmuebles } from "./bienesinmuebles/BienesInmuebles";
-import { Box } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { TipoVehiculo } from "./tipodevehiculo/TipoVehiculo";
 import { BienesMuebles } from "./bienesmuebles/BienesMuebles";
 import { InversionesCuentasValores } from "./inversionescuentasvalores/InversionesCuentasValores";
@@ -35,11 +35,13 @@ import { Ngif } from "../Reusables/conditionals/Ngif";
 
 const ComponentDeclaraciones = () => {
    const [dataPage, setDataPage] = React.useState([]);
-   let { declaracion } = useParams();
+   let { declaracion,hoja } = useParams();
    declaracion = parseInt(declaracion);
+   hoja = parseInt(hoja);
+
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(6);
+   const [activeStep, setActiveStep] = React.useState(isNumber(hoja)?hoja-1:10);
    const [loading, setLoading] = React.useState(false);
    const dispatch = useDispatch();
    React.useEffect(() => {
@@ -169,6 +171,7 @@ const ComponentDeclaraciones = () => {
       // }
    ];
    const [filteredSteps, setFiltersStepers] = React.useState(steps.filter((step) => step.exist.includes(declaracion)));
+   
    // Método para manejar el siguiente paso
 
    React.useEffect(() => {
@@ -181,8 +184,9 @@ const ComponentDeclaraciones = () => {
    }, [loading, dataPage]);
    const init = async (page = null) => {
       const url = filteredSteps[page == null ? activeStep : page].url;
+
       const response = await GetAxios(`${url}/index/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
-      const datasArrays = ["experiencialaboral"];
+      const datasArrays = ["experiencialaboral", "dependienteseconomicos", "bienesinmuebles","vehiculos"];
       setDataPage(datasArrays.includes(url) ? response : response[0]);
    };
 
@@ -257,9 +261,9 @@ const ComponentDeclaraciones = () => {
                      {/* Paso {activeStep + 1} de {steps.length} */}
                   </Typography>
                   {/* Componente correspondiente al paso actual */}
-                  <Box className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>
+                  <Grid className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>
                      {React.cloneElement(filteredSteps[activeStep].component, { data: dataPage })}
-                  </Box>
+                  </Grid>
 
                   {/* <button onClick={handleNext}>Continuar</button>    */}
                </div>

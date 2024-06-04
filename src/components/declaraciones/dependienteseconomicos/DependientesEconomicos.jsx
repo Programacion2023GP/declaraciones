@@ -16,7 +16,7 @@ import { Success } from "../../../toasts/toast";
 import { Post } from "../funciones/post";
 import { FormikForm } from "../../Reusables/formik/FormikForm";
 
-export const DependientesEconomicos = ({ next, previous, title }) => {
+export const DependientesEconomicos = ({ data, next, previous, title }) => {
    let { declaracion } = useParams();
    const [save, setSave] = useState(true);
    const [idRow, setIdRow] = useState(null);
@@ -32,6 +32,7 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
    const [checked, setChecked] = useState(true);
    const [reinilaize, setRenalize] = useState(1);
    const datasRedux = useSelector((state) => state.DependientesEconomicos.datas);
+   const [update, setUpdate] = useState(false);
 
    const submit = async (values, { resetForm }) => {
       values.id = idUnique;
@@ -41,22 +42,51 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
       Success("se agrego a la tabla");
    };
    const formik = useRef();
+   useEffect(() => {
+      if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+         setDatas([]);
+         setDatasTable([]);
+         setUpdate(true);
+         data.forEach((values, index) => {
+            delete values.Id_DatosDependienteEconomico;
+            addDataTableModified(values, index);
+         });
+         // modifiedDataEmpleosCargos();
+      }
+   }, [data]);
+   const addDataTableModified = (values, index) => {
+      values.id = index;
+      const newDatas = [...datas, values];
 
+      setDatas(newDatas);
+      const parentesco = parentescos.find((item) => item.id === parseInt(values.Id_ParentescoRelacion))?.text;
+      const newData = {
+         id: index,
+         Parentesco: parentesco,
+         RFC: values.RfcDependiente,
+         Empleo: values.EmpleoCargoComision
+      };
+
+      setDatasTable((prevDatasTable) => prevDatasTable.concat(newData));
+      setIdUnique(index + 1);
+   };
    const sendDatass = async () => {
       const newDatas = [...datas];
-      if (datasTable.length > 0) {
+      const url = `dependienteseconomicos/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
+      // console.log(newDatas,url);
+      if (newDatas.length > 0) {
          try {
             const sendApi = async () => {
                for (let i = 0; i < newDatas.length; i++) {
                   dispatch(addDatosDependiente(newDatas[i]));
                   // delete newDatas[i].identificador;
                }
-               await Post("dependienteseconomicos/create", newDatas, next);
+               await Post(url, newDatas);
             };
             await sendApi();
 
-            dispatch(clearData());
-            setDatasTable([]);
+            // dispatch(clearData());
+            // setDatasTable([]);
             // next();
          } catch (error) {
             if (error.response?.data?.message) {
@@ -102,7 +132,7 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
          setDomicilioDeclarante(true);
          dispatch(configValidationsDependiente({ tipo: "DomicilioDeclarante" }));
          // dispatch(configValidationsDependiente("DomicilioDeclarante"));
-      } else if (name == "HabitaDomicilioDeclarante" && value ==1) {
+      } else if (name == "HabitaDomicilioDeclarante" && value == 1) {
          dispatch(configValidationsDependiente({ tipo: "DomicilioDeclaranteNULL" }));
          setDomicilioDeclarante(false);
       }
@@ -123,7 +153,6 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
       Success("se elimino de la tabla");
    };
    useEffect(() => {
-  
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.DependientesEconomicos.validationSchema), datasRedux]);
    return (
@@ -155,13 +184,21 @@ export const DependientesEconomicos = ({ next, previous, title }) => {
                message={message}
                button={false} */}
          <Ngif condition={checked}>
-            <FormikForm ref={formik} messageButton={'Agregar a la tabla'} key={reinilaize} validationSchema={validationSchema} initialValues={dataForm} submit={submit} title={title} button={true}>
+            <FormikForm
+               ref={formik}
+               messageButton={"Agregar a la tabla"}
+               key={reinilaize}
+               validationSchema={validationSchema}
+               initialValues={dataForm}
+               submit={submit}
+               title={title}
+               button={true}
+            >
                <InitialValuesFormik handleGetValue={handleGetValue} getParentescos={setParentescos} />
                <Ngif condition={domicilioDeclarante}>
                   <DomicilioDeclarante />
                </Ngif>
                <Sectores validations={validations} />
-             
             </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>

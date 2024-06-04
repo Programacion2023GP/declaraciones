@@ -1,4 +1,4 @@
-import { Children, cloneElement, useEffect, useState } from "react";
+import { Children, cloneElement, useEffect, useRef, useState } from "react";
 import { FormikServidorPublico } from "./formik/FormikServidorPublico";
 import { CustomRadio } from "../../Reusables/radiobutton/Radio";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
@@ -10,13 +10,18 @@ import { Axios, PostAxios } from "../../../services/services";
 import { Success } from "../../../toasts/toast";
 import { addServidorPublico } from "../../../redux/ServidorPublicoHoja9/ServidorPublicoHoja9";
 import { Post } from "../funciones/post";
+import { FormikForm } from "../../Reusables/formik/FormikForm";
+import { insertFormik } from "../../FuncionesFormik";
 
-export const ServidorPublico = ({ next, previous, title }) => {
+export const ServidorPublico = ({ data,next, previous, title }) => {
    const [checked, setChecked] = useState(true);
    const dispatch = useDispatch();
    const dataForm = useSelector((state) => state.ServidorPublico.initialState);
    const validations = useSelector((state) => state.ServidorPublico.validationSchema);
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
+   const [id, setID] = useState(0);
+
+   const formik = useRef(null)
    const handleChange = (event) => {
       setChecked(event.target.checked);
    };
@@ -36,12 +41,24 @@ export const ServidorPublico = ({ next, previous, title }) => {
          }
       }
    };
-
+   useEffect(() => {
+      console.log(data);
+      if (data?.constructor === Object && Object.keys(data).length > 0) {
+         modifiedDataServidor();
+      }
+   }, [data]);
+   const modifiedDataServidor = () => {
+      setID(parseInt(data.Id_ActividadAnualAnterior));
+      delete data.Id_ActividadAnualAnterior;
+      insertFormik(formik, data);
+   };
    const submit = async (values, { resetForm }) => {
+      const url = `servidorpublico/${id > 0 ? `update/${id}` :"create"}`;
+
       if (checked) {
          dispatch(addServidorPublico(values));
          try {
-            const response = await Post("servidorpublico/create", values,next);
+            const response = await Post(url, values, next);
             // next();
             // Success(response.data.message);
 
@@ -68,9 +85,9 @@ export const ServidorPublico = ({ next, previous, title }) => {
          </FormGroup>
 
          <Ngif condition={checked}>
-            <FormikServidorPublico previous={previous} submit={submit} validationSchema={validationSchema} initialValues={dataForm} title={title}>
+            <FormikForm button={true} ref={formik} previous={previous} submit={submit} validationSchema={validationSchema} initialValues={dataForm} title={title}>
                <FormikInitialValues />
-            </FormikServidorPublico>
+            </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ marginLeft: "2rem" }} onClick={continuar} type="submit" variant="contained" color="primary">

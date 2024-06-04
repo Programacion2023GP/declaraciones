@@ -33,7 +33,7 @@ export const ExperienciaLaboral = ({ data, next, previous, title }) => {
    const [checked, setChecked] = useState(true);
    const [update, setUpdate] = useState(false);
    useEffect(() => {
-      if (typeof data !== "undefined" && Array.isArray(data)) {
+      if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
          setDatas([]);
          setDatasVisuales([]);
          setUpdate(true);

@@ -12,7 +12,7 @@ import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 
-export const BienesInmuebles = ({ next, previous, title, setSend }) => {
+export const BienesInmuebles = ({ data, next, previous, title, setSend }) => {
    const validations = useSelector((state) => state.BienesInmuebles.validationSchema);
    const dataForm = useSelector((state) => state.BienesInmuebles.initialState);
    const dispatch = useDispatch();
@@ -28,12 +28,47 @@ export const BienesInmuebles = ({ next, previous, title, setSend }) => {
    const [animateDelete, setAnimateDelete] = useState(false);
    const [checked, setChecked] = useState(true);
    const [sendDatas, setSendDatas] = useState([]);
+   const [update, setUpdate] = useState(false);
 
    const message = `Todos los datos de Bienes Inmuebles declarados a nombre de la pareja, 
    dependientes económicos y/o terceros o que sean en copropiedad con el declarante no serán públicos.`;
    useEffect(() => {
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.BienesInmuebles.validationSchema), useSelector((state) => state.BienesInmuebles.initialState)]);
+   useEffect(() => {}, []);
+   useEffect(() => {
+      if (adquisicion.length > 0 && inmuebles.length > 0) {
+  
+         if (typeof data !== "undefined" && Array.isArray(data)&& data.length>0) {
+            setDatas([]);
+            setSendDatas([]);
+            setUpdate(true);
+            data.forEach((values, index) => {
+               delete values.Id_BienesInmuebles;
+               addDataTableModified(values, index);
+            });
+         }
+      }
+   }, [data, inmuebles, adquisicion]);
+   const addDataTableModified = (values, index) => {
+      values.identificador = index;
+      const newDatas = [...sendDatas, values];
+
+      const inmueble = inmuebles.filter((item) => item.id === parseInt(values.Id_TipoInmueble))[0]?.text;
+      const adquirir = adquisicion.filter((item) => item.id === parseInt(values.Id_FormaAdquisicion))[0]?.text;
+      const tercero = values.T_Id_TipoPersona == 1 ? "Persona Física" : "Persona Moral";
+      const newData = {
+         identificador: index,
+         tipo_inmueble: inmueble,
+         "forma adquisicion": adquirir,
+         tercero: tercero
+      };
+
+      setDatas((prevDatasTable) => prevDatasTable.concat(newData));
+
+      setSendDatas(newDatas);
+      setIdUnique(index + 1);
+   };
    const submit = async (values) => {
       dispatch(validationBienesInmuebles({ tipo: "restart" }));
       setAnimateSend(true);
@@ -63,14 +98,17 @@ export const BienesInmuebles = ({ next, previous, title, setSend }) => {
       // setAnimate(false)
    };
    const sendData = async () => {
+      const url = `bienesinmuebles/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
+      
       if (sendDatas.length > 0) {
          const newDatas = [...sendDatas];
+
          const sendApi = async () => {
             for (let i = 0; i < newDatas.length; i++) {
                dispatch(addBienesInmuebles(newDatas[i]));
                // delete newDatas[i].identificador;
             }
-            await Post("bienesinmuebles/create", newDatas, next);
+            await Post(url, newDatas, next);
          };
          await sendApi();
       } else {
@@ -148,7 +186,7 @@ export const BienesInmuebles = ({ next, previous, title, setSend }) => {
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ ml: 2 }} type="button" variant="contained" onClick={sendData} color="primary">
-               {datas.length > 0 ? "Registrar y continuar" : "Continuar"}
+               {sendDatas.length > 0 ? "Registrar y continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>

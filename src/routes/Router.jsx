@@ -39,39 +39,41 @@ export const router = createHashRouter([
                      <Provider store={store}>
                         <ComponentDeclaraciones />
                      </Provider>
-                  )
+                  ),
+                  children: [
+                     {
+                        path: ":hoja?",
+                        element: <ComponentDeclaraciones />
+                     }
+                  ]
                }
             ]
          },
          {
             path: "misdeclaraciones",
             index: true,
-            element: <MisDeclaraciones/>
-         }, {
-            path:"usuarios",
-            // element:<EstadoCivil/>,
-            element:<ComponentCatalogo pagina={'usuarios'}/>
-               
-            
+            element: <MisDeclaraciones />
          },
          {
-            path:"catalogos",
+            path: "usuarios",
             // element:<EstadoCivil/>,
-            children:[
+            element: <ComponentCatalogo pagina={"usuarios"} />
+         },
+         {
+            path: "catalogos",
+            // element:<EstadoCivil/>,
+            children: [
                {
-                  path:":catalogo",
-                  element:<ComponentCatalogo/>
-                  
-               }     
+                  path: ":catalogo",
+                  element: <ComponentCatalogo />
+               }
             ]
          }
       ]
    },
    {
       path: "/",
-      element: <Login/>,
-      index: true,
-     
-   },
-  
+      element: <Login />,
+      index: true
+   }
 ]);
