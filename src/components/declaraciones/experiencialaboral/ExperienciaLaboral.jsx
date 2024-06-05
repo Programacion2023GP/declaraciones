@@ -17,7 +17,7 @@ import { Post } from "../funciones/post";
 
 // import DataTable from "../../Reusables/table/DataTable";
 
-export const ExperienciaLaboral = ({ data, next, previous, title }) => {
+export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => {
    let { declaracion } = useParams();
    const [save, setSave] = useState(true);
    const [idRow, setIdRow] = useState(null);
@@ -31,25 +31,26 @@ export const ExperienciaLaboral = ({ data, next, previous, title }) => {
    const formikRef = useRef();
    const [continuar, setContinuar] = useState(false);
    const [checked, setChecked] = useState(true);
-   const [update, setUpdate] = useState(false);
+   const [update, setUpdate] = useState(loading);
    useEffect(() => {
       if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
          setDatas([]);
          setDatasVisuales([]);
-         setUpdate(true);
          data.forEach((values, index) => {
             delete values.Id_ExperienciaLaboral;
             addDataTableModified(values, index);
          });
          // modifiedDataEmpleosCargos();
       }
-   }, [data]);
-
+   }, [data, loading]);
+   useEffect(() => {
+      console.log("exper",update);
+   }, [update]);
    const addDataTableModified = (values, index) => {
       values.identificador = index;
 
       const newDatas = [...datas, values];
-      setDatas(newDatas);
+
       const newData = {
          id: index,
          Id_Sector: parseInt(values.Id_AmbitoSector) === 1 ? "PÚBLICO" : "PRIVADO",
@@ -59,6 +60,7 @@ export const ExperienciaLaboral = ({ data, next, previous, title }) => {
          "Fecha egreso": values.FechaEngreso
       };
 
+      setDatas((prevDatas) => prevDatas.concat(newDatas));
       setDatasVisuales((prevDatasVisuales) => prevDatasVisuales.concat(newData));
       setIdUnique(index + 1);
    };
@@ -178,7 +180,7 @@ export const ExperienciaLaboral = ({ data, next, previous, title }) => {
          // next();
       } else if (datas.length == 0) {
          try {
-            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${5}`);
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${5}/1`);
             Success(response.data.data.message);
             setDatas([]);
             setDatasVisuales([]);

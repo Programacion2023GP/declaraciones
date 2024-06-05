@@ -13,7 +13,7 @@ import { Post } from "../funciones/post";
 import { FormikForm } from "../../Reusables/formik/FormikForm";
 import { insertFormik } from "../../FuncionesFormik";
 
-export const ServidorPublico = ({ data,next, previous, title }) => {
+export const ServidorPublico = ({ loading, data, next, previous, title }) => {
    const [checked, setChecked] = useState(true);
    const dispatch = useDispatch();
    const dataForm = useSelector((state) => state.ServidorPublico.initialState);
@@ -21,13 +21,13 @@ export const ServidorPublico = ({ data,next, previous, title }) => {
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
    const [id, setID] = useState(0);
 
-   const formik = useRef(null)
+   const formik = useRef(null);
    const handleChange = (event) => {
       setChecked(event.target.checked);
    };
    const continuar = async () => {
       try {
-         const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${9}`);
+         const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${9}/1`);
 
          Success(response.data.data.message);
          // setDatasTable([]);
@@ -42,7 +42,7 @@ export const ServidorPublico = ({ data,next, previous, title }) => {
       }
    };
    useEffect(() => {
-      console.log(data);
+
       if (data?.constructor === Object && Object.keys(data).length > 0) {
          modifiedDataServidor();
       }
@@ -53,7 +53,7 @@ export const ServidorPublico = ({ data,next, previous, title }) => {
       insertFormik(formik, data);
    };
    const submit = async (values, { resetForm }) => {
-      const url = `servidorpublico/${id > 0 ? `update/${id}` :"create"}`;
+      const url = `servidorpublico/${id > 0 ? `update/${id}` : "create"}`;
 
       if (checked) {
          dispatch(addServidorPublico(values));
@@ -85,7 +85,17 @@ export const ServidorPublico = ({ data,next, previous, title }) => {
          </FormGroup>
 
          <Ngif condition={checked}>
-            <FormikForm button={true} ref={formik} previous={previous} submit={submit} validationSchema={validationSchema} initialValues={dataForm} title={title}>
+            <FormikForm
+               previousButton
+               handlePrevious={previous}
+               button={true}
+               ref={formik}
+               previous={previous}
+               submit={submit}
+               validationSchema={validationSchema}
+               initialValues={dataForm}
+               title={title}
+            >
                <FormikInitialValues />
             </FormikForm>
          </Ngif>

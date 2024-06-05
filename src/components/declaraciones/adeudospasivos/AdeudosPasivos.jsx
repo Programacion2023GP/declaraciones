@@ -13,7 +13,7 @@ import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 
-export const AdeudosPasivos = ({ title, next, previous, setSend }) => {
+export const AdeudosPasivos = ({ loading,data, title, next, previous, setSend }) => {
    const validations = useSelector((state) => state.AdeudosPasivos.validationSchema);
    const dataForm = useSelector((state) => state.AdeudosPasivos.initialState);
    const dispatch = useDispatch();
@@ -22,8 +22,9 @@ export const AdeudosPasivos = ({ title, next, previous, setSend }) => {
    const [idUnique, setIdUnique] = useState(1);
    const formik = useRef(null);
    const [checked, setChecked] = useState(true);
-   const { titular, monedas, tipoAdeudos } = Request({peticiones:["titular","monedas","tipoAdeudos"]});
+   const { titular, monedas, tipoAdeudos } = Request({ peticiones: ["titular", "monedas", "tipoAdeudos"] });
    const [datasTable, setDatasTable] = useState([]);
+   const [update, setUpdate] = useState(loading);
 
    let { declaracion } = useParams();
    declaracion = parseInt(declaracion);
@@ -40,19 +41,48 @@ export const AdeudosPasivos = ({ title, next, previous, setSend }) => {
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.AdeudosPasivos.validationSchema), useSelector((state) => state.AdeudosPasivos.initialState)]);
    const deleteRow = (row) => {
-      setDatas(datas.filter((element) => element.identificador != row.identificador));
-      setDatasTable(datasTable.filter((element) => element.identificador != row.identificador));
+      setDatas(datas.filter((element) => element.identificador != row.id));
+      setDatasTable(datasTable.filter((element) => element.id != row.id));
       Success("Se borro de la tabla");
+   };
+   useEffect(() => {
+      if (titular.length > 0) {
+         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+            setDatas([]);
+            setDatasTable([]);
+            setUpdate(true);
+            data.forEach((values, index) => {
+               delete values.Id_AdeudosPasivos;
+               addDataTableModified(values, index);
+            });
+         }
+      }
+   }, [data, titular]);
+   const addDataTableModified = (values, index) => {
+      values.identificador = index;
+      const newDatas = [...datas, values];
+
+      const newData = {
+         id: index,
+         nombre: values.OC_NombreRazonSocial,
+         titular: titular.filter((item) => item.id === parseInt(values.Id_Titular))[0]?.text,
+         NumeroCuentaContrato: values.NumeroCuentaContrato
+      };
+
+      setDatasTable((prevDatasTable) => prevDatasTable.concat(newData));
+      setDatas((prevDatas) => prevDatas.concat(newDatas));
+
+      setIdUnique(index + 1);
    };
    const handleChange = (event) => {
       setChecked(event.target.checked);
    };
    const submit = async (values) => {
-      values.indentificador = idUnique;
+      values.identificador = idUnique;
       setDatas(datas.concat(values));
       setDatasTable(
          datasTable.concat({
-            identificador: values.indentificador,
+            id: values.identificador,
             nombre: values.OC_NombreRazonSocial,
             titular: titular.filter((item) => item.id === values.Id_Titular)[0]?.text,
             NumeroCuentaContrato: values.NumeroCuentaContrato
@@ -65,25 +95,24 @@ export const AdeudosPasivos = ({ title, next, previous, setSend }) => {
       formik.current.resetForm();
    };
    const sendData = async () => {
-      if(datas.length>0){
+      const url = `adeudospasivos/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
+
+      if (datas.length > 0) {
          const newDatas = [...datas];
          const sendApi = async () => {
             for (let i = 0; i < newDatas.length; i++) {
                dispatch(addAdeudosPasivos(newDatas[i]));
                // delete newDatas[i].identificador;
-   
             }
-            await Post("adeudospasivos/create", newDatas,next);
+            await Post(url, newDatas, next);
          };
          await sendApi();
-   
-         // setDatas([]);
-         // setDatasTable([])
 
-      }
-      else{
+         setDatas([]);
+         setDatasTable([])
+      } else {
          try {
-            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${14}`);
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${14}/1`);
             Success(response.data.data.message);
 
             next();
@@ -95,13 +124,7 @@ export const AdeudosPasivos = ({ title, next, previous, setSend }) => {
    return (
       <>
          <Box key={"box"} alignItems={"center"} justifyContent={"center"} display={"flex"}>
-            <DataTable
-               dataHidden={["identificador"]}
-               headers={["Nombre", "Titular del Adeudo", "No. Cuenta"]}
-               data={datasTable}
-               handleDelete={deleteRow}
-               deleteButton={true}
-            />
+            <DataTable dataHidden={["id"]} headers={["Nombre", "Titular del Adeudo", "No. Cuenta"]} data={datasTable} handleDelete={deleteRow} deleteButton={true} />
          </Box>
 
          <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
@@ -111,7 +134,7 @@ export const AdeudosPasivos = ({ title, next, previous, setSend }) => {
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm initialValues={dataForm} validationSchema={validationSchema} submit={submit} title={title} advertence={message} ref={formik}>
+            <FormikForm initialValues={dataForm} validationSchema={validationSchema} submit={submit} title={title} ref={formik}>
                <InitialValues titular={titular} monedas={monedas} tipoAdeudos={tipoAdeudos} />
                <Button onClick={previous} sx={{ marginTop: "1rem", marginRight: "1rem" }} type="button" variant="contained" color="secondary">
                   Regresar
@@ -123,7 +146,7 @@ export const AdeudosPasivos = ({ title, next, previous, setSend }) => {
          </Ngif>
          <Ngif condition={!checked}>
             <Button onClick={sendData} sx={{ marginTop: "1rem", marginLeft: "1rem" }} type="submit" variant="contained" color="primary">
-               {datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
+               {datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>

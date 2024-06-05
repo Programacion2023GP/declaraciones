@@ -15,7 +15,7 @@ import { Success } from "../../../toasts/toast";
 import { Post } from "../funciones/post";
 import { insertFormik } from "../../FuncionesFormik";
 
-export const DatosParejas = ({ data, next, previous, title }) => {
+export const DatosParejas = ({ loading,data, next, previous, title }) => {
    const dataForm = useSelector((state) => state.DatosPareja.initialState);
    const validations = useSelector((state) => state.DatosPareja.validationSchema);
    const formik = useRef(null);
@@ -64,7 +64,7 @@ export const DatosParejas = ({ data, next, previous, title }) => {
          }
       } else {
          try {
-            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${6}`);
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${6}/1`);
             Success(response.data.data.message);
             next();
             return response.data;

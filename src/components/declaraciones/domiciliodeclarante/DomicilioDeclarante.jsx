@@ -6,7 +6,7 @@ import { DomicilioDeclaranteGeneral } from "./components/DomicilioDeclarante";
 import { Post } from "../funciones/post";
 import { Text } from "../../Reusables/input/Input";
 import { insertFormik } from "../../FuncionesFormik";
-export const DomicilioDeclarante = ({ data, next, previous, title }) => {
+export const DomicilioDeclarante = ({ loading, data, next, previous, title }) => {
    const dataForm = useSelector((state) => state.DomicilioDeclarante.initialState);
    const validations = useSelector((state) => state.DomicilioDeclarante.validationSchema);
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
@@ -33,6 +33,7 @@ export const DomicilioDeclarante = ({ data, next, previous, title }) => {
    }, [data]);
    const modifiedDatosDeclarante = () => {
       parseInt(data.EsEnMexico) == 0 && setMexico(false);
+
       setID(parseInt(data.Id_DomicilioDeclarante));
       insertFormik(formik, data);
    };
@@ -49,7 +50,7 @@ export const DomicilioDeclarante = ({ data, next, previous, title }) => {
             submit={sumbit}
             message={"Los datos que no serán públicos estarán resaltados de color verde"}
          >
-            <DomicilioDeclaranteGeneral mex={mexico} />
+            <DomicilioDeclaranteGeneral mex={mexico} estado={data && parseInt(data.Id_EntidadFederativa) > 0 ? data.Id_EntidadFederativa : 0} />
             <br />
             <Text col={12} name="Aclaraciones" label="Aclaraciones/Observaciones" rows={10} color={"green"} />
          </FormikForm>

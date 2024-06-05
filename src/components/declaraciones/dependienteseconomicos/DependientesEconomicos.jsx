@@ -16,7 +16,7 @@ import { Success } from "../../../toasts/toast";
 import { Post } from "../funciones/post";
 import { FormikForm } from "../../Reusables/formik/FormikForm";
 
-export const DependientesEconomicos = ({ data, next, previous, title }) => {
+export const DependientesEconomicos = ({ loading, data, next, previous, title }) => {
    let { declaracion } = useParams();
    const [save, setSave] = useState(true);
    const [idRow, setIdRow] = useState(null);
@@ -32,7 +32,7 @@ export const DependientesEconomicos = ({ data, next, previous, title }) => {
    const [checked, setChecked] = useState(true);
    const [reinilaize, setRenalize] = useState(1);
    const datasRedux = useSelector((state) => state.DependientesEconomicos.datas);
-   const [update, setUpdate] = useState(false);
+   const [update, setUpdate] = useState(loading);
 
    const submit = async (values, { resetForm }) => {
       values.id = idUnique;
@@ -43,22 +43,24 @@ export const DependientesEconomicos = ({ data, next, previous, title }) => {
    };
    const formik = useRef();
    useEffect(() => {
-      if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
-         setDatas([]);
-         setDatasTable([]);
-         setUpdate(true);
-         data.forEach((values, index) => {
-            delete values.Id_DatosDependienteEconomico;
-            addDataTableModified(values, index);
-         });
+    
+      if (parentescos.length > 0) {
+         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+            setDatas([]);
+            setDatasTable([]);
+            setUpdate(true);
+            data.forEach((values, index) => {
+               delete values.Id_DatosDependienteEconomico;
+               addDataTableModified(values, index);
+            });
+         }
          // modifiedDataEmpleosCargos();
       }
-   }, [data]);
+   }, [data, parentescos]);
    const addDataTableModified = (values, index) => {
       values.id = index;
       const newDatas = [...datas, values];
 
-      setDatas(newDatas);
       const parentesco = parentescos.find((item) => item.id === parseInt(values.Id_ParentescoRelacion))?.text;
       const newData = {
          id: index,
@@ -66,6 +68,7 @@ export const DependientesEconomicos = ({ data, next, previous, title }) => {
          RFC: values.RfcDependiente,
          Empleo: values.EmpleoCargoComision
       };
+      setDatas((prevDatas) => prevDatas.concat(newDatas));
 
       setDatasTable((prevDatasTable) => prevDatasTable.concat(newData));
       setIdUnique(index + 1);
@@ -81,7 +84,7 @@ export const DependientesEconomicos = ({ data, next, previous, title }) => {
                   dispatch(addDatosDependiente(newDatas[i]));
                   // delete newDatas[i].identificador;
                }
-               await Post(url, newDatas);
+               await Post(url, newDatas, next);
             };
             await sendApi();
 
@@ -100,7 +103,7 @@ export const DependientesEconomicos = ({ data, next, previous, title }) => {
          }
       } else {
          try {
-            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${7}`);
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${7}/1`);
             Success(response.data.message);
             dispatch(clearData());
             setDatasTable([]);
@@ -186,6 +189,8 @@ export const DependientesEconomicos = ({ data, next, previous, title }) => {
          <Ngif condition={checked}>
             <FormikForm
                ref={formik}
+               previousButton
+               handlePrevious={previous}
                messageButton={"Agregar a la tabla"}
                key={reinilaize}
                validationSchema={validationSchema}
@@ -193,6 +198,7 @@ export const DependientesEconomicos = ({ data, next, previous, title }) => {
                submit={submit}
                title={title}
                button={true}
+
             >
                <InitialValuesFormik handleGetValue={handleGetValue} getParentescos={setParentescos} />
                <Ngif condition={domicilioDeclarante}>

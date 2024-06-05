@@ -30,19 +30,19 @@ import { foundLocalization } from "../../redux/DatosGeneralesHoja1/DatosGenerale
 import { GetAxios } from "../../services/services";
 import { isNumber } from "highcharts";
 import { Ngif } from "../Reusables/conditionals/Ngif";
+import Loading from "../Reusables/loading/Loading";
 
 // Importa aquí los componentes correspondientes a cada paso
 
 const ComponentDeclaraciones = () => {
    const [dataPage, setDataPage] = React.useState([]);
-   let { declaracion,hoja } = useParams();
+   let { declaracion, hoja } = useParams();
    declaracion = parseInt(declaracion);
    hoja = parseInt(hoja);
 
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(isNumber(hoja)?hoja-1:10);
-   const [loading, setLoading] = React.useState(false);
+   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja - 1 : 7);
    const dispatch = useDispatch();
    React.useEffect(() => {
       dispatch(foundLocalization());
@@ -53,14 +53,14 @@ const ComponentDeclaraciones = () => {
       window.location.hash = "/dashboard/misdeclaraciones";
    };
    const handleNext = () => {
-      setTimeout(() => {
+    
          setSend(false);
          setActiveStep((prevActiveStep) => {
             const nextStepIndex = prevActiveStep + 1;
             // Avanzar solo al siguiente paso visible
             return filteredSteps[nextStepIndex] ? nextStepIndex : prevActiveStep;
          });
-      }, 500);
+     
    };
    // const comparationData = (step) => {};
    // Método para manejar el paso anterior
@@ -170,23 +170,56 @@ const ComponentDeclaraciones = () => {
       //    component: <></>
       // }
    ];
+   const [view, setView] = React.useState(false);
    const [filteredSteps, setFiltersStepers] = React.useState(steps.filter((step) => step.exist.includes(declaracion)));
-   
+   const [update, setupdate] = React.useState(false);
    // Método para manejar el siguiente paso
-
+   const [hojaFilter, setHojaFilter] = React.useState(null);
    React.useEffect(() => {
       isNumber(parseInt(localStorage.getItem("id_SituacionPatrimonial"))) && init();
+      searchHoja();
       setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
    }, [activeStep, declaracion]);
+   React.useEffect(() => {}, [update]);
+   React.useEffect(() => {}, [dataPage]);
+   // React.useEffect(() => {
+   //    setLoading(true);
+   // }, [loading, dataPage]);
+   const searchHoja = async () => {
+      try {
+         setView(false);
 
-   React.useEffect(() => {
-      setLoading(true);
-   }, [loading, dataPage]);
+         setupdate(!update);
+         const response = await GetAxios(`apartados/hoja/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
+         const foundHoja = parseInt(response[0].Hoja)
+   
+         if (isNumber(foundHoja) && foundHoja  >= activeStep+1) {
+
+            setHojaFilter(foundHoja - 1);
+            setupdate(true);
+         } else {
+            setupdate(false);
+         }
+         setView(true);
+      } catch (error) {
+         setupdate(false);
+         setView(true);
+      }
+   };
    const init = async (page = null) => {
       const url = filteredSteps[page == null ? activeStep : page].url;
 
       const response = await GetAxios(`${url}/index/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
-      const datasArrays = ["experiencialaboral", "dependienteseconomicos", "bienesinmuebles","vehiculos"];
+      const datasArrays = [
+         "experiencialaboral",
+         "dependienteseconomicos",
+         "bienesinmuebles",
+         "vehiculos",
+         "bienesmuebles",
+         "inversionescuentas",
+         "adeudospasivos",
+         "prestamoscomodatos"
+      ];
       setDataPage(datasArrays.includes(url) ? response : response[0]);
    };
 
@@ -261,9 +294,14 @@ const ComponentDeclaraciones = () => {
                      {/* Paso {activeStep + 1} de {steps.length} */}
                   </Typography>
                   {/* Componente correspondiente al paso actual */}
-                  <Grid className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>
-                     {React.cloneElement(filteredSteps[activeStep].component, { data: dataPage })}
-                  </Grid>
+                  <Ngif condition={view}>
+                     <Grid className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>
+                        {React.cloneElement(filteredSteps[activeStep].component, { data: dataPage, loading: update })}
+                     </Grid>
+                  </Ngif>
+                  <Ngif condition={!view}>
+                  <Loading />
+                  </Ngif>
 
                   {/* <button onClick={handleNext}>Continuar</button>    */}
                </div>

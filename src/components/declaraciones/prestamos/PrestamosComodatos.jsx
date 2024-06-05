@@ -10,13 +10,19 @@ import { AutoComplete } from "../../Reusables/autocomplete/autocomplete";
 import { Text } from "../../Reusables/input/Input";
 import { DomicilioDeclarante } from "./components/DomicilioDeclarante";
 import { Box, Button, FormControlLabel, FormGroup, Switch } from "@mui/material";
-import { addInmueblesPrestamos, addOtroPrestamo, addPrestamos, addVehiculosPrestamos, eliminarOtroPrestamo } from "../../../redux/PrestamoComodatoHoja15/PrestamoComodatoHoja15";
+import {
+   addInmueblesPrestamos,
+   addOtroPrestamo,
+   addPrestamos,
+   addVehiculosPrestamos,
+   eliminarOtroPrestamo
+} from "../../../redux/PrestamoComodatoHoja15/PrestamoComodatoHoja15";
 import DataTable from "../../Reusables/table/DataTable";
 import { Success } from "../../../toasts/toast";
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 
-export const PrestamosComodatos = ({ title, previous, next, setSend }) => {
+export const PrestamosComodatos = ({ loading, data, title, previous, next, setSend }) => {
    const validations = useSelector((state) => state.PrestamoComodato.validationSchema);
    const dataForm = useSelector((state) => state.PrestamoComodato.initialState);
    const dispatch = useDispatch();
@@ -25,12 +31,14 @@ export const PrestamosComodatos = ({ title, previous, next, setSend }) => {
    const [idUnique, setIdUnique] = useState(1);
    const formik = useRef(null);
    const [checked, setChecked] = useState(true);
-   const { vehiculos, inmuebles, relacion } = Request({peticiones:["vehiculos","inmuebles","relacion"]});
+   const { vehiculos, inmuebles, relacion } = Request({ peticiones: ["vehiculos", "inmuebles", "relacion"] });
    const [datasTable, setDatasTable] = useState([]);
    const [especifiqueOtro, setEspecifiqueOtro] = useState(false);
    const [values, setValues] = useState(null);
    let { declaracion } = useParams();
    const [bien, setBien] = useState(1);
+   const [update, setUpdate] = useState(loading);
+
    const message =
       declaracion == 1 || declaracion == 3
          ? "Reportar la situación de prestamo o comodato por terceros a la fecha de ingreso al empleo, cargo o comisión"
@@ -45,13 +53,44 @@ export const PrestamosComodatos = ({ title, previous, next, setSend }) => {
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.PrestamoComodato.validationSchema), useSelector((state) => state.PrestamoComodato.initialState)]);
    useEffect(() => {}, [formik.current]);
+   useEffect(() => {
+      if (inmuebles.length > 0 && vehiculos.length > 0) {
+         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+            setDatas([]);
+            setDatasTable([]);
+            setUpdate(true);
+            data.forEach((values, index) => {
+               delete values.Id_PrestamoComodato;
+               addDataTableModified(values, index);
+            });
+         }
+      }
+   }, [data, inmuebles, vehiculos]);
+   const addDataTableModified = (values, index) => {
+      values.identificador = index;
+      const newDatas = [...datas, values];
 
+      const newData = {
+         id: index,
+         "Tipo de bien": parseInt(values.TipoBien) == 0 ? "Inmueble" : "Vehículo",
+         "Especificación del bien":
+            values.EspecifiqueOtro != ""
+               ? inmuebles.filter((item) => item.id === parseInt(values.Id_TipoInmueble))[0]?.text ||
+                 vehiculos.filter((item) => item.id === parseInt(values.Id_TipoVehiculo))[0]?.text
+               : values.EspecifiqueOtro
+      };
+
+      setDatasTable((prevDatasTable) => prevDatasTable.concat(newData));
+      setDatas((prevDatas) => prevDatas.concat(newDatas));
+
+      setIdUnique(index + 1);
+   };
    const submit = async (values) => {
-      values.indentificador = idUnique;
+      values.identificador = idUnique;
       setDatas(datas.concat(values));
       setDatasTable(
          datasTable.concat({
-            identificador: values.indentificador,
+            id: values.identificador,
             "Tipo de bien": values.TipoBien == 0 ? "Inmueble" : "Vehículo",
             "Especificación del bien":
                values.EspecifiqueOtro == ""
@@ -79,35 +118,37 @@ export const PrestamosComodatos = ({ title, previous, next, setSend }) => {
       return years;
    };
    const deleteRow = (row) => {
-      setDatas(datas.filter((element) => element.identificador != row.identificador));
-      setDatasTable(datasTable.filter((element) => element.identificador != row.identificador));
+      setDatas(datas.filter((element) => element.identificador != row.id));
+      setDatasTable(datasTable.filter((element) => element.id != row.id));
+      console.log("====================================");
+      console.log(datas.filter((element) => element.identificador != row.id));
+      console.log("====================================");
       Success("Se borro de la tabla");
    };
    const sendData = async () => {
-      if(datas.length>0){
+      const url = `prestamoscomodatos/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
 
+      if (datas.length > 0) {
          const newDatas = [...datas];
+
          const sendApi = async () => {
             for (let i = 0; i < newDatas.length; i++) {
-               dispatch(addPrestamos(newDatas[i]));
+               // dispatch(addPrestamos(newDatas[i]));
                // delete newDatas[i].identificador;
-   
             }
-            await Post("prestamoscomodatos/create", newDatas,next);
+            await Post(url, newDatas, next);
          };
          await sendApi();
-   
-         setDatas([]);
-         setDatasTable([]);
-      }
-      else{
+
+         // setDatas([]);
+         // setDatasTable([]);
+      } else {
          try {
-            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${15}`);
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${15}/1`);
             Success(response.data.data.message);
 
             next();
          } catch (error) {
-    
             Error(error.response.data.data.message);
          }
       }
@@ -140,13 +181,7 @@ export const PrestamosComodatos = ({ title, previous, next, setSend }) => {
    return (
       <>
          <Box key={"box"} alignItems={"center"} justifyContent={"center"} display={"flex"}>
-            <DataTable
-               dataHidden={["identificador"]}
-               headers={["Tipo de bien", "Especificación del bien"]}
-               data={datasTable}
-               handleDelete={deleteRow}
-               deleteButton={true}
-            />
+            <DataTable dataHidden={["id"]} headers={["Tipo de bien", "Especificación del bien"]} data={datasTable} handleDelete={deleteRow} deleteButton={true} />
          </Box>
          <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
             <FormControlLabel
@@ -213,6 +248,13 @@ export const PrestamosComodatos = ({ title, previous, next, setSend }) => {
                {datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>
+         <button
+            onClick={() => {
+               console.log(formik.current.errors);
+            }}
+         >
+            errores
+         </button>
       </>
    );
 };

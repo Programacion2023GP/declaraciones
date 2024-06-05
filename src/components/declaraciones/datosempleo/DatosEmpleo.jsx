@@ -14,7 +14,7 @@ import { configValidationsEmpleo } from "../../../redux/DatosEmpleoHoja4/DatosEm
 import { insertFormik } from "../../FuncionesFormik";
 import { isNumber } from "highcharts";
 
-export const DatosEmpleo = ({ data, next, previous, title }) => {
+export const DatosEmpleo = ({ loading,data, next, previous, title }) => {
    let { declaracion } = useParams();
    const [id, setID] = useState(0);
 

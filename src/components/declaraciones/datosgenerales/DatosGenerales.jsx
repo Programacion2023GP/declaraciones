@@ -14,7 +14,7 @@ import { addDatosGenerales, addValidacioneServidorPublico } from "../../../redux
 import { Error, Success } from "../../../toasts/toast";
 import { PostAxios } from "../../../services/services";
 import { insertFormik } from "../../FuncionesFormik";
-export const DatosGenerales = ({ data, next, previous, title, setSend }) => {
+export const DatosGenerales = ({ loading,data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.DatosGenerales.initialState);
    const validations = useSelector((state) => state.DatosGenerales.validationSchema);
    const [id, setID] = useState(0);

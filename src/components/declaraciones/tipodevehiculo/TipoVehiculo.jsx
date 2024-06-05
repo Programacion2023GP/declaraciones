@@ -16,7 +16,7 @@ import { Post } from "../funciones/post";
 import { addVehiculo } from "../../../redux/VehiculosHoja11/VehiculosHoja11";
 import { Axios } from "../../../services/services";
 
-export const TipoVehiculo = ({ data, next, previous, title, setSend }) => {
+export const TipoVehiculo = ({loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.Vehiculos.initialState);
    const validations = useSelector((state) => state.Vehiculos.validationSchema);
    const [datas, setDatas] = useState([]);
@@ -35,7 +35,7 @@ export const TipoVehiculo = ({ data, next, previous, title, setSend }) => {
    const [postStepper, setPostStepper] = useState(false);
    const [otroMotivoBaja, SetMotivoBaja] = useState(true);
    const [checked, setChecked] = useState(true);
-   const [update, setUpdate] = useState(false);
+   const [update, setUpdate] = useState(loading);
 
    const message = ` Todos los datos de Vehículos declarados a nombre de la pareja, dependientes económicos y/o terceros o que sean en copropiedad con el declarante no serán públicos. `;
    const submit = async (values) => {
@@ -72,18 +72,18 @@ export const TipoVehiculo = ({ data, next, previous, title, setSend }) => {
       }
    }, [data, vehiculos, adquisicion, pago]);
    const addDataTableModified = (values, index) => {
-      values.id = index;
+      values.identificador = index;
       const newDatas = [...datas, values];
-
-      setDatas(newDatas);
+      
       const newData = {
-         identificador: values.identificador,
+         identificador: index,
          "Tipo de Vehículo": values.Id_TipoVehiculo != 4 ? vehiculos.filter((item) => item.id === parseInt(values.Id_TipoVehiculo))[0]?.text : values.EspecifiqueVehiculo,
          "Forma de Adquisición": adquisicion.filter((item) => item.id === parseInt(values.Id_FormaAdquisicion))[0]?.text,
          "Forma de Pago": pago.filter((item) => item.id === parseInt(values.Id_FormaPago))[0]?.text
       };
-
+      
       setDataTable((prevDatasTable) => prevDatasTable.concat(newData));
+      setDatas((prevDatas) => prevDatas.concat(newDatas));
       setIdunique(index + 1);
    };
    const generateYearOptions = () => {
@@ -123,7 +123,7 @@ export const TipoVehiculo = ({ data, next, previous, title, setSend }) => {
          await sendApi();
       } else {
          try {
-            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${11}`);
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${11}/1`);
             Success(response.data.data.message);
 
             next();

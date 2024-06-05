@@ -8,7 +8,7 @@ import { Numeric } from "../../../Reusables/numeric/Numeric";
 import { Grid } from "@mui/material";
 // import { useDispatch } from "react-redux";
 // import { configValidationsDependiente } from "../../../../redux/DependientesEconomicos7/DependientesEconomicos";
-export const DomicilioDeclaranteGeneral = memo(({mex}) => {
+export const DomicilioDeclaranteGeneral = memo(({mex,estado}) => {
    const [mexico, setMexico] = useState(mex);
    useEffect(()=>{
       setMexico(mex ? true : false);
@@ -44,7 +44,7 @@ export const DomicilioDeclaranteGeneral = memo(({mex}) => {
          <Text textStyleCase={true} col={6} name="NumeroInterior" label="Número Interior" type={"number"} color={"green"} />
          <Text textStyleCase={true} col={6} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} />
          <Ngif condition={mexico}>
-            <ComponenteMexico />
+            <ComponenteMexico mex={mexico}  estado={estado}/>
          </Ngif>
          <Ngif condition={!mexico}>
             <ComponenteExtranjero />

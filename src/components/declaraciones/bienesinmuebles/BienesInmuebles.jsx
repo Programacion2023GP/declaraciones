@@ -12,7 +12,7 @@ import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 
-export const BienesInmuebles = ({ data, next, previous, title, setSend }) => {
+export const BienesInmuebles = ({ loading, data, next, previous, title, setSend }) => {
    const validations = useSelector((state) => state.BienesInmuebles.validationSchema);
    const dataForm = useSelector((state) => state.BienesInmuebles.initialState);
    const dispatch = useDispatch();
@@ -28,7 +28,7 @@ export const BienesInmuebles = ({ data, next, previous, title, setSend }) => {
    const [animateDelete, setAnimateDelete] = useState(false);
    const [checked, setChecked] = useState(true);
    const [sendDatas, setSendDatas] = useState([]);
-   const [update, setUpdate] = useState(false);
+   const [update, setUpdate] = useState(loading);
 
    const message = `Todos los datos de Bienes Inmuebles declarados a nombre de la pareja, 
    dependientes económicos y/o terceros o que sean en copropiedad con el declarante no serán públicos.`;
@@ -38,8 +38,7 @@ export const BienesInmuebles = ({ data, next, previous, title, setSend }) => {
    useEffect(() => {}, []);
    useEffect(() => {
       if (adquisicion.length > 0 && inmuebles.length > 0) {
-  
-         if (typeof data !== "undefined" && Array.isArray(data)&& data.length>0) {
+         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
             setDatas([]);
             setSendDatas([]);
             setUpdate(true);
@@ -65,8 +64,8 @@ export const BienesInmuebles = ({ data, next, previous, title, setSend }) => {
       };
 
       setDatas((prevDatasTable) => prevDatasTable.concat(newData));
+      setSendDatas((prevDatas) => prevDatas.concat(newDatas));
 
-      setSendDatas(newDatas);
       setIdUnique(index + 1);
    };
    const submit = async (values) => {
@@ -99,7 +98,7 @@ export const BienesInmuebles = ({ data, next, previous, title, setSend }) => {
    };
    const sendData = async () => {
       const url = `bienesinmuebles/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
-      
+
       if (sendDatas.length > 0) {
          const newDatas = [...sendDatas];
 
@@ -113,7 +112,7 @@ export const BienesInmuebles = ({ data, next, previous, title, setSend }) => {
          await sendApi();
       } else {
          try {
-            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${10}`);
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${10}/1`);
             Success(response.data.data.message);
 
             next();
@@ -160,7 +159,8 @@ export const BienesInmuebles = ({ data, next, previous, title, setSend }) => {
          </FormGroup>
          <Ngif condition={checked}>
             <FormikForm
-               // className={animateSend ? "animate__animated animate__backInDown" : ""}
+               previousButton
+               handlePrevious={previous}
                key={"Formik"}
                ref={formik}
                submit={submit}

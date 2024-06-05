@@ -15,7 +15,7 @@ import { addValidacionesBienesMuebles } from "../../../redux/BienesMueblesHoja12
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 
-export const BienesMuebles = ({ next, previous, title, setSend }) => {
+export const BienesMuebles = ({loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.BienesMuebles.initialState);
    const validations = useSelector((state) => state.BienesMuebles.validationSchema);
    const [datas, setDatas] = useState([]);
@@ -24,6 +24,7 @@ export const BienesMuebles = ({ next, previous, title, setSend }) => {
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
    const [postStepper, setPostStepper] = useState(false);
    const [checked, setChecked] = useState(true);
+   const [update, setUpdate] = useState(loading);
 
    // actives (activaciones de campos)
    const [tercero, setTercero] = useState(false);
@@ -49,25 +50,56 @@ export const BienesMuebles = ({ next, previous, title, setSend }) => {
       formik.current.resetForm();
       Success("Se agrego a la tabla");
    };
+   useEffect(() => {
+      if (tiposbienesmuebles.length > 0 && titular.length > 0) {
+         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+            setDatas([]);
+            setDataTable([]);
+            setUpdate(true);
+            data.forEach((values, index) => {
+               delete values.Id_BienesMuebles;
+               addDataTableModified(values, index);
+            });
+         }
+      }
+   }, [data, tiposbienesmuebles, titular]);
+
+   const addDataTableModified = (values, index) => {
+      values.identificador = index;
+      const newDatas = [...datas, values];
+
+      const newData = {
+         identificador: index,
+         "Tipo de bien": tiposbienesmuebles.filter((item) => item.id === parseInt(values.Id_TipoBien))[0]?.text,
+         "Titular del bien": titular.filter((item) => item.id === parseInt(values.Id_Titular))[0]?.text,
+         "Descripción del Bien": values.DescripcionGeneralBien
+      };
+
+      setDataTable((prevDatasTable) => prevDatasTable.concat(newData));
+      setDatas((prevDatas) => prevDatas.concat(newDatas));
+
+      setIdunique(index + 1);
+   };
    const sendData = async () => {
       if (datas.length > 0) {
          const newDatas = [...datas];
+         const url = `bienesmuebles/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
 
          const sendApi = async () => {
             for (let i = 0; i < newDatas.length; i++) {
-               console.log("durante");
                dispatch(addValidacionesBienesMuebles(newDatas[i]));
                // delete newDatas[i].identificador;
             }
-            await Post("bienesmuebles/create", newDatas, next);
+            await Post(url, newDatas, next);
          };
          await sendApi();
+
          setDatas([]);
       } else {
          try {
-            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${12}`);
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${12}/1`);
             Success(response.data.data.message);
-    
+
             next();
          } catch (error) {
             Error(error.response.data.data.message);
@@ -132,6 +164,7 @@ export const BienesMuebles = ({ next, previous, title, setSend }) => {
          <Ngif condition={checked}>
             <FormikForm ref={formik} initialValues={dataForm} validationSchema={validationSchema} submit={submit}>
                <ComponentStepper postStepper={postStepper} steps={steps} buttonContinue={"Continuar"} endButton={"agregar a la tabla"} buttonAfter={"regresar"} />
+            
             </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>

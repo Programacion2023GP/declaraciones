@@ -47,7 +47,7 @@ export const DatosExtras = ({ estadocivil, regimenes, nacionalidades, paises, va
          <AutoComplete col={6} label="Situación personal / Estado civil" name="Id_EstadoCivil" handleGetValue={handleGetValue} options={estadocivil} />
          <AutoComplete col={6} label="Regimen matrimonial" name="Id_RegimenMatrimonial" disabled={activeRegimen} options={regimenes} />
          <AutoComplete
-            col={6}
+            col={12}
             label="Pais de nacimiento"
             name="Id_PaisNacimiento"
             options={paises} //

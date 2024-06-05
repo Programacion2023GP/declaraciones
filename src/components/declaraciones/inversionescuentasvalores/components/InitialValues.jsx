@@ -21,7 +21,8 @@ export const InitialValues = ({ titular, tipoinversion, monedas }) => {
       setLoading(true);
       setName(tipoinversion.filter((item) => item.id === value)[0]?.text);
       setResetSubTipo(resetSubtipo+1 )
-      formik.values.Id_SubtipoInversion=0
+      formik.setFieldValue("Id_SubtipoInversion",0)
+      // formik.values.Id_SubtipoInversion=0
       // formik.values[Id_SubtipoInversion]=0
       setSubTipoInversion(await GetAxios(`subtiposinversion/show/${value}`));
       setLoading(false);

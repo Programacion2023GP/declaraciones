@@ -9,7 +9,7 @@ import { Post } from "../funciones/post";
 import { insertFormik } from "../../FuncionesFormik";
 import { FormikForm } from "../../Reusables/formik/FormikForm";
 
-export const IngresosNetos = ({ data, next, previous, title }) => {
+export const IngresosNetos = ({loading, data, next, previous, title }) => {
    const formik = useRef();
    const dataForm = useSelector((state) => state.IngresosNetos.initialState);
    const validations = useSelector((state) => state.IngresosNetos.validationSchema);
@@ -18,7 +18,6 @@ export const IngresosNetos = ({ data, next, previous, title }) => {
    const [id, setID] = useState(0);
 
    const submit = async (values, { resetForm }) => {
-      dispatch(addIngresosNetos(values));
       const url = `ingresos/${id > 0 ? `update/${id}` :"create"}`;
 
       try {
@@ -51,7 +50,7 @@ export const IngresosNetos = ({ data, next, previous, title }) => {
    }, [useSelector((state) => state.IngresosNetos.validationSchema), useSelector((state) => state.IngresosNetos.initialState)]);
    return (
       <>
-         <FormikForm button={true} ref={formik} previous={previous} initialValues={dataForm} validationSchema={validationSchema} title={title} submit={submit}>
+         <FormikForm previousButton handlePrevious={previous} button={true} ref={formik} previous={previous} initialValues={dataForm} validationSchema={validationSchema} title={title} submit={submit}>
             <FormikInitialValues />
          </FormikForm>
       </>

@@ -19,7 +19,7 @@ export const ComponenteMexico = memo(({}) => {
       setLoadingMunicipios(false);
    };
    useEffect(() => {
-            dispatch(addMexicoPrestamo());
+      dispatch(addMexicoPrestamo());
 
       const init = async () => {
          setEntidades(await GetAxios("entidades/show"));
@@ -28,21 +28,14 @@ export const ComponenteMexico = memo(({}) => {
    }, []);
    return (
       <>
-         <AutoComplete
-            col={12}
-            label="Entidad Federativa"
-            name="Id_EntidadFederativa"
-            options={entidades}
-            color="green"
-            handleGetValue={handleGetValue}
-         />
+         <AutoComplete col={12} label="Entidad Federativa" name="Id_EntidadFederativa" options={entidades} color="green" handleGetValue={handleGetValue} />
          <AutoComplete
             disabled={activeMunicipios}
             loading={loadingMuncipios}
             col={12}
             otro={23}
             label="Municipio / Alcaldía"
-            name="V_Id_EntidadFederativa"
+            name="Id_MunicipioAlcaldia"
             options={municipios}
             color="green"
             // getValue={getValue}

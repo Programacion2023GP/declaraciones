@@ -7,7 +7,7 @@ import { FormikForm } from "../../Reusables/formik/FormikForm";
 import { InitialValues } from "./components/initialValues";
 import { Post } from "../funciones/post";
 import { insertFormik } from "../../FuncionesFormik";
-export const DatosCurriculares = ({ data, next, previous, title }) => {
+export const DatosCurriculares = ({ loading,data, next, previous, title }) => {
    let { declaracion } = useParams();
    const dataForm = useSelector((state) => state.DatosCurriculares.initialState);
    const validations = useSelector((state) => state.DatosCurriculares.validationSchema);

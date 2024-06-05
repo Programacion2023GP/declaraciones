@@ -12,17 +12,19 @@ import { addInversionesCuentasValores } from "../../../redux/InversionesCuentasV
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 
-export const InversionesCuentasValores = ({ next, previous, title, setSend }) => {
+export const InversionesCuentasValores = ({loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.InversionesCuentasValores.initialState);
    const validations = useSelector((state) => state.InversionesCuentasValores.validationSchema);
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
    const [datas, setDatas] = useState([]);
    const [datasTable, setDatasTable] = useState([]);
    const [idUnique, setIdUnique] = useState(1);
-   const { titular, tipoinversion, monedas } = Request({peticiones:["titular","tipoinversion","monedas"]});
+   const { titular, tipoinversion, monedas } = Request({ peticiones: ["titular", "tipoinversion", "monedas"] });
    const formik = useRef(null);
    const [checked, setChecked] = useState(true);
-   const dispatch = useDispatch()
+   const [update, setUpdate] = useState(loading);
+
+   const dispatch = useDispatch();
    const handleChange = (event) => {
       setChecked(event.target.checked);
    };
@@ -43,7 +45,35 @@ export const InversionesCuentasValores = ({ next, previous, title, setSend }) =>
 
       formik.current.resetForm();
    };
-   
+   useEffect(() => {
+      if (tipoinversion.length > 0 && titular.length > 0) {
+         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+            setDatas([]);
+            setDatasTable([]);
+            setUpdate(true);
+            data.forEach((values, index) => {
+               delete values.Id_InversionesCuentasValores;
+               addDataTableModified(values, index);
+            });
+         }
+      }
+   }, [data, tipoinversion, titular]);
+   const addDataTableModified = (values, index) => {
+      values.identificador = index;
+      const newDatas = [...datas, values];
+
+      const newData = {
+         identificador: index,
+         tipoinversion: tipoinversion.filter((item) => item.id === parseInt(values.Id_TipoInversion))[0]?.text,
+         titular: titular.filter((item) => item.id === parseInt(values.Id_Titular))[0]?.text,
+         InstitucionRazonSocial: values.InstitucionRazonSocial
+      };
+
+      setDatasTable((prevDatasTable) => prevDatasTable.concat(newData));
+      setDatas((prevDatas) => prevDatas.concat(newDatas));
+
+      setIdUnique(index + 1);
+   };
    const deleteRow = (row) => {
       setDatas(datas.filter((element) => element.identificador != row.identificador));
       setDatasTable(datasTable.filter((element) => element.identificador != row.identificador));
@@ -52,21 +82,20 @@ export const InversionesCuentasValores = ({ next, previous, title, setSend }) =>
    const sendData = async () => {
       if (datas.length > 0) {
          const newDatas = [...datas];
-   
+         const url = `inversionescuentas/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
+
          const sendApi = async () => {
             for (let i = 0; i < newDatas.length; i++) {
-               dispatch(addInversionesCuentasValores(newDatas[i]));
+               // dispatch(addInversionesCuentasValores(newDatas[i]));
             }
-            await Post("inversionescuentas/create", newDatas,next);
-   
-   
+            // console.log("data enviada",newDatas);
+            await Post(url, newDatas, next);
          };
          await sendApi();
-         setDatas([]);
-      }
-      else{
+         // setDatas([]);
+      } else {
          try {
-            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${13}`);
+            const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${13}/1`);
             Success(response.data.data.message);
 
             next();
@@ -74,10 +103,8 @@ export const InversionesCuentasValores = ({ next, previous, title, setSend }) =>
             Error(error.response.data.data.message);
          }
       }
-    
    };
    useEffect(() => {
-  
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.InversionesCuentasValores.validationSchema), useSelector((state) => state.InversionesCuentasValores.initialState)]);
 
@@ -110,9 +137,8 @@ export const InversionesCuentasValores = ({ next, previous, title, setSend }) =>
             </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>
-            <Button onClick={sendData} sx={{ marginTop: "1rem",marginLeft:"1rem" }} type="submit" variant="contained" color="primary">
-            {datasTable.length > 0 ? "Registrar y continuar" : "Continuar"}
-
+            <Button onClick={sendData} sx={{ marginTop: "1rem", marginLeft: "1rem" }} type="submit" variant="contained" color="primary">
+               {datas.length > 0 ? "Registrar y continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>
