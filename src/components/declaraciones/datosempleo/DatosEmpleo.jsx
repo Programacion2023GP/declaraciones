@@ -14,7 +14,7 @@ import { configValidationsEmpleo } from "../../../redux/DatosEmpleoHoja4/DatosEm
 import { insertFormik } from "../../FuncionesFormik";
 import { isNumber } from "highcharts";
 
-export const DatosEmpleo = ({ loading,data, next, previous, title }) => {
+export const DatosEmpleo = ({ loading, data, next, previous, title }) => {
    let { declaracion } = useParams();
    const [id, setID] = useState(0);
 
@@ -25,9 +25,9 @@ export const DatosEmpleo = ({ loading,data, next, previous, title }) => {
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
    const [active, setActive] = useState(false);
    const { nivelOrdenGobierno, ambitoPublico, nombreEntePublico } = Request({ peticiones: ["nivelOrdenGobierno", "ambitoPublico", "nombreEntePublico"] });
-   const [mexico,setMexico] = useState(true)
-   const [idEntidad,setIdEntidad] = useState(0)
-   const [activeState,setActiveState] = useState(true)
+   const [mexico, setMexico] = useState(true);
+   const [idEntidad, setIdEntidad] = useState(0);
+   const [activeState, setActiveState] = useState(true);
    useEffect(() => {
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.DatosEmpleo.initialState), useSelector((state) => state.DatosEmpleo.validationSchema)]);
@@ -50,9 +50,9 @@ export const DatosEmpleo = ({ loading,data, next, previous, title }) => {
    }, [data]);
    const modifiedDataEmpleosCargos = () => {
       setID(parseInt(data.Id_DatosEmpleoCargoComision));
-      setMexico(data.EsEnMexico==0?false:true)
-      setActiveState(isNumber(parseInt(data.Id_MunicipioAlcaldia)) && false)
-      setIdEntidad(isNumber(parseInt(data.Id_EntidadFederativa)) ?parseInt(data.Id_EntidadFederativa):0 )
+      setMexico(data.EsEnMexico == 0 ? false : true);
+      setActiveState(isNumber(parseInt(data.Id_MunicipioAlcaldia)) && false);
+      setIdEntidad(isNumber(parseInt(data.Id_EntidadFederativa)) ? parseInt(data.Id_EntidadFederativa) : 0);
       insertFormik(formik, data);
    };
 
@@ -70,7 +70,7 @@ export const DatosEmpleo = ({ loading,data, next, previous, title }) => {
          )
       },
       { label: "Datos empleo", component: <InformacionEmpleo /> },
-      { label: "Domicilio", component: <DomicilioDeclarante  mex={mexico} activeState={activeState} idEntidad={idEntidad} /> }
+      { label: "Domicilio", component: <DomicilioDeclarante mex={mexico} activeState={activeState} idEntidad={idEntidad} /> }
    ];
    return (
       <>
@@ -83,9 +83,15 @@ export const DatosEmpleo = ({ loading,data, next, previous, title }) => {
             title={title}
             button={false}
             submit={submit}
-            message={"Los datos que no serán públicos estarán resaltados de color"}
+            message={"Los datos que no serán públicos estarán resaltados de color verde"}
          >
-            <ComponentStepper steps={steps} endButton={"Registrar y continuar"} buttonAfter={"Regresar"} buttonContinue={"Continuar"} />
+            <ComponentStepper
+               variantAfter="outlined"
+               steps={steps}
+               endButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
+               buttonAfter={"Regresar"}
+               buttonContinue={"Continuar"}
+            />
          </FormikForm>
       </>
    );

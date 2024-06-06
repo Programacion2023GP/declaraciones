@@ -15,7 +15,7 @@ import { Success } from "../../../toasts/toast";
 import { Post } from "../funciones/post";
 import { insertFormik } from "../../FuncionesFormik";
 
-export const DatosParejas = ({ loading,data, next, previous, title }) => {
+export const DatosParejas = ({ loading, data, next, previous, title }) => {
    const dataForm = useSelector((state) => state.DatosPareja.initialState);
    const validations = useSelector((state) => state.DatosPareja.validationSchema);
    const formik = useRef(null);
@@ -89,9 +89,7 @@ export const DatosParejas = ({ loading,data, next, previous, title }) => {
    const [ambitosPublicos, setAmbitosPublicos] = useState([]);
    const [nivelGobierno, setNivelGobiernos] = useState([]);
    const [pareja, setPareja] = useState(true);
-   useEffect(()=>{
-      
-   },[])
+   useEffect(() => {}, []);
    useEffect(() => {
       const init = async () => {
          setRelacionDeclarante(await GetAxios("relacioncondeclarante/show"));
@@ -117,8 +115,7 @@ export const DatosParejas = ({ loading,data, next, previous, title }) => {
       if (name == "HabitaDomicilioDeclarante" && value == 0) {
          setDomicilioPareja(true);
          dispatch(configValidations({ tipo: "DomicilioDeclarante" }));
-      } else if (name == "HabitaDomicilioDeclarante" && value ==1) {
-
+      } else if (name == "HabitaDomicilioDeclarante" && value == 1) {
          dispatch(configValidations({ tipo: "DomicilioDeclaranteNULL" }));
 
          setDomicilioPareja(false);
@@ -394,10 +391,12 @@ export const DatosParejas = ({ loading,data, next, previous, title }) => {
 
                               <Text col={12} name="Aclaraciones" label="Aclaraciones/Observaciones" rows={10} color={"green"} />
                            </Ngif>
-                           <Button sx={{ marginTop: "2rem" }} type="submit" variant="contained" color="primary">
-                              Registrar y Continuar
+                           <Button sx={{ marginRight: "1rem", marginTop: "2rem" }} type="button" onClick={previous} variant="text" color="inherit">
+                              Regresar a la pagina anterior
                            </Button>
-                        
+                           <Button sx={{ marginTop: "2rem" }} type="submit" variant="contained" color="primary">
+                              {data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
+                           </Button>
                         </Grid>
                      );
                   }}

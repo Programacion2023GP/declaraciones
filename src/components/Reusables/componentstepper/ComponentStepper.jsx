@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const color = pink[300];
 
-export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter, postStepper = 1 }) => {
+export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter, postStepper = 1,variantAfter }) => {
    const formik = useFormikContext();
    const { errors, touched, values, isSubmitting } = formik;
    const componentRef = useRef(null);
@@ -141,11 +141,12 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
          >
             <Button
                style={{
-                  backgroundColor: color,
-                  color: "white",
+                  // backgroundColor: color,
+                  // color: "white",
                   display: activeStep === 0 ? "none" : "inline-block" // Oculta el botón si activeStep es 0
                }}
-               variant="contained"
+               color="inherit"
+               variant={variantAfter?variantAfter:'text'}
                disabled={activeStep === 0}
                onClick={handleBack}
                sx={{ marginRight: 1 }}

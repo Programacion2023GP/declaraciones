@@ -42,7 +42,7 @@ const ComponentDeclaraciones = () => {
 
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja - 1 : 7);
+   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja : 0);
    const dispatch = useDispatch();
    React.useEffect(() => {
       dispatch(foundLocalization());
@@ -53,14 +53,11 @@ const ComponentDeclaraciones = () => {
       window.location.hash = "/dashboard/misdeclaraciones";
    };
    const handleNext = () => {
-    
-         setSend(false);
-         setActiveStep((prevActiveStep) => {
-            const nextStepIndex = prevActiveStep + 1;
-            // Avanzar solo al siguiente paso visible
-            return filteredSteps[nextStepIndex] ? nextStepIndex : prevActiveStep;
-         });
-     
+      setSend(false);
+      setActiveStep((prevActiveStep) => {
+         const nextStepIndex = prevActiveStep + 1;
+         return filteredSteps[nextStepIndex] ? nextStepIndex : prevActiveStep;
+      });
    };
    // const comparationData = (step) => {};
    // Método para manejar el paso anterior
@@ -180,7 +177,7 @@ const ComponentDeclaraciones = () => {
       searchHoja();
       setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
    }, [activeStep, declaracion]);
-   React.useEffect(() => {}, [update]);
+   React.useEffect(() => {}, [update,view]);
    React.useEffect(() => {}, [dataPage]);
    // React.useEffect(() => {
    //    setLoading(true);
@@ -191,10 +188,9 @@ const ComponentDeclaraciones = () => {
 
          setupdate(!update);
          const response = await GetAxios(`apartados/hoja/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
-         const foundHoja = parseInt(response[0].Hoja)
-   
-         if (isNumber(foundHoja) && foundHoja  >= activeStep+1) {
+         const foundHoja = parseInt(response[0].Hoja);
 
+         if (isNumber(foundHoja) && foundHoja >= activeStep + 1) {
             setHojaFilter(foundHoja - 1);
             setupdate(true);
          } else {
@@ -250,17 +246,18 @@ const ComponentDeclaraciones = () => {
                >
                   {/* Título del paso con estilos mejorados */}
                   <Typography
-                     className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
+                     // className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
                      variant="h4"
                      align="center"
                      gutterBottom
                      style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}
                   >
+                     
                      {getStepTitle()}
                   </Typography>
                   <br />
                   <Typography
-                     className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
+                     // className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
                      variant="h5"
                      align="center"
                      gutterBottom
@@ -269,14 +266,13 @@ const ComponentDeclaraciones = () => {
                      {getStepSubtitule()}
                   </Typography>
 
-                  {/* MobileStepper para navegar entre los pasos */}
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
                      {steps.map((step, index) => {
                         return (
                            step.exist.includes(declaracion) && (
                               <div
                                  key={index}
-                                 className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
+                                 // className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}
                                  style={{
                                     width: "10px",
                                     height: "10px",
@@ -295,15 +291,15 @@ const ComponentDeclaraciones = () => {
                   </Typography>
                   {/* Componente correspondiente al paso actual */}
                   <Ngif condition={view}>
-                     <Grid className={send ? "animate__animated animate__backOutRight" : "animate__animated animate__backInLeft"}>
+                     <Grid >
                         {React.cloneElement(filteredSteps[activeStep].component, { data: dataPage, loading: update })}
                      </Grid>
-                  </Ngif>
+                    </Ngif> 
                   <Ngif condition={!view}>
-                  <Loading />
+                     <Loading />
                   </Ngif>
 
-                  {/* <button onClick={handleNext}>Continuar</button>    */}
+                  <button onClick={handleNext}>Continuar</button>
                </div>
             </>
          </div>

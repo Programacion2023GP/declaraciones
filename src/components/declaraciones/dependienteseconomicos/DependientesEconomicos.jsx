@@ -43,7 +43,6 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
    };
    const formik = useRef();
    useEffect(() => {
-    
       if (parentescos.length > 0) {
          if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
             setDatas([]);
@@ -161,15 +160,18 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
    return (
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
-            <DataTable
-               headers={["Parentesco o relación con el declarante", "RFC", "Empleo, cargo o comisión"]}
-               dataHidden={["id"]}
-               data={datasTable}
-               // handleEdit={edit}
-               // editButton={true}
-               deleteButton={true}
-               handleDelete={deleteRow}
-            />
+            <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+               <DataTable
+                  headers={["Parentesco o relación con el declarante", "RFC", "Empleo, cargo o comisión"]}
+                  dataHidden={["id"]}
+                  data={datasTable}
+                  loading={loading && datas.length > 0}
+                  // handleEdit={edit}
+                  // editButton={true}
+                  deleteButton={true}
+                  handleDelete={deleteRow}
+               />
+            </Card>
          </Box>
          <br />
          <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
@@ -198,7 +200,6 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
                submit={submit}
                title={title}
                button={true}
-
             >
                <InitialValuesFormik handleGetValue={handleGetValue} getParentescos={setParentescos} />
                <Ngif condition={domicilioDeclarante}>
@@ -209,7 +210,8 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ marginLeft: "1rem" }} type="submit" variant="contained" color="primary" onClick={sendDatass}>
-               {datasTable.length > 0 ? "Registrar y continuar" : "Continuar"}
+               {loading?"Actualizar y Continuar":datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
+
             </Button>
          </Ngif>
       </>

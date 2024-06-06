@@ -42,7 +42,6 @@ export const ServidorPublico = ({ loading, data, next, previous, title }) => {
       }
    };
    useEffect(() => {
-
       if (data?.constructor === Object && Object.keys(data).length > 0) {
          modifiedDataServidor();
       }
@@ -86,6 +85,7 @@ export const ServidorPublico = ({ loading, data, next, previous, title }) => {
 
          <Ngif condition={checked}>
             <FormikForm
+               messageButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
                previousButton
                handlePrevious={previous}
                button={true}
@@ -101,7 +101,7 @@ export const ServidorPublico = ({ loading, data, next, previous, title }) => {
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ marginLeft: "2rem" }} onClick={continuar} type="submit" variant="contained" color="primary">
-               Continuar
+               {loading?'Actualizar y continuar':'Continuar'}
             </Button>
          </Ngif>
       </>

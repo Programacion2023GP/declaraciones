@@ -8,14 +8,14 @@ import { Request } from "../../Reusables/request/Request";
 import { TipoBien } from "./components/TipoBien";
 import { FormaAdquisicion } from "./components/FormaAdquisicion";
 import DataTable from "../../Reusables/table/DataTable";
-import { Box, Button, FormControlLabel, FormGroup, Switch } from "@mui/material";
+import { Box, Button, Card, FormControlLabel, FormGroup, Switch } from "@mui/material";
 import { Success } from "../../../toasts/toast";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { addValidacionesBienesMuebles } from "../../../redux/BienesMueblesHoja12/BienesMuebles";
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 
-export const BienesMuebles = ({loading, data, next, previous, title, setSend }) => {
+export const BienesMuebles = ({ loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.BienesMuebles.initialState);
    const validations = useSelector((state) => state.BienesMuebles.validationSchema);
    const [datas, setDatas] = useState([]);
@@ -147,13 +147,16 @@ export const BienesMuebles = ({loading, data, next, previous, title, setSend }) 
    return (
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
-            <DataTable
-               dataHidden={["identificador"]}
-               headers={["Tipo de Bien", "Titular del Bien", "Descripción del Bien"]}
-               data={dataTable}
-               handleDelete={deleteRow}
-               deleteButton={true}
-            />
+            <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+               <DataTable
+                  dataHidden={["identificador"]}
+                  loading={loading && datas.length > 0}
+                  headers={["Tipo de Bien", "Titular del Bien", "Descripción del Bien"]}
+                  data={dataTable}
+                  handleDelete={deleteRow}
+                  deleteButton={true}
+               />
+            </Card>
          </Box>
          <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
             <FormControlLabel
@@ -162,14 +165,13 @@ export const BienesMuebles = ({loading, data, next, previous, title, setSend }) 
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm ref={formik} initialValues={dataForm} validationSchema={validationSchema} submit={submit}>
+            <FormikForm previousButton={true} handlePrevious={previous} ref={formik} initialValues={dataForm} validationSchema={validationSchema} submit={submit}>
                <ComponentStepper postStepper={postStepper} steps={steps} buttonContinue={"Continuar"} endButton={"agregar a la tabla"} buttonAfter={"regresar"} />
-            
             </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ marginLeft: "2rem" }} onClick={sendData} type="submit" variant="contained" color="primary">
-               {datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
+               {loading ? "Actualizar y Continuar" : datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>

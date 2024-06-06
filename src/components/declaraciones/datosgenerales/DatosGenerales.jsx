@@ -14,7 +14,7 @@ import { addDatosGenerales, addValidacioneServidorPublico } from "../../../redux
 import { Error, Success } from "../../../toasts/toast";
 import { PostAxios } from "../../../services/services";
 import { insertFormik } from "../../FuncionesFormik";
-export const DatosGenerales = ({ loading,data, next, previous, title, setSend }) => {
+export const DatosGenerales = ({ loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.DatosGenerales.initialState);
    const validations = useSelector((state) => state.DatosGenerales.validationSchema);
    const [id, setID] = useState(0);
@@ -49,7 +49,7 @@ export const DatosGenerales = ({ loading,data, next, previous, title, setSend })
 
       data.Id_User = parseInt(localStorage.getItem("Id_User"));
       data.Id_Plazo = parseInt(declaracion);
-      dispatch(addDatosGenerales(data));
+      // dispatch(addDatosGenerales(data));
       try {
          const response = await PostAxios(url, data);
          id < 1 && localStorage.setItem("id_SituacionPatrimonial", response.data.result);
@@ -97,8 +97,14 @@ export const DatosGenerales = ({ loading,data, next, previous, title, setSend })
             title={title}
             submit={submit}
             message={"Los datos que no serán públicos estarán resaltados de color verde"}
+         
          >
-            <ComponentStepper steps={steps} endButton={"Registrar y continuar"} buttonAfter={"Regresar"} buttonContinue={"Continuar"} />
+            <ComponentStepper
+               steps={steps}
+               endButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
+               buttonAfter={"Regresar"}
+               buttonContinue={"Continuar"}
+            />
          </FormikForm>
       </>
    );

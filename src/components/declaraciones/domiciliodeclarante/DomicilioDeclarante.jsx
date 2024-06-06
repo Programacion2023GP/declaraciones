@@ -18,7 +18,7 @@ export const DomicilioDeclarante = ({ loading, data, next, previous, title }) =>
       const url = `domiciliodeclarante/${id > 0 ? `update/${id}` : "create"}`;
 
       values.EsEnMexico = parseInt(values.EsEnMexico);
-
+      
       Post(url, values, next);
    };
 
@@ -47,6 +47,7 @@ export const DomicilioDeclarante = ({ loading, data, next, previous, title }) =>
             validationSchema={validationSchema}
             button={true}
             title={title}
+            messageButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
             submit={sumbit}
             message={"Los datos que no serán públicos estarán resaltados de color verde"}
          >

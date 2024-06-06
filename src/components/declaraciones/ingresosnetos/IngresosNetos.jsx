@@ -9,7 +9,7 @@ import { Post } from "../funciones/post";
 import { insertFormik } from "../../FuncionesFormik";
 import { FormikForm } from "../../Reusables/formik/FormikForm";
 
-export const IngresosNetos = ({loading, data, next, previous, title }) => {
+export const IngresosNetos = ({ loading, data, next, previous, title }) => {
    const formik = useRef();
    const dataForm = useSelector((state) => state.IngresosNetos.initialState);
    const validations = useSelector((state) => state.IngresosNetos.validationSchema);
@@ -18,7 +18,7 @@ export const IngresosNetos = ({loading, data, next, previous, title }) => {
    const [id, setID] = useState(0);
 
    const submit = async (values, { resetForm }) => {
-      const url = `ingresos/${id > 0 ? `update/${id}` :"create"}`;
+      const url = `ingresos/${id > 0 ? `update/${id}` : "create"}`;
 
       try {
          const response = await Post(url, values, next);
@@ -35,7 +35,6 @@ export const IngresosNetos = ({loading, data, next, previous, title }) => {
       }
    };
    useEffect(() => {
-      console.log(data);
       if (data?.constructor === Object && Object.keys(data).length > 0) {
          modifiedDataIngresos();
       }
@@ -50,7 +49,18 @@ export const IngresosNetos = ({loading, data, next, previous, title }) => {
    }, [useSelector((state) => state.IngresosNetos.validationSchema), useSelector((state) => state.IngresosNetos.initialState)]);
    return (
       <>
-         <FormikForm previousButton handlePrevious={previous} button={true} ref={formik} previous={previous} initialValues={dataForm} validationSchema={validationSchema} title={title} submit={submit}>
+         <FormikForm
+            messageButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
+            previousButton
+            handlePrevious={previous}
+            button={true}
+            ref={formik}
+            previous={previous}
+            initialValues={dataForm}
+            validationSchema={validationSchema}
+            title={title}
+            submit={submit}
+         >
             <FormikInitialValues />
          </FormikForm>
       </>

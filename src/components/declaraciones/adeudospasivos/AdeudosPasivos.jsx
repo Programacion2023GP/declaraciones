@@ -6,14 +6,14 @@ import { FormikForm } from "../../Reusables/formik/FormikForm";
 import { Request } from "../../Reusables/request/Request";
 import { InitialValues } from "./components/InitialValues";
 import { useParams } from "react-router-dom";
-import { Box, Button, FormControlLabel, FormGroup, Switch } from "@mui/material";
+import { Box, Button, Card, FormControlLabel, FormGroup, Switch } from "@mui/material";
 import DataTable from "../../Reusables/table/DataTable";
 import { addAdeudosPasivos } from "../../../redux/AdeudosPasivoshoja14/AdeudosPasivosHoja14";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 
-export const AdeudosPasivos = ({ loading,data, title, next, previous, setSend }) => {
+export const AdeudosPasivos = ({ loading, data, title, next, previous, setSend }) => {
    const validations = useSelector((state) => state.AdeudosPasivos.validationSchema);
    const dataForm = useSelector((state) => state.AdeudosPasivos.initialState);
    const dispatch = useDispatch();
@@ -109,7 +109,7 @@ export const AdeudosPasivos = ({ loading,data, title, next, previous, setSend })
          await sendApi();
 
          setDatas([]);
-         setDatasTable([])
+         setDatasTable([]);
       } else {
          try {
             const response = await Axios.post(`apartados/create/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}/${14}/1`);
@@ -123,8 +123,17 @@ export const AdeudosPasivos = ({ loading,data, title, next, previous, setSend })
    };
    return (
       <>
-         <Box key={"box"} alignItems={"center"} justifyContent={"center"} display={"flex"}>
-            <DataTable dataHidden={["id"]} headers={["Nombre", "Titular del Adeudo", "No. Cuenta"]} data={datasTable} handleDelete={deleteRow} deleteButton={true} />
+         <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
+            <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+               <DataTable
+                  loading={loading && datas.length > 0}
+                  dataHidden={["id"]}
+                  headers={["Nombre", "Titular del Adeudo", "No. Cuenta"]}
+                  data={datasTable}
+                  handleDelete={deleteRow}
+                  deleteButton={true}
+               />
+            </Card>
          </Box>
 
          <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
@@ -136,8 +145,8 @@ export const AdeudosPasivos = ({ loading,data, title, next, previous, setSend })
          <Ngif condition={checked}>
             <FormikForm initialValues={dataForm} validationSchema={validationSchema} submit={submit} title={title} ref={formik}>
                <InitialValues titular={titular} monedas={monedas} tipoAdeudos={tipoAdeudos} />
-               <Button onClick={previous} sx={{ marginTop: "1rem", marginRight: "1rem" }} type="button" variant="contained" color="secondary">
-                  Regresar
+               <Button onClick={previous} sx={{ marginTop: "1rem", marginRight: "1rem" }} type="button" variant="text" color="inherit">
+                  Regresar a la pagina anterior
                </Button>
                <Button sx={{ marginTop: "1rem" }} type="submit" variant="contained" color="primary">
                   Agregar a la tabla
@@ -146,7 +155,9 @@ export const AdeudosPasivos = ({ loading,data, title, next, previous, setSend })
          </Ngif>
          <Ngif condition={!checked}>
             <Button onClick={sendData} sx={{ marginTop: "1rem", marginLeft: "1rem" }} type="submit" variant="contained" color="primary">
-               {datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
+               {/* {datas.length > 0 ? "Registrar y Continuar" : "Continuar"} */}
+               {loading ? "Actualizar y Continuar" : datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
+
             </Button>
          </Ngif>
       </>

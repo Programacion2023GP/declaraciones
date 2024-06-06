@@ -7,7 +7,7 @@ import { FormikForm } from "../../Reusables/formik/FormikForm";
 import { InitialValues } from "./components/initialValues";
 import { Post } from "../funciones/post";
 import { insertFormik } from "../../FuncionesFormik";
-export const DatosCurriculares = ({ loading,data, next, previous, title }) => {
+export const DatosCurriculares = ({ loading, data, next, previous, title }) => {
    let { declaracion } = useParams();
    const dataForm = useSelector((state) => state.DatosCurriculares.initialState);
    const validations = useSelector((state) => state.DatosCurriculares.validationSchema);
@@ -31,13 +31,13 @@ export const DatosCurriculares = ({ loading,data, next, previous, title }) => {
       }
    }, [data]);
    const modifiedDatosCurriculares = () => {
-
       setID(parseInt(data.Id_DatosCurriculares));
       insertFormik(formik, data);
    };
    return (
       <FormikForm
          ref={formik}
+         messageButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
          previousButton={true}
          handlePrevious={previous}
          button={true}
@@ -48,6 +48,7 @@ export const DatosCurriculares = ({ loading,data, next, previous, title }) => {
          message={"Capture su ultimo grado de estudios."}
       >
          <InitialValues nivelEstudios={nivelEstudios} estatus={estatus} documentosObtenidos={documentosObtenidos} />
+       
       </FormikForm>
    );
 };

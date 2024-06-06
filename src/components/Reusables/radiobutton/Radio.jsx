@@ -51,46 +51,61 @@ export const CustomRadio = ({
             value={values[name]} // Usar el valor del formulario
             onChange={handleChange} // Usar la función de cambio de Formik
             onBlur={handleBlur} // Usar la función de desenfoque de Formik
-            sx={{  maxWidth: "100%", flexDirection: rowLayout ? "row" : "column", flexWrap: "wrap", textWrap: "wrap", }} // Ajustar la dirección del grupo de radio
+            sx={{ maxWidth: "100%", flexDirection: rowLayout ? "row" : "column", flexWrap: "wrap", textWrap: "wrap" }} // Ajustar la dirección del grupo de radio
          >
             <Ngif condition={options.length > 0}>
-            <Box
+               <Box
                   sx={{
-                     display: 'flex',
-                     flexWrap: 'wrap',
-                     gap: '8px',
-                     width: '100%',
+                     display: "flex",
+                     flexWrap: "wrap",
+                     gap: "8px",
+                     width: "100%"
                   }}
                >
-               {options.map((option, index) => (
-                  <FormControlLabel
-                     key={index}
-                     value={option.value}
-                     onClick={() => {
-                        //  console.log("hola", handleGetValue);
-                        handleValue(name, option.value);
-                     }}
-                     control={<Radio sx={{ flexWrap: "wrap", textWrap: "wrap" }} />}
-                     label={option.label}
-                     disabled={loading}
-                     sx={{
-                        flexWrap: "wrap",
-                        textWrap: "wrap",
-                        maxWidth: "100%",
-                        marginBottom: rowLayout ? 0 : "8px", // Espacio entre los radio buttons si están en columnas
-                        "& .MuiRadio-root": {
-                           color: "#1976d2"
-                        },
-                        "& .MuiFormControlLabel-label": {
-                           color: "#1976d2",
-                           fontSize: "14px"
-                        },
-                        "& .Mui-checked": {
-                           color: "#1976d2"
+                  {options.map((option, index) => (
+                     <FormControlLabel
+                        key={index}
+                        value={option.value}
+                        onClick={() => {
+                           //  console.log("hola", handleGetValue);
+                           handleValue(name, option.value);
+                        }}
+                        control={
+                           <Radio
+                              sx={{
+                                 flexWrap: "wrap",
+                                 textWrap: "wrap",
+                                 color: "black",
+                                 "&.Mui-checked": {
+                                    color: "black"
+                                 },
+                                 "& .MuiSvgIcon-root": {
+                                    fill: "black"
+                                 }
+                              }}
+                           />
                         }
-                     }}
-                  />
-               ))}
+                        label={option.label}
+                        disabled={loading}
+                        sx={{
+                           flexWrap: "wrap",
+                           textWrap: "wrap",
+                           color:"black",
+                           maxWidth: "100%",
+                           marginBottom: rowLayout ? 0 : "8px", // Espacio entre los radio buttons si están en columnas
+                           "& .MuiRadio-root": {
+                              color: "black"
+                           },
+                           "& .MuiFormControlLabel-label": {
+                              color: "black",
+                              fontSize: "14px"
+                           },
+                           "& .Mui-checked": {
+                              color: "black"
+                           }
+                        }}
+                     />
+                  ))}
                </Box>
             </Ngif>
          </RadioGroup>

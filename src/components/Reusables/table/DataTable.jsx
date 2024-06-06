@@ -20,7 +20,10 @@ import DialogContentText from "@mui/material/DialogContentText";
 import Slide from "@mui/material/Slide";
 import { Chart } from "../charts/Charts";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
+import Loading from "../loading/Loading";
+import DehazeIcon from "@mui/icons-material/Dehaze";
 
+import BasicMenu from "../basicmenu/BasicMenu";
 const SearchInput = ({ column, data, getData, previousData }) => {
    const [searchText, setSearchText] = useState("");
    const [previousDataFilter, setPreviousDataFilter] = useState(data);
@@ -242,7 +245,11 @@ const DataTable = ({
    handleEdit,
    handleDelete,
    filterGlobal,
-   conditionExistEditButton = []
+   conditionExistEditButton = [],
+   conditionExistDeleteButton = [],
+   loading,
+   moreButtons = [],
+   buttonsMenu = false
 }) => {
    const [reinitializedData, setReinitializedData] = useState(data);
    const [dataFilter, setDataFilter] = useState(data);
@@ -250,7 +257,6 @@ const DataTable = ({
    const [dataTable, setDataTable] = useState([]);
    const [totalPages, setTotalPages] = useState([]);
    const [numberShowPage, setNumberShowPage] = useState(1);
-   const [loading, setLoading] = useState(false);
    const [selectRow, setSelectRow] = useState(pagination ? pagination[0] : 100000);
    const [objectValues, setObjectValues] = useState({});
    const handleSeparateData = async (option) => {
@@ -318,7 +324,7 @@ const DataTable = ({
       const showData = data.filter((column) => column.page === page);
       if (showData.length > 0 && showData[0].hasOwnProperty("items")) {
          setDataTable(showData[0].items);
-         setLoading(false);
+         // setLoading(false);
       } else {
          setDataTable([]);
       }
@@ -397,6 +403,59 @@ const DataTable = ({
          }
       });
    };
+   const checkConditionsMoreButton = (item, array) => {
+      console.log(item, array);
+      return array.every((condition) => {
+         const match = condition.match(/(.+?)\s*(==|!=|>=|<=|>|<)\s*'([^']+)'/);
+         if (!match) return false;
+
+         const [, key, operator, value] = match;
+         const itemValue = item[key.trim()];
+
+         switch (operator) {
+            case "!=":
+               return itemValue != value;
+            case "==":
+               return itemValue == value;
+            case ">=":
+               return itemValue >= value;
+            case "<=":
+               return itemValue <= value;
+            case ">":
+               return itemValue > value;
+            case "<":
+               return itemValue < value;
+            default:
+               return false;
+         }
+      });
+   };
+   const checkConditionsDelete = (item) => {
+      return conditionExistDeleteButton.every((condition) => {
+         const match = condition.match(/(.+?)\s*(==|!=|>=|<=|>|<)\s*'([^']+)'/);
+         if (!match) return false;
+
+         const [, key, operator, value] = match;
+         const itemValue = item[key.trim()];
+
+         switch (operator) {
+            case "!=":
+               return itemValue != value;
+            case "==":
+               return itemValue == value;
+            case ">=":
+               return itemValue >= value;
+            case "<=":
+               return itemValue <= value;
+            case ">":
+               return itemValue > value;
+            case "<":
+               return itemValue < value;
+            default:
+               return false;
+         }
+      });
+   };
    useEffect(() => {
       // if (dataFilter.length == 0) {
       //    setDataFilter(data);
@@ -410,7 +469,8 @@ const DataTable = ({
       };
       init();
       setNumberShowPage(1);
-   }, [loading, selectRow, pagination, headers, objectValues, dataFilter]);
+   }, [selectRow, pagination, headers, objectValues, dataFilter]);
+   useEffect(() => {}, [loading]);
    useEffect(() => {
       setDataFilter(data);
 
@@ -424,23 +484,14 @@ const DataTable = ({
       init();
       setNumberShowPage(1);
    }, [data]);
+
    return (
       <>
-         <div
-            className=""
-            // style={{
-            //    maxWidth: "100%",
-            //    display: "flex",
-            //    flexDirection: "column",
-            //    overflowX: "auto", // Asegura que el contenido se ajuste sin desbordar
-            //    alignItems: "center" // Asegura que el contenido esté centrado
-            // }}
-         >
-            <table width={"100%"} style={{ borderCollapse: "collapse" }}>
-               <caption>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                     {filterGlobal && <FilterGlobal data={data} setFilteredData={applyfilterGlobal} dataHidden={dataHidden} onChange={handleOptions} />}
-                     <Ngif condition={options}>
+         <table width={"100%"} style={{ borderCollapse: "collapse" }}>
+            <caption>
+               <div style={{ display: "flex", alignItems: "center" }}>
+                  {filterGlobal && <FilterGlobal data={data} setFilteredData={applyfilterGlobal} dataHidden={dataHidden} onChange={handleOptions} />}
+                  <Ngif condition={options}>
                      <Box sx={{ minWidth: 120, marginLeft: "auto" }}>
                         <FormControl fullWidth>
                            <InputLabel id="demo-simple-select-label">Opciones</InputLabel>
@@ -458,59 +509,52 @@ const DataTable = ({
                            </Select>
                         </FormControl>
                      </Box>
+                  </Ngif>
+               </div>
+            </caption>
 
-                     </Ngif>
-                  </div>
-               </caption>
-
-               {titles.length > 0 || headers.length > 0 ? (
-                  <Title
-                     editButton={editButton}
-                     deleteButton={deleteButton}
-                     headers={headers}
-                     titles={titles}
-                     previousData={data}
-                     data={dataFilter}
-                     filterData={filterData}
-                     filter={filter}
-                  ></Title>
-               ) : (
-                  <thead>
-                     <tr>
-                        <th>No hay titulos cargados ...</th>
-                     </tr>
-                  </thead>
-               )}
-               {data.length === 0 || dataTable.length === 0 ? (
-                  <tbody>
-                     <tr>
-                        <td colSpan={headers.length + 1} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>
-                           No hay información suficiente no hay registros
-                        </td>
-                     </tr>
-                  </tbody>
-               ) : (
-                  <tbody>
-                     {dataTable.map((item, index) => {
-                        return (
-                           <tr key={index} style={{}}>
-                              {Object.entries(item).map(([key, value]) => {
-                                 if (dataHidden) {
-                                    if (!dataHidden.includes(key)) {
-                                       return (
-                                          <td
-                                             style={{ textAlign: "center", border: "1px solid #BDBDBD", paddingLeft: "5px", paddingRight: "5px", margin: 0 }}
-                                             key={key}
-                                             cols={value}
-                                          >
-                                             {value}
-                                          </td>
-                                       );
-                                    }
-                                 } else {
+            {titles.length > 0 || headers.length > 0 ? (
+               <Title
+                  editButton={editButton}
+                  deleteButton={deleteButton}
+                  headers={headers}
+                  titles={titles}
+                  previousData={data}
+                  data={dataFilter}
+                  filterData={filterData}
+                  filter={filter}
+               ></Title>
+            ) : (
+               <thead>
+                  <tr>
+                     <th>No hay titulos cargados ...</th>
+                  </tr>
+               </thead>
+            )}
+            {data.length === 0 || dataTable.length === 0 ? (
+               <tbody>
+                  <tr>
+                     <td colSpan={headers.length + 1} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>
+                        <Ngif condition={loading}>
+                           <Box sx={{ position: "fixed", left: 0, right: 0, end: 0 }}>
+                              <Loading />
+                           </Box>
+                        </Ngif>
+                        <Ngif condition={!loading}>No hay información suficiente no hay registros</Ngif>
+                     </td>
+                  </tr>
+               </tbody>
+            ) : (
+               <tbody>
+                  {dataTable.map((item, index) => {
+                     return (
+                        <tr key={index} style={{}}>
+                           {Object.entries(item).map(([key, value]) => {
+                              if (dataHidden) {
+                                 if (!dataHidden.includes(key)) {
                                     return (
                                        <td
-                                          style={{ textAlign: "center", borderBottom: "1px solid", paddingLeft: "5px", paddingRight: "5px", margin: 0 }}
+                                          style={{ textAlign: "center", border: "1px solid #BDBDBD", paddingLeft: "5px", paddingRight: "5px", margin: 0 }}
                                           key={key}
                                           cols={value}
                                        >
@@ -518,61 +562,90 @@ const DataTable = ({
                                        </td>
                                     );
                                  }
-                              })}
-                              {(editButton || deleteButton) && (
-                                 <td style={{ textAlign: "center", border: "1px solid #BDBDBD", padding: 0, margin: 0 }}>
-                                    {editButton && checkConditions(item) && (
-                                       <IconButton
-                                          aria-label="edit"
-                                          color="warning"
-                                          onClick={() => {
-                                             handleEdit(item);
-                                          }}
-                                       >
-                                          <EditIcon style={{ color: "orange" }} />
-                                       </IconButton>
-                                    )}
-                                    {deleteButton && (
-                                       <IconButton
-                                          aria-label="delete"
-                                          color="warning"
-                                          onClick={() => {
-                                             handleDelete(item);
-                                          }}
-                                       >
-                                          <DeleteIcon style={{ color: "red" }} />
-                                       </IconButton>
-                                    )}
-                                 </td>
-                              )}
-                           </tr>
-                        );
-                     })}
-                  </tbody>
-               )}
-               {pagination && (
-                  <tfoot>
-                     <tr>
-                        <td
-                           colSpan={headers.length + (editButton || deleteButton ? 1 : 0)}
-                           style={{ border: "1px solid #BDBDBD", padding: "0.5rem", textAlign: "center" }}
-                        >
-                           <Paginator
-                              selectRow={selectRow}
-                              dataFilter={dataFilter.length}
-                              pagination={pagination}
-                              handleChange={handleSeparateData}
-                              pages={totalPages}
-                              previous={previous}
-                              next={next}
-                              page={numberShowPage}
-                           />
-                        </td>
-                     </tr>
-                  </tfoot>
-               )}
-            </table>
-            {/* {pagination && (
+                              } else {
+                                 return (
+                                    <td
+                                       style={{ textAlign: "center", borderBottom: "1px solid", paddingLeft: "5px", paddingRight: "5px", margin: 0 }}
+                                       key={key}
+                                       cols={value}
+                                    >
+                                       {value}
+                                    </td>
+                                 );
+                              }
+                           })}
+                           {(editButton || deleteButton || moreButtons) && (
+                              <td style={{ textAlign: "center", border: "1px solid #BDBDBD", padding: 0, margin: 0 }}>
+                                 <Ngif condition={buttonsMenu}>
+                                    <BasicMenu>
+                                       <Ngif condition={editButton && checkConditions(item)}>
+                                          <MenuItem
+                                             onClick={() => {
+                                                handleEdit(item);
+                                             }}
+                                          >
+                                             <EditButton handleEdit={handleEdit} item={item} />
+                                          </MenuItem>
+                                       </Ngif>
+                                       <Ngif condition={deleteButton && checkConditionsDelete(item)}>
+                                          <MenuItem
+                                             onClick={() => {
+                                                handleDelete(item);
+                                             }}
+                                          >
+                                             <DeleteButton handleDelete={handleDelete} item={item} />
+                                          </MenuItem>
+                                             <MoreButtons
+                                                item={item}
+                                                moreButtons={moreButtons}
+                                                checkConditionsMoreButton={checkConditionsMoreButton}
+                                                buttonsMenu={buttonsMenu}
+                                             />
+                                       </Ngif>
+                                    </BasicMenu>
+                                 </Ngif>
+                                 <Ngif condition={!buttonsMenu}>
+                                    <Ngif condition={editButton && checkConditions(item)}>
+                                       <EditButton handleEdit={handleEdit} item={item} />
+                                    </Ngif>
+                                    <Ngif condition={deleteButton && checkConditionsDelete(item)}>
+                                       <DeleteButton handleDelete={handleDelete} item={item} />
+                                    </Ngif>
+
+                                    <Ngif condition={moreButtons.length > 0}>
+                                       <MoreButtons item={item} moreButtons={moreButtons} checkConditionsMoreButton={checkConditionsMoreButton} />
+                                    </Ngif>
+                                 </Ngif>
+                              </td>
+                           )}
+                        </tr>
+                     );
+                  })}
+               </tbody>
+            )}
+            {pagination && (
+               <tfoot>
+                  <tr>
+                     <td
+                        colSpan={headers.length + (editButton || deleteButton ? 1 : 0)}
+                        style={{ border: "1px solid #BDBDBD", padding: "0.5rem", textAlign: "center" }}
+                     >
+                        <Paginator
+                           selectRow={selectRow}
+                           dataFilter={dataFilter.length}
+                           pagination={pagination}
+                           handleChange={handleSeparateData}
+                           pages={totalPages}
+                           previous={previous}
+                           next={next}
+                           page={numberShowPage}
+                        />
+                     </td>
+                  </tr>
+               </tfoot>
+            )}
+         </table>
+         {/* {pagination && (
                <div
                style={{
                   width: "100%", // Asegura que el paginator ocupe todo el ancho del contenedor
@@ -595,7 +668,6 @@ const DataTable = ({
                />
                 </div>
             )} */}
-         </div>
          <Ngif condition={options}>
             <Modal openModal={openModal} setOpenModal={setOpenModal}>
                <Component option={textModal} titles={headers} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} />
@@ -611,6 +683,75 @@ const DataTable = ({
       //       </table>
 
       // )
+   );
+};
+
+const MoreButtons = ({ item, moreButtons, checkConditionsMoreButton, buttonsMenu=false }) => {
+   return (
+      <>
+         {moreButtons.map((element, i) => {
+            if (checkConditionsMoreButton(item, element.conditions)) {
+               return (
+                  <>
+                     <Ngif condition={buttonsMenu}>
+                        <MenuItem
+                           onClick={() => {
+                              element.handleButton(element);
+                           }}
+                        >
+                           <IconButton
+                              key={i} // Añadido un key único para cada elemento del array
+                              aria-label="edit"
+                              color="warning"
+                           >
+                              <element.icon style={{ color: element.color }} />
+                           </IconButton>
+                        </MenuItem>
+                     </Ngif>
+                     <Ngif condition={!buttonsMenu}>
+                        <IconButton
+                           key={i} // Añadido un key único para cada elemento del array
+                           aria-label="edit"
+                           color="warning"
+                           onClick={() => {
+                              element.handleButton(element);
+                           }}
+                        >
+                           <element.icon style={{ color: element.color }} />
+                        </IconButton>
+                     </Ngif>
+                  </>
+               );
+            }
+         })}
+      </>
+   );
+};
+
+const EditButton = ({ handleEdit, item }) => {
+   return (
+      <IconButton
+         aria-label="edit"
+         color="warning"
+         onClick={() => {
+            handleEdit(item);
+         }}
+      >
+         <EditIcon style={{ color: "orange" }} />
+      </IconButton>
+   );
+};
+const DeleteButton = ({ handleDelete, item }) => {
+   return (
+      <IconButton
+         aria-label="delete"
+         color="warning"
+         onClick={() => {
+            handleDelete(item);
+         }}
+      >
+         <DeleteIcon style={{ color: "red" }} />
+      </IconButton>
    );
 };
 
@@ -717,7 +858,7 @@ const Charts = ({ titles, dataFilter, headers, dataHidden }) => {
             xs={12}
             lg={5}
             sx={{
-               marginBottom:"2rem",
+               marginBottom: "2rem",
                marginLeft: "2rem",
                marginRight: "2rem",
                overflow: "hidden", // Cambiar overflow a "hidden" para evitar que la tabla se desborde
@@ -781,7 +922,7 @@ const Charts = ({ titles, dataFilter, headers, dataHidden }) => {
             xs={12}
             lg={6}
             sx={{
-               marginBottom:"2rem",
+               marginBottom: "2rem",
 
                overflow: "hidden", // Cambiar overflow a "hidden" para evitar que la tabla se desborde
                border: "2px solid #007bff",

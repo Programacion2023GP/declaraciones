@@ -9,7 +9,7 @@ import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { AutoComplete } from "../../Reusables/autocomplete/autocomplete";
 import { Text } from "../../Reusables/input/Input";
 import { DomicilioDeclarante } from "./components/DomicilioDeclarante";
-import { Box, Button, FormControlLabel, FormGroup, Switch } from "@mui/material";
+import { Box, Button, Card, FormControlLabel, FormGroup, Switch } from "@mui/material";
 import {
    addInmueblesPrestamos,
    addOtroPrestamo,
@@ -180,8 +180,17 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
    };
    return (
       <>
-         <Box key={"box"} alignItems={"center"} justifyContent={"center"} display={"flex"}>
-            <DataTable dataHidden={["id"]} headers={["Tipo de bien", "Especificación del bien"]} data={datasTable} handleDelete={deleteRow} deleteButton={true} />
+         <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
+            <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+               <DataTable
+                  loading={loading && datas.length > 0}
+                  dataHidden={["id"]}
+                  headers={["Tipo de bien", "Especificación del bien"]}
+                  data={datasTable}
+                  handleDelete={deleteRow}
+                  deleteButton={true}
+               />
+            </Card>
          </Box>
          <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
             <FormControlLabel
@@ -190,7 +199,7 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm ref={formik} initialValues={dataForm} validationSchema={validationSchema} submit={submit} title={title} advertence={message}>
+            <FormikForm ref={formik} initialValues={dataForm} validationSchema={validationSchema} submit={submit} title={title} >
                <CustomRadio
                   col={12}
                   title={"Tipo de Bien"}
@@ -235,8 +244,8 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
                   <AutoComplete col={12} name={"Id_Relacion"} label={"Relación con el dueño o el Titular"} options={relacion} />
                </Ngif>
                <Text col={12} name={"Aclaraciones"} label={"Aclaraciones/Observaciones"} rows={12} color={"green"} />
-               <Button onClick={previous} sx={{ marginTop: "1rem", marginRight: "1rem" }} type="button" variant="contained" color="secondary">
-                  Regresar
+               <Button onClick={previous} sx={{ marginTop: "1rem", marginRight: "1rem" }} type="button" variant="text" color="inherit">
+                  Regresar a la pagina anterior
                </Button>
                <Button sx={{ marginTop: "1rem" }} type="submit" variant="contained" color="primary">
                   Agregar a la tabla
@@ -245,16 +254,10 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
          </Ngif>
          <Ngif condition={!checked}>
             <Button onClick={sendData} sx={{ marginTop: "1rem", marginLeft: "1rem" }} type="submit" variant="contained" color="primary">
-               {datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
+               {/* {datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"} */}
+               {loading ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>
-         <button
-            onClick={() => {
-               console.log(formik.current.errors);
-            }}
-         >
-            errores
-         </button>
       </>
    );
 };

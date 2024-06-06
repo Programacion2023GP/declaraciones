@@ -5,14 +5,14 @@ import { FormikForm } from "../../Reusables/formik/FormikForm";
 import { InitialValues } from "./components/InitialValues";
 import { Request } from "../../Reusables/request/Request";
 import DataTable from "../../Reusables/table/DataTable";
-import { Box, Button, FormControlLabel, FormGroup, Switch } from "@mui/material";
+import { Box, Button, Card, FormControlLabel, FormGroup, Switch } from "@mui/material";
 import { Success } from "../../../toasts/toast";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { addInversionesCuentasValores } from "../../../redux/InversionesCuentasValoresHoja13/InversionesCuentasValores";
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 
-export const InversionesCuentasValores = ({loading, data, next, previous, title, setSend }) => {
+export const InversionesCuentasValores = ({ loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.InversionesCuentasValores.initialState);
    const validations = useSelector((state) => state.InversionesCuentasValores.validationSchema);
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
@@ -110,14 +110,17 @@ export const InversionesCuentasValores = ({loading, data, next, previous, title,
 
    return (
       <>
-         <Box key={"box"} alignItems={"center"} justifyContent={"center"} display={"flex"}>
-            <DataTable
-               dataHidden={["identificador"]}
-               headers={["Tipo de Inversion / Activo", "Titular", "Institución/ Razon social"]}
-               data={datasTable}
-               handleDelete={deleteRow}
-               deleteButton={true}
-            />
+         <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
+            <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+               <DataTable
+                  loading={loading && datas.length > 0}
+                  dataHidden={["identificador"]}
+                  headers={["Tipo de Inversion / Activo", "Titular", "Institución/ Razon social"]}
+                  data={datasTable}
+                  handleDelete={deleteRow}
+                  deleteButton={true}
+               />
+            </Card>
          </Box>
          <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
             <FormControlLabel
@@ -126,10 +129,10 @@ export const InversionesCuentasValores = ({loading, data, next, previous, title,
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm ref={formik} initialValues={dataForm} validationSchema={validationSchema} title={title} submit={submit}>
+            <FormikForm  ref={formik} initialValues={dataForm} validationSchema={validationSchema} title={title} submit={submit}>
                <InitialValues titular={titular} tipoinversion={tipoinversion} monedas={monedas} />
-               <Button onClick={previous} sx={{ marginTop: "1rem", marginRight: "1rem" }} type="button" variant="contained" color="secondary">
-                  Regresar
+               <Button onClick={previous} sx={{ marginTop: "1rem", marginRight: "1rem" }} type="button" variant="text" color="inherit">
+                  Regresar a la pagina anterior
                </Button>
                <Button sx={{ marginTop: "1rem" }} type="submit" variant="contained" color="primary">
                   Agregar a la tabla
@@ -138,7 +141,9 @@ export const InversionesCuentasValores = ({loading, data, next, previous, title,
          </Ngif>
          <Ngif condition={!checked}>
             <Button onClick={sendData} sx={{ marginTop: "1rem", marginLeft: "1rem" }} type="submit" variant="contained" color="primary">
-               {datas.length > 0 ? "Registrar y continuar" : "Continuar"}
+               {/* {datas.length > 0 ? "Registrar y continuar" : "Continuar"} */}
+               {loading ? "Actualizar y Continuar" : datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
+
             </Button>
          </Ngif>
       </>

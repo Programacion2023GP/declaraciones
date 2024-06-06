@@ -3,28 +3,45 @@ import { Formik } from "formik";
 import { Ngif } from "../conditionals/Ngif";
 import { forwardRef, useEffect } from "react";
 export const FormikForm = forwardRef(
-   ({ className, initialValues, validationSchema,sizeTitle, submit, title, children, message, button, previousButton, handlePrevious, advertence,messageButton }, ref) => {
+   (
+      {
+         className,
+         initialValues,
+         validationSchema,
+         sizeTitle,
+         submit,
+         title,
+         children,
+         message,
+         button,
+         previousButton,
+         handlePrevious,
+         advertence,
+         messageButton,
+      },
+      ref
+   ) => {
       useEffect(() => {}, []);
       return (
          <Card className={className} sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}>
             <CardContent>
-               <Typography variant={sizeTitle?sizeTitle:'h3'} align="center" color="textPrimary" style={{ fontWeight: "500" }}>
+               <Typography variant={sizeTitle ? sizeTitle : "h5"} align="center" color="textPrimary" style={{ fontWeight: "500" }}>
                   {title}
                </Typography>
-               <Typography variant="h6" align="left" color="textPrimary" style={{ fontWeight: "500" }}>
+               <Typography variant="subtitle2" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
                   {message}
                </Typography>
-              <Ngif condition={advertence}>
-              <Alert  variant="filled" severity="info" >
-                  Notas
-                  <br />
-                  {advertence}
-               </Alert>
-              </Ngif>
+               <Ngif condition={advertence}>
+                  <Alert variant="filled" severity="info">
+                     Notas
+                     <br />
+                     {advertence}
+                  </Alert>
+               </Ngif>
                <br />
                <Grid container spacing={1}>
-                  <Formik innerRef={ref} initialValues={initialValues} validationSchema={validationSchema} onSubmit={submit}  >
-                     {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues ,}) => {
+                  <Formik innerRef={ref} initialValues={initialValues} validationSchema={validationSchema} onSubmit={submit}>
+                     {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues }) => {
                         {
                            // console.log(errors);
                         }
@@ -34,15 +51,13 @@ export const FormikForm = forwardRef(
                                  {children}
 
                                  <Ngif condition={previousButton && handlePrevious}>
-                                  
-                                    <Button sx={{ marginTop: "1rem",marginRight:"1ren" }} type="button" onClick={handlePrevious} variant="outlined" color="secondary">
-                                    Regresar a la pagina anterior
+                                    <Button sx={{ marginTop: "1rem", marginRight: "1ren" }} type="button" onClick={handlePrevious} variant="text" color="inherit">
+                                       Regresar a la pagina anterior
                                     </Button>
                                  </Ngif>
                                  <Ngif condition={button}>
-                                     
-                                    <Button sx={{ marginLeft:"1rem",marginTop: "1rem" }} type="submit" variant="contained" color="primary">
-                                       {messageButton?messageButton:"Registrar y Continuar"}
+                                    <Button sx={{ marginLeft: "1rem", marginTop: "1rem" }} type="submit" variant="contained" color="primary">
+                                       {messageButton ? messageButton : "Registrar y Continuar"}
                                     </Button>
                                  </Ngif>
                               </Grid>

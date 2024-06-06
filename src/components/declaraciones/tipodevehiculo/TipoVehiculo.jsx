@@ -9,14 +9,14 @@ import { ComponentStepper } from "../../Reusables/componentstepper/ComponentStep
 import { useParams } from "react-router-dom";
 import { Adquisicion } from "./components/Adquisicion";
 import DataTable from "../../Reusables/table/DataTable";
-import { Box, Button, FormControlLabel, FormGroup, Switch } from "@mui/material";
+import { Box, Button, Card, FormControlLabel, FormGroup, Switch } from "@mui/material";
 import { Success } from "../../../toasts/toast";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Post } from "../funciones/post";
 import { addVehiculo } from "../../../redux/VehiculosHoja11/VehiculosHoja11";
 import { Axios } from "../../../services/services";
 
-export const TipoVehiculo = ({loading, data, next, previous, title, setSend }) => {
+export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.Vehiculos.initialState);
    const validations = useSelector((state) => state.Vehiculos.validationSchema);
    const [datas, setDatas] = useState([]);
@@ -74,14 +74,15 @@ export const TipoVehiculo = ({loading, data, next, previous, title, setSend }) =
    const addDataTableModified = (values, index) => {
       values.identificador = index;
       const newDatas = [...datas, values];
-      
+
       const newData = {
          identificador: index,
-         "Tipo de Vehículo": values.Id_TipoVehiculo != 4 ? vehiculos.filter((item) => item.id === parseInt(values.Id_TipoVehiculo))[0]?.text : values.EspecifiqueVehiculo,
+         "Tipo de Vehículo":
+            values.Id_TipoVehiculo != 4 ? vehiculos.filter((item) => item.id === parseInt(values.Id_TipoVehiculo))[0]?.text : values.EspecifiqueVehiculo,
          "Forma de Adquisición": adquisicion.filter((item) => item.id === parseInt(values.Id_FormaAdquisicion))[0]?.text,
          "Forma de Pago": pago.filter((item) => item.id === parseInt(values.Id_FormaPago))[0]?.text
       };
-      
+
       setDataTable((prevDatasTable) => prevDatasTable.concat(newData));
       setDatas((prevDatas) => prevDatas.concat(newDatas));
       setIdunique(index + 1);
@@ -174,14 +175,17 @@ export const TipoVehiculo = ({loading, data, next, previous, title, setSend }) =
    ];
    return (
       <>
-         <Box key={"box"} alignItems={"center"} justifyContent={"center"} display={"flex"}>
-            <DataTable
-               dataHidden={["identificador"]}
-               data={dataTable}
-               headers={["Tipo de Vehículo", "Forma de Adquisición", "Forma de Pago"]}
-               deleteButton={true}
-               handleDelete={deleteRow}
-            />
+         <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
+            <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+               <DataTable
+                  loading={loading && datas.length > 0}
+                  dataHidden={["identificador"]}
+                  data={dataTable}
+                  headers={["Tipo de Vehículo", "Forma de Adquisición", "Forma de Pago"]}
+                  deleteButton={true}
+                  handleDelete={deleteRow}
+               />
+            </Card>
          </Box>
          <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
             <FormControlLabel
@@ -206,7 +210,7 @@ export const TipoVehiculo = ({loading, data, next, previous, title, setSend }) =
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ marginLeft: "2rem" }} onClick={sendData} type="submit" variant="contained" color="primary">
-               {datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
+               {loading ? "Actualizar y Continuar" : datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { Request } from "../../Reusables/request/Request";
 import DataTable from "../../Reusables/table/DataTable";
-import { Box, FormControlLabel, FormGroup, Switch, Button } from "@mui/material";
+import { Box, FormControlLabel, FormGroup, Switch, Button, Card } from "@mui/material";
 import { addBienesInmuebles, restartBienesInmuebles, validationBienesInmuebles } from "../../../redux/BienesInmueblesHoja10/BienesInmueblesHoja10";
 import { Success } from "../../../toasts/toast";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
@@ -136,20 +136,17 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
    };
    return (
       <>
-         <Box
-            // className={`${animateSend ? "animate__animated animate__backInDown" : ""} ${animateDelete ? "animate__animated animate__flash" : ""}`}
-            key={"box"}
-            alignItems={"center"}
-            justifyContent={"center"}
-            display={"flex"}
-         >
-            <DataTable
-               dataHidden={["identificador"]}
-               headers={["Tipo de Inmueble", "Forma de Adquisición", "Nombre Tercero"]}
-               data={datas}
-               handleDelete={deleteRow}
-               deleteButton={true}
-            />
+         <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
+            <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+               <DataTable
+                  loading={loading && datas.length > 0}
+                  dataHidden={["identificador"]}
+                  headers={["Tipo de Inmueble", "Forma de Adquisición", "Nombre Tercero"]}
+                  data={datas}
+                  handleDelete={deleteRow}
+                  deleteButton={true}
+               />
+            </Card>
          </Box>
          <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
             <FormControlLabel
@@ -186,7 +183,8 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ ml: 2 }} type="button" variant="contained" onClick={sendData} color="primary">
-               {sendDatas.length > 0 ? "Registrar y continuar" : "Continuar"}
+               {loading?"Actualizar y Continuar":sendDatas.length > 0 ? "Registrar y Continuar" : "Continuar"}
+
             </Button>
          </Ngif>
       </>

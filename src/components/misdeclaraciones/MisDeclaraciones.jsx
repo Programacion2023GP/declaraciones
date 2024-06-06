@@ -2,15 +2,19 @@ import { useEffect, useState } from "react";
 import DataTable from "../Reusables/table/DataTable";
 import { Box, Card } from "@mui/material";
 import { Request } from "../Reusables/request/Request";
-
+import VisibilityIcon from "@mui/icons-material/Visibility";
 export const MisDeclaraciones = ({}) => {
    const [data, setData] = useState([]);
    const { apartados } = Request({ peticiones: ["apartados"] });
    const handleEditDeclaracion = (row) => {
-      const { Folio,Tipo_declaracion, Declaracion,Hoja } = row;
-      localStorage.setItem("id_SituacionPatrimonial", Folio)
+      const { Folio, Tipo_declaracion, Declaracion, Hoja } = row;
+      localStorage.setItem("id_SituacionPatrimonial", Folio);
       let number = Declara(Declaracion, Tipo_declaracion);
-      window.location.hash= `dashboard/declaraciones/${number}/${Hoja}`
+      let page = Hoja;
+      if ((Declaracion == "Completa" && Tipo_declaracion == 1 && Hoja >= 9) || (Declaracion == "Completa" && Tipo_declaracion == 3 && Hoja >= 9)) {
+         page--;
+      }
+      window.location.hash = `dashboard/declaraciones/${number}/${page}`;
    };
 
    const Declara = (tipo_declaracion, declaracion) => {
@@ -24,7 +28,9 @@ export const MisDeclaraciones = ({}) => {
       }
       return number;
    };
-
+   const handleEyes = () => {
+      alert("hola");
+   };
    return (
       <>
          <Box
@@ -45,15 +51,28 @@ export const MisDeclaraciones = ({}) => {
                <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
                   <DataTable
                      // options
+                     moreButtons={[
+                        { icon: VisibilityIcon,
+                         handleButton: handleEyes, 
+                         color: "green",
+                          conditions: ["Status !='En proceso'"] 
+                        }
+                     ]}
+                     buttonsMenu={false}
+                     loading={apartados.length > 0 ? false : true}
                      filterGlobal={true}
                      filter={true}
                      headers={["Folio", "Nombre", "Apellido Paterno", "Apellido Materno", "Tipo Declaración", "Status", "Fecha", "Tipo de declaración"]}
                      data={apartados}
-                     dataHidden={['Hoja']}
+                  
+                     dataHidden={["Hoja"]}
                      pagination={[5, 10, 25]}
                      editButton={true}
+                     deleteButton={true}
                      conditionExistEditButton={["Status !='Terminada'"]}
+                     // conditionExistDeleteButton={["Status !='Terminada'"]}
                      handleEdit={handleEditDeclaracion}
+                     // options={true}
                   />
                </Box>
             </Card>

@@ -44,7 +44,6 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
       }
    }, [data, loading]);
    useEffect(() => {
-      console.log("exper",update);
    }, [update]);
    const addDataTableModified = (values, index) => {
       values.identificador = index;
@@ -222,11 +221,12 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
       <>
          {/* {console.log("la datas", datas)} */}
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
-            <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem" }}>
+            <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem",overflow:"auto" }}>
                <DataTable
                   headers={["Sector", "Ente publico o Nombre de la empresa", "Lugar", "Fecha de ingreso", "Fecha de salida"]}
                   dataHidden={["id"]}
                   data={datasVisuales}
+                  loading={loading && datas.length>0}
                   // editButton={true}
                   // handleEdit={Edit}
                   deleteButton={true}
@@ -352,7 +352,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
                                  ]} // Opciones para los radio buttons
                               />
                               <Text textStyleCase={true} col={12} name="Aclaraciones" label="Aclaraciones" rows={10} color={"green"} />
-                              <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="contained" color="secondary">
+                              <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
                                  Regresar a la pagina anterior
                               </Button>
                               <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="submit" variant="contained" color="primary">
@@ -365,7 +365,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
                </Ngif>
                <Ngif condition={!checked}>
                   <Button onClick={sendData} type="submit" variant="contained" color="primary">
-                     {datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
+                     {loading?"Actualizar y Continuar":datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
                   </Button>
                </Ngif>
             </CardContent>
