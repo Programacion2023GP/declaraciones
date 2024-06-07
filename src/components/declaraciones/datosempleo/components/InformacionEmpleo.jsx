@@ -25,7 +25,7 @@ export const InformacionEmpleo = ({}) => {
    return (
       <Grid container spacing={1}>
          <CustomRadio
-            rowLayout={false}
+            rowLayout={true}
             col={12}
             name="NivelEmpleoCargoComision"
             title="Nivel del empleo, cargo o comisión"

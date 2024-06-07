@@ -9,6 +9,6 @@ export const IngresosI = ({}) => {
    declaracion = parseInt(declaracion);
 
    return (
-      <Text type={'number'} col={12} name={"RemuneracionMensualAnualConclusionCargoPublico"} label={labelRenumeracion(declaracion)} placeholder={labelRenumeracion(declaracion)} />
+      <Text type={'number'} col={12} name={"RemuneracionMensualAnualConclusionCargoPublico"} label={labelRenumeracion(declaracion)}  />
    );
 };

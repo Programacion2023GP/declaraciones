@@ -59,8 +59,8 @@ const validationSchema ={
     Id_MunicipioAlcaldia: Yup.number("Debe ser numerico").required("El municipio / alcadia es obligatoria").min(1, "El municipio / alcadia es obligatoria"),
     TR_Rfc: Yup.string()
     .required("El rfc es requerido")
-    .matches(/^[A-ZÑ&]{3,4}\d{6}(?:[A-Z\d]{3})?$/, "El rfc no cumple el formato")
-    .length(13, "El rfc debe contar con 13 caracteres"),
+    .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
+    .length(10, "El rfc debe contar con 10 caracteres"),
 
 }
 const mexico ={

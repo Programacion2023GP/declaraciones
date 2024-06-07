@@ -26,14 +26,20 @@ export const Totales = ({}) => {
       const Tot = total();
       dispatch(configValidationsDependientesEconomicos({ tipo: "Totales", total: parseInt(Tot) }));
       formik.setFieldValue("IngresoMensualAnualConclusionNeto", Tot);
-      dispatch(configValidationsDependientesEconomicos({ tipo: "TotalesGeneral", total: parseInt(Tot) + parseInt(formik.values.IngresoNetoParejaDependiente) }));
-      formik.setFieldValue("TotalIngresosNetos",  parseInt(Tot)  + parseInt(formik.values.IngresoNetoParejaDependiente));
+      dispatch(
+         configValidationsDependientesEconomicos({
+            tipo: "TotalesGeneral",
+            total: parseInt(Tot) + !isNaN(parseInt(formik.values.IngresoNetoParejaDependiente)) ? parseInt(formik.values.IngresoNetoParejaDependiente) : 0
+         })
+      );
+      formik.setFieldValue(
+         "TotalIngresosNetos",
+         parseInt(Tot) + parseInt(Tot) + (!isNaN(parseInt(formik.values.IngresoNetoParejaDependiente)) ? parseInt(formik.values.IngresoNetoParejaDependiente) : 0)
+      );
    };
    useEffect(() => {
       event();
 
-      console.log(formik.values.IngresoNetoParejaDependiente);
-      console.log(formik.values.TotalIngresosNetos);
 
       // const total =
       //    parseInt(formik.values.IngresoMensualAnualConclusionNeto) > 0
@@ -41,12 +47,11 @@ export const Totales = ({}) => {
       //       : parseInt(formik.values.IngresoNetoParejaDependiente);
       // formik.setFieldValue("TotalIngresosNetos", total);
       // dispatch(configValidationsDependientesEconomicos({ tipo: "TotalesGeneral", total: total }));
-   }, [
-   ]);
+   }, []);
    return (
       <>
-         <Text type={"number"} disabled={true} name="IngresoMensualAnualConclusionNeto" label={labelSumaIyII(declaracion)} placeholder={labelSumaIyII(declaracion)} />
-         <Text type={"number"} disabled={true} name="TotalIngresosNetos" label={labelTotal(declaracion)} placeholder={labelTotal(declaracion)} />
+         <Text type={"number"} disabled={true} name="IngresoMensualAnualConclusionNeto" label={labelSumaIyII(declaracion)}  />
+         <Text type={"number"} disabled={true} name="TotalIngresosNetos" label={labelTotal(declaracion)}  />
 
          <Text col={12} name="Aclaraciones" label="Aclaraciones" rows={10} color={"green"} />
       </>

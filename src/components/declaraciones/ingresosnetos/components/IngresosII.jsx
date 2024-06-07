@@ -78,7 +78,6 @@ export const IngresosII = ({}) => {
             col={12}
             name={"AICE_RemuneracionTotal"}
             label={"II.1 Por actividad industrial, comercial y/o empresarial"}
-            placeholder={`"II.1 Por actividad industrial, comercial y/o empresarial (Después de impuestos)`}
             handleGetValue={handleingresosNetos}
          />
          <Text name="AICE_NombreRazonSocial" label="Nombre o Razón Social" />
@@ -88,7 +87,6 @@ export const IngresosII = ({}) => {
             col={12}
             name={"AF_RemuneracionTotal"}
             label={"II.2 Por actividad financiera (Rendimientos o ganancias)"}
-            placeholder={`II.2 Por actividad financiera (Rendimientos o ganancias) Después de impuestos`}
             handleGetValue={handleingresosNetos}
          />
          <AutoComplete
@@ -106,7 +104,6 @@ export const IngresosII = ({}) => {
             col={12}
             name={"SP_RemuneracionTotal"}
             label={"II.3 Por servicios profesionales, consejos, consultorías, y/o asesorías"}
-            placeholder={`II.3 Por servicios profesionales, consejos, consultorías, y/o asesorías`}
             handleGetValue={handleingresosNetos}
          />
          <Text name="SP_TipoServicioPrestado" label="Tipo de servicio prestado" />
@@ -115,7 +112,6 @@ export const IngresosII = ({}) => {
             col={12}
             name={"EB_RemuneracionTotal"}
             label={"II.4 Por enajenacion de bienes"}
-            placeholder={`II.4 Por enajenacion de bienes`}
             handleGetValue={handleingresosNetos}
          />
          <AutoComplete options={bienenAjenacion} name="EB_Id_TipoBienEnajenado" label={"Tipo de bien enajenado"} col={12} />
@@ -124,7 +120,6 @@ export const IngresosII = ({}) => {
             col={12}
             name={"OINC_RemuneracionTotal"}
             label={"II.5 Otros ingresos no considerados a los anteriores"}
-            placeholder={`II.5 Otros ingresos no considerados a los anteriores`}
             handleGetValue={handleingresosNetos}
          />
 

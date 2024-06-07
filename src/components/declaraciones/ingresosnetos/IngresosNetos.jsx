@@ -50,10 +50,9 @@ export const IngresosNetos = ({ loading, data, next, previous, title }) => {
    return (
       <>
          <FormikForm
-            messageButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
             previousButton
             handlePrevious={previous}
-            button={true}
+            // button={true}
             ref={formik}
             previous={previous}
             initialValues={dataForm}
@@ -61,7 +60,7 @@ export const IngresosNetos = ({ loading, data, next, previous, title }) => {
             title={title}
             submit={submit}
          >
-            <FormikInitialValues />
+            <FormikInitialValues messageButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"} />
          </FormikForm>
       </>
    );

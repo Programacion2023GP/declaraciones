@@ -1,4 +1,4 @@
-import { Grid, IconButton, Typography } from "@mui/material";
+import { Checkbox, FormControlLabel, FormGroup, Grid, IconButton, Tooltip, Typography } from "@mui/material";
 import { forwardRef, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
@@ -22,8 +22,11 @@ import { Chart } from "../charts/Charts";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import Loading from "../loading/Loading";
 import DehazeIcon from "@mui/icons-material/Dehaze";
-
+import BarChartIcon from "@mui/icons-material/BarChart";
 import BasicMenu from "../basicmenu/BasicMenu";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import * as XLSX from "xlsx";
+
 const SearchInput = ({ column, data, getData, previousData }) => {
    const [searchText, setSearchText] = useState("");
    const [previousDataFilter, setPreviousDataFilter] = useState(data);
@@ -238,7 +241,7 @@ const DataTable = ({
    dataHidden = [],
    headers = [],
    pagination,
-   options,
+   options = [],
    filter,
    editButton,
    deleteButton,
@@ -404,7 +407,6 @@ const DataTable = ({
       });
    };
    const checkConditionsMoreButton = (item, array) => {
-      console.log(item, array);
       return array.every((condition) => {
          const match = condition.match(/(.+?)\s*(==|!=|>=|<=|>|<)\s*'([^']+)'/);
          if (!match) return false;
@@ -484,6 +486,9 @@ const DataTable = ({
       init();
       setNumberShowPage(1);
    }, [data]);
+   const modal = (event) => {
+      setOpenModal(true);
+   };
 
    return (
       <>
@@ -491,8 +496,8 @@ const DataTable = ({
             <caption>
                <div style={{ display: "flex", alignItems: "center" }}>
                   {filterGlobal && <FilterGlobal data={data} setFilteredData={applyfilterGlobal} dataHidden={dataHidden} onChange={handleOptions} />}
-                  <Ngif condition={options}>
-                     <Box sx={{ minWidth: 120, marginLeft: "auto" }}>
+                  <Ngif condition={options.length > 0}>
+                     <Box sx={{ minWidth: 120, marginLeft: "auto", marginTop: "1rem", marginBottom: ".5rem" }}>
                         <FormControl fullWidth>
                            <InputLabel id="demo-simple-select-label">Opciones</InputLabel>
                            <Select
@@ -500,12 +505,44 @@ const DataTable = ({
                               id="demo-simple-select"
                               value={textModal}
                               onChange={handleTextModal}
-                              onClick={() => setOpenModal(true)}
+                              onClick={modal}
                               label="Opciones"
                            >
-                              <MenuItem key={"grafica"} selected value={"grafica"}>
-                                 {"grafica"}
-                              </MenuItem>
+                              {options.includes("CHARTS") && (
+                                 <MenuItem key="grafica" value="grafica">
+                                    <Tooltip placement="left" title="GRAFICAS">
+                                       <BarChartIcon sx={{ verticalAlign: "middle", mr: 1 }} />
+                                       Graficas
+                                    </Tooltip>
+                                 </MenuItem>
+                              )}
+                              {options.includes("EXCEL") && (
+                                 <MenuItem sx={{ textAlign: "center" }} key="excel" value="excel">
+                                    <Tooltip placement="left" title="EXCEL">
+                                       <svg
+                                          style={{ verticalAlign: "middle", marginRight: 1 }}
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="25"
+                                          height="25"
+                                          fill="currentColor"
+                                          className="bi bi-file-earmark-excel"
+                                          viewBox="0 0 16 16"
+                                       >
+                                          <path d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.641L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54z" />
+                                          <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z" />
+                                       </svg>
+                                       Excel
+                                    </Tooltip>
+                                 </MenuItem>
+                              )}
+                              {options.includes("PDF") && (
+                                 <MenuItem sx={{ textAlign: "center" }} key="pdf" value="pdf">
+                                    <Tooltip placement="left" title="PDF">
+                                       <PictureAsPdfIcon sx={{ verticalAlign: "middle", mr: 1 }} />
+                                       PDF
+                                    </Tooltip>
+                                 </MenuItem>
+                              )}
                            </Select>
                         </FormControl>
                      </Box>
@@ -595,12 +632,12 @@ const DataTable = ({
                                           >
                                              <DeleteButton handleDelete={handleDelete} item={item} />
                                           </MenuItem>
-                                             <MoreButtons
-                                                item={item}
-                                                moreButtons={moreButtons}
-                                                checkConditionsMoreButton={checkConditionsMoreButton}
-                                                buttonsMenu={buttonsMenu}
-                                             />
+                                          <MoreButtons
+                                             item={item}
+                                             moreButtons={moreButtons}
+                                             checkConditionsMoreButton={checkConditionsMoreButton}
+                                             buttonsMenu={buttonsMenu}
+                                          />
                                        </Ngif>
                                     </BasicMenu>
                                  </Ngif>
@@ -669,7 +706,7 @@ const DataTable = ({
                 </div>
             )} */}
          <Ngif condition={options}>
-            <Modal openModal={openModal} setOpenModal={setOpenModal}>
+            <Modal openModal={openModal} setText={setTextModal} setOpenModal={setOpenModal}>
                <Component option={textModal} titles={headers} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} />
             </Modal>
          </Ngif>
@@ -686,7 +723,7 @@ const DataTable = ({
    );
 };
 
-const MoreButtons = ({ item, moreButtons, checkConditionsMoreButton, buttonsMenu=false }) => {
+const MoreButtons = ({ item, moreButtons, checkConditionsMoreButton, buttonsMenu = false }) => {
    return (
       <>
          {moreButtons.map((element, i) => {
@@ -759,10 +796,11 @@ const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Modal = ({ children, openModal, setOpenModal }) => {
+const Modal = ({ children, openModal, setOpenModal, setText }) => {
    useEffect(() => {}, [openModal]);
    const handleClose = () => {
       setOpenModal(false);
+      setText("");
    };
    return (
       <>
@@ -876,6 +914,7 @@ const Charts = ({ titles, dataFilter, headers, dataHidden }) => {
                      labelId="demo-simple-select-label"
                      id="demo-simple-select"
                      // value={textModal}
+
                      // onChange={handleTextModal}
                      onChange={handleChangeChart}
                      label="Selecciona la grafica"
@@ -944,6 +983,167 @@ const Component = ({ option, titles, dataFilter, headers, dataHidden }) => {
       case "grafica":
          return <Charts titles={titles} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} />;
          break;
+      case "excel":
+         return <Excel titles={titles} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} />;
+         break;
    }
 };
+
+const Excel = ({ titles, dataFilter, dataHidden, headers }) => {
+   const [keys, setKeys] = useState([]);
+   const [counts, setCounts] = useState([]);
+   const [checkeds, setCheckeds] = useState(headers);
+
+   useEffect(() => {}, [keys, counts]);
+   const [chart, setChart] = useState(null);
+   const [name, setName] = useState(null);
+   const handleChangeChart = (event) => {
+      setChart(event.target.value);
+   };
+   const countOccurrences = (array) => {
+      const occurrences = {};
+
+      // Contar las ocurrencias de cada valor en el array
+      array.forEach((value) => {
+         occurrences[value] = (occurrences[value] || 0) + 1;
+      });
+
+      // Convertir el objeto de ocurrencias en dos arrays separados
+      const values = Object.keys(occurrences);
+      const counts = values.map((value) => occurrences[value]);
+
+      return { values, counts };
+   };
+
+   const handleExportClick = () => {
+      const filteredData = filterData(dataFilter, dataHidden);
+      // headers;
+
+      const checkedKeys = checkeds;
+      const filteredDataWithHeaders = filteredData.map((obj) => {
+         const newObj = {};
+         Object.keys(obj).forEach((key, index) => {
+            const header = headers[index]; // Obtiene el título correspondiente
+            newObj[header] = obj[key]; // Asigna el valor del objeto a la clave correspondiente del título
+         });
+         return newObj;
+      });
+
+      const filteredDataWithCheckedKeys = filteredDataWithHeaders.map((obj) => {
+         const newObj = {};
+         checkedKeys.forEach((key) => {
+            if (obj.hasOwnProperty(key)) {
+               newObj[key] = obj[key];
+            }
+         });
+         return newObj;
+      });
+
+      exportToExcel(filteredDataWithCheckedKeys);
+   };
+
+   const filterData = (dataFilter, dataHidden) => {
+      return dataFilter.map((item) => {
+         const newItem = { ...item };
+         dataHidden.forEach((key) => {
+            delete newItem[key];
+         });
+         return newItem;
+      });
+   };
+   const exportToExcel = (data) => {
+      if (Object.keys(data[0]).length === 0) {
+      } else if (Object.keys(data[0]).length > 0) {
+         const wb = XLSX.utils.book_new();
+         const ws = XLSX.utils.json_to_sheet(data);
+
+         // Establecer estilos para la tabla
+         const range = XLSX.utils.decode_range(ws["!ref"]);
+         for (let C = range.s.c; C <= range.e.c; ++C) {
+            const header = XLSX.utils.encode_col(C) + "1"; // Encabezado de la columna
+            ws[header].s = { font: { bold: true }, alignment: { horizontal: "center" }, fill: { bgColor: { indexed: 22 }, fgColor: { rgb: "FFCCFFCC" } } }; // Estilo del encabezado
+            for (let R = range.s.r + 1; R <= range.e.r; ++R) {
+               const cell = XLSX.utils.encode_col(C) + R; // Celda
+               ws[cell].s = { alignment: { horizontal: "center" }, fill: { bgColor: { indexed: 18 }, fgColor: { rgb: "FFFFCCFF" } } }; // Estilo del cuerpo
+            }
+         }
+
+         // Agregar la hoja de cálculo al libro de trabajo
+         XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+
+         // Descargar el archivo
+         XLSX.writeFile(wb, "exportacion.xlsx");
+      }
+   };
+
+   const handleChange = (item) => {
+      setCheckeds((prevCheckeds) => {
+         if (prevCheckeds.includes(item)) {
+            return prevCheckeds.filter((checkedItem) => checkedItem !== item);
+         } else {
+            return [...prevCheckeds, item];
+         }
+      });
+   };
+
+   const handleSelectAll = (event) => {
+      if (event.target.checked) {
+         setCheckeds(headers);
+      } else {
+         setCheckeds([]);
+      }
+   };
+   return (
+      <Grid container spacing={3} sx={{ marginTop: "2rem" }}>
+         <Typography variant="h5" display="flex" mb="1.5rem" minWidth="100%" justifyContent="center" color="initial">
+            EXPORTAR A EXCEL
+         </Typography>
+
+         <Grid
+            item
+            xs={12}
+            sx={{
+               position: "relative",
+               marginLeft: "1rem",
+               marginRight: "1rem",
+               overflow: "hidden",
+               border: "2px solid #007bff",
+               borderRadius: "10px",
+               padding: "1.5rem",
+               paddingRight: "2.5rem",
+               boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)"
+            }}
+         >
+            <FormControlLabel
+               sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center"
+               }}
+               control={
+                  <Checkbox
+                     checked={checkeds.length === headers.length}
+                     indeterminate={checkeds.length > 0 && checkeds.length < headers.length}
+                     onChange={handleSelectAll}
+                  />
+               }
+               label={checkeds.length < headers.length ? "Marcar todos" : "Desmarcar todos"}
+            />
+            <FormGroup sx={{ marginBottom: "2rem" }}>
+               <Grid container spacing={2}>
+                  {headers.map((item, index) => (
+                     <Grid item xs={12} sm={3} key={index}>
+                        <FormControlLabel control={<Checkbox checked={checkeds.includes(item)} name={item} onChange={() => handleChange(item)} />} label={item} />
+                     </Grid>
+                  ))}
+               </Grid>
+            </FormGroup>
+            <Button sx={{ position: "absolute", bottom: "1rem", right: "1rem" }} variant="contained" disableElevation onClick={handleExportClick}>
+               Exportar
+            </Button>
+         </Grid>
+      </Grid>
+   );
+};
+
 export default DataTable;

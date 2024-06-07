@@ -50,21 +50,14 @@ export const MisDeclaraciones = ({}) => {
             <Card sx={{ maxWidth: "100%", margin: "auto" }}>
                <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
                   <DataTable
-                     // options
-                     moreButtons={[
-                        { icon: VisibilityIcon,
-                         handleButton: handleEyes, 
-                         color: "green",
-                          conditions: ["Status !='En proceso'"] 
-                        }
-                     ]}
+                     options={["CHARTS", "PDF", "EXCEL"]}
+                     moreButtons={[{ icon: VisibilityIcon, handleButton: handleEyes, color: "green", conditions: ["Status !='En proceso'"] }]}
                      buttonsMenu={false}
                      loading={apartados.length > 0 ? false : true}
                      filterGlobal={true}
                      filter={true}
                      headers={["Folio", "Nombre", "Apellido Paterno", "Apellido Materno", "Tipo Declaración", "Status", "Fecha", "Tipo de declaración"]}
                      data={apartados}
-                  
                      dataHidden={["Hoja"]}
                      pagination={[5, 10, 25]}
                      editButton={true}

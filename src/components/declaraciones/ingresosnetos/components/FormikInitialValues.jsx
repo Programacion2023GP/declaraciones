@@ -7,13 +7,13 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { labelRenumeracion } from "../../funciones/ingresosEservidor/labels";
 
-export const FormikInitialValues = ({}) => {
+export const FormikInitialValues = ({messageButton}) => {
    //   const [names,setNames]=useState([])
    let { declaracion } = useParams();
    declaracion = parseInt(declaracion);
    return (
       <>
-         <Segmento>
+         <Segmento messageButton={messageButton}>
             <tabSegmento
                label={labelRenumeracion(declaracion)}
             >

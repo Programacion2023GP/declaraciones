@@ -36,7 +36,6 @@ export const IngresosIII = ({}) => {
          name={"IngresoNetoParejaDependiente"}
          color="green"
          label={labelPareja(declaracion)}
-         placeholder={labelPareja(declaracion)}
          handleGetValue={handleGetValue}
       />
    );

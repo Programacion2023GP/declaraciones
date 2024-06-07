@@ -39,8 +39,8 @@ const validationSchema = {
 const copropiedad ={
     T_Rfc: Yup.string()
     .required("El rfc es requerido")
-    .matches(/^[A-ZÑ&]{3,4}\d{6}(?:[A-Z\d]{3})?$/, "El rfc no cumple el formato")
-    .length(13, "El rfc debe contar con 13 caracteres"),
+    .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
+    .length(10, "El rfc debe contar con 10 caracteres"),
  T_NombreRazonSocial: Yup.string("El formato es texto").required("El nombre del tercero o terceros es requerido"),
  T_Id_TipoPersona: Yup.number("El formato es numerico").min(1, "El tipo de persona es requerida").required("El tipo de persona es requerida"),
 }

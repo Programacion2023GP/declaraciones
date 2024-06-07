@@ -42,8 +42,8 @@ const validationSchema = {
    NombreTitular:Yup.string("El formato es texto").required("El nombre del titular es requerido"),
    RfcTitular: Yup.string()
    .required("El rfc es requerido")
-   .matches(/^[A-ZÑ&]{3,4}\d{6}(?:[A-Z\d]{3})?$/, "El rfc no cumple el formato")
-   .length(13, "El rfc debe contar con 13 caracteres"),
+   .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
+   .length(10, "El rfc debe contar con 10 caracteres"),
    Id_Relacion:Yup.number("el formato es numerico").min(1,"La relacion es requerida").required("La relacion es requerida"),
 };
 const inmueble = {

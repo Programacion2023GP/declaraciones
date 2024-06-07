@@ -32,8 +32,8 @@ const validationSchema={
 
       Rfc: Yup.string()
          .required("El rfc es requerido")
-         .matches(/^[A-ZÑ&]{3,4}\d{6}(?:[A-Z\d]{3})?$/, "El rfc no cumple el formato")
-         .length(13, "El rfc debe contar con 13 caracteres"),
+         .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
+         .length(10, "El rfc debe contar con 10 caracteres"),
 
       Homoclave: Yup.string().required("La Homoclave es requerida").length(3, "La Homoclave debe tener exactamente 3 caracteres"),
       CorreoPersonal: Yup.string().email("El formato de correo es inválido").required("El correo es necesario"),
@@ -69,7 +69,6 @@ export const DatosGeneralesHoja1 = createSlice({
                     Object.assign(state.validationSchema,servidorPublico);
                 break;
                 case "RegimenMatrimonial":
-                        console.log("dddddddddddddd");
                     Object.assign(state.validationSchema,RegimenMatrimonial);
 
                 break;

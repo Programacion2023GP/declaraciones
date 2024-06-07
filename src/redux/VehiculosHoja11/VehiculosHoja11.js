@@ -45,14 +45,14 @@ const Tercero={
     Id_Relacion:Yup.number("El formato numerico es obligatorio").min(1,"La relación es requerida").required("La relación es requerida"),
     T_Id_TipoPersona:Yup.number("El formato numerico es obligatorio").required("El titular es requerido"),
     T_NombreRazonSocial:Yup.string("El formato es texto").required("El Nombre de tercero o terceros es requerido"),
-    T_Rfc:Yup.string("El formato es texto").required("El Nombre de tercero o terceros es requerido") .matches(/^[A-ZÑ&]{3,4}\d{6}(?:[A-Z\d]{3})?$/, "El rfc no cumple el formato")
-    .length(13, "El rfc debe contar con 13 caracteres"),
+    T_Rfc:Yup.string("El formato es texto").required("El Nombre de tercero o terceros es requerido") .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
+    .length(10, "El rfc debe contar con 10 caracteres"),
 }
 const Titular ={
     TR_Id_TipoPersona:Yup.number("El formato numerico es obligatorio").required("El titular es requerido"),
     TR_NombreRazonSocial:Yup.string("El formato es texto").required("El Nombre o razon social del transmitor es requerida"),
-    TR_Rfc:Yup.string("El formato es texto").required("El Nombre de tercero o terceros es requerido") .matches(/^[A-ZÑ&]{3,4}\d{6}(?:[A-Z\d]{3})?$/, "El rfc no cumple el formato")
-    .length(13, "El rfc debe contar con 13 caracteres"),
+    TR_Rfc:Yup.string("El formato es texto").required("El Nombre de tercero o terceros es requerido") .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
+    .length(10, "El rfc debe contar con 10 caracteres"),
 }
  const data ={
         initialState,validationSchema,datas:[]

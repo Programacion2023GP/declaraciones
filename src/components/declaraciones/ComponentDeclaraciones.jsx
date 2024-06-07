@@ -31,6 +31,7 @@ import { GetAxios } from "../../services/services";
 import { isNumber } from "highcharts";
 import { Ngif } from "../Reusables/conditionals/Ngif";
 import Loading from "../Reusables/loading/Loading";
+import { Info } from "../../toasts/toast";
 
 // Importa aquí los componentes correspondientes a cada paso
 
@@ -177,7 +178,7 @@ const ComponentDeclaraciones = () => {
       searchHoja();
       setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
    }, [activeStep, declaracion]);
-   React.useEffect(() => {}, [update,view]);
+   React.useEffect(() => {}, [update, view]);
    React.useEffect(() => {}, [dataPage]);
    // React.useEffect(() => {
    //    setLoading(true);
@@ -189,7 +190,7 @@ const ComponentDeclaraciones = () => {
          setupdate(!update);
          const response = await GetAxios(`apartados/hoja/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
          const foundHoja = parseInt(response[0].Hoja);
-
+      
          if (isNumber(foundHoja) && foundHoja >= activeStep + 1) {
             setHojaFilter(foundHoja - 1);
             setupdate(true);
@@ -198,6 +199,10 @@ const ComponentDeclaraciones = () => {
          }
          setView(true);
       } catch (error) {
+         Info("cargando informacion de tu ultima declaración");
+         const response = await GetAxios(`situacionpatrimonial/index/${parseInt(localStorage.getItem("Id_User"))}`);
+         // const response = await GetAxios(`apartados/hoja/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
+
          setupdate(false);
          setView(true);
       }
@@ -252,7 +257,6 @@ const ComponentDeclaraciones = () => {
                      gutterBottom
                      style={{ fontWeight: "bold", color: "#007bff", textTransform: "uppercase" }}
                   >
-                     
                      {getStepTitle()}
                   </Typography>
                   <br />
@@ -291,15 +295,11 @@ const ComponentDeclaraciones = () => {
                   </Typography>
                   {/* Componente correspondiente al paso actual */}
                   <Ngif condition={view}>
-                     <Grid >
-                        {React.cloneElement(filteredSteps[activeStep].component, { data: dataPage, loading: update })}
-                     </Grid>
-                    </Ngif> 
+                     <Grid>{React.cloneElement(filteredSteps[activeStep].component, { data: dataPage, loading: update })}</Grid>
+                  </Ngif>
                   <Ngif condition={!view}>
                      <Loading />
                   </Ngif>
-
-                  <button onClick={handleNext}>Continuar</button>
                </div>
             </>
          </div>

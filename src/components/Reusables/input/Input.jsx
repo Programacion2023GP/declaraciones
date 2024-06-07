@@ -45,8 +45,7 @@ export const Text = ({
          handleGetValue(name, value);
       }
    };
-   useEffect(() => {
-   }, [name, formik.values[name]]);
+   useEffect(() => {}, [name, formik.values[name]]);
 
    const errors = formik.errors;
 
@@ -83,7 +82,15 @@ export const Text = ({
                   {({ field }) => (
                      <InputMask
                         mask={mask}
-                        value={formik.values && formik.values[name] ? formik.values[name] : ""}
+                        value={
+                           formik.values && formik.values[name] !== undefined
+                              ? type === "number"
+                                 ? formik.values[name].toString().replace(/^0+(?=\d)/, "")
+                                 : formik.values[name]
+                              : type === "number" && !isNaN(parseInt(formik.values[name]))
+                                ? parseInt(formik.values[name])
+                                : ""
+                        }
                         onInput={(e) => {
                            textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, name, textStyleCase) : null;
                         }}
@@ -117,7 +124,16 @@ export const Text = ({
                   label={label}
                   type={type == null ? "text" : type}
                   variant="outlined"
-                  value={formik.values && formik.values[name] ? formik.values[name] : ""}
+                  value={
+                     formik.values && formik.values[name] !== undefined
+                        ? type === "number"
+                           ? formik.values[name].toString().replace(/^0+(?=\d)/, "")
+                           : formik.values[name]
+                        : type === "number" && !isNaN(parseInt(formik.values[name]))
+                          ? parseInt(formik.values[name])
+                          : ""
+                  }
+                  // type === "number" && !isNaN(parseInt(formik.values[name])) && parseInt(formik.values[name]) === 0 ?0
                   onChange={formik.handleChange}
                   onBlur={(e) => {
                      formik.handleBlur(e);
@@ -131,7 +147,8 @@ export const Text = ({
                   }}
                   disabled={loading || disabled}
                   fullWidth
-                  // onInput={handleInput}
+                  // defaultValue={1}
+                  inputProps={{ inputMode: "numeric" }}
                   multiline={rows}
                   rows={type === null || type === undefined ? rows : undefined}
                   error={isError}
