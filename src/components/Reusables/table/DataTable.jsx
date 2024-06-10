@@ -48,22 +48,20 @@ const SearchInput = ({ column, data, getData, previousData }) => {
    };
 
    return (
-      <Box sx={{ "& > :not(style)": { m: 1 }, width: "100%" }}>
-         <Box sx={{ display: "flex", alignItems: "flex-end" }}>
-            <SearchIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
+      <Box sx={{ "& > :not(style)": { m: 0.5 }, width: "80%", height: "fit-content" }}>
+         <Box sx={{ display: "flex", alignItems: "center" }}>
+            <SearchIcon sx={{ color: "action.active", mr: 0.5, my: 0.5 }} />
             <TextField
-               fullWidth
+               size="small"
                value={searchText}
                onChange={searchData}
                id="input-with-sx"
-               label="Buscador"
+               label="Buscar"
                variant="standard"
                InputProps={{
                   endAdornment: (
                      <InputAdornment position="end">
-                        {/* <IconButton onClick={handleClear}>
-                  <ClearIcon />
-                </IconButton> */}
+                        <IconButton onClick={handleClear}>{/* <ClearIcon /> */}</IconButton>
                      </InputAdornment>
                   )
                }}
@@ -89,17 +87,17 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
    }, [titles, titlesMap, headersMap, headers, editButton, deleteButton]);
    return (
       <>
-         <thead>
-            <tr style={{ background: "#F9FAFB", width: "100%" }}>
+         <thead >
+            <tr style={{ background: "black", color: "white", width: "100%" }}>
                {headersMap.map((title) => {
                   return (
-                     <th key={"headers" + title} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>
+                     <th key={"headers" + title} style={{ padding: "1rem 1rem", textAlign: "center", fontSize: "14px" }}>
                         {title.charAt(0).toUpperCase() + title.slice(1)}
                      </th>
                   );
                })}
                {headersMap.length > 0 && (editButton || deleteButton) && (
-                  <th key={"headersMap" + uuidv4()} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>
+                  <th key={"headersMap" + uuidv4()} style={{ padding: "1rem 1rem", textAlign: "center", fontSize: "14px" }}>
                      Acciones
                   </th>
                )}
@@ -108,7 +106,13 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
                {filter &&
                   titlesMap.map((title) => {
                      return (
-                        <th key={"titlesMap" + title} style={{ border: "1px solid #BDBDBD", padding: ".5rem .5rem" }}>
+                        <th
+                           key={"titlesMap" + title}
+                           style={{
+                              border: "1px solid #BDBDBD",
+                              height: "fit-content"
+                           }}
+                        >
                            <SearchInput previousData={previousData} column={title} data={data} getData={filterData} />
                         </th>
                      );
@@ -118,6 +122,29 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
          </thead>
       </>
    );
+};
+const neon = {
+   color: "#00e6e6",
+   border: "1px solid #00e6e6",
+   textShadow: "0 0 5px #00e6e6",
+   transition: "all 0.3s ease",
+   "&:hover": {
+      color: "#fff",
+      backgroundColor: "#00e6e6",
+      boxShadow: "0 0 10px #00e6e6, 0 0 20px #00e6e6, 0 0 30px #00e6e6"
+   }
+};
+const neonText = {
+   color: "#00e6e6",
+   // border: "1px solid #00e6e6",
+   textShadow: "0 0 30px #00e6e6",
+   transition: "all 0.3s ease",
+   padding: ".5rem"
+   // "&:hover": {
+   //    color: "#fff",
+   //    backgroundColor: "#00e6e6",
+   //    boxShadow: "0 0 10px #00e6e6, 0 0 20px #00e6e6, 0 0 30px #00e6e6"
+   // }
 };
 
 const Paginator = ({ pagination, handleChange, page, pages, previous, next, dataFilter, selectRow }) => {
@@ -134,18 +161,14 @@ const Paginator = ({ pagination, handleChange, page, pages, previous, next, data
 
    return (
       <>
-         <Stack spacing={1} direction="row" alignItems="center" justifyContent="space-between" width={"100%"}>
-            <Typography variant="subtitle2">
+         <Stack color={"white"} spacing={1} direction="row" alignItems="center" justifyContent="space-between" width={"100%"}>
+            <Typography variant="subtitle2" sx={neonText}>
                Pagina {dataFilter == 0 ? "0" : page} de {pages}
             </Typography>
             <Stack spacing={1} direction="row" alignItems="center">
-               <Button onClick={() => previousPage()} variant="outlined">
-                  Anterior
-               </Button>
-               <Button onClick={() => nextPage()} variant="outlined">
-                  Siguiente
-               </Button>
-               <Typography variant="subtitle2">
+               <NeonButton onClick={previousPage}>Anterior</NeonButton>
+               <NeonButton onClick={nextPage}>Siguiente</NeonButton>
+               <Typography variant="subtitle2" sx={neonText}>
                   Mostrando {selectRow >= dataFilter ? dataFilter : selectRow} de {dataFilter}
                </Typography>
             </Stack>
@@ -154,25 +177,72 @@ const Paginator = ({ pagination, handleChange, page, pages, previous, next, data
       </>
    );
 };
+const NeonButton = ({ onClick, children }) => {
+   return (
+      <Button size="small" onClick={onClick} variant="text" sx={neon}>
+         {children}
+      </Button>
+   );
+};
 const PaginatorSelect = ({ pagination, selectOption }) => {
    const [select, setSelect] = useState(pagination[0]);
    const handleChange = (event) => {
       setSelect(event.target.value);
       selectOption(event.target.value);
    };
+   const neonFormalSelect = {
+      color: "#00e6e6", // Color del texto neón brillante
+      border: "1px solid #00e6e6", // Borde neón
+      textShadow: "0 0 3px #00e6e6", // Sombra del texto neón
+      transition: "all 0.3s ease",
+      fontSize: "16px", // Tamaño del texto
+      fontWeight: "bold", // Negrita
+      backgroundColor: "#102840", // Azul oscuro para mejor contraste
+
+      "&:hover": {
+         color: "#ffffff",
+         backgroundColor: "#10355A",
+         boxShadow: "0 0 10px #00e6e6, 0 0 20px #00e6e6" // Resplandor más sutil en hover
+      }
+   };
+
+   const neonFormalInputLabel = {
+      color: "#00e6e6", // Color del texto neón brillante
+      fontSize: "16px", // Tamaño del texto
+      fontWeight: "bold" // Negrita
+   };
+
+   const neonFormalMenuItem = {
+      color: "#00e6e6", // Color del texto neón brillante
+      // backgroundColor: "#102840", // Azul oscuro para mejor contraste
+      textShadow: "0 0 3px #00e6e6", // Sombra del texto neón
+      fontSize: "16px", // Tamaño del texto
+      fontWeight: "bold" // Negrita
+      // "&:hover": {
+      //    backgroundColor: "#10355A" // Cambiar el fondo en hover
+      // }
+   };
 
    return (
       <Box sx={{ minWidth: 120 }}>
          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Mostrar</InputLabel>
-            <Select labelId="demo-simple-select-label" id="demo-simple-select" value={select} label="Mostrar" onChange={handleChange}>
-               {pagination.map((item) => {
-                  return (
-                     <MenuItem key={item} selected value={item}>
-                        {item}
-                     </MenuItem>
-                  );
-               })}
+            <InputLabel id="demo-simple-select-label" sx={neonFormalInputLabel}>
+               Mostrar
+            </InputLabel>
+            <Select
+               size="small"
+               labelId="demo-simple-select-label"
+               id="demo-simple-select"
+               value={select}
+               label="Mostrar"
+               onChange={handleChange}
+               sx={neonFormalSelect}
+            >
+               {pagination.map((item) => (
+                  <MenuItem key={item} value={item} sx={neonFormalMenuItem}>
+                     {item}
+                  </MenuItem>
+               ))}
             </Select>
          </FormControl>
       </Box>
@@ -569,11 +639,11 @@ const DataTable = ({
                </thead>
             )}
             {data.length === 0 || dataTable.length === 0 ? (
-               <tbody>
+               <tbody style={{ position: "relative" }}>
                   <tr>
                      <td colSpan={headers.length + 1} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>
                         <Ngif condition={loading}>
-                           <Box sx={{ position: "fixed", left: 0, right: 0, end: 0 }}>
+                           <Box sx={{ position: "absolute", left: 0, right: 0, bottom: 0, top: -10 }}>
                               <Loading />
                            </Box>
                         </Ngif>
@@ -591,7 +661,14 @@ const DataTable = ({
                                  if (!dataHidden.includes(key)) {
                                     return (
                                        <td
-                                          style={{ textAlign: "center", border: "1px solid #BDBDBD", paddingLeft: "5px", paddingRight: "5px", margin: 0 }}
+                                          style={{
+                                             textAlign: "center",
+                                             border: "1px solid #BDBDBD",
+                                             fontSize: "13px",
+                                             paddingLeft: "5px",
+                                             paddingRight: "5px",
+                                             margin: 0
+                                          }}
                                           key={key}
                                           cols={value}
                                        >
@@ -665,7 +742,7 @@ const DataTable = ({
                   <tr>
                      <td
                         colSpan={headers.length + (editButton || deleteButton ? 1 : 0)}
-                        style={{ border: "1px solid #BDBDBD", padding: "0.5rem", textAlign: "center" }}
+                        style={{ border: "1px solid #BDBDBD", padding: "0.5rem", textAlign: "center", background: "black" }}
                      >
                         <Paginator
                            selectRow={selectRow}

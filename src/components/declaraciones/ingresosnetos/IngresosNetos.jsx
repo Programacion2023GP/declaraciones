@@ -40,7 +40,9 @@ export const IngresosNetos = ({ loading, data, next, previous, title }) => {
       }
    }, [data]);
    const modifiedDataIngresos = () => {
-      setID(parseInt(data.Id_Ingresos));
+      if (loading) {
+         setID(parseInt(data.Id_Ingresos));
+      }
       delete data.Id_Ingresos;
       insertFormik(formik, data);
    };
@@ -60,7 +62,7 @@ export const IngresosNetos = ({ loading, data, next, previous, title }) => {
             title={title}
             submit={submit}
          >
-            <FormikInitialValues messageButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"} />
+            <FormikInitialValues messageButton={loading ? "Actualizar y continuar" : "Registrar y continuar"} />
          </FormikForm>
       </>
    );

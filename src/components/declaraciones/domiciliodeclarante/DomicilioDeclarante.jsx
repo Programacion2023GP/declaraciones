@@ -18,7 +18,7 @@ export const DomicilioDeclarante = ({ loading, data, next, previous, title }) =>
       const url = `domiciliodeclarante/${id > 0 ? `update/${id}` : "create"}`;
 
       values.EsEnMexico = parseInt(values.EsEnMexico);
-      
+
       Post(url, values, next);
    };
 
@@ -33,9 +33,11 @@ export const DomicilioDeclarante = ({ loading, data, next, previous, title }) =>
    }, [data]);
    const modifiedDatosDeclarante = () => {
       parseInt(data.EsEnMexico) == 0 && setMexico(false);
-
-      setID(parseInt(data.Id_DomicilioDeclarante));
+      if (loading) {
+         setID(parseInt(data.Id_DomicilioDeclarante));
+      }
       insertFormik(formik, data);
+   
    };
    return (
       <>
@@ -47,11 +49,11 @@ export const DomicilioDeclarante = ({ loading, data, next, previous, title }) =>
             validationSchema={validationSchema}
             button={true}
             title={title}
-            messageButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
+            messageButton={loading ? "Actualizar y continuar" : "Registrar y continuar"}
             submit={sumbit}
             message={"Los datos que no serán públicos estarán resaltados de color verde"}
          >
-            <DomicilioDeclaranteGeneral mex={mexico} estado={data && parseInt(data.Id_EntidadFederativa) > 0 ? data.Id_EntidadFederativa : 0} />
+            <DomicilioDeclaranteGeneral mex={mexico} estado={data && parseInt(data.Id_EntidadFederativa) > 0 ? data.Id_EntidadFederativa : 0} CodigoPostal ={data && data.CodigoPostal} />
             <br />
             <Text col={12} name="Aclaraciones" label="Aclaraciones/Observaciones" rows={10} color={"green"} />
          </FormikForm>

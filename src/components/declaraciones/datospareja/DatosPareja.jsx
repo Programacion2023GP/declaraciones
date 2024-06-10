@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addDatosPareja, configValidations, validationDatosPareja } from "../../../redux/DatosParejaHoja6/DatosPareja";
 import { useEffect, useRef, useState } from "react";
 import { AutoComplete } from "../../Reusables/autocomplete/autocomplete";
-import { Axios, GetAxios, PostAxios } from "../../../services/services";
+import { Axios, GetAxios, GetPostales, PostAxios } from "../../../services/services";
 import { CustomRadio } from "../../Reusables/radiobutton/Radio";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Success } from "../../../toasts/toast";
@@ -33,7 +33,10 @@ export const DatosParejas = ({ loading, data, next, previous, title }) => {
       handleGetValue("HabitaDomicilioDeclarante", parseInt(data.HabitaDomicilioDeclarante));
       handleGetValue("Id_EntidadFederativa", parseInt(data.Id_EntidadFederativa));
       handleGetValue("EsMexico", parseInt(data.EsMexico));
-      setID(data.Id_DatosPareja);
+      !isNaN(parseInt(data.CodigoPostal)) && codigo("", data.CodigoPostal, false);
+      if (loading) {
+         setID(data.Id_DatosPareja);
+      }
       // setID(parseInt(data.Id_DatosEmpleoCargoComision));
       // setMexico(data.EsEnMexico == 0 ? false : true);
       // setActiveState(isNumber(parseInt(data.Id_MunicipioAlcaldia)) && false);
@@ -42,9 +45,6 @@ export const DatosParejas = ({ loading, data, next, previous, title }) => {
       formik.current.setFieldValue("Pareja", 1);
    };
    const submit = async (values, { resetForm }) => {
-      console.log("====================================");
-      console.log("adentro");
-      console.log("====================================");
       const url = `datospareja/${id > 0 ? `update/${id}` : "create"}`;
 
       dispatch(addDatosPareja(values));
@@ -89,6 +89,8 @@ export const DatosParejas = ({ loading, data, next, previous, title }) => {
    const [ambitosPublicos, setAmbitosPublicos] = useState([]);
    const [nivelGobierno, setNivelGobiernos] = useState([]);
    const [pareja, setPareja] = useState(true);
+   const [datas, setDatas] = useState([]);
+   const [loadingCp, setLoadingCp] = useState(false);
    useEffect(() => {}, []);
    useEffect(() => {
       const init = async () => {
@@ -152,6 +154,19 @@ export const DatosParejas = ({ loading, data, next, previous, title }) => {
                setAmbitoTrabajo(4);
                break;
          }
+      }
+   };
+   const codigo = async (name, value, nullable = true) => {
+      nullable && formik.current.setFieldValue("ColoniaLocalidad", null);
+      if (value.length == 5) {
+         setLoadingCp(true);
+         const response = await GetPostales(value);
+         const newDatas = response.map((item) => ({ id: item.Colonia, text: item.Colonia }));
+         setLoadingCp(false);
+
+         setDatas(newDatas);
+      } else {
+         setDatas([]);
       }
    };
    return (
@@ -282,7 +297,7 @@ export const DatosParejas = ({ loading, data, next, previous, title }) => {
                                  />
                                  <Text col={12} name="NumeroExterior" label="Número Exterior" type={"number"} color={"green"} />
                                  <Text col={12} name="NumeroInterior" label="Número Interior" type={"number"} color={"green"} />
-                                 <Text col={12} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} />
+                                 <Text col={12} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} handleGetValue={codigo} />
                                  <AutoComplete
                                     hidden={!mexico}
                                     col={12}
@@ -307,7 +322,14 @@ export const DatosParejas = ({ loading, data, next, previous, title }) => {
                                  <AutoComplete hidden={mexico} col={12} label="Pais de nacimiento" name="Id_Pais" options={paises} color="green" />
                                  <Text textStyleCase={true} hidden={mexico} col={12} name="EstadoProvincia" label="Estado / Provincia" color={"green"} />
 
-                                 <Text textStyleCase={true} col={12} name="ColoniaLocalidad" label="Colonia / Localidad" color={"green"} />
+                                 <AutoComplete
+                                    disabled={datas.length == 0}
+                                    loading={loadingCp}
+                                    col={12}
+                                    name={"ColoniaLocalidad"}
+                                    label={"Colonia / Localidad"}
+                                    options={datas}
+                                 />
                               </Ngif>
                               <CustomRadio
                                  hidden={false}
@@ -395,7 +417,7 @@ export const DatosParejas = ({ loading, data, next, previous, title }) => {
                               Regresar a la pagina anterior
                            </Button>
                            <Button sx={{ marginTop: "2rem" }} type="submit" variant="contained" color="primary">
-                              {data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
+                              {loading ? "Actualizar y continuar" : "Registrar y continuar"}
                            </Button>
                         </Grid>
                      );

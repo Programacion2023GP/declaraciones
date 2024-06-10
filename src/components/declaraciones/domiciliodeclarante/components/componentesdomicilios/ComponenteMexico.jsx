@@ -4,7 +4,7 @@ import { GetAxios } from "../../../../../services/services";
 import { useDispatch } from "react-redux";
 import { validationDomicilioDeclarante } from "../../../../../redux/DomicilioDeclaranteHoja2/DomicilioDeclarante";
 
-export const ComponenteMexico = memo(({ mex,estado }) => {
+export const ComponenteMexico = memo(({ mex, estado }) => {
    const dispatch = useDispatch();
 
    const [entidades, setEntidades] = useState([]);
@@ -18,9 +18,6 @@ export const ComponenteMexico = memo(({ mex,estado }) => {
       setLoadingMunicipios(false);
    };
    useEffect(() => {
-      if (!isNaN(parseInt(estado))) {
-         handleGetValue("", estado);
-      }
       dispatch(validationDomicilioDeclarante({ tipo: "Mexico" }));
 
       const init = async () => {
@@ -28,6 +25,11 @@ export const ComponenteMexico = memo(({ mex,estado }) => {
       };
       init();
    }, []);
+   useEffect(() => {
+      if (!isNaN(parseInt(estado))) {
+         handleGetValue("", estado);
+      }
+   }, [estado]);
    return (
       <>
          <AutoComplete col={6} label="Entidad Federativa" name="Id_EntidadFederativa" options={entidades} color="green" handleGetValue={handleGetValue} />

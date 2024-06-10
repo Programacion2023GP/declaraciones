@@ -84,7 +84,7 @@ export const Text = ({
                         mask={mask}
                         value={
                            formik.values && formik.values[name] !== undefined
-                              ? type === "number"
+                              ? type === "number" && formik.values[name] !== null
                                  ? formik.values[name].toString().replace(/^0+(?=\d)/, "")
                                  : formik.values[name]
                               : type === "number" && !isNaN(parseInt(formik.values[name]))
@@ -126,7 +126,7 @@ export const Text = ({
                   variant="outlined"
                   value={
                      formik.values && formik.values[name] !== undefined
-                        ? type === "number"
+                        ? type === "number" && formik.values[name] !== null
                            ? formik.values[name].toString().replace(/^0+(?=\d)/, "")
                            : formik.values[name]
                         : type === "number" && !isNaN(parseInt(formik.values[name]))

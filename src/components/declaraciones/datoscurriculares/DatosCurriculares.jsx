@@ -31,13 +31,16 @@ export const DatosCurriculares = ({ loading, data, next, previous, title }) => {
       }
    }, [data]);
    const modifiedDatosCurriculares = () => {
-      setID(parseInt(data.Id_DatosCurriculares));
+      if (loading) {
+         setID(parseInt(data.Id_DatosCurriculares));
+      }
       insertFormik(formik, data);
    };
    return (
       <FormikForm
          ref={formik}
-         messageButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
+         messageButton={loading ? "Actualizar y continuar" : "Registrar y continuar"}
+         // messageButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
          previousButton={true}
          handlePrevious={previous}
          button={true}
@@ -48,7 +51,6 @@ export const DatosCurriculares = ({ loading, data, next, previous, title }) => {
          message={"Capture su ultimo grado de estudios."}
       >
          <InitialValues nivelEstudios={nivelEstudios} estatus={estatus} documentosObtenidos={documentosObtenidos} />
-       
       </FormikForm>
    );
 };

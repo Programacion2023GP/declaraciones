@@ -11,13 +11,31 @@ export const Axios = axios.create({
     }
 })
 
+export const CodigosPostales = axios.create({
+    baseURL: import.meta.env.VITE_API_URLCODIGOSPOSTALES,
+    // timeout:500000,
+    headers:{
+        Accept:'application/json',
+        'Content-Type': 'application/json',
+
+    }
+})
+
+export const GetPostales = async (codigo)=>{ 
+     
+    try {
+        const response = await CodigosPostales.get(codigo);
+        return response.data.data.result
+    } catch (error) {
+        return error; 
+    }
+}
 export const PostAxios = async (url, values) => {
     try {
         const response = await Axios.post(url, values);
         Success(response.data.data.message);
         return response.data;
     } catch (error) {
-        console.log(error.response)
         Error(error.response.data.data.message);
         throw error; // Propaga la excepción para que se maneje externamente
     }

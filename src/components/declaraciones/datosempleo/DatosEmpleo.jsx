@@ -28,6 +28,7 @@ export const DatosEmpleo = ({ loading, data, next, previous, title }) => {
    const [mexico, setMexico] = useState(true);
    const [idEntidad, setIdEntidad] = useState(0);
    const [activeState, setActiveState] = useState(true);
+
    useEffect(() => {
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.DatosEmpleo.initialState), useSelector((state) => state.DatosEmpleo.validationSchema)]);
@@ -49,7 +50,9 @@ export const DatosEmpleo = ({ loading, data, next, previous, title }) => {
       }
    }, [data]);
    const modifiedDataEmpleosCargos = () => {
-      setID(parseInt(data.Id_DatosEmpleoCargoComision));
+      if (loading) {
+         setID(parseInt(data.Id_DatosEmpleoCargoComision));
+      }
       setMexico(data.EsEnMexico == 0 ? false : true);
       setActiveState(isNumber(parseInt(data.Id_MunicipioAlcaldia)) && false);
       setIdEntidad(isNumber(parseInt(data.Id_EntidadFederativa)) ? parseInt(data.Id_EntidadFederativa) : 0);
@@ -70,7 +73,7 @@ export const DatosEmpleo = ({ loading, data, next, previous, title }) => {
          )
       },
       { label: "Datos empleo", component: <InformacionEmpleo /> },
-      { label: "Domicilio", component: <DomicilioDeclarante mex={mexico} activeState={activeState} idEntidad={idEntidad} /> }
+      { label: "Domicilio", component: <DomicilioDeclarante mex={mexico} activeState={activeState} idEntidad={idEntidad} CodigoPostal={data && data.CodigoPostal} /> }
    ];
    return (
       <>
@@ -88,10 +91,13 @@ export const DatosEmpleo = ({ loading, data, next, previous, title }) => {
             <ComponentStepper
                variantAfter="outlined"
                steps={steps}
-               endButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
+               endButton={loading ? "Actualizar y continuar" : "Registrar y continuar"}
                buttonAfter={"Regresar"}
                buttonContinue={"Continuar"}
             />
+            {/* <button onClick={()=>{console.log('====================================');
+            console.log(formik.current.errors);
+            console.log('====================================');}}>ERRORES</button> */}
          </FormikForm>
       </>
    );

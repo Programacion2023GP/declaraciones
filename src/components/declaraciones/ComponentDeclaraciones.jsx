@@ -43,7 +43,8 @@ const ComponentDeclaraciones = () => {
 
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja : 0);
+   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja :6); // cambia de hoja
+   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja :6); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
    const dispatch = useDispatch();
    React.useEffect(() => {
       dispatch(foundLocalization());
@@ -55,6 +56,10 @@ const ComponentDeclaraciones = () => {
    };
    const handleNext = () => {
       setSend(false);
+      setPageAfterSituacion((prevActiveStep) => {
+         const nextStepIndex = prevActiveStep + 1;
+         return filteredSteps[nextStepIndex] ? nextStepIndex : prevActiveStep;
+      });
       setActiveStep((prevActiveStep) => {
          const nextStepIndex = prevActiveStep + 1;
          return filteredSteps[nextStepIndex] ? nextStepIndex : prevActiveStep;
@@ -64,6 +69,11 @@ const ComponentDeclaraciones = () => {
    // Método para manejar el paso anterior
    const handleBack = async () => {
       setActiveStep((prevActiveStep) => {
+         const previousStepIndex = prevActiveStep - 1;
+         // Retroceder solo al paso anterior visible
+         return filteredSteps[previousStepIndex] ? previousStepIndex : prevActiveStep;
+      });
+      setPageAfterSituacion((prevActiveStep) => {
          const previousStepIndex = prevActiveStep - 1;
          // Retroceder solo al paso anterior visible
          return filteredSteps[previousStepIndex] ? previousStepIndex : prevActiveStep;
@@ -174,7 +184,8 @@ const ComponentDeclaraciones = () => {
    // Método para manejar el siguiente paso
    const [hojaFilter, setHojaFilter] = React.useState(null);
    React.useEffect(() => {
-      isNumber(parseInt(localStorage.getItem("id_SituacionPatrimonial"))) && init();
+      dataAfterSituacionPatrimonial();
+       init();
       searchHoja();
       setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
    }, [activeStep, declaracion]);
@@ -190,7 +201,7 @@ const ComponentDeclaraciones = () => {
          setupdate(!update);
          const response = await GetAxios(`apartados/hoja/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
          const foundHoja = parseInt(response[0].Hoja);
-      
+
          if (isNumber(foundHoja) && foundHoja >= activeStep + 1) {
             setHojaFilter(foundHoja - 1);
             setupdate(true);
@@ -199,18 +210,21 @@ const ComponentDeclaraciones = () => {
          }
          setView(true);
       } catch (error) {
-         Info("cargando informacion de tu ultima declaración");
-         const response = await GetAxios(`situacionpatrimonial/index/${parseInt(localStorage.getItem("Id_User"))}`);
-         // const response = await GetAxios(`apartados/hoja/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
-
          setupdate(false);
          setView(true);
       }
    };
+   const dataAfterSituacionPatrimonial = async () => {};
    const init = async (page = null) => {
-      const url = filteredSteps[page == null ? activeStep : page].url;
+      const situacionPatrimonial ={
+         Id_SituacionPatrimonial :22579
+      }
 
-      const response = await GetAxios(`${url}/index/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
+      // 22579	
+      // const situacionPatrimonial = await GetAxios(
+      //    `situacionpatrimonial/index/${parseInt(localStorage.getItem("Id_User"))}/${activeStep + 1}/${!isNaN(parseInt(localStorage.getItem("id_SituacionPatrimonial"))) ? parseInt(localStorage.getItem("id_SituacionPatrimonial")):0}`
+      // );
+      const url = filteredSteps[page == null ? activeStep : page].url;
       const datasArrays = [
          "experiencialaboral",
          "dependienteseconomicos",
@@ -221,7 +235,21 @@ const ComponentDeclaraciones = () => {
          "adeudospasivos",
          "prestamoscomodatos"
       ];
-      setDataPage(datasArrays.includes(url) ? response : response[0]);
+      if (pageAfterSituacion === activeStep) {
+         if (parseInt(situacionPatrimonial.Id_SituacionPatrimonial) > 0) {
+            const response = await GetAxios(`${url}/index/${parseInt(situacionPatrimonial.Id_SituacionPatrimonial)}`);
+            setupdate(false)
+            if (response.length>0) {
+               Info("Cargando informacion de tu anterior declaración")
+               setDataPage(datasArrays.includes(url) ? response : response[0]);
+            }
+         }
+      }
+      if (parseInt(situacionPatrimonial.Id_SituacionPatrimonial) == 0 || isNaN(parseInt(situacionPatrimonial.Id_SituacionPatrimonial))) {
+
+         const response = await GetAxios(`${url}/index/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
+         setDataPage(datasArrays.includes(url) ? response : response[0]);
+      }
    };
 
    // Define aquí la lista de pasos con sus títulos y componentes correspondientes

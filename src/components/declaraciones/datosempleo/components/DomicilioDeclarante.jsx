@@ -8,16 +8,41 @@ import { useDispatch } from "react-redux";
 import { configValidationsDependiente } from "../../../../redux/DependientesEconomicos7/DependientesEconomicos";
 import { configValidationsEmpleo } from "../../../../redux/DatosEmpleoHoja4/DatosEmpleo";
 import { Grid } from "@mui/material";
-export const DomicilioDeclarante = memo(({mex,activeState,idEntidad}) => {
+import { AutoComplete } from "../../../Reusables/autocomplete/autocomplete";
+import { useFormikContext } from "formik";
+import { GetPostales } from "../../../../services/services";
+export const DomicilioDeclarante = memo(({ mex, activeState, idEntidad, CodigoPostal }) => {
    const [mexico, setMexico] = useState(mex);
-   useEffect(()=>{
+   const [datas, setDatas] = useState([]);
+   const [loading, setLoading] = useState(false);
+   const formik = useFormikContext();
+   useEffect(() => {
       dispatch(configValidationsEmpleo({ tipo: mex == true ? "Mexico" : "NoesMexico" }));
-      
-   },[mexico])
+   }, [mexico]);
+   useEffect(() => {
+      if (!isNaN(parseInt(CodigoPostal))) {
+         codigo("", String(CodigoPostal), false);
+      }
+   }, [CodigoPostal]);
    const dispatch = useDispatch();
    const handleGetValue = (name, value) => {
       setMexico(value == 1 ? true : false);
       dispatch(configValidationsEmpleo({ tipo: value == 1 ? "Mexico" : "NoesMexico" }));
+   };
+   const codigo = async (name, value, nullable = true) => {
+      nullable && formik.setFieldValue("ColoniaLocalidad", null);
+
+      if (value.length == 5) {
+         setLoading(true);
+         const response = await GetPostales(value);
+         const newDatas = response.map((item) => ({ id: item.Colonia, text: item.Colonia }));
+
+         setLoading(false);
+
+         setDatas(newDatas);
+      } else {
+         setDatas([]);
+      }
    };
    return (
       <Grid container spacing={1}>
@@ -41,21 +66,15 @@ export const DomicilioDeclarante = memo(({mex,activeState,idEntidad}) => {
          />
          <Text textStyleCase={true} col={6} name="NumeroExterior" label="Número Exterior" type={"number"} color={"green"} />
          <Text textStyleCase={true} col={6} name="NumeroInterior" label="Número Interior" type={"number"} color={"green"} />
-         <Text textStyleCase={true} col={6} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} />
+         <Text textStyleCase={true} col={6} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} handleGetValue={codigo} />
          <Ngif condition={mexico}>
-            <ComponenteMexico  activeState={activeState} idEntidad={idEntidad}/>
+            <ComponenteMexico activeState={activeState} idEntidad={idEntidad} />
          </Ngif>
          <Ngif condition={!mexico}>
             <ComponenteExtranjero />
          </Ngif>
-         <Text
-            textStyleCase={true}
-            col={12}
-            name="ColoniaLocalidad"
-            label="Colonia / Localidad"
-            color={"green"}
-            // Otras props opcionales como color, mask, etc., si es necesario
-         />
+
+         <AutoComplete disabled={datas.length == 0} loading={loading} col={12} name={"ColoniaLocalidad"} label={"Colonia / Localidad"} options={datas} />
       </Grid>
    );
 });

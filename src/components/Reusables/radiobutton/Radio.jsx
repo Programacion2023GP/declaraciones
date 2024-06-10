@@ -13,7 +13,7 @@ export const CustomRadio = ({
    hidden,
    options,
    handleGetValue,
-   rowLayout = true // Cambiar a false para poner en columnas
+   rowLayout = false // Cambiar a false para poner en columnas
 }) => {
    const { values, errors, touched, handleChange, handleBlur } = useFormikContext(); // Obtener valores, errores y funciones de Formik
    const [loading, setLoading] = useState(false);
@@ -70,6 +70,7 @@ export const CustomRadio = ({
                            //  console.log("hola", handleGetValue);
                            handleValue(name, option.value);
                         }}
+                        
                         control={
                            <Radio
                               sx={{
@@ -88,10 +89,12 @@ export const CustomRadio = ({
                         label={option.label}
                         disabled={loading}
                         sx={{
+                           
                            flexWrap: "wrap",
                            textWrap: "wrap",
                            color:"black",
                            maxWidth: "100%",
+                           minWidth:rowLayout?"100%":"0%",
                            marginBottom: rowLayout ? 0 : "8px", // Espacio entre los radio buttons si están en columnas
                            "& .MuiRadio-root": {
                               color: "black"

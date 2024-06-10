@@ -3,9 +3,16 @@ import DataTable from "../Reusables/table/DataTable";
 import { Box, Card } from "@mui/material";
 import { Request } from "../Reusables/request/Request";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { Axios, GetAxios } from "../../services/services";
+import { Error, Success } from "../../toasts/toast";
 export const MisDeclaraciones = ({}) => {
+   useEffect(() => {
+      init();
+   }, []);
    const [data, setData] = useState([]);
-   const { apartados } = Request({ peticiones: ["apartados"] });
+   const init = async () => {
+      setData(await GetAxios(`apartados/show/${parseInt(localStorage.getItem("Id_User"))}`));
+   };
    const handleEditDeclaracion = (row) => {
       const { Folio, Tipo_declaracion, Declaracion, Hoja } = row;
       localStorage.setItem("id_SituacionPatrimonial", Folio);
@@ -16,7 +23,15 @@ export const MisDeclaraciones = ({}) => {
       }
       window.location.hash = `dashboard/declaraciones/${number}/${page}`;
    };
-
+   const handleDelete = async (row) => {
+      try {
+         const response = await Axios.delete(`situacionpatrimonial/delete/${row.Folio}`);
+         init();
+         Success(response.data.data.message);
+      } catch (error) {
+         Error(error.response.data.data.message);
+      }
+   };
    const Declara = (tipo_declaracion, declaracion) => {
       let number = 0;
       if (declaracion == "Inicial") {
@@ -50,18 +65,19 @@ export const MisDeclaraciones = ({}) => {
             <Card sx={{ maxWidth: "100%", margin: "auto" }}>
                <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
                   <DataTable
-                     options={["CHARTS", "PDF", "EXCEL"]}
-                     moreButtons={[{ icon: VisibilityIcon, handleButton: handleEyes, color: "green", conditions: ["Status !='En proceso'"] }]}
+                     // options={["CHARTS", "PDF", "EXCEL"]}
+                     // moreButtons={[{ icon: VisibilityIcon, handleButton: handleEyes, color: "green", conditions: ["Status !='En proceso'"] }]}
                      buttonsMenu={false}
-                     loading={apartados.length > 0 ? false : true}
+                     loading={data.length > 0 ? false : true}
                      filterGlobal={true}
                      filter={true}
                      headers={["Folio", "Nombre", "Apellido Paterno", "Apellido Materno", "Tipo Declaración", "Status", "Fecha", "Tipo de declaración"]}
-                     data={apartados}
+                     data={data}
                      dataHidden={["Hoja"]}
                      pagination={[5, 10, 25]}
                      editButton={true}
                      deleteButton={true}
+                     handleDelete={handleDelete}
                      conditionExistEditButton={["Status !='Terminada'"]}
                      // conditionExistDeleteButton={["Status !='Terminada'"]}
                      handleEdit={handleEditDeclaracion}

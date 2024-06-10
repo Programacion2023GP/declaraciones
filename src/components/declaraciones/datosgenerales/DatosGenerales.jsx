@@ -38,7 +38,9 @@ export const DatosGenerales = ({ loading, data, next, previous, title, setSend }
    const modifiedDatosGenerales = () => {
       parseInt(data.Id_RegimenMatrimonial) > 0 && setActive(false);
       parseInt(data.Id_EstadoCivil) == 2 && dispatch(addValidacioneServidorPublico({ validations, tipo: "RegimenMatrimonial" }));
-      setID(parseInt(data.Id_DatosGenerales));
+      if (loading) {
+         setID(parseInt(data.Id_DatosGenerales));
+      }
       insertFormik(formik, data);
    };
 
@@ -97,11 +99,10 @@ export const DatosGenerales = ({ loading, data, next, previous, title, setSend }
             title={title}
             submit={submit}
             message={"Los datos que no serán públicos estarán resaltados de color verde"}
-         
          >
             <ComponentStepper
                steps={steps}
-               endButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
+               endButton={loading ? "Actualizar y continuar" : "Registrar y continuar"}
                buttonAfter={"Regresar"}
                buttonContinue={"Continuar"}
             />
