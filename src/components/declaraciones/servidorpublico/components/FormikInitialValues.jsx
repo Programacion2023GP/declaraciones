@@ -6,11 +6,11 @@ import { SPublicoIII } from "./SPublicoIII";
 import { Segmento, TabSegment } from "./Segmentos";
 import { Totales } from "./Totales";
 
-export const FormikInitialValues = ({}) => {
+export const FormikInitialValues = ({ messageButton }) => {
    let { declaracion } = useParams();
    declaracion = parseInt(declaracion);
    return (
-      <Segmento>
+      <Segmento messageButton={messageButton}>
          <TabSegment label={"Periodos"}>
             <Periodos />
          </TabSegment>

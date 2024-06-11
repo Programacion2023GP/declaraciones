@@ -14,6 +14,7 @@ import { Error, Success } from "../../../toasts/toast";
 import { useDispatch } from "react-redux";
 import { addExperienciaLaboral } from "../../../redux/ExperienciaLaboralHoja5/ExperienciaLaboralHoja5";
 import { Post } from "../funciones/post";
+import { Voice } from "../../Reusables/formik/FormikForm";
 
 // import DataTable from "../../Reusables/table/DataTable";
 
@@ -43,8 +44,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
          // modifiedDataEmpleosCargos();
       }
    }, [data, loading]);
-   useEffect(() => {
-   }, [update]);
+   useEffect(() => {}, [update]);
    const addDataTableModified = (values, index) => {
       values.identificador = index;
 
@@ -200,6 +200,19 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
       formikRef.current.setValues(item);
       // formikRef.current.setFieldValue("Id_AmbitoPublico", finData[0].Id_AmbitoPublico);
    };
+   const getErrorMessages = (errors, touched) => {
+      const errorMessages = [];
+
+      // Iterar sobre cada campo en los errores
+      Object.keys(errors).forEach((field) => {
+         // Verificar si el campo ha sido tocado por el usuario
+         if (touched[field]) {
+            errorMessages.push(errors[field]);
+         }
+      });
+
+      return errorMessages;
+   };
    const Delete = (row) => {
       const newDatasVisuales = datasVisuales.filter((elemento) => elemento.id !== row.id);
 
@@ -221,12 +234,12 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
       <>
          {/* {console.log("la datas", datas)} */}
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
-            <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem",overflow:"auto" }}>
+            <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
                <DataTable
                   headers={["Sector", "Ente publico o Nombre de la empresa", "Lugar", "Fecha de ingreso", "Fecha de salida"]}
                   dataHidden={["id"]}
                   data={datasVisuales}
-                  loading={loading && datas.length>0}
+                  loading={loading && datas.length > 0}
                   // editButton={true}
                   // handleEdit={Edit}
                   deleteButton={true}
@@ -265,6 +278,9 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
                         }
                         return (
                            <Grid container spacing={1} component={"form"} onSubmit={handleSubmit}>
+                              <Grid xs={12}>
+                                 <Voice message={getErrorMessages(errors, touched)} title={title} info="Ayuda sobre el formulario" />
+                              </Grid>
                               <CustomRadio
                                  handleGetValue={handleGetValue}
                                  hidden={false}
@@ -365,7 +381,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
                </Ngif>
                <Ngif condition={!checked}>
                   <Button onClick={sendData} type="submit" variant="contained" color="primary">
-                     {loading?"Actualizar y Continuar":datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
+                     {loading ? "Actualizar y Continuar" : datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
                   </Button>
                </Ngif>
             </CardContent>

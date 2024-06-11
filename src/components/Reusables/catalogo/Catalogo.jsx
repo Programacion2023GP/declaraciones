@@ -69,7 +69,6 @@ export const Catalogo = forwardRef(
       }, []);
 
       useEffect(() => {
-console.log(children);
 
       }, [children]);
 

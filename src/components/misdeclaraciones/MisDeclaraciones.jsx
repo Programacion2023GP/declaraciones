@@ -79,6 +79,7 @@ export const MisDeclaraciones = ({}) => {
                      deleteButton={true}
                      handleDelete={handleDelete}
                      conditionExistEditButton={["Status !='Terminada'"]}
+                     speakRow
                      // conditionExistDeleteButton={["Status !='Terminada'"]}
                      handleEdit={handleEditDeclaracion}
                      // options={true}

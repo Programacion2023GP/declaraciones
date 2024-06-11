@@ -1,26 +1,30 @@
-import { Alert, Box, Button, Card, CardContent, Grid, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, CardContent, Grid, IconButton, Tooltip, Typography } from "@mui/material";
 import { Formik } from "formik";
 import { Ngif } from "../conditionals/Ngif";
-import { forwardRef, useEffect } from "react";
+import { forwardRef, useEffect, useState } from "react";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import { red } from "@mui/material/colors";
+import PanToolAltIcon from "@mui/icons-material/PanToolAlt";
+import "./FormikForm.scss";
+
 export const FormikForm = forwardRef(
    (
-      {
-         className,
-         initialValues,
-         validationSchema,
-         sizeTitle,
-         submit,
-         title,
-         children,
-         message,
-         button,
-         previousButton,
-         handlePrevious,
-         advertence,
-         messageButton,
-      },
+      { className, initialValues, validationSchema, sizeTitle, submit, title, children, message, button, previousButton, handlePrevious, advertence, messageButton },
       ref
    ) => {
+      const getErrorMessages = (errors, touched) => {
+         const errorMessages = [];
+
+         // Iterar sobre cada campo en los errores
+         Object.keys(errors).forEach((field) => {
+            // Verificar si el campo ha sido tocado por el usuario
+            if (touched[field]) {
+               errorMessages.push(errors[field]);
+            }
+         });
+
+         return errorMessages;
+      };
       useEffect(() => {}, []);
       return (
          <Card className={className} sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}>
@@ -41,13 +45,16 @@ export const FormikForm = forwardRef(
                <br />
                <Grid container spacing={1}>
                   <Formik innerRef={ref} initialValues={initialValues} validationSchema={validationSchema} onSubmit={submit}>
-                     {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues }) => {
+                     {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues, submitForm }) => {
                         {
-                           // console.log(errors);
                         }
                         return (
                            <>
                               <Grid container component={"form"} onSubmit={handleSubmit}>
+                                 <Grid xs={12}>
+                                    <Voice message={getErrorMessages(errors, touched)} title={title} info="Ayuda sobre el formulario" />
+                                 </Grid>
+
                                  {children}
 
                                  <Ngif condition={previousButton && handlePrevious}>
@@ -71,3 +78,97 @@ export const FormikForm = forwardRef(
       );
    }
 );
+export const Voice = ({ message, title = "", info = "", flex = true, velocity = 1.25 }) => {
+   const [texts, setTexts] = useState([]);
+   const [voices, setVoices] = useState([]);
+   const [selectedVoice, setSelectedVoice] = useState(null);
+   const [volume, setVolume] = useState(1);
+   const [isSpeaking, setIsSpeaking] = useState(false); // Estado para rastrear si se está hablando
+
+   useEffect(() => {
+      if (message && Object.keys(message).length > 0) {
+         setTexts([]);
+         setTexts((prevTexts) => [...prevTexts, ...Object.values(message)]);
+      } else {
+         setTexts([`No tienes errores continua llenando el  ${title}`]);
+      }
+   }, [message]);
+   useEffect(() => {}, [isSpeaking]);
+   const handleReadAllAloud = () => {
+      setIsSpeaking(true); // Activar la animación de habla
+
+      texts.forEach((text, index) => {
+         setTimeout(() => {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.volume = volume;
+            if (selectedVoice) {
+               utterance.voice = selectedVoice;
+               utterance.rate = velocity; // Establecer la velocidad de la voz
+            }
+            if (index === texts.length - 1) {
+               utterance.onend = () => {
+                  // Aquí puedes ejecutar una función o establecer un estado para indicar que la lectura ha finalizado
+                  setIsSpeaking(false);
+               };
+            }
+            window.speechSynthesis.speak(utterance);
+         }, index * 200); // Cambia el tiempo de retardo según sea necesario
+      });
+      // setTimeout(() => {
+      //    setIsSpeaking(false);
+      // }, texts.length * 200); //
+   };
+
+   // Función para cargar las voces disponibles
+   const loadVoices = () => {
+      const availableVoices = window.speechSynthesis.getVoices();
+      setVoices(availableVoices);
+      // Selecciona una voz por defecto
+      if (availableVoices.length > 0) {
+         setSelectedVoice(availableVoices[6]);
+      }
+   };
+
+   // Cargar las voces cuando el componente se monte
+   useEffect(() => {
+      loadVoices();
+      // Agregar un event listener para cargar las voces cuando estén disponibles
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+   }, []);
+
+   // En tu componente
+   // Función para cambiar la voz seleccionada
+
+   return (
+      <Box display={flex ? "flex" : ""} alignItems="center" p={1} borderRadius={4}>
+         {isSpeaking}
+         <Tooltip title="Leer errores" arrow placement="right">
+            <IconButton
+               className={isSpeaking ? "speaking" : ""}
+               onClick={handleReadAllAloud}
+               aria-label="Leer errores"
+               style={{
+                  backgroundColor: red[500],
+                  boxShadow: "0px 3px 10px rgba(0, 0, 0, 0.2)", // Ajusta el valor según el nivel de sombra deseado
+                  transition: "background-color 0.3s, box-shadow 0.3s"
+               }}
+               onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = red[600]; // Cambia el color al pasar el cursor sobre el botón
+                  e.currentTarget.style.boxShadow = "0px 4px 15px rgba(0, 0, 0, 0.3)"; // Aumenta la sombra al pasar el cursor sobre el botón
+               }}
+               onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = red[500]; // Restaura el color cuando el cursor sale del botón
+                  e.currentTarget.style.boxShadow = "0px 3px 10px rgba(0, 0, 0, 0.2)"; // Restaura la sombra cuando el cursor sale del botón
+               }}
+            >
+               <VolumeUpIcon style={{ color: "white", fontSize: "2rem" }} />
+            </IconButton>
+         </Tooltip>
+         <Box ml={2}>
+            <Typography variant="subtitle2" color="textPrimary">
+               {info}
+            </Typography>
+         </Box>
+      </Box>
+   );
+};

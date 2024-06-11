@@ -145,8 +145,9 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
                   // color: "white",
                   display: activeStep === 0 ? "none" : "inline-block" // Oculta el botón si activeStep es 0
                }}
-               color="inherit"
-               variant={variantAfter?variantAfter:'text'}
+               color="secondary"
+               
+               variant={variantAfter?variantAfter:'outlined'}
                disabled={activeStep === 0}
                onClick={handleBack}
                sx={{ marginRight: 1 }}

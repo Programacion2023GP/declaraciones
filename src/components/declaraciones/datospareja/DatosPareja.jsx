@@ -14,6 +14,7 @@ import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Success } from "../../../toasts/toast";
 import { Post } from "../funciones/post";
 import { insertFormik } from "../../FuncionesFormik";
+import { Voice } from "../../Reusables/formik/FormikForm";
 
 export const DatosParejas = ({ loading, data, next, previous, title }) => {
    const dataForm = useSelector((state) => state.DatosPareja.initialState);
@@ -21,7 +22,19 @@ export const DatosParejas = ({ loading, data, next, previous, title }) => {
    const formik = useRef(null);
    const dispatch = useDispatch();
    const [id, setID] = useState(0);
+   const getErrorMessages = (errors, touched) => {
+      const errorMessages = [];
 
+      // Iterar sobre cada campo en los errores
+      Object.keys(errors).forEach((field) => {
+         // Verificar si el campo ha sido tocado por el usuario
+         if (touched[field]) {
+            errorMessages.push(errors[field]);
+         }
+      });
+
+      return errorMessages;
+   };
    useEffect(() => {
       // console.log(data);
       if (data?.constructor === Object && Object.keys(data).length > 0) {
@@ -200,6 +213,9 @@ export const DatosParejas = ({ loading, data, next, previous, title }) => {
                               ]}
                               handleGetValue={handleGetValue}
                            />
+                           <Grid xs={12}>
+                              <Voice message={getErrorMessages(errors, touched)} title={title} info="Ayuda sobre el formulario" />
+                           </Grid>
                            <Ngif condition={pareja}>
                               <Text
                                  textStyleCase={true}

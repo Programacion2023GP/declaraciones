@@ -47,7 +47,9 @@ export const ServidorPublico = ({ loading, data, next, previous, title }) => {
       }
    }, [data]);
    const modifiedDataServidor = () => {
-      setID(parseInt(data.Id_ActividadAnualAnterior));
+      if (loading) {
+         setID(parseInt(data.Id_ActividadAnualAnterior));
+      }
       delete data.Id_ActividadAnualAnterior;
       insertFormik(formik, data);
    };
@@ -85,10 +87,11 @@ export const ServidorPublico = ({ loading, data, next, previous, title }) => {
 
          <Ngif condition={checked}>
             <FormikForm
-               messageButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
+               // messageButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}
+               // messageButton={loading ? "Actualizar y continuar" : "Registrar y continuar"}
                previousButton
                handlePrevious={previous}
-               button={true}
+               // button={true}
                ref={formik}
                previous={previous}
                submit={submit}
@@ -96,12 +99,12 @@ export const ServidorPublico = ({ loading, data, next, previous, title }) => {
                initialValues={dataForm}
                title={title}
             >
-               <FormikInitialValues />
+               <FormikInitialValues   messageButton={loading ? "Actualizar y continuar" : "Registrar y continuar"}/>
             </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ marginLeft: "2rem" }} onClick={continuar} type="submit" variant="contained" color="primary">
-               {loading?'Actualizar y continuar':'Continuar'}
+               {loading ? "Actualizar y continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>

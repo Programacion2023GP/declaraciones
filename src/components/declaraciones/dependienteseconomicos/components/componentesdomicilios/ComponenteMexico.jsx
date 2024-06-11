@@ -6,7 +6,7 @@ import { configValidationsDependiente } from "../../../../../redux/DependientesE
 
 export const ComponenteMexico = memo(({}) => {
    const dispatch = useDispatch();
-
+   
    const [entidades, setEntidades] = useState([]);
    const [municipios, setMunicipios] = useState([]);
    const [activeMunicipios, setActiveMunicipios] = useState(true);
@@ -18,7 +18,7 @@ export const ComponenteMexico = memo(({}) => {
       setLoadingMunicipios(false);
    };
    useEffect(() => {
-            dispatch(configValidationsDependiente({ tipo: "Mexico" }));
+      dispatch(configValidationsDependiente({ tipo: "Mexico" }));
 
       const init = async () => {
          setEntidades(await GetAxios("entidades/show"));
@@ -27,14 +27,7 @@ export const ComponenteMexico = memo(({}) => {
    }, []);
    return (
       <>
-         <AutoComplete
-            col={12}
-            label="Entidad Federativa"
-            name="Id_EntidadFederativa"
-            options={entidades}
-            color="green"
-            handleGetValue={handleGetValue}
-         />
+         <AutoComplete col={12} label="Entidad Federativa" name="Id_EntidadFederativa" options={entidades} color="green" handleGetValue={handleGetValue} />
          <AutoComplete
             disabled={activeMunicipios}
             loading={loadingMuncipios}

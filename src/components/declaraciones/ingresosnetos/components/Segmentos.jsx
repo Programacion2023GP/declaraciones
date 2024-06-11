@@ -101,13 +101,13 @@ export const Segmento = ({ children, text, setError = false, messageButton }) =>
             </Ngif>
 
             <Ngif condition={Children.count(children) - 1 > value}>
-               <Button onClick={handleNext} type="button" variant="outlined" color="primary">
+               <Button onClick={handleNext} type="button" variant="contained" color="primary">
                   Continuar
                </Button>
             </Ngif>
 
             <Ngif condition={Children.count(children) - 1 == value}>
-               <Button onClick={handleNext} type="submit" variant="outlined" color="primary">
+               <Button onClick={handleNext} type="submit" variant="contained" color="primary">
                   Registrar y continuar
                </Button>
             </Ngif>

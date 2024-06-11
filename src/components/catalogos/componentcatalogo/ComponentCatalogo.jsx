@@ -38,14 +38,17 @@ export const ComponentCatalogo = ({ pagina }) => {
       }
       setChange(change + 1);
    }, [catalogo, pagina]);
+   useEffect(()=>{
+      formulario();
+   },[catalogo])
    useEffect(() => {
       formulario();
    }, [tipoinversion.length > 0 && roles.length > 0 && intengrantes.length > 0 && adscripcion.length > 0]);
 
    return (
       <Catalogo
+      key={change}
          idTable={key == undefined ? "id" : key}
-         key={"catalogo" + (pagina ? pagina : catalogo)}
          id={id}
          setId={setId}
          catalogo={catalogo}

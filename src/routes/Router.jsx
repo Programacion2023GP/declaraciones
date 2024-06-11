@@ -12,6 +12,7 @@ import store from "../redux/store";
 import { element } from "prop-types";
 import { MisDeclaraciones } from "../components/misdeclaraciones/MisDeclaraciones";
 import { ComponentCatalogo } from "../components/catalogos/componentcatalogo/ComponentCatalogo";
+import { Error } from "../components/error/Error";
 export const router = createHashRouter([
    {
       path: "/dashboard",
@@ -20,7 +21,7 @@ export const router = createHashRouter([
             <BaseLayout />
          </MenuContextProvider>
       ),
-      errorElement: <p>Error</p>,
+      errorElement: <Error/>,
       children: [
          {
             path: "declaraciones",

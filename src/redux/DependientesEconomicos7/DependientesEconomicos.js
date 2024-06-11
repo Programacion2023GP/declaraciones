@@ -62,7 +62,7 @@ const validationSchema ={
     NombreEmpresaSociedadAsociacion:Yup.string().required("El nombre de la empresa o asociación es requerida"),
     RfcEmpresa: Yup.string()
     .required("El RFC es requerido")
-    .matches(/^.{10}$/, "El RFC debe tener exactamente 10 caracteres"),
+    .min(3, "El RFC de empresa debe tener al menos 3 caracteres"),
     Id_Sector:Yup.number().min(1,"El sector es requerido").required("El sector es requerido"),
     ValorSalarioMensualNeto:Yup.number("No debe llevar centavos").integer("No debe llevar centavos").required("El salario mensual neto es requerido").min(1,"El salario mensual neto es requerido"),
     EsProveedorContratistaGobierno:Yup.number("Es requerido").required("Es requerido"),
@@ -88,7 +88,7 @@ const PrivadouOtro ={
     NombreEmpresaSociedadAsociacion:Yup.string().required("El nombre de la empresa o asociación es requerida"),
     RfcEmpresa: Yup.string()
     .required("El RFC es requerido")
-    .matches(/^.{10}$/, "El RFC debe tener exactamente 10 caracteres"),
+    .min(3, "El RFC de empresa debe tener al menos 3 caracteres"),
     Id_Sector:Yup.number().min(1,"El sector es requerido").required("El sector es requerido"),
     EsProveedorContratistaGobierno:Yup.number("Es requerido").required("Es requerido")
 }

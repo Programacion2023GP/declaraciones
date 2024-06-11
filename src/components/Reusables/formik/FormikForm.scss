@@ -1,0 +1,14 @@
+/* Agrega esta clase para animar el ícono cuando se está hablando */
+.speaking {
+    animation: speaking-animation 0.5s infinite alternate; /* Define la animación */
+ }
+ 
+ @keyframes speaking-animation {
+    from {
+       transform: scale(1); /* Escala normal */
+    }
+    to {
+       transform: scale(1.2); /* Escala aumentada */
+    }
+ }
+ 

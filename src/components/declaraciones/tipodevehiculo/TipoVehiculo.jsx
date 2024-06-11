@@ -216,3 +216,5 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
       </>
    );
 };
+
+

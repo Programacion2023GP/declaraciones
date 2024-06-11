@@ -69,8 +69,11 @@ export const Login = () => {
                            localStorage.setItem("Id_User", response.data.data.result.user.Id_User);
                            localStorage.setItem("Id_Person", response.data.data.result.user.Id_Person);
                            localStorage.setItem("Id_Role", response.data.data.result.user.Id_Role);
+                           localStorage.setItem("Name", response.data.data.result.user.Name);
+                           localStorage.setItem("PaternalSurname", response.data.data.result.user.PaternalSurname);
+
                            window.location.hash = "/dashboard/declaraciones";
-                           console.log(response.data.data);
+                           // console.log(response.data.data);
                         } catch (error) {
                            console.error(error);
                         }

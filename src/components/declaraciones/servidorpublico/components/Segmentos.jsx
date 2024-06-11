@@ -6,16 +6,29 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { useFormikContext } from "formik";
+import { Ngif } from "../../../Reusables/conditionals/Ngif";
+import { Button } from "@mui/material";
 
-export const Segmento = ({ children, text, setError = false }) => {
+export const Segmento = ({ children, text, setError = false, messageButton }) => {
    const [value, setValue] = useState(0);
+ 
    const handleChange = (event, newValue) => {
       setValue(newValue);
+   };
+
+   const handleNext = () => {
+      if (Children.count(children) - 1 == value) {
+         return;
+      }
+      setValue(value + 1);
+   };
+   const handleBefore = () => {
+      setValue(value - 1);
    };
    const errorColor = red[500];
    const formik = useFormikContext();
    const names = [
-      { 0: ["FechaInicio","FechaConclusion"] },
+      { 0: ["FechaInicio", "FechaConclusion"] },
       { 1: ["RemuneracionMensualAnualConclusionCargoPublico"] },
       {
          2: [
@@ -82,6 +95,23 @@ export const Segmento = ({ children, text, setError = false }) => {
                   return <TabPanel value={index}>{child}</TabPanel>;
                })}
             </TabContext>
+            <Ngif condition={value != 0}>
+               <Button sx={{ marginRight: "2rem" }} onClick={handleBefore} type="button" variant="outlined" color="secondary">
+                  Regresar
+               </Button>
+            </Ngif>
+
+            <Ngif condition={Children.count(children) - 1 > value}>
+               <Button onClick={handleNext} type="button" variant="contained" color="primary">
+                  Continuar
+               </Button>
+            </Ngif>
+
+            <Ngif condition={Children.count(children) - 1 == value}>
+               <Button onClick={handleNext} type="submit" variant="contained" color="primary">
+                  Registrar y continuar
+               </Button>
+            </Ngif>
          </Box>
       </>
    );

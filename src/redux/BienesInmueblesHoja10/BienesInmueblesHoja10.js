@@ -32,8 +32,10 @@ const initialState ={
     Aclaraciones: "",
     EstadoProvincia: "",
     motivobaja:"",    
+    tercero:0,
 }
 const validationSchema ={
+    tercero:Yup.number("El formato es numerico").min(0,"Cuenta con tercero es requerido").required("Cuenta con tercero es requerido"),
     Id_TipoInmueble:Yup.number("El formato es numerico").min(1,"El tipo de inmueble es requerido").required("El tipo de inmueble es requerido"),
     Id_Titular:Yup.number("El formato es numerico").min(1,"El titular es requerido").required("El titular es requerido"),
     PorcentajePropiedad:Yup.number("El formato es numerico").min(1,"El porcentaje de la propiedad es requerido").required("El porcentaje de la propiedad es requerido"),

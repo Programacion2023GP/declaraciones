@@ -26,6 +26,7 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import BasicMenu from "../basicmenu/BasicMenu";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import * as XLSX from "xlsx";
+import { Voice } from "../formik/FormikForm";
 
 const SearchInput = ({ column, data, getData, previousData }) => {
    const [searchText, setSearchText] = useState("");
@@ -71,7 +72,7 @@ const SearchInput = ({ column, data, getData, previousData }) => {
    );
 };
 
-const Title = ({ headers, titles, data, filterData, previousData, filter, editButton, deleteButton }) => {
+const Title = ({ headers, titles, data, filterData, previousData, filter, editButton, deleteButton, speakRow }) => {
    const [titlesMap, setTitlesMap] = useState([]);
    const [headersMap, setHeadersMap] = useState([]);
    useEffect(() => {
@@ -87,8 +88,13 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
    }, [titles, titlesMap, headersMap, headers, editButton, deleteButton]);
    return (
       <>
-         <thead >
+         <thead>
             <tr style={{ background: "black", color: "white", width: "100%" }}>
+               <Ngif condition={speakRow}>
+                  <th key={uuidv4()} style={{ padding: "1rem 1rem", textAlign: "center", fontSize: "14px" }}>
+                     Leer
+                  </th>
+               </Ngif>
                {headersMap.map((title) => {
                   return (
                      <th key={"headers" + title} style={{ padding: "1rem 1rem", textAlign: "center", fontSize: "14px" }}>
@@ -103,6 +109,15 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
                )}
             </tr>
             <tr>
+               <Ngif condition={speakRow}>
+                  <th
+                     key={"titlesMap" + uuidv4()}
+                     style={{
+                        border: "1px solid #BDBDBD",
+                        height: "fit-content"
+                     }}
+                  ></th>
+               </Ngif>
                {filter &&
                   titlesMap.map((title) => {
                      return (
@@ -322,7 +337,8 @@ const DataTable = ({
    conditionExistDeleteButton = [],
    loading,
    moreButtons = [],
-   buttonsMenu = false
+   buttonsMenu = false,
+   speakRow = false
 }) => {
    const [reinitializedData, setReinitializedData] = useState(data);
    const [dataFilter, setDataFilter] = useState(data);
@@ -559,6 +575,25 @@ const DataTable = ({
    const modal = (event) => {
       setOpenModal(true);
    };
+   const speakingRow = (arr1, obj, arr3) => {
+      const filteredValues = Object.entries(obj)
+         .filter(([key, value]) => !arr3.includes(key))
+         .map(([key, value]) => value);
+
+      let intercalado = [];
+      let maxLength = Math.max(arr1.length, filteredValues.length);
+
+      for (let i = 0; i < maxLength; i++) {
+         if (i < arr1.length) {
+            intercalado.push(arr1[i]);
+         }
+         if (i < filteredValues.length) {
+            intercalado.push(filteredValues[i]);
+         }
+      }
+
+      return intercalado;
+   };
 
    return (
       <>
@@ -622,6 +657,7 @@ const DataTable = ({
 
             {titles.length > 0 || headers.length > 0 ? (
                <Title
+                  speakRow={speakRow}
                   editButton={editButton}
                   deleteButton={deleteButton}
                   headers={headers}
@@ -656,6 +692,23 @@ const DataTable = ({
                   {dataTable.map((item, index) => {
                      return (
                         <tr key={index} style={{}}>
+                           <Ngif condition={speakRow}>
+                              <td
+                                 style={{
+                                    textAlign: "center",
+                                    border: "1px solid #BDBDBD",
+                                    fontSize: "13px",
+                                    // paddingLeft: "5px",
+                                    // paddingRight: "5px",
+                                    margin: 0
+                                 }}
+                                 key={"voice" + index}
+                                 cols={1}
+                              >
+                                 <Voice message={speakingRow(headers, item, dataHidden)} title="Formulario" flex={false} velocity={1.40} />
+                              </td>
+                           </Ngif>
+
                            {Object.entries(item).map(([key, value]) => {
                               if (dataHidden) {
                                  if (!dataHidden.includes(key)) {
@@ -741,7 +794,7 @@ const DataTable = ({
                <tfoot>
                   <tr>
                      <td
-                        colSpan={headers.length + (editButton || deleteButton ? 1 : 0)}
+                        colSpan={headers.length + (editButton || deleteButton ? 1 : 0) + (speakRow ? 1 : 0)}
                         style={{ border: "1px solid #BDBDBD", padding: "0.5rem", textAlign: "center", background: "black" }}
                      >
                         <Paginator
