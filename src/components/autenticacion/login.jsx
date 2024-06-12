@@ -11,11 +11,14 @@ import { useDispatch } from "react-redux";
 import { locationAuth, loginAuth } from "../../user/auth/auth";
 import { Ngif } from "../Reusables/conditionals/Ngif";
 import Gomez from "../../assets/icons/logo-gpd.png";
+import Loading from "../Reusables/loading/Loading";
+import { Opacity } from "@mui/icons-material";
 // import { Card, CardContent, Typography, CardMedia, Button, Box } from '@mui/material';
 
 export const Login = () => {
    const [messages, setMessages] = useState(false);
    const [loading, setLoading] = useState(false);
+   const [loadingPost, setLoadingPost] = useState(false);
    const styles = {
       media: {
          margin: "auto",
@@ -40,14 +43,20 @@ export const Login = () => {
       <Ngif condition={loading}>
          <Box
             sx={{
+               position: "relative",
                display: "flex",
                justifyContent: "center",
                alignItems: "center",
                height: "100vh",
                background: "linear-gradient(90deg, rgba(117, 133, 108, 1) 0%, rgba(117, 133, 108, 0.8) 50%, rgba(117, 133, 108, 1) 100%), rgb(52, 73, 52)"
-              }}
+            }}
          >
-            <Card sx={{ width: { xs: "90%", sm: "70%", md: "50%" }, padding: "2.5rem", boxShadow: 3 }}>
+            <Ngif condition={loadingPost}>
+               <Box position={"absolute"}>
+                  <Loading />
+               </Box>
+            </Ngif>
+            <Card sx={{ width: { xs: "90%", sm: "70%", md: "50%" }, padding: "2.5rem", boxShadow: 3, opacity: loadingPost ? 0.2 : 1 }}>
                <CardContent>
                   <CardMedia
                      component="img"
@@ -55,8 +64,7 @@ export const Login = () => {
                      height="140"
                      image={Gomez}
                      title="Imagen de ejemplo"
-                     sx={{ height: "fit-content", objectFit: "contain",marginBottom:"2rem" }}
-                     
+                     sx={{ height: "fit-content", objectFit: "contain", marginBottom: "2rem" }}
                   />
 
                   <Formik
@@ -65,6 +73,7 @@ export const Login = () => {
                      onSubmit={async (values, { setSubmitting }) => {
                         setSubmitting(false);
                         try {
+                           setLoadingPost(true);
                            const response = await Axios.post("usuarios/login", values);
                            localStorage.setItem("Id_User", response.data.data.result.user.Id_User);
                            localStorage.setItem("Id_Person", response.data.data.result.user.Id_Person);
@@ -76,6 +85,9 @@ export const Login = () => {
                            // console.log(response.data.data);
                         } catch (error) {
                            console.error(error);
+                           Error("Credenciales incorrectas")
+                        } finally {
+                           setLoadingPost(false);
                         }
                      }}
                   >

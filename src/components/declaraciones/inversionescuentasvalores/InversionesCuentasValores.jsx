@@ -50,8 +50,11 @@ export const InversionesCuentasValores = ({ loading, data, next, previous, title
          if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
             setDatas([]);
             setDatasTable([]);
-            setUpdate(true);
+            // setUpdate(true);
             data.forEach((values, index) => {
+               console.log('====================================');
+               console.log(values);
+               console.log('====================================');
                delete values.Id_InversionesCuentasValores;
                addDataTableModified(values, index);
             });

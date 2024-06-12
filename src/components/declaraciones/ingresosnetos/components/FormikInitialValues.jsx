@@ -3,11 +3,14 @@ import { Segmento, tabSegmento } from "./Segmentos";
 import { Totales } from "./Totales";
 import { IngresosI } from "./IngresosI";
 import { IngresosIII } from "./IngresosIII";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { labelRenumeracion } from "../../funciones/ingresosEservidor/labels";
 
 export const FormikInitialValues = ({messageButton}) => {
+   useEffect(()=>{
+      console.log(messageButton);
+   },[messageButton])
    //   const [names,setNames]=useState([])
    let { declaracion } = useParams();
    declaracion = parseInt(declaracion);

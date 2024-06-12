@@ -11,7 +11,7 @@ import { Button } from "@mui/material";
 
 export const Segmento = ({ children, text, setError = false, messageButton }) => {
    const [value, setValue] = useState(0);
- 
+
    const handleChange = (event, newValue) => {
       setValue(newValue);
    };
@@ -109,7 +109,7 @@ export const Segmento = ({ children, text, setError = false, messageButton }) =>
 
             <Ngif condition={Children.count(children) - 1 == value}>
                <Button onClick={handleNext} type="submit" variant="contained" color="primary">
-                  Registrar y continuar
+                  {messageButton}
                </Button>
             </Ngif>
          </Box>

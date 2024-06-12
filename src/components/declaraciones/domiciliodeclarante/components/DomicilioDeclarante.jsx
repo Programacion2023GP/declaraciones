@@ -19,15 +19,16 @@ export const DomicilioDeclaranteGeneral = memo(({ mex, estado, CodigoPostal }) =
    useEffect(() => {
       setMexico(mex ? true : false);
       if (!isNaN(parseInt(CodigoPostal))) {
-         codigo("",CodigoPostal,false)
+         codigo("", CodigoPostal, false);
       }
-   }, [mex, estado,CodigoPostal]);
+      console.log(typeof (CodigoPostal));
+   }, [mex, estado, CodigoPostal]);
    const handleGetValue = (name, value) => {
       setMexico(value == 1 ? true : false);
 
       // dispatch(configValidationsDependiente({ tipo: (value = 1 ? "Mexico" : "NoesMexico") }));
    };
-   const codigo = async (name, value,nullable=true) => {
+   const codigo = async (name, value, nullable = true) => {
       nullable && formik.setFieldValue("ColoniaLocalidad", null);
       if (value.length == 5) {
          setLoading(true);
@@ -40,7 +41,7 @@ export const DomicilioDeclaranteGeneral = memo(({ mex, estado, CodigoPostal }) =
          setDatas([]);
       }
    };
-   
+
    return (
       <Grid container spacing={1}>
          <CustomRadio
@@ -71,9 +72,7 @@ export const DomicilioDeclaranteGeneral = memo(({ mex, estado, CodigoPostal }) =
          <Ngif condition={!mexico}>
             <ComponenteExtranjero />
          </Ngif>
-         <AutoComplete disabled={datas.length == 0} loading={loading} col={12} name={"ColoniaLocalidad"}  label={"Colonia / Localidad"} options={datas} />
-
-         
+         <AutoComplete disabled={datas.length == 0} loading={loading} col={12} name={"ColoniaLocalidad"} label={"Colonia / Localidad"} options={datas} />
       </Grid>
    );
 });

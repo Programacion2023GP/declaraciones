@@ -55,7 +55,7 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
          if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
             setDatas([]);
             setDataTable([]);
-            setUpdate(true);
+            // setUpdate(true);
             data.forEach((values, index) => {
                delete values.Id_BienesMuebles;
                addDataTableModified(values, index);
@@ -65,8 +65,9 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
    }, [data, tiposbienesmuebles, titular]);
 
    const addDataTableModified = (values, index) => {
-      values.identificador = index;
-      const newDatas = [...datas, values];
+      const valuesCopy = { ...values, identificador: index };
+
+      const newDatas = [...datas, valuesCopy];
 
       const newData = {
          identificador: index,

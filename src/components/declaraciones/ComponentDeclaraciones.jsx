@@ -43,8 +43,8 @@ const ComponentDeclaraciones = () => {
 
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja :5); // cambia de hoja
-   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja :5); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
+   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja : 8); // cambia de hoja
+   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja : 8); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
    const dispatch = useDispatch();
    React.useEffect(() => {
       dispatch(foundLocalization());
@@ -56,6 +56,7 @@ const ComponentDeclaraciones = () => {
    };
    const handleNext = () => {
       setSend(false);
+      setDataPage([]);
       setPageAfterSituacion((prevActiveStep) => {
          const nextStepIndex = prevActiveStep + 1;
          return filteredSteps[nextStepIndex] ? nextStepIndex : prevActiveStep;
@@ -68,6 +69,8 @@ const ComponentDeclaraciones = () => {
    // const comparationData = (step) => {};
    // Método para manejar el paso anterior
    const handleBack = async () => {
+      setDataPage([]);
+
       setActiveStep((prevActiveStep) => {
          const previousStepIndex = prevActiveStep - 1;
          // Retroceder solo al paso anterior visible
@@ -185,11 +188,13 @@ const ComponentDeclaraciones = () => {
    const [hojaFilter, setHojaFilter] = React.useState(null);
    React.useEffect(() => {
       dataAfterSituacionPatrimonial();
-       init();
+      // init();
       searchHoja();
       setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
    }, [activeStep, declaracion]);
-   React.useEffect(() => {}, [update, view]);
+   React.useEffect(() => {
+      // console.log("view", view);
+   }, [update, view]);
    React.useEffect(() => {}, [dataPage]);
    // React.useEffect(() => {
    //    setLoading(true);
@@ -198,57 +203,78 @@ const ComponentDeclaraciones = () => {
       try {
          setView(false);
 
-         setupdate(!update);
+         setupdate(false);
          const response = await GetAxios(`apartados/hoja/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
          const foundHoja = parseInt(response[0].Hoja);
-
+         console.log(foundHoja);
          if (isNumber(foundHoja) && foundHoja >= activeStep + 1) {
             setHojaFilter(foundHoja - 1);
+
             setupdate(true);
          } else {
             setupdate(false);
          }
-         setView(true);
       } catch (error) {
          setupdate(false);
-         setView(true);
+      } finally {
+         await init();
       }
    };
-   const dataAfterSituacionPatrimonial = async () => {};
+   const dataAfterSituacionPatrimonial = async (situacionPatrimonial) => {};
    const init = async (page = null) => {
-      const situacionPatrimonial ={
-         Id_SituacionPatrimonial :22579
-      }
+      try {
+         // Obtener la situación patrimonial
+         const situacionPatrimonial = await GetAxios(
+            `situacionpatrimonial/index/${parseInt(localStorage.getItem("Id_User"))}/${activeStep + 1 + (declaracion != 2 && activeStep >= 8 ? 1 : 0)}/${!isNaN(parseInt(localStorage.getItem("id_SituacionPatrimonial"))) ? parseInt(localStorage.getItem("id_SituacionPatrimonial")) : 0}`
+         );
 
-      // 22579	
-      // const situacionPatrimonial = await GetAxios(
-      //    `situacionpatrimonial/index/${parseInt(localStorage.getItem("Id_User"))}/${activeStep + 1}/${!isNaN(parseInt(localStorage.getItem("id_SituacionPatrimonial"))) ? parseInt(localStorage.getItem("id_SituacionPatrimonial")):0}`
-      // );
-      const url = filteredSteps[page == null ? activeStep : page].url;
-      const datasArrays = [
-         "experiencialaboral",
-         "dependienteseconomicos",
-         "bienesinmuebles",
-         "vehiculos",
-         "bienesmuebles",
-         "inversionescuentas",
-         "adeudospasivos",
-         "prestamoscomodatos"
-      ];
-      if (pageAfterSituacion === activeStep) {
-         if (parseInt(situacionPatrimonial.Id_SituacionPatrimonial) > 0) {
-            const response = await GetAxios(`${url}/index/${parseInt(situacionPatrimonial.Id_SituacionPatrimonial)}`);
-            setupdate(false)
-            if (response.length>0) {
-               Info("Cargando informacion de tu anterior declaración")
-               setDataPage(datasArrays.includes(url) ? response : response[0]);
+         const url = filteredSteps[page == null ? activeStep : page].url;
+         const datasArrays = [
+            "experiencialaboral",
+            "dependienteseconomicos",
+            "bienesinmuebles",
+            "vehiculos",
+            "bienesmuebles",
+            "inversionescuentas",
+            "adeudospasivos",
+            "prestamoscomodatos"
+         ];
+
+         // Verificar si la página después de la situación es el paso activo
+         if (pageAfterSituacion === activeStep) {
+            if (parseInt(situacionPatrimonial.Id_SituacionPatrimonial) > 0) {
+               const response = await GetAxios(`${url}/index/${parseInt(situacionPatrimonial.Id_SituacionPatrimonial)}`);
+               setupdate(false);
+               if (response.length > 0) {
+                  console.log(response);
+                  Info("Cargando informacion de tu anterior declaración");
+                  setDataPage(datasArrays.includes(url) ? response : response[0]);
+               }
             }
          }
-      }
-      if (parseInt(situacionPatrimonial.Id_SituacionPatrimonial) == 0 || isNaN(parseInt(situacionPatrimonial.Id_SituacionPatrimonial))) {
 
-         const response = await GetAxios(`${url}/index/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
-         setDataPage(datasArrays.includes(url) ? response : response[0]);
+         // Verificar si la situación patrimonial no es válida
+         if (parseInt(situacionPatrimonial.Id_SituacionPatrimonial) == 0 || isNaN(parseInt(situacionPatrimonial.Id_SituacionPatrimonial))) {
+            const exist = await GetAxios(
+               `apartados/exist/${!isNaN(parseInt(localStorage.getItem("id_SituacionPatrimonial"))) ? parseInt(localStorage.getItem("id_SituacionPatrimonial")) : 0}/${activeStep + 1}`
+            );
+
+            if (exist) {
+               const response = await GetAxios(`${url}/index/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
+               console.log("adas", response);
+               setDataPage(datasArrays.includes(url) ? response : response[0]);
+               if (response.length == 0) {
+                  setupdate(false);
+               }
+            } else {
+               setupdate(false);
+            }
+         }
+      } catch (error) {
+         console.error("Error en la inicialización:", error);
+         // Manejar errores si es necesario
+      } finally {
+         setView(true);
       }
    };
 

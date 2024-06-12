@@ -1,8 +1,9 @@
 import { FormControl, FormHelperText } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { Field } from "formik";
+import { Field, useFormikContext } from "formik";
 import 'dayjs/locale/es'; // Importa el idioma español
+import { useEffect } from "react";
 
 /**
  * 
@@ -44,7 +45,13 @@ const DatePickerComponent = ({
    disabled
 }) => {
    dayjs.locale('es');
-
+   const formik = useFormikContext()
+   useEffect(() => {
+      if (!formik.values[idName]) {
+         const today = dayjs().format("YYYY-MM-DD");
+         formik.setFieldValue(idName, today);
+      }
+   }, [formik.values[idName], idName]);
    // const handleChangeDatePicker = (date, setFieldValue) => {
    //    // console.log("valor del datePicker en daysjs", date);
    //    const dateFormated = dayjs(date).format("YYYY-MM-DD");
@@ -64,14 +71,14 @@ const DatePickerComponent = ({
                      label={label}
                      format={format}
                      fullWidth
-                     value={dayjs(field.value) || null}
-                     onChange={(date) => form.setFieldValue(field.name, dayjs(date).format("YYYY-MM-DD"))}
+                     value={dayjs(formik.values[idName]) || null}
+                     onChange={(date) => formik.setFieldValue(field.name, dayjs(date).format("YYYY-MM-DD"))}
                      error={error && touched}
                      disabled={disabled}
                   />
-                  {touched && error && (
+                  { formik.errors[idName] && (
                      <FormHelperText error id={`ht-${idName}`}>
-                        {showErrorInput ? showErrorInput(2, error) : error}
+                       {formik.errors[idName]}
                      </FormHelperText>
                   )}
                </>

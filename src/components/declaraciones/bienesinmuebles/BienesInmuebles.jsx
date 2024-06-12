@@ -41,7 +41,6 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
          if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
             setDatas([]);
             setSendDatas([]);
-            setUpdate(true);
             data.forEach((values, index) => {
                delete values.Id_BienesInmuebles;
                addDataTableModified(values, index);
@@ -50,24 +49,33 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
       }
    }, [data, inmuebles, adquisicion]);
    const addDataTableModified = (values, index) => {
-      values.identificador = index;
-      const newDatas = [...sendDatas, values];
-
+      // Crear una copia del objeto values
+      const valuesCopy = { ...values, identificador: index };
+      
+      // Crear un nuevo array de datos
+      const newDatas = [...sendDatas, valuesCopy];
+    
+      // Obtener los textos correspondientes
       const inmueble = inmuebles.filter((item) => item.id === parseInt(values.Id_TipoInmueble))[0]?.text;
       const adquirir = adquisicion.filter((item) => item.id === parseInt(values.Id_FormaAdquisicion))[0]?.text;
       const tercero = values.T_Id_TipoPersona == 1 ? "Persona Física" : "Persona Moral";
+      
+      // Crear el nuevo objeto de datos
       const newData = {
-         identificador: index,
-         tipo_inmueble: inmueble,
-         "forma adquisicion": adquirir,
-         tercero: tercero
+        identificador: index,
+        tipo_inmueble: inmueble,
+        "forma adquisicion": adquirir,
+        tercero: tercero
       };
-
+    
+      // Actualizar los estados
       setDatas((prevDatasTable) => prevDatasTable.concat(newData));
       setSendDatas((prevDatas) => prevDatas.concat(newDatas));
-
+    
+      // Actualizar el identificador único
       setIdUnique(index + 1);
-   };
+    };
+    
    const submit = async (values) => {
       dispatch(validationBienesInmuebles({ tipo: "restart" }));
       setAnimateSend(true);

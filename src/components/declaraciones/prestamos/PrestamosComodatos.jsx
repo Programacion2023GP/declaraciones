@@ -52,13 +52,14 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
       // dispatch(addVehiculosPrestamos())
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.PrestamoComodato.validationSchema), useSelector((state) => state.PrestamoComodato.initialState)]);
-   useEffect(() => {}, [formik.current]);
+   useEffect(() => {
+   }, [formik.current]);
    useEffect(() => {
       if (inmuebles.length > 0 && vehiculos.length > 0) {
          if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
             setDatas([]);
             setDatasTable([]);
-            setUpdate(true);
+            // setUpdate(true);
             data.forEach((values, index) => {
                delete values.Id_PrestamoComodato;
                addDataTableModified(values, index);

@@ -677,7 +677,7 @@ const DataTable = ({
             {data.length === 0 || dataTable.length === 0 ? (
                <tbody style={{ position: "relative" }}>
                   <tr>
-                     <td colSpan={headers.length + 1} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>
+                     <td colSpan={headers.length + 1 + (speakRow?1:0)} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>
                         <Ngif condition={loading}>
                            <Box sx={{ position: "absolute", left: 0, right: 0, bottom: 0, top: -10 }}>
                               <Loading />

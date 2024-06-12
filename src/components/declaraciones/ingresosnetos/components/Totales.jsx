@@ -14,16 +14,20 @@ export const Totales = ({}) => {
    const dispatch = useDispatch();
    const total = () => {
       return (
-         formik.values.RemuneracionMensualAnualConclusionCargoPublico +
-         formik.values.AICE_RemuneracionTotal +
-         formik.values.AF_RemuneracionTotal +
-         formik.values.SP_RemuneracionTotal +
-         formik.values.EB_RemuneracionTotal +
-         formik.values.OINC_RemuneracionTotal
+         Number(formik.values.RemuneracionMensualAnualConclusionCargoPublico ?? 0) +
+         Number(formik.values.AICE_RemuneracionTotal ?? 0) +
+         Number(formik.values.AF_RemuneracionTotal ?? 0) +
+         Number(formik.values.SP_RemuneracionTotal ?? 0) +
+         Number(formik.values.EB_RemuneracionTotal ?? 0) +
+         Number(formik.values.OINC_RemuneracionTotal ?? 0)
       );
    };
+
    const event = () => {
       const Tot = total();
+      console.log("====================================");
+      console.log(Tot);
+      console.log("====================================");
       dispatch(configValidationsDependientesEconomicos({ tipo: "Totales", total: parseInt(Tot) }));
       formik.setFieldValue("IngresoMensualAnualConclusionNeto", Tot);
       dispatch(
@@ -40,7 +44,6 @@ export const Totales = ({}) => {
    useEffect(() => {
       event();
 
-
       // const total =
       //    parseInt(formik.values.IngresoMensualAnualConclusionNeto) > 0
       //       ? parseInt(formik.values.IngresoMensualAnualConclusionNeto) + parseInt(formik.values.IngresoNetoParejaDependiente)
@@ -50,8 +53,8 @@ export const Totales = ({}) => {
    }, []);
    return (
       <>
-         <Text type={"number"} disabled={true} name="IngresoMensualAnualConclusionNeto" label={labelSumaIyII(declaracion)}  />
-         <Text type={"number"} disabled={true} name="TotalIngresosNetos" label={labelTotal(declaracion)}  />
+         <Text type={"number"} disabled={true} name="IngresoMensualAnualConclusionNeto" label={labelSumaIyII(declaracion)} />
+         <Text type={"number"} disabled={true} name="TotalIngresosNetos" label={labelTotal(declaracion)} />
 
          <Text col={12} name="Aclaraciones" label="Aclaraciones" rows={10} color={"green"} />
       </>

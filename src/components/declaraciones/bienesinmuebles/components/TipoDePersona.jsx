@@ -7,12 +7,16 @@ import { CustomRadio } from "../../../Reusables/radiobutton/Radio";
 import { Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Ngif } from "../../../Reusables/conditionals/Ngif";
+import { useDispatch } from "react-redux";
+import { validationBienesInmuebles } from "../../../../redux/BienesInmueblesHoja10/BienesInmueblesHoja10";
 
 export const TipoDePersona = ({ adquisicion, pago, monedas, conforme }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const [tercero, setTercero] = useState(false);
+   const dispatch = useDispatch()
    useEffect(() => {
       setTercero(formik.values["tercero"] == 1 ? true : false);
+      dispatch(validationBienesInmuebles({tipo:formik.values["tercero"] == 1 ? "Tercero" : "NoIncluirTercero"}))
    }, [formik.values["tercero"]]);
    return (
       <Grid container spacing={1}>

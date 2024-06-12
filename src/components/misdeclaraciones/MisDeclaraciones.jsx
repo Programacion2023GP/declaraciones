@@ -10,18 +10,26 @@ export const MisDeclaraciones = ({}) => {
       init();
    }, []);
    const [data, setData] = useState([]);
+   const [loading, setLoading] = useState(false);
    const init = async () => {
+      setLoading(true);
       setData(await GetAxios(`apartados/show/${parseInt(localStorage.getItem("Id_User"))}`));
+      setLoading(false);
    };
    const handleEditDeclaracion = (row) => {
       const { Folio, Tipo_declaracion, Declaracion, Hoja } = row;
       localStorage.setItem("id_SituacionPatrimonial", Folio);
       let number = Declara(Declaracion, Tipo_declaracion);
       let page = Hoja;
-      if ((Declaracion == "Completa" && Tipo_declaracion == 1 && Hoja >= 9) || (Declaracion == "Completa" && Tipo_declaracion == 3 && Hoja >= 9)) {
-         page--;
+      if ((Declaracion == "Completa" && Tipo_declaracion == 1 && Hoja >= "Inicial") || (Declaracion == "Completa" && Tipo_declaracion == "Conclusión" && Hoja >= 9)) {
+         page = parseInt(page) - 1;
       }
-      window.location.hash = `dashboard/declaraciones/${number}/${page}`;
+
+      if (Declaracion == "Completa" && Tipo_declaracion == "Modificación") {
+         page = parseInt(page) + 1;
+      }
+
+      window.location.hash = `dashboard/declaraciones/${number}/${parseInt(page) - 1}`;
    };
    const handleDelete = async (row) => {
       try {
@@ -68,7 +76,7 @@ export const MisDeclaraciones = ({}) => {
                      // options={["CHARTS", "PDF", "EXCEL"]}
                      // moreButtons={[{ icon: VisibilityIcon, handleButton: handleEyes, color: "green", conditions: ["Status !='En proceso'"] }]}
                      buttonsMenu={false}
-                     loading={data.length > 0 ? false : true}
+                     loading={loading}
                      filterGlobal={true}
                      filter={true}
                      headers={["Folio", "Nombre", "Apellido Paterno", "Apellido Materno", "Tipo Declaración", "Status", "Fecha", "Tipo de declaración"]}

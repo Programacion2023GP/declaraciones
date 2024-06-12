@@ -43,11 +43,11 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
    };
    const formik = useRef();
    useEffect(() => {
+
       if (parentescos.length > 0) {
          if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
             setDatas([]);
             setDatasTable([]);
-            setUpdate(true);
             data.forEach((values, index) => {
                delete values.Id_DatosDependienteEconomico;
                addDataTableModified(values, index);
@@ -56,6 +56,11 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
          // modifiedDataEmpleosCargos();
       }
    }, [data, parentescos]);
+   useEffect(()=>{
+      console.log('====================================');
+      console.log("my loading",loading,update);
+      console.log('====================================');
+   },[loading,update])
    const addDataTableModified = (values, index) => {
       values.id = index;
       const newDatas = [...datas, values];

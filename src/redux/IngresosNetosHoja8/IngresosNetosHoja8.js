@@ -3,23 +3,23 @@ import * as Yup from "yup";
 const initialState = {
     Id_SituacionPatrimonial: parseInt(localStorage.getItem("id_SituacionPatrimonial")),
     RemuneracionMensualAnualConclusionCargoPublico:"",
-    // OtrosIngresosMensualesAnualesConclusionTotal:"",//numericos
-    AICE_RemuneracionTotal:"",//numericos
-    AICE_Id_RemuneracionTotal:"",//numericos
+    // OtrosIngresosMensualesAnualesConclusionTotal:0,//numericos
+    AICE_RemuneracionTotal:0,//numericos
+    AICE_Id_RemuneracionTotal:0,//numericos
     AICE_NombreRazonSocial:"",
     AICE_TipoNegocio:"",
-    AF_RemuneracionTotal:"",//numericos
-    AF_Id_RemuneracionTotal:"",//numericos
-    AF_Id_TipoInstrumento:"",//numericos
+    AF_RemuneracionTotal:0,//numericos
+    AF_Id_RemuneracionTotal:0,//numericos
+    AF_Id_TipoInstrumento:0,//numericos
     AF_EspecifiqueOtroTipo:"",
-    SP_RemuneracionTotal:"",//numericos
-    SP_Id_RemuneracionTotal:"",//numericos
+    SP_RemuneracionTotal:0,//numericos
+    SP_Id_RemuneracionTotal:0,//numericos
     SP_TipoServicioPrestado:"",
-    EB_RemuneracionTotal:"",//numericos
-    EB_Id_RemuneracionTotal:"",//numericos
-    EB_Id_TipoBienEnajenado:"",//numericos
-    OINC_RemuneracionTotal:"",//numericos
-    OINC_Id_RemuneracionTotal:"",//numericos
+    EB_RemuneracionTotal:0,//numericos
+    EB_Id_RemuneracionTotal:0,//numericos
+    EB_Id_TipoBienEnajenado:0,//numericos
+    OINC_RemuneracionTotal:0,//numericos
+    OINC_Id_RemuneracionTotal:0,//numericos
     OINC_EspecificarTipoIngreso:"",
     IngresoNetoParejaDependiente:"",
     IngresoMensualAnualConclusionNeto:0,
@@ -53,7 +53,7 @@ const data ={
     validationSchema:validationSchema,
 }
 export const IngresosNetosHoja8 = createSlice({
-    name:"DependientesEconomicos",
+    name:"IngresosNetos",
     initialState:data,
     reducers:{
         addIngresosNetos:(state,action)=>{

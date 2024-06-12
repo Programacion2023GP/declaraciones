@@ -4,10 +4,16 @@ import DatePickerComponent from "../../../Reusables/datepicker/DatePickerCompone
 import { Text } from "../../../Reusables/input/Input";
 import { CustomRadio } from "../../../Reusables/radiobutton/Radio";
 import { Grid } from "@mui/material";
+import { useEffect } from "react";
 
 export const InitialValues = ({ nivelEstudios, estatus, documentosObtenidos }) => {
    const formik = useFormikContext();
    const { values, setFieldValue, handleChange, handleBlur, errors, touched } = formik;
+   useEffect(()=>{
+      console.log('====================================');
+      console.log(values);
+      console.log('====================================');
+   },[])
    return (
       <Grid container spacing={1}>
          <AutoComplete col={6} label="Nivel de estudios" name="Id_Nivel" options={nivelEstudios} />

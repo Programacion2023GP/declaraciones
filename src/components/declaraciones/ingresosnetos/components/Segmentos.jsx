@@ -25,6 +25,7 @@ export const Segmento = ({ children, text, setError = false, messageButton }) =>
    const handleBefore = () => {
       setValue(value - 1);
    };
+  
    const errorColor = red[500];
    const formik = useFormikContext();
    const names = [
@@ -108,7 +109,7 @@ export const Segmento = ({ children, text, setError = false, messageButton }) =>
 
             <Ngif condition={Children.count(children) - 1 == value}>
                <Button onClick={handleNext} type="submit" variant="contained" color="primary">
-                  Registrar y continuar
+                  {messageButton}
                </Button>
             </Ngif>
          </Box>
