@@ -143,6 +143,7 @@ export const Catalogo = forwardRef(
                         <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
                            <DataTable
                               // filter={true}
+                              // speakRow
                               handleEdit={handleEdit}
                               pagination={[5, 10]}
                               filterGlobal={true}

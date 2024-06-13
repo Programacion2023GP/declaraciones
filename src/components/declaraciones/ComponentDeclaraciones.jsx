@@ -43,8 +43,8 @@ const ComponentDeclaraciones = () => {
 
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja : 8); // cambia de hoja
-   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja : 8); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
+   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja : 0); // cambia de hoja
+   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja : 0); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
    const dispatch = useDispatch();
    React.useEffect(() => {
       dispatch(foundLocalization());
@@ -245,6 +245,7 @@ const ComponentDeclaraciones = () => {
             if (parseInt(situacionPatrimonial.Id_SituacionPatrimonial) > 0) {
                const response = await GetAxios(`${url}/index/${parseInt(situacionPatrimonial.Id_SituacionPatrimonial)}`);
                setupdate(false);
+             
                if (response.length > 0) {
                   console.log(response);
                   Info("Cargando informacion de tu anterior declaración");
@@ -282,10 +283,10 @@ const ComponentDeclaraciones = () => {
 
    // Función para obtener el título del paso actual
    const getStepTitle = () => {
-      return filteredSteps[activeStep].label;
+      return filteredSteps[activeStep]?.label;
    };
    const getStepSubtitule = () => {
-      return filteredSteps[activeStep].subtitule;
+      return filteredSteps[activeStep]?.subtitule;
    };
    return (
       <Ngif condition={true}>

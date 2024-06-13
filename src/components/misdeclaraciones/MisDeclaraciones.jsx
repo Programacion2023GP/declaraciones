@@ -28,15 +28,23 @@ export const MisDeclaraciones = ({}) => {
       if (Declaracion == "Completa" && Tipo_declaracion == "Modificación") {
          page = parseInt(page) + 1;
       }
-
+      if (Declaracion =="Simplificada") {
+         page = parseInt(page) + 1;
+      }
       window.location.hash = `dashboard/declaraciones/${number}/${parseInt(page) - 1}`;
    };
    const handleDelete = async (row) => {
+      setLoading(true);
+    
       try {
          const response = await Axios.delete(`situacionpatrimonial/delete/${row.Folio}`);
          init();
+         setLoading(false);
+
          Success(response.data.data.message);
       } catch (error) {
+         setLoading(false);
+
          Error(error.response.data.data.message);
       }
    };
@@ -73,8 +81,11 @@ export const MisDeclaraciones = ({}) => {
             <Card sx={{ maxWidth: "100%", margin: "auto" }}>
                <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
                   <DataTable
-                     // options={["CHARTS", "PDF", "EXCEL"]}
+                     //  options={["CHARTS", "PDF", "EXCEL"]}
                      // moreButtons={[{ icon: VisibilityIcon, handleButton: handleEyes, color: "green", conditions: ["Status !='En proceso'"] }]}
+                     // captionButtons={[
+                     //    {text:"mas",handleButton:()=>{alert("dd")},icon:VisibilityIcon}
+                     // ]}
                      buttonsMenu={false}
                      loading={loading}
                      filterGlobal={true}

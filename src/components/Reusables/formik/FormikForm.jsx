@@ -52,7 +52,7 @@ export const FormikForm = forwardRef(
                            <>
                               <Grid container component={"form"} onSubmit={handleSubmit}>
                                  <Grid xs={12}>
-                                    <Voice message={getErrorMessages(errors, touched)} title={title} info="Ayuda sobre el formulario" />
+                                    <Voice message={getErrorMessages(errors, touched)} title={title} info="Ayuda sobre el formulario" totip="Leer errores" />
                                  </Grid>
 
                                  {children}
@@ -78,7 +78,7 @@ export const FormikForm = forwardRef(
       );
    }
 );
-export const Voice = ({ message, title = "", info = "", flex = true, velocity = 1.25 }) => {
+export const Voice = ({ message, title = "", info = "", flex = true, velocity = 1.25, setSpeaking, totip = "", line, setLine }) => {
    const [texts, setTexts] = useState([]);
    const [voices, setVoices] = useState([]);
    const [selectedVoice, setSelectedVoice] = useState(null);
@@ -86,6 +86,7 @@ export const Voice = ({ message, title = "", info = "", flex = true, velocity = 
    const [isSpeaking, setIsSpeaking] = useState(false); // Estado para rastrear si se está hablando
 
    useEffect(() => {
+     
       if (message && Object.keys(message).length > 0) {
          setTexts([]);
          setTexts((prevTexts) => [...prevTexts, ...Object.values(message)]);
@@ -94,29 +95,58 @@ export const Voice = ({ message, title = "", info = "", flex = true, velocity = 
       }
    }, [message]);
    useEffect(() => {}, [isSpeaking]);
-   const handleReadAllAloud = () => {
+   const handleReadAllAloud = async () => {
+      if (setSpeaking) {
+         setSpeaking(0);
+      }
       setIsSpeaking(true); // Activar la animación de habla
 
-      texts.forEach((text, index) => {
-         setTimeout(() => {
+      const readText = async (index) => {
+         return new Promise((resolve, reject) => {
+            if (index >= texts.length) {
+               if (setSpeaking) {
+                  setSpeaking(null);
+               }
+
+               setIsSpeaking(false); // Cuando se completa la última lectura
+               resolve();
+               return;
+            }
+
+            const text = texts[index];
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.volume = volume;
             if (selectedVoice) {
                utterance.voice = selectedVoice;
                utterance.rate = velocity; // Establecer la velocidad de la voz
             }
-            if (index === texts.length - 1) {
-               utterance.onend = () => {
-                  // Aquí puedes ejecutar una función o establecer un estado para indicar que la lectura ha finalizado
-                  setIsSpeaking(false);
-               };
-            }
+
+            utterance.onstart = () => {
+               // Establecer el estado de lectura actual
+               if (setSpeaking && index % 2 === 1) {
+                  setSpeaking((previndex) => previndex + 1);
+               } 
+
+               // Monitorear si la síntesis de voz está activa
+               const interval = setInterval(() => {
+                  if (!window.speechSynthesis.speaking) {
+                     clearInterval(interval);
+                     resolve();
+                  }
+               }, 100); // Verificar cada 100ms si la síntesis de voz está hablando
+            };
+            utterance.onerror = (err) => {
+               console.error("Error al hablar:", err);
+               reject(err);
+            };
+            utterance.onend = () => {
+               readText(index + 1).then(resolve); // Llamar recursivamente para la siguiente lectura
+            };
             window.speechSynthesis.speak(utterance);
-         }, index * 200); // Cambia el tiempo de retardo según sea necesario
-      });
-      // setTimeout(() => {
-      //    setIsSpeaking(false);
-      // }, texts.length * 200); //
+         });
+      };
+
+      await readText(0); // Comenzar la lectura desde el índice 0
    };
 
    // Función para cargar las voces disponibles
@@ -142,10 +172,16 @@ export const Voice = ({ message, title = "", info = "", flex = true, velocity = 
    return (
       <Box display={flex ? "flex" : ""} alignItems="center" p={1} borderRadius={4}>
          {isSpeaking}
-         <Tooltip title="Leer errores" arrow placement="right">
+         <Tooltip title={totip} arrow placement="right">
             <IconButton
                className={isSpeaking ? "speaking" : ""}
-               onClick={handleReadAllAloud}
+               onClick={() => {
+                  handleReadAllAloud();
+                  if(setLine){
+                  
+                     setLine(line)
+                  }
+               }}
                aria-label="Leer errores"
                style={{
                   backgroundColor: red[500],

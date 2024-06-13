@@ -27,6 +27,7 @@ import BasicMenu from "../basicmenu/BasicMenu";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import * as XLSX from "xlsx";
 import { Voice } from "../formik/FormikForm";
+import { lightBlue } from "@mui/material/colors";
 
 const SearchInput = ({ column, data, getData, previousData }) => {
    const [searchText, setSearchText] = useState("");
@@ -301,6 +302,7 @@ const FilterGlobal = ({ data = [], setFilteredData, dataHidden = [] }) => {
             <SearchIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
             <TextField
                fullWidth
+               size="small"
                value={searchText}
                onChange={searchData}
                id="input-with-sx"
@@ -332,6 +334,7 @@ const DataTable = ({
    deleteButton,
    handleEdit,
    handleDelete,
+   captionButtons = [],
    filterGlobal,
    conditionExistEditButton = [],
    conditionExistDeleteButton = [],
@@ -348,6 +351,9 @@ const DataTable = ({
    const [numberShowPage, setNumberShowPage] = useState(1);
    const [selectRow, setSelectRow] = useState(pagination ? pagination[0] : 100000);
    const [objectValues, setObjectValues] = useState({});
+   const [tdRead, setTdRead] = useState(null);
+   const [line, setLine] = useState(null);
+
    const handleSeparateData = async (option) => {
       modifiedData(dataFilter);
       setSelectRow(option);
@@ -594,11 +600,29 @@ const DataTable = ({
 
       return intercalado;
    };
-
    return (
       <>
          <table width={"100%"} style={{ borderCollapse: "collapse" }}>
             <caption>
+               <div style={{marginLeft:"2rem",marginTop:".5rem", display: "flex", justifyContent: "flex-start" }}>
+                  <Ngif condition={captionButtons.length > 0}>
+                     {captionButtons.map((item, index) => {
+                        console.log(item);
+                        return (
+                           <Button
+                              key={index} // Añadir una key única
+                              variant="outlined"
+                              startIcon={<item.icon />}
+                              onClick={()=>{
+                                 item.handleButton(dataFilter)
+                              }}
+                           >
+                              {item.text}
+                           </Button>
+                        );
+                     })}
+                  </Ngif>
+               </div>
                <div style={{ display: "flex", alignItems: "center" }}>
                   {filterGlobal && <FilterGlobal data={data} setFilteredData={applyfilterGlobal} dataHidden={dataHidden} onChange={handleOptions} />}
                   <Ngif condition={options.length > 0}>
@@ -674,15 +698,16 @@ const DataTable = ({
                   </tr>
                </thead>
             )}
+
             {data.length === 0 || dataTable.length === 0 ? (
                <tbody style={{ position: "relative" }}>
                   <tr>
-                     <td colSpan={headers.length + 1 + (speakRow?1:0)} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>
-                        <Ngif condition={loading}>
-                           <Box sx={{ position: "absolute", left: 0, right: 0, bottom: 0, top: -10 }}>
-                              <Loading />
-                           </Box>
-                        </Ngif>
+                     <Ngif condition={loading}>
+                        <Box sx={{ position: "absolute", left: 0, right: 0, bottom: 0, top: -10 }}>
+                           <Loading />
+                        </Box>
+                     </Ngif>
+                     <td colSpan={headers.length + 1 + (speakRow ? 1 : 0)} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}>
                         <Ngif condition={!loading}>No hay información suficiente no hay registros</Ngif>
                      </td>
                   </tr>
@@ -691,36 +716,66 @@ const DataTable = ({
                <tbody>
                   {dataTable.map((item, index) => {
                      return (
-                        <tr key={index} style={{}}>
-                           <Ngif condition={speakRow}>
-                              <td
-                                 style={{
-                                    textAlign: "center",
-                                    border: "1px solid #BDBDBD",
-                                    fontSize: "13px",
-                                    // paddingLeft: "5px",
-                                    // paddingRight: "5px",
-                                    margin: 0
-                                 }}
-                                 key={"voice" + index}
-                                 cols={1}
-                              >
-                                 <Voice message={speakingRow(headers, item, dataHidden)} title="Formulario" flex={false} velocity={1.40} />
-                              </td>
-                           </Ngif>
-
-                           {Object.entries(item).map(([key, value]) => {
-                              if (dataHidden) {
-                                 if (!dataHidden.includes(key)) {
+                        <>
+                           <tr key={index} style={{ position: "relative" }}>
+                              <Ngif condition={speakRow}>
+                                 <td
+                                    style={{
+                                       textAlign: "center",
+                                       border: "1px solid #BDBDBD",
+                                       fontSize: "13px",
+                                       // paddingLeft: "5px",
+                                       // paddingRight: "5px",
+                                       margin: 0
+                                    }}
+                                    key={"voice" + index}
+                                    cols={1}
+                                 >
+                                    <Voice
+                                       setLine={setLine}
+                                       line={index}
+                                       message={speakingRow(headers, item, dataHidden)}
+                                       title="Formulario"
+                                       flex={false}
+                                       velocity={1.45}
+                                       setSpeaking={setTdRead}
+                                    />
+                                 </td>
+                              </Ngif>
+                              {Object.entries(item).map(([key, value], id) => {
+                                 if (dataHidden) {
+                                    if (!dataHidden.includes(key)) {
+                                       return (
+                                          <td
+                                             style={{
+                                                textAlign: "center",
+                                                border: "1px solid #BDBDBD",
+                                                fontSize: tdRead === id && line == index ? "16px" : "13px",
+                                                paddingLeft: "5px",
+                                                paddingRight: "5px",
+                                                margin: 0,
+                                                color: tdRead === id && line == index && lightBlue[600],
+                                                fontWeight: tdRead === id && line == index && "bold"
+                                             }}
+                                             key={key}
+                                             cols={value}
+                                          >
+                                             {value}
+                                          </td>
+                                       );
+                                    }
+                                 } else {
                                     return (
                                        <td
                                           style={{
                                              textAlign: "center",
                                              border: "1px solid #BDBDBD",
-                                             fontSize: "13px",
+                                             fontSize: tdRead === id && line == index ? "16px" : "13px",
                                              paddingLeft: "5px",
                                              paddingRight: "5px",
-                                             margin: 0
+                                             margin: 0,
+                                             color: tdRead === id && line == index && lightBlue[600],
+                                             fontWeight: tdRead === id && line == index && "bold"
                                           }}
                                           key={key}
                                           cols={value}
@@ -729,63 +784,58 @@ const DataTable = ({
                                        </td>
                                     );
                                  }
-                              } else {
-                                 return (
-                                    <td
-                                       style={{ textAlign: "center", borderBottom: "1px solid", paddingLeft: "5px", paddingRight: "5px", margin: 0 }}
-                                       key={key}
-                                       cols={value}
-                                    >
-                                       {value}
-                                    </td>
-                                 );
-                              }
-                           })}
-                           {(editButton || deleteButton || moreButtons) && (
-                              <td style={{ textAlign: "center", border: "1px solid #BDBDBD", padding: 0, margin: 0 }}>
-                                 <Ngif condition={buttonsMenu}>
-                                    <BasicMenu>
+                              })}
+                              {(editButton || deleteButton || moreButtons) && (
+                                 <td style={{ textAlign: "center", border: "1px solid #BDBDBD", padding: 0, margin: 0 }}>
+                                    <Ngif condition={buttonsMenu}>
+                                       <BasicMenu>
+                                          <Ngif condition={editButton && checkConditions(item)}>
+                                             <MenuItem
+                                                onClick={() => {
+                                                   handleEdit(item);
+                                                }}
+                                             >
+                                                <EditButton handleEdit={handleEdit} item={item} />
+                                             </MenuItem>
+                                          </Ngif>
+                                          <Ngif condition={deleteButton && checkConditionsDelete(item)}>
+                                             <MenuItem
+                                                onClick={() => {
+                                                   handleDelete(item);
+                                                }}
+                                             >
+                                                <DeleteButton handleDelete={handleDelete} item={item} />
+                                             </MenuItem>
+                                             <MoreButtons
+                                                item={item}
+                                                moreButtons={moreButtons}
+                                                checkConditionsMoreButton={checkConditionsMoreButton}
+                                                buttonsMenu={buttonsMenu}
+                                             />
+                                          </Ngif>
+                                       </BasicMenu>
+                                    </Ngif>
+                                    <Ngif condition={!buttonsMenu}>
                                        <Ngif condition={editButton && checkConditions(item)}>
-                                          <MenuItem
-                                             onClick={() => {
-                                                handleEdit(item);
-                                             }}
-                                          >
-                                             <EditButton handleEdit={handleEdit} item={item} />
-                                          </MenuItem>
+                                          <EditButton handleEdit={handleEdit} item={item} />
                                        </Ngif>
                                        <Ngif condition={deleteButton && checkConditionsDelete(item)}>
-                                          <MenuItem
-                                             onClick={() => {
-                                                handleDelete(item);
-                                             }}
-                                          >
-                                             <DeleteButton handleDelete={handleDelete} item={item} />
-                                          </MenuItem>
-                                          <MoreButtons
-                                             item={item}
-                                             moreButtons={moreButtons}
-                                             checkConditionsMoreButton={checkConditionsMoreButton}
-                                             buttonsMenu={buttonsMenu}
-                                          />
+                                          <DeleteButton handleDelete={handleDelete} item={item} />
                                        </Ngif>
-                                    </BasicMenu>
-                                 </Ngif>
-                                 <Ngif condition={!buttonsMenu}>
-                                    <Ngif condition={editButton && checkConditions(item)}>
-                                       <EditButton handleEdit={handleEdit} item={item} />
-                                    </Ngif>
-                                    <Ngif condition={deleteButton && checkConditionsDelete(item)}>
-                                       <DeleteButton handleDelete={handleDelete} item={item} />
-                                    </Ngif>
 
-                                    <Ngif condition={moreButtons.length > 0}>
-                                       <MoreButtons item={item} moreButtons={moreButtons} checkConditionsMoreButton={checkConditionsMoreButton} />
+                                       <Ngif condition={moreButtons.length > 0}>
+                                          <MoreButtons item={item} moreButtons={moreButtons} checkConditionsMoreButton={checkConditionsMoreButton} />
+                                       </Ngif>
                                     </Ngif>
-                                 </Ngif>
-                              </td>
-                           )}
-                        </tr>
+                                 </td>
+                              )}
+                              <Ngif condition={loading && index === Math.floor(dataTable.length / 2)}>
+                                 <Box sx={{ position: "absolute", left: 0, right: 0, bottom: -10, top: 0 }}>
+                                    <Loading />
+                                 </Box>
+                              </Ngif>
+                           </tr>
+                        </>
                      );
                   })}
                </tbody>
