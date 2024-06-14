@@ -168,7 +168,7 @@ const Sidebar = () => {
          active: false
       },
       {
-         path: "",
+         path: "checador",
          text: "Checador",
          legend: "checador",
          active: false

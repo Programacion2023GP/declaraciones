@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, FormGroup, Grid, IconButton, Tooltip, Typography } from "@mui/material";
+import { Checkbox, FormControlLabel, FormGroup, Grid, IconButton, Paper, Tooltip, Typography } from "@mui/material";
 import { forwardRef, useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
@@ -28,7 +28,8 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import * as XLSX from "xlsx";
 import { Voice } from "../formik/FormikForm";
 import { lightBlue } from "@mui/material/colors";
-
+import Alert from "@mui/material/Alert";
+import ColorLensIcon from '@mui/icons-material/ColorLens';
 const SearchInput = ({ column, data, getData, previousData }) => {
    const [searchText, setSearchText] = useState("");
    const [previousDataFilter, setPreviousDataFilter] = useState(data);
@@ -73,7 +74,7 @@ const SearchInput = ({ column, data, getData, previousData }) => {
    );
 };
 
-const Title = ({ headers, titles, data, filterData, previousData, filter, editButton, deleteButton, speakRow }) => {
+const Title = ({ headers, titles, data, filterData, previousData, filter, editButton, deleteButton, speakRow,moreButtons }) => {
    const [titlesMap, setTitlesMap] = useState([]);
    const [headersMap, setHeadersMap] = useState([]);
    useEffect(() => {
@@ -103,7 +104,7 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
                      </th>
                   );
                })}
-               {headersMap.length > 0 && (editButton || deleteButton) && (
+               {headersMap.length > 0 && (editButton || deleteButton || moreButtons) && (
                   <th key={"headersMap" + uuidv4()} style={{ padding: "1rem 1rem", textAlign: "center", fontSize: "14px" }}>
                      Acciones
                   </th>
@@ -133,7 +134,7 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
                         </th>
                      );
                   })}
-               {filter && (editButton || deleteButton) && <th key={uuidv4()} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}></th>}
+               {filter && (editButton || deleteButton || moreButtons) && <th key={uuidv4()} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}></th>}
             </tr>
          </thead>
       </>
@@ -340,6 +341,7 @@ const DataTable = ({
    conditionExistDeleteButton = [],
    loading,
    moreButtons = [],
+   Trbacground = [],
    buttonsMenu = false,
    speakRow = false
 }) => {
@@ -498,32 +500,61 @@ const DataTable = ({
          }
       });
    };
-   const checkConditionsMoreButton = (item, array) => {
-      return array.every((condition) => {
-         const match = condition.match(/(.+?)\s*(==|!=|>=|<=|>|<)\s*'([^']+)'/);
+   const checkConditionsMoreButton = (item, conditions) => {
+      // Si no hay condiciones, devolver true
+      if (conditions.length === 0) {
+         return true;
+      }
+
+      // Función auxiliar para evaluar una sola condición
+      const evaluateCondition = (condition) => {
+         // Verificar si la condición utiliza operadores lógicos AND (&&) o OR (||)
+         if (condition.includes("&&")) {
+            // Se utilizó AND
+            const andParts = condition.split("&&").map((part) => part.trim());
+            return andParts.every((andCondition) => evaluateSimpleCondition(andCondition));
+         } else if (condition.includes("||")) {
+            // Se utilizó OR
+            const orParts = condition.split("||").map((part) => part.trim());
+            return orParts.some((orCondition) => evaluateSimpleCondition(orCondition));
+         } else {
+            // Sin operadores lógicos específicos, se asume una única condición
+            return evaluateSimpleCondition(condition);
+         }
+      };
+
+      // Función para evaluar una condición simple (sin operadores lógicos)
+      const evaluateSimpleCondition = (condition) => {
+         const match = condition.match(/^\s*([^!=<>]+)\s*(==|!=|>=|<=|>|<)\s*'([^']+)'\s*$/);
          if (!match) return false;
 
          const [, key, operator, value] = match;
-         const itemValue = item[key.trim()];
+         const trimmedKey = key.trim();
+         const trimmedValue = value.trim();
+         const itemValue = item[trimmedKey];
 
          switch (operator) {
             case "!=":
-               return itemValue != value;
+               return itemValue != trimmedValue; // Comparación de desigualdad
             case "==":
-               return itemValue == value;
+               return itemValue == trimmedValue; // Comparación de igualdad
             case ">=":
-               return itemValue >= value;
+               return itemValue >= trimmedValue; // Mayor o igual que
             case "<=":
-               return itemValue <= value;
+               return itemValue <= trimmedValue; // Menor o igual que
             case ">":
-               return itemValue > value;
+               return itemValue > trimmedValue; // Mayor que
             case "<":
-               return itemValue < value;
+               return itemValue < trimmedValue; // Menor que
             default:
                return false;
          }
-      });
+      };
+
+      // Evaluar todas las condiciones con operadores lógicos AND y OR
+      return conditions.every((condition) => evaluateCondition(condition));
    };
+
    const checkConditionsDelete = (item) => {
       return conditionExistDeleteButton.every((condition) => {
          const match = condition.match(/(.+?)\s*(==|!=|>=|<=|>|<)\s*'([^']+)'/);
@@ -564,7 +595,7 @@ const DataTable = ({
       init();
       setNumberShowPage(1);
    }, [selectRow, pagination, headers, objectValues, dataFilter]);
-   useEffect(() => {}, [loading]);
+   useEffect(() => {}, [loading, Trbacground]);
    useEffect(() => {
       setDataFilter(data);
 
@@ -600,11 +631,27 @@ const DataTable = ({
 
       return intercalado;
    };
+
+   const bacgroundColor = (item) => {
+      let result = ""; // Inicializamos una variable para almacenar el resultado
+
+      Trbacground.some((color) => {
+         // Utilizamos .some() en lugar de .map()
+         if (checkConditionsMoreButton(item, color.conditions)) {
+            result = color.color; // Asignamos el color si la condición es verdadera
+            return true; // Terminamos la iteración con .some()
+         }
+         return false; // Continuamos la iteración con .some()
+      });
+
+      return result; // Devolvemos el resultado encontrado (o cadena vacía si no se encontró nada)
+   };
+
    return (
       <>
          <table width={"100%"} style={{ borderCollapse: "collapse" }}>
             <caption>
-               <div style={{marginLeft:"2rem",marginTop:".5rem", display: "flex", justifyContent: "flex-start" }}>
+               <div style={{ marginLeft: "2rem", marginTop: ".5rem", display: "flex", justifyContent: "flex-start" }}>
                   <Ngif condition={captionButtons.length > 0}>
                      {captionButtons.map((item, index) => {
                         console.log(item);
@@ -613,8 +660,8 @@ const DataTable = ({
                               key={index} // Añadir una key única
                               variant="outlined"
                               startIcon={<item.icon />}
-                              onClick={()=>{
-                                 item.handleButton(dataFilter)
+                              onClick={() => {
+                                 item.handleButton(dataFilter);
                               }}
                            >
                               {item.text}
@@ -637,6 +684,14 @@ const DataTable = ({
                               onClick={modal}
                               label="Opciones"
                            >
+                              {options.includes("COLORS") && (
+                                 <MenuItem sx={{ textAlign: "center" }} key="colors" value="colors">
+                                    <Tooltip placement="left" title="PDF">
+                                       <ColorLensIcon sx={{ verticalAlign: "middle", mr: 1 }} />
+                                       PALETA DE COLORES
+                                    </Tooltip>
+                                 </MenuItem>
+                              )}
                               {options.includes("CHARTS") && (
                                  <MenuItem key="grafica" value="grafica">
                                     <Tooltip placement="left" title="GRAFICAS">
@@ -664,14 +719,14 @@ const DataTable = ({
                                     </Tooltip>
                                  </MenuItem>
                               )}
-                              {options.includes("PDF") && (
+                              {/* {options.includes("PDF") && (
                                  <MenuItem sx={{ textAlign: "center" }} key="pdf" value="pdf">
                                     <Tooltip placement="left" title="PDF">
                                        <PictureAsPdfIcon sx={{ verticalAlign: "middle", mr: 1 }} />
                                        PDF
                                     </Tooltip>
                                  </MenuItem>
-                              )}
+                              )} */}
                            </Select>
                         </FormControl>
                      </Box>
@@ -684,6 +739,7 @@ const DataTable = ({
                   speakRow={speakRow}
                   editButton={editButton}
                   deleteButton={deleteButton}
+                  moreButtons={moreButtons.length>0?true:false}
                   headers={headers}
                   titles={titles}
                   previousData={data}
@@ -717,13 +773,20 @@ const DataTable = ({
                   {dataTable.map((item, index) => {
                      return (
                         <>
-                           <tr key={index} style={{ position: "relative" }}>
+                           <tr
+                              key={index}
+                              style={{
+                                 position: "relative",
+                                 background: bacgroundColor(item)
+                              }}
+                           >
                               <Ngif condition={speakRow}>
                                  <td
                                     style={{
                                        textAlign: "center",
                                        border: "1px solid #BDBDBD",
                                        fontSize: "13px",
+
                                        // paddingLeft: "5px",
                                        // paddingRight: "5px",
                                        margin: 0
@@ -844,7 +907,7 @@ const DataTable = ({
                <tfoot>
                   <tr>
                      <td
-                        colSpan={headers.length + (editButton || deleteButton ? 1 : 0) + (speakRow ? 1 : 0)}
+                        colSpan={headers.length + (editButton || deleteButton ||moreButtons.length>0 ? 1 : 0) + (speakRow ? 1 : 0)}
                         style={{ border: "1px solid #BDBDBD", padding: "0.5rem", textAlign: "center", background: "black" }}
                      >
                         <Paginator
@@ -887,7 +950,7 @@ const DataTable = ({
             )} */}
          <Ngif condition={options}>
             <Modal openModal={openModal} setText={setTextModal} setOpenModal={setOpenModal}>
-               <Component option={textModal} titles={headers} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} />
+               <Component option={textModal} titles={headers} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} colors={Trbacground} />
             </Modal>
          </Ngif>
       </>
@@ -908,6 +971,9 @@ const MoreButtons = ({ item, moreButtons, checkConditionsMoreButton, buttonsMenu
       <>
          {moreButtons.map((element, i) => {
             if (checkConditionsMoreButton(item, element.conditions)) {
+                  if (!checkConditionsMoreButton(item, element.conditions)) {
+                     return null
+                  }
                return (
                   <>
                      <Ngif condition={buttonsMenu}>
@@ -1008,7 +1074,7 @@ const Modal = ({ children, openModal, setOpenModal, setText }) => {
 const Charts = ({ titles, dataFilter, headers, dataHidden }) => {
    const [keys, setKeys] = useState([]);
    const [counts, setCounts] = useState([]);
-
+   const [message, setMessage] = useState("");
    useEffect(() => {}, [keys, counts]);
    const [chart, setChart] = useState(null);
    const [name, setName] = useState(null);
@@ -1034,27 +1100,43 @@ const Charts = ({ titles, dataFilter, headers, dataHidden }) => {
       setName(event.target.value);
       const index = titles.indexOf(event.target.value);
 
-      // Filtra los datos primero
-      const filteredData = filterData(dataFilter, dataHidden);
+      // Filtrar los datos primero
+      const filteredData = dataFilter.map((item) => {
+         const newItem = { ...item };
 
-      // Extrae los valores correspondientes del array de objetos filtrados
+         // Eliminar las claves especificadas en dataHidden
+         dataHidden.forEach((key) => {
+            delete newItem[key];
+         });
+
+         return newItem;
+      });
+
+      // Extraer los valores correspondientes del array de objetos filtrados
       const values = filteredData.map((item) => {
-         // Obtiene las claves del objeto como un array
+         // Obtener las claves del objeto como un array
          const keys = Object.keys(item);
 
-         // Usa el índice para seleccionar la clave correcta y extraer el valor correspondiente
+         // Usar el índice para seleccionar la clave correcta y extraer el valor correspondiente
          return item[keys[index]];
       });
 
       // Contar las ocurrencias de cada valor y separar en dos arrays
       const { values: uniqueValues, counts } = countOccurrences(values);
 
-      // Ahora uniqueValues contiene los valores únicos y counts contiene las ocurrencias de cada valor
+      // Ordenar por counts de forma descendente
+      const sortedIndices = counts.map((_, index) => index).sort((a, b) => counts[b] - counts[a]);
 
-      // Hacer lo que necesites con uniqueValues y counts
-      // Por ejemplo, puedes asignarlos a variables separadas o usarlos directamente
-      setKeys(uniqueValues);
-      setCounts(counts);
+      // Obtener los 20 valores más altos
+      sortedIndices.length > 20 ? setMessage("Se han mostrado solo los 20 valores más altos.") : setMessage("");
+      const limitedIndices = sortedIndices.slice(0, 20);
+
+      const limitedUniqueValues = limitedIndices.map((index) => uniqueValues[index]);
+      const limitedCounts = limitedIndices.map((index) => counts[index]);
+
+      // Hacer lo que necesites con uniqueValues y counts limitados a los 20 más altos
+      setKeys(limitedUniqueValues);
+      setCounts(limitedCounts);
 
       // setData(values);
    };
@@ -1152,21 +1234,64 @@ const Charts = ({ titles, dataFilter, headers, dataHidden }) => {
             }}
          >
             <Ngif condition={chart != null && name != null}>
+               <Ngif condition={message != ""}>
+                  <Alert severity="info">{message}</Alert>
+               </Ngif>
+
                <Chart chart={chart} name={name} titles={keys} values={counts} card={true} width={12} />
             </Ngif>
          </Grid>
       </Grid>
    );
 };
-const Component = ({ option, titles, dataFilter, headers, dataHidden }) => {
+const Component = ({ option, titles, dataFilter, headers, dataHidden, colors }) => {
    switch (option) {
       case "grafica":
          return <Charts titles={titles} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} />;
          break;
       case "excel":
          return <Excel titles={titles} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} />;
+      case "colors":
+         return <Colors colors={colors} />;
          break;
    }
+};
+
+const Colors = ({ colors }) => {
+   useEffect(() => {}, []);
+   return (
+      <Grid container>
+         <Typography variant="h2" color="initial" width={"100%"} textAlign={"center"}>
+            Paleta de colores
+         </Typography>
+         {colors.map((color) => {
+            return (
+               <Paper
+                  elevation={3}
+                  sx={{
+                     width: "8rem",
+                     borderRadius: "20%",
+                     transition: "transform 0.3s ease-in-out",
+                     "&:hover": {
+                        transform: "scale(1.05)",
+                        boxShadow: "0 4px 8px rgba(0,0,0,0.1)"
+                     },
+                     height: "8rem",
+                     margin: "1rem",
+                     background: color.color,
+                     display: "flex",
+                     justifyContent: "center",
+                     alignItems: "center"
+                  }}
+               >
+                  <Typography variant="subtitle1" sx={{ fontWeight: "bold" }} display="flex" textAlign="center">
+                     {color.text}
+                  </Typography>
+               </Paper>
+            );
+         })}
+      </Grid>
+   );
 };
 
 const Excel = ({ titles, dataFilter, dataHidden, headers }) => {

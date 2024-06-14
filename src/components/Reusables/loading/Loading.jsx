@@ -5,10 +5,7 @@ import Backdrop from '@mui/material/Backdrop';
 
 const Loading = ({}) => {
    return (
-      <Backdrop
-      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-
-    >
+  
    <Box
          sx={{
             display: "flex",
@@ -26,7 +23,7 @@ const Loading = ({}) => {
             </defs>
          </svg>
          <CircularProgress sx={{ "svg circle": { stroke: "url(#my_gradient)" } }} />
-      </Box>    </Backdrop>
+      </Box>   
    
    );
 };

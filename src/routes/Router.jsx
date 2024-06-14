@@ -13,6 +13,7 @@ import { element } from "prop-types";
 import { MisDeclaraciones } from "../components/misdeclaraciones/MisDeclaraciones";
 import { ComponentCatalogo } from "../components/catalogos/componentcatalogo/ComponentCatalogo";
 import { Error } from "../components/error/Error";
+import { Checador } from "../components/checador/Checador";
 export const router = createHashRouter([
    {
       path: "/dashboard",
@@ -54,6 +55,11 @@ export const router = createHashRouter([
             path: "misdeclaraciones",
             index: true,
             element: <MisDeclaraciones />
+         },
+         {
+            path: "checador",
+            index: true,
+            element: <Checador />
          },
          {
             path: "usuarios",
