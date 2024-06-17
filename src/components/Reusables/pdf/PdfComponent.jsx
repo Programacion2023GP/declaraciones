@@ -20,12 +20,12 @@
  */
 
 // import logo from '../../assets/images/logo-gpd.png';
-import OpenInFullIcon from '@mui/icons-material/OpenInFull';
+import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import { Document, Font, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 // import backgroundImage from "../assets/images/Oficio.jpg";
 // import firmademo from "../assets/images/FirmaDemo.png";
 // import sinFirma from "../assets/images/sinFirma.png";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -345,7 +345,7 @@ const formDataInitial = {
       internal_folio: "",
       date: null,
       requesterWorkstation: "",
-    //   requesterFirm: sinFirma,
+      //   requesterFirm: sinFirma,
       requesterName: "",
       requesterStamp: null,
       vobo_at: ""
@@ -355,10 +355,7 @@ const formDataInitial = {
 // Componente que representa el documento OficioPDF
 export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formData = { formDataInitial }, isOfficialDoc = true }) => {
    return (
-      <Document>
-         {/* <Page size="A4" style={stylesPDF.body} wrap>
-                
-            </Page> */}
+      <>
          <Page size="LETTER" style={stylesPDF.page} wrap>
             {/* <View style={stylesPDF.pageBody}> */}
             <View style={stylesPDF.viewBgImage}>
@@ -434,7 +431,7 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
             <Text style={stylesPDF.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} fixed />
             {/* </View> */}
          </Page>
-      </Document>
+      </>
    );
 };
 
@@ -469,9 +466,9 @@ export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", waterm
             sx={{ backgroundColor: "transparent" }}
             fullScreen={fullScreenDialog}
          >
-            <DialogTitle my={0} py={0} sx={{ backgroundColor: "black", color: 'white' }}>
+            <DialogTitle my={0} py={0} sx={{ backgroundColor: "black", color: "white" }}>
                <Toolbar sx={{ py: 0 }}>
-                  <Typography variant="h2" my={0} py={0} color={'white'} sx={{ ml: 2, flex: 1, py: 0, pt: 0, pb: 0, padding: "0px 24px !important" }}>
+                  <Typography variant="h2" my={0} py={0} color={"white"} sx={{ ml: 2, flex: 1, py: 0, pt: 0, pb: 0, padding: "0px 24px !important" }}>
                      {formTitle}
                   </Typography>
                   {/* <Typography sx={{ ml: 2, flex: 1 }} variant="h3" component="div">
@@ -501,9 +498,9 @@ export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", waterm
             </DialogTitle>
             <DialogContent sx={{ pb: 0, height: "90vh" }}>
                <PDFViewer width={"100%"} height={"99%"}>
-                  <DocumentPDF watermark={watermark} formData={formData} isOfficialDoc={isOfficialDoc}>
+                  <Document watermark={watermark} formData={formData} isOfficialDoc={isOfficialDoc}>
                      {children}
-                  </DocumentPDF>
+                  </Document>
                </PDFViewer>
             </DialogContent>
          </Dialog>

@@ -5,26 +5,38 @@ import { Request } from "../Reusables/request/Request";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Axios, GetAxios } from "../../services/services";
 import { Error, Success } from "../../toasts/toast";
-import { ModalPDF } from "../Reusables/pdf/PdfComponent";
-import { StyleSheet, Text, View } from "@react-pdf/renderer";
+import { PagePdf, PdfDeclaracion } from "../Reusables/pdf/PdfDeclaracion";
+import { Ngif } from "../Reusables/conditionals/Ngif";
+import { DatosGenerales } from "./hojas/DatosGenerales";
+import { DomicilioDeclarante } from "./hojas/DomicilioDeclarante";
+
 export const Checador = ({}) => {
    useEffect(() => {
       init();
    }, []);
+   const { estadocivil,regimenes,paises,nacionalidades } = Request({ peticiones: ["estadocivil","regimenes","paises","nacionalidades"] });
+
    const [data, setData] = useState([]);
    const [loading, setLoading] = useState(false);
-   const [open, setOpen] = useState(true);
+   const [open, setOpen] = useState(false);
+   const [datosGenerales, setDatosGenerales] = useState([]);
+   const [domiciliioDeclarante, setDomiciliioDeclarante] = useState([]);
 
    const init = async () => {
       setLoading(true);
       setData(await GetAxios(`apartados/all`));
       setLoading(false);
    };
-   const datosGenerales = [
-      { title: "Nombre", text: "Luis" },
-      { title: "App Paterno", text: "GTZ" },
-      { title: "App Materno", text: "HDZ" }
-   ];
+   const handelPdf = async (row) => {
+      setOpen(true);
+      setDatosGenerales(await GetAxios(`datosgenerales/index/${row.Folio}`));
+      setDomiciliioDeclarante(await GetAxios(`domiciliodeclarante/index/${row.Folio}`));
+   };
+   useEffect(() => {
+      console.log('====================================');
+      console.log(domiciliioDeclarante);
+      console.log('====================================');
+   }, [datosGenerales, domiciliioDeclarante]);
    return (
       <>
          <Box
@@ -46,7 +58,7 @@ export const Checador = ({}) => {
                   <DataTable
                      options={["CHARTS", "EXCEL", "COLORS"]}
                      // , "PDF",
-                     moreButtons={[{ icon: VisibilityIcon, handleButton: () => {}, color: "green", conditions: [] }]}
+                     moreButtons={[{ icon: VisibilityIcon, handleButton: handelPdf, color: "green", conditions: [] }]}
                      // captionButtons={[
                      //    {text:"mas",handleButton:()=>{alert("dd")},icon:VisibilityIcon}
                      // ]}
@@ -81,51 +93,18 @@ export const Checador = ({}) => {
                   />
                </Box>
             </Card>
-            <ModalPDF open={true} setOpen={setOpen} formTitle={"OFICIO DE VALES"} watermark={"Control Vehícular"} formData={{}}>
-               <TablePdf data={datosGenerales} />
-            </ModalPDF>
+
+            <Ngif condition={datosGenerales.length > 0 && domiciliioDeclarante.length > 0}>
+               <PdfDeclaracion title={"DECLARACION"} open={open} setOpen={setOpen} formTitle={"OFICIO DE VALES"} watermark={"Declaracion"}>
+                  <PagePdf title={"DATOS GENERALES"} data={datosGenerales}>
+                     <DatosGenerales data={datosGenerales} estadocivil={estadocivil} regimenes={regimenes} paises={paises} nacionalidades={nacionalidades} />
+                  </PagePdf>
+                  <PagePdf title={"DOMICILIO DEL DECLARANTE"}>
+                     <DomicilioDeclarante data={domiciliioDeclarante} />
+                  </PagePdf>
+               </PdfDeclaracion>
+            </Ngif>
          </Box>
       </>
    );
 };
-
-const styles = StyleSheet.create({
-   container: {
-     flexDirection: 'row',
-     flexWrap: 'wrap',
-   },
-   column: {
-     width: '33.33%', // Ajusta el ancho de cada columna
-     marginBottom: 10,
-     padding: 5,
-     boxSizing: 'border-box',
-   },
-   title: {
-      backgroundColor:"black",
-      color:"white",
-      fontSize:"15px",
-      lineHeight:"2px",
-      padding:".2rem",
-      textAlign:"center",
-     fontWeight: 'bold',
-     marginBottom: 4,
-   },
-   text: {
-     fontSize: 12,
-   },
- });
- 
- const TablePdf = ({ data }) => {
-   return (
-     <View style={styles.container}>
-       {data.map((item, index) => (
-         <View key={index} style={styles.column}>
-           <Text style={styles.title}>{item.title}</Text>
-           <Text style={styles.text}>{item.text}</Text>
-         </View>
-       ))}
-     </View>
-   );
- };
- 
- 

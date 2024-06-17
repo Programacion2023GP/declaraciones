@@ -979,7 +979,8 @@ const MoreButtons = ({ item, moreButtons, checkConditionsMoreButton, buttonsMenu
                      <Ngif condition={buttonsMenu}>
                         <MenuItem
                            onClick={() => {
-                              element.handleButton(element);
+                              console.log("aqui",item);
+                              element.handleButton(item);
                            }}
                         >
                            <IconButton
@@ -997,7 +998,7 @@ const MoreButtons = ({ item, moreButtons, checkConditionsMoreButton, buttonsMenu
                            aria-label="edit"
                            color="warning"
                            onClick={() => {
-                              element.handleButton(element);
+                              element.handleButton(item);
                            }}
                         >
                            <element.icon style={{ color: element.color }} />
