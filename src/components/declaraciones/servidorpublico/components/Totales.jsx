@@ -26,7 +26,6 @@ export const Totales = ({}) => {
    };
    const event = () => {
       const Tot = total();
-      console.log("aqui",Tot);
       dispatch(configValidationServidorPublico({ tipo: "Totales", total: parseInt(Tot) }));
       formik.setFieldValue("IngresoMensualConclusionNeto", Tot);
       dispatch(configValidationServidorPublico({ tipo: "TotalesGeneral", total: parseInt(Tot) + parseInt(formik.values.IngresoNetoParejaDependiente) }));

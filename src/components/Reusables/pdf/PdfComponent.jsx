@@ -171,7 +171,7 @@ export const stylesPDF = StyleSheet.create({
    },
    viewContainer: {
       position: "absolute",
-      top: 125,
+      top: 40,
       left: 30,
       // height: 540,
       width: "90%"
@@ -222,10 +222,23 @@ export const stylesPDF = StyleSheet.create({
    textCenter: {
       textAlign: "center"
    },
+   // row: {
+   //    display: "flex",
+   //    flexDirection: "row"
+   // },
    row: {
-      display: "flex",
-      flexDirection: "row"
-   },
+      flexDirection: "row",
+      flexWrap: "wrap",
+      justifyContent: "center", // Ajustado para centrar los elementos
+      alignItems: "flex-start", // Ajustado para alinear los elementos en la parte superior
+      border: "1px solid #ffffff", // Borde blanco de 1px
+      backgroundColor: "#ffffff", // Fondo blanco
+      borderRadius: 5,
+      padding: 10,
+      width: "70%", // Ajustado al 90% del ancho disponible
+      margin: "0 auto", // Para centrar horizontalmente
+      minHeight: 675 // Altura mínima de 675px
+   },   
    column: {
       flexDirection: "column"
    },
@@ -356,7 +369,7 @@ const formDataInitial = {
 export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formData = { formDataInitial }, isOfficialDoc = true }) => {
    return (
       <>
-         <Page size="LETTER" style={stylesPDF.page} wrap>
+         <Page size="LETTER" style={{ ...stylesPDF.row }} wrap>
             {/* <View style={stylesPDF.pageBody}> */}
             <View style={stylesPDF.viewBgImage}>
                <Text style={stylesPDF.header} fixed>
@@ -365,20 +378,17 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
                {/* {isOfficialDoc && <Image style={stylesPDF.bgImage} src={backgroundImage} />} */}
             </View>
             {isOfficialDoc ? (
-               <View style={stylesPDF.viewContainer}>
+               <View style={{ ...stylesPDF.viewContainer, ...stylesPDF.viewContainer, ...stylesPDF.messageBody }}>
                   <Image style={stylesPDF.stamp} src={formData.voucher.requesterStamp} />
                   {formData.voucher.vobo_at != null && (
                      <View style={stylesPDF.containerDateStamp}>
                         <Image style={stylesPDF.dateStamp} src={formData.imgDateStamp} />
-                        {/* <Text style={stylesPDF.dateStampText}>{formatDatetime(formData.voucher.vobo_at, false, "sello")}</Text> */}
                      </View>
                   )}
                   <View style={stylesPDF.folioDate}>
                      <Text>Folio: #{formData.voucher.folio}</Text>
                      <Text>Folio Interno: {formData.voucher.internal_folio}</Text>
-                     <Text style={{ fontFamily: "Roboto-Regular" }}>
-                        {/* Gómez Palacio, Dgo., {formData.voucher.date ? formatDatetime(formData.voucher.date, false, "lll") : "--/---/----"} */}
-                     </Text>
+                     <Text style={{ fontFamily: "Roboto-Regular" }}>¿ </Text>
                   </View>
                   <View style={stylesPDF.dataTitlesLeft}>
                      <Text style={stylesPDF.upperCase}>{formData.directorFrom}</Text>
@@ -409,9 +419,7 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
                         <Text style={stylesPDF.upperCase}>{formData.departmentTo1}</Text>
                      </View>
                   )}
-                  {/* CUERPO DEL MENSAJE */}
                   <View style={stylesPDF.messageBody}>{children}</View>
-                  {/* CUERPO DEL MENSAJE */}
                   <View style={stylesPDF.firmContainer}>
                      <Text style={[stylesPDF.letterSpace, { fontSize: 10 }]}>ATENTAMENTE: </Text>
                      <Text style={stylesPDF.upperCase}>{formData.voucher.requesterWorkstation}</Text>
@@ -421,11 +429,7 @@ export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formD
                   </View>
                </View>
             ) : (
-               <View style={stylesPDF.viewContainer}>
-                  {/* CUERPO DEL MENSAJE */}
-                  <View style={stylesPDF.messageBody}>{children}</View>
-                  {/* CUERPO DEL MENSAJE */}
-               </View>
+               <>{children}</>
             )}
 
             <Text style={stylesPDF.pageNumber} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} fixed />

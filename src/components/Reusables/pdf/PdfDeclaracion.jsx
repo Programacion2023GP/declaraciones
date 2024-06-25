@@ -1,30 +1,34 @@
 import { Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { Ngif } from "../conditionals/Ngif";
 import { DocumentPDF, ModalPDF } from "./PdfComponent";
+import { Fragment, useEffect } from "react";
 
 const styles = StyleSheet.create({
    container: {
-      padding: 20,
-      backgroundColor: "#ffffff",
-      height: "100vh"
+      height: "100%",
+
       // page-break-before: always
    },
    section: {
+      backgroundColor: "#ffffff",
       borderWidth: 1,
-      borderColor: "#000000",
       borderRadius: 5,
       padding: 10,
-      minHeight: "100%"
+      minHeight: "675"
       // flexDirection: "row",
       // flexWrap: "wrap",
    },
    sectionHeader: {
+      width:"100%",
+      textAlign:"center",
       backgroundColor: "#d3d3d3",
       color: "#000000",
       fontSize: 16,
       fontWeight: "bold",
       padding: 20,
       lineHeight: 1,
+      // width:"fit-content",
+      // height:"fit-content",
       // marginBottom: 10,
       borderTopLeftRadius: 5,
       borderTopRightRadius: 5,
@@ -63,7 +67,8 @@ const styles = StyleSheet.create({
       borderBottomColor: "#000000",
       paddingLeft: 3,
       paddingRight: 1,
-      paddingBottom: 0
+      paddingBottom: 0,
+      textAlign: "center"
    },
    squardBox: {
       flexDirection: "row", // Asegura que los elementos se alineen en una fila
@@ -122,19 +127,17 @@ const styles = StyleSheet.create({
 const TablePdf = ({ title, children }) => {
    return (
       <>
-         <View style={{ ...styles.container }}>
             <Text style={styles.sectionHeader}>{title}</Text>
-            <View style={styles.section}>
-               <View style={styles.row}>{children}</View>
-            </View>
-         </View>
+              {children}
       </>
    );
 };
 
 export const TextPdf = ({ title, text, width }) => {
+   useEffect(()=>{},[title, text, width])
    return (
-      <View
+      <View 
+      wrap={false}
          style={[
             styles.column,
             { flexBasis: `${width || 30}%` } // Ajustado el ancho predeterminado
@@ -147,8 +150,12 @@ export const TextPdf = ({ title, text, width }) => {
 };
 
 export const SquardsTextPdf = ({ title, text, width }) => {
+   useEffect(()=>{},[title, text, width])
+
    return (
       <View
+      wrap={false}
+
          style={[
             styles.column,
             { flexBasis: `${width || 100}%` } // Ajustar el ancho predeterminado si es necesario
@@ -166,8 +173,12 @@ export const SquardsTextPdf = ({ title, text, width }) => {
    );
 };
 export const OptionsPdf = ({ title, width, options = [], value }) => {
+   useEffect(()=>{},[title, options, width, value])
+
    return (
       <View
+      wrap={false}
+
          style={[
             styles.column,
             { flexBasis: `${width || 100}%` } // Ajustar el ancho predeterminado si es necesario
@@ -189,7 +200,8 @@ export const OptionsPdf = ({ title, width, options = [], value }) => {
       </View>
    );
 };
-export const PdfDeclaracion = ({ open, setOpen, title, watermark, data, children, subtitule }) => {
+export const PdfDeclaracion = ({ open, setOpen, title, watermark, datas, children, subtitule }) => {
+   // useEffect(()=>{},[])
    return (
       <>
          <ModalPDF open={open} setOpen={setOpen} formTitle={title} watermark={watermark} formData={{}}>

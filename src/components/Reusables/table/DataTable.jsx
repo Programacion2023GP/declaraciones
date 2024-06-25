@@ -29,7 +29,7 @@ import * as XLSX from "xlsx";
 import { Voice } from "../formik/FormikForm";
 import { lightBlue } from "@mui/material/colors";
 import Alert from "@mui/material/Alert";
-import ColorLensIcon from '@mui/icons-material/ColorLens';
+import ColorLensIcon from "@mui/icons-material/ColorLens";
 const SearchInput = ({ column, data, getData, previousData }) => {
    const [searchText, setSearchText] = useState("");
    const [previousDataFilter, setPreviousDataFilter] = useState(data);
@@ -74,7 +74,7 @@ const SearchInput = ({ column, data, getData, previousData }) => {
    );
 };
 
-const Title = ({ headers, titles, data, filterData, previousData, filter, editButton, deleteButton, speakRow,moreButtons }) => {
+const Title = ({ headers, titles, data, filterData, previousData, filter, editButton, deleteButton, speakRow, moreButtons }) => {
    const [titlesMap, setTitlesMap] = useState([]);
    const [headersMap, setHeadersMap] = useState([]);
    useEffect(() => {
@@ -134,7 +134,9 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
                         </th>
                      );
                   })}
-               {filter && (editButton || deleteButton || moreButtons) && <th key={uuidv4()} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}></th>}
+               {filter && (editButton || deleteButton || moreButtons) && (
+                  <th key={uuidv4()} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}></th>
+               )}
             </tr>
          </thead>
       </>
@@ -739,7 +741,7 @@ const DataTable = ({
                   speakRow={speakRow}
                   editButton={editButton}
                   deleteButton={deleteButton}
-                  moreButtons={moreButtons.length>0?true:false}
+                  moreButtons={moreButtons.length > 0 ? true : false}
                   headers={headers}
                   titles={titles}
                   previousData={data}
@@ -820,7 +822,7 @@ const DataTable = ({
                                                 color: tdRead === id && line == index && lightBlue[600],
                                                 fontWeight: tdRead === id && line == index && "bold"
                                              }}
-                                             key={key}
+                                           
                                              cols={value}
                                           >
                                              {value}
@@ -840,7 +842,7 @@ const DataTable = ({
                                              color: tdRead === id && line == index && lightBlue[600],
                                              fontWeight: tdRead === id && line == index && "bold"
                                           }}
-                                          key={key}
+                                        
                                           cols={value}
                                        >
                                           {value}
@@ -907,7 +909,7 @@ const DataTable = ({
                <tfoot>
                   <tr>
                      <td
-                        colSpan={headers.length + (editButton || deleteButton ||moreButtons.length>0 ? 1 : 0) + (speakRow ? 1 : 0)}
+                        colSpan={headers.length + (editButton || deleteButton || moreButtons.length > 0 ? 1 : 0) + (speakRow ? 1 : 0)}
                         style={{ border: "1px solid #BDBDBD", padding: "0.5rem", textAlign: "center", background: "black" }}
                      >
                         <Paginator
@@ -971,15 +973,15 @@ const MoreButtons = ({ item, moreButtons, checkConditionsMoreButton, buttonsMenu
       <>
          {moreButtons.map((element, i) => {
             if (checkConditionsMoreButton(item, element.conditions)) {
-                  if (!checkConditionsMoreButton(item, element.conditions)) {
-                     return null
-                  }
+               if (!checkConditionsMoreButton(item, element.conditions)) {
+                  return null;
+               }
                return (
                   <>
                      <Ngif condition={buttonsMenu}>
                         <MenuItem
                            onClick={() => {
-                              console.log("aqui",item);
+                              console.log("aqui", item);
                               element.handleButton(item);
                            }}
                         >
@@ -1043,11 +1045,13 @@ const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Modal = ({ children, openModal, setOpenModal, setText }) => {
+export const Modal = ({ children, openModal, setOpenModal, setText, close = true }) => {
    useEffect(() => {}, [openModal]);
    const handleClose = () => {
       setOpenModal(false);
-      setText("");
+      if (setText) {
+         setText("");
+      }
    };
    return (
       <>
@@ -1065,7 +1069,9 @@ const Modal = ({ children, openModal, setOpenModal, setText }) => {
                <DialogContentText id="alert-dialog-slide-description">{children}</DialogContentText>
             </DialogContent>
             <DialogActions>
-               <Button onClick={handleClose}>Cerrar</Button>
+               <Ngif condition={close}>
+                  <Button onClick={handleClose}>Cerrar</Button>
+               </Ngif>
             </DialogActions>
          </Dialog>
       </>

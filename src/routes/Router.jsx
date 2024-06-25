@@ -59,7 +59,8 @@ export const router = createHashRouter([
          {
             path: "checador",
             index: true,
-            element: <Checador />
+            element: <Checador />,
+            
          },
          {
             path: "usuarios",

@@ -29,6 +29,9 @@ export const Request = ({ peticiones = [] }) => {
    const [tipoinversion, setTipoInversion] = useState([]);
    const [tipoAdeudos, setTipoAdeudos] = useState([]);
    const [adscripcion, setAdscripcion] = useState([]);
+   const [municipios, setMunicipios] = useState([]);
+   const [instrumentos, SetInstrumentos] = useState([]);
+   const [bienenAjenacion, setBieneAjenacion] = useState([]);
 
    // usuarios form
    const [intengrantes, setIntengrantes] = useState([]);
@@ -37,6 +40,10 @@ export const Request = ({ peticiones = [] }) => {
    const [apartados, setApartados] = useState([]);
    useEffect(() => {
       const responses = async () => {
+         peticiones.includes("municipios") && setMunicipios(await GetAxios("municipios/show"));
+         peticiones.includes("instrumentos") && SetInstrumentos(await GetAxios("tipoinstrumento/show"));
+         peticiones.includes("bienenAjenacion") && setBieneAjenacion(await GetAxios("bienenajenacion/show"));
+
          peticiones.includes("inmuebles") && setInmuebles(await GetAxios("tipoinmueble/show"));
          peticiones.includes("titular") && setTitular(await GetAxios("titularbien/show"));
          peticiones.includes("relacion") && setRelaciones(await GetAxios("relacioncondeclarante/show"));
@@ -63,12 +70,11 @@ export const Request = ({ peticiones = [] }) => {
          peticiones.includes("tipoinversion") && setTipoInversion(await GetAxios("tipoinversion/show"));
          peticiones.includes("tipoAdeudos") && setTipoAdeudos(await GetAxios("tiposadeudos/show"));
          peticiones.includes("apartados") && setApartados(await GetAxios(`apartados/show/${parseInt(localStorage.getItem("Id_User"))}`));
-         peticiones.includes("intengrantes") &&  setIntengrantes(await GetAxios("intengrantes/show"));
+         peticiones.includes("intengrantes") && setIntengrantes(await GetAxios("intengrantes/show"));
          peticiones.includes("roles") && setRoles(await GetAxios("roles/show"));
          peticiones.includes("adscripcion") && setAdscripcion(await GetAxios("adscripcion/show"));
 
          setCached(true);
-
       };
       if (!cached) {
          responses();
@@ -102,6 +108,9 @@ export const Request = ({ peticiones = [] }) => {
       apartados,
       roles,
       intengrantes,
-      adscripcion
+      adscripcion,
+      municipios,
+      instrumentos,
+      bienenAjenacion
    };
 };
