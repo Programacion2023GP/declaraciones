@@ -40,7 +40,7 @@ export const TipoDePersona = ({ adquisicion, pago, monedas, conforme }) => {
                ]}
             />
             <Text label={"Nombre del tercero o terceros"} name="T_NombreRazonSocial" col={6} />
-            <Text label={"Rfc"} name="TR_Rfc" col={6} />
+            <Text label={"Rfc"} name="T_Rfc" col={6} />
          </Ngif>
          <AutoComplete col={6} options={adquisicion} name="Id_FormaAdquisicion" label={"Forma de adquisición"} />
          <AutoComplete col={6} options={pago} name="Id_FormaPago" label={"Forma de pago"} />

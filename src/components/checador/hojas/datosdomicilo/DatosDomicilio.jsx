@@ -33,20 +33,20 @@ export const DatosDomicilio = ({ data = [], testada = false, municipios = [], en
    }, []);
    return (
       <>
-         <TextPdf title={"Calle"} text={testField(Calle)} />
-         <TextPdf title={"Número Exterior"} text={testField(NumeroExterior)} />
-         <TextPdf title={"Número Interior"} text={testField(NumeroInterior)} />
-         <TextPdf title={"Colonia/Localidad"} text={testField(ColoniaLocalidad)} />
-         <Ngif condition={EsEnMexico == 1}>
-            <TextPdf title={"Municipio/Alcaldia"} text={municipio} />
-            <TextPdf title={"Entidad Federativa"} text={entidad} />
+         <TextPdf title={"Calle"} text={testField(Calle, testada)} />
+         <TextPdf title={"Número Exterior"} text={testField(NumeroExterior, testada)} />
+         <TextPdf title={"Número Interior"} text={testField(NumeroInterior, testada)} />
+         <TextPdf title={"Colonia/Localidad"} text={testField(ColoniaLocalidad, testada)} />
+         <Ngif condition={parseInt(EsEnMexico) == 1}>
+            <TextPdf title={"Municipio/Alcaldia"} text={testField(municipio, testada)} />
+            <TextPdf title={"Entidad Federativa"} text={testField(entidad, testada)} />
          </Ngif>
-         <Ngif condition={EsEnMexico == 0}>
+         <Ngif condition={parseInt(EsEnMexico) == 0}>
             <TextPdf title={"Pais"} text={pais} />
-            <TextPdf title={"Estado Provincia"} text={testField(EstadoProvincia)} />
+            <TextPdf title={"Estado Provincia"} text={testField(EstadoProvincia, testada)} />
          </Ngif>
 
-         <TextPdf title={"Código postal"} text={testField(CodigoPostal)} width={100} />
+         <TextPdf title={"Código postal"} text={testField(CodigoPostal, testada)} width={100} />
       </>
    );
 };

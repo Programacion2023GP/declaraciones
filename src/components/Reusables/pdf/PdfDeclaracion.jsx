@@ -10,12 +10,11 @@ const styles = StyleSheet.create({
       // page-break-before: always
    },
    section: {
-      backgroundColor: "#ffffff",
-      borderWidth: 1,
-      borderRadius: 5,
-      padding: 10,
-      minHeight: "675"
-      // flexDirection: "row",
+     marginBottom: "12rem",
+     width:"100%",
+     paddingBottom: "12rem",
+
+     // flexDirection: "row",
       // flexWrap: "wrap",
    },
    sectionHeader: {
@@ -27,14 +26,10 @@ const styles = StyleSheet.create({
       fontWeight: "bold",
       padding: 20,
       lineHeight: 1,
-      // width:"fit-content",
-      // height:"fit-content",
-      // marginBottom: 10,
+      marginBottom:"12rem",
       borderTopLeftRadius: 5,
       borderTopRightRadius: 5,
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center"
+   
    },
    row: {
       flexDirection: "row",
@@ -127,7 +122,10 @@ const styles = StyleSheet.create({
 const TablePdf = ({ title, children }) => {
    return (
       <>
+      <View style={styles.section}>
+
             <Text style={styles.sectionHeader}>{title}</Text>
+      </View>
               {children}
       </>
    );

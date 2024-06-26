@@ -30,7 +30,7 @@ export const ExperienciaLaboral = ({ data = [], ambitopublico }) => {
    useEffect(() => {}, []);
    return (
       <>
-         <TextPdf title={"Ámbito/Sector en el que laboraste"} text={field(Id_AmbitoSector == 1 ? "PÚBLICO" : "PRIVADO")} width={50} />
+         <TextPdf title={"Ámbito/Sector en el que laboraste"} text={field(parseInt(Id_AmbitoSector) == 1 ? "PÚBLICO" : "PRIVADO")} width={50} />
          <TextPdf title={"Ámbito público"} text={arrayField(ambitopublico, Id_AmbitoPublico)} width={50} />
          <TextPdf title={"Nombre del ente público/Nombre de la empresa, sociedad o asosiación"} text={field(NombreEmpresaSociedadAsociacion)} width={50} />
          <TextPdf title={"RFC"} text={field(RFC)} width={50} />
@@ -68,6 +68,9 @@ export const ExperienciaLaboral = ({ data = [], ambitopublico }) => {
             )}
             width={50}
          />
+         <TextPdf title={"Aclaraciones"} text={field(Aclaraciones)} width={100} />
+
+
       </>
    );
 };

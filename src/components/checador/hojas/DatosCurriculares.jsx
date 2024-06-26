@@ -37,7 +37,7 @@ export const DatosCurriculares = ({ data = [], testada = false, nivelEstudios = 
          <TextPdf title={"Estatus"} text={field(estatu)} width={50} />
          <TextPdf title={"Documento obtenido"} text={field(documento)} width={50} />
          <TextPdf title={"Fecha de obtención del documento"} text={field(FechaObtencion)} width={50} />
-         <TextPdf title={"Lugar donde se ubica la institución educativa"} text={Id_UbicacionInstitucionEducativa == 1 ? "En México" : "En el extranjero"} width={50} />
+         <TextPdf title={"Lugar donde se ubica la institución educativa"} text={parseInt(Id_UbicacionInstitucionEducativa) == 1 ? "En México" : "En el extranjero"} width={50} />
          <TextPdf title={"Aclaraciones/Observaciones"} text={field(Aclaraciones)} width={50} />
 
          {/* <OptionsPdf title={"Es de mexico"} options={["SI", "NO"]} value={"NO"} /> */}
