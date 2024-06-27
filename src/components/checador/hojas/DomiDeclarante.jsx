@@ -1,35 +1,35 @@
 import { useEffect, useState } from "react";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../Reusables/pdf/PdfDeclaracion";
-import { testField, field, testArrayField, arrayField } from "../funciones/Funciones";
+import { testField, field, testArrayField, arrayField,vacio } from "../funciones/Funciones";
 import { DatosDomicilio } from "./datosdomicilo/DatosDomicilio";
 export const DomiDeclarante = ({ data = [], testada = false, municipios = [], entidades, paises }) => {
    const [municipio, setMunicipio] = useState();
    const [entidad, setEntidad] = useState();
    const [pais, setPais] = useState();
    const {
-      Aclaraciones,
-      Calle,
-      CiudadLocalidad,
-      CodigoPostal,
-      ColoniaLocalidad,
-      EsActivo,
-      EsEnMexico,
-      EstadoProvincia,
-      FechaRegistro,
-      Id_DomicilioDeclarante,
-      Id_EntidadFederativa,
-      Id_MunicipioAlcaldia,
-      Id_Pais,
-      Id_SituacionPatrimonial,
+      Aclaraciones = vacio(),
+      Calle = vacio(),
+      CiudadLocalidad = vacio(),
+      CodigoPostal = vacio(),
+      ColoniaLocalidad = vacio(),
+      EsActivo = vacio(),
+      EsEnMexico = vacio(),
+      EstadoProvincia = vacio(),
+      FechaRegistro = vacio(),
+      Id_DomicilioDeclarante = vacio(),
+      Id_EntidadFederativa = vacio(),
+      Id_MunicipioAlcaldia = vacio(),
+      Id_Pais = vacio(),
+      Id_SituacionPatrimonial = vacio(),
 
-      NumeroExterior,
-      NumeroInterior
-   } = data[0];
+      NumeroExterior = vacio(),
+      NumeroInterior = vacio()
+   } = data[0] || {};
 
    return (
       <>
-         <TextPdf text={testField((parseInt(EsEnMexico)==1 ? "Sí" : "No"),testada)} title={"¿Es de México?"} />
+         <TextPdf text={testField(parseInt(EsEnMexico) == 1 ? "Sí" : "No", testada)} title={"¿Es de México?"} />
          <DatosDomicilio entidades={entidades} paises={paises} data={data} municipios={municipios} testada={testada} />
 
          {/* <SquardsTextPdf title={"CURP"} text={testada ? "XXXXXXXXXXXXXXXXXX" : Curp} width={60)} />

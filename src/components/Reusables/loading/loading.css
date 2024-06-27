@@ -1,0 +1,24 @@
+.svg-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* height: 100vh; Asegura que ocupe toda la altura visible */
+}
+
+.text-loading {
+    font-weight: bold;
+    fill: none;
+    stroke: #264e8bbe; /* Color del trazo */
+    stroke-width: 2.3; /* Grosor del trazo */
+    stroke-dasharray: 900; /* Longitud del trazo, ajustado para el texto */
+    stroke-dashoffset: 900; /* Desfase inicial (pinta desde el principio) */
+    animation: draw 4s ease-in-out infinite; /* Duración de la animación más larga y suavizada */
+    font-family: Arial, sans-serif; /* Familia de fuentes */
+    letter-spacing: 2px; /* Espaciado entre letras reducido */
+}
+
+@keyframes draw {
+    to {
+        stroke-dashoffset: 0; /* Completa el trazado */
+    }
+}

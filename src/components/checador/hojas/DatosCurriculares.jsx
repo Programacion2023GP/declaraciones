@@ -8,20 +8,20 @@ export const DatosCurriculares = ({ data = [], testada = false, nivelEstudios = 
    const [documento, setDocumento] = useState();
 
    const {
-      Id_DatosCurriculares,
-      Id_SituacionPatrimonial,
-      Id_Nivel,
-      NombreInstitucionEducativa,
-      Id_UbicacionInstitucionEducativa,
-      CarreraAreaConocimiento,
-      Id_Estatus,
-      Id_DocumentoObtenido,
-      FechaObtencion,
-      Aclaraciones,
-      FechaRegistro,
-      EsActivo,
+      Id_DatosCurriculares=vacio(),
+      Id_SituacionPatrimonial=vacio(),
+      Id_Nivel=vacio(),
+      NombreInstitucionEducativa=vacio(),
+      Id_UbicacionInstitucionEducativa=vacio(),
+      CarreraAreaConocimiento=vacio(),
+      Id_Estatus=vacio(),
+      Id_DocumentoObtenido=vacio(),
+      FechaObtencion=vacio(),
+      Aclaraciones=vacio(),
+      FechaRegistro=vacio(),
+      EsActivo=vacio(),
       
-   } = data[0];
+   } = data[0]||{};
    useEffect(() => {
   
       setEstudio(nivelEstudios.filter((item) => item.id === parseInt(Id_Nivel))[0]?.text);

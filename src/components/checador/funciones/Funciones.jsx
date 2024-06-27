@@ -7,22 +7,25 @@ export const vacio = () => {
 export const field = (field) => {
    return field == null || field == "" ? vacio() : field;
 };
-export const testArrayField = (array, searchId, testeada) => {
-   if (Array.isArray(array) && parseInt(searchId) > 0) {
-      const text = array.filter((item) => item.id === parseInt(searchId))[0]?.text;
-
-     return testField(text, testeada);
-   } else {
-
-      return "";
+// Función para probar un campo en el array
+export const testArrayField = (array, searchId, testeada, field = "id", textField = "text") => {
+   if (Array.isArray(array) && parseInt(searchId) >= 0) {
+      const item = array.find((item) => item[field] === parseInt(searchId));
+      if (item) {
+         return testField(item[textField], testeada);
+      }
    }
+   return "";
 };
-//@params hola
-export const arrayField = (array, searchId) => {
-   if (Array.isArray(array) && parseInt(searchId) > 0) {
-      const text = array.filter((item) => item.id === parseInt(searchId))[0]?.text;
-      return field(text);
-   } else {
-      return "";
+
+// Función para obtener un campo en el array
+export const arrayField = (array, searchId, id = "id", textField = "text") => {
+   if (Array.isArray(array) && parseInt(searchId) >= 0) {
+      const item = array.find((item) => item[id] === parseInt(searchId));
+      if (item) {
+         return field(item[textField]);
+      }
    }
+   return "";
 };
+

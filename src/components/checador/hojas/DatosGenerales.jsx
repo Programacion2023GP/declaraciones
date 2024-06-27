@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../Reusables/pdf/PdfDeclaracion";
-import { testField, field } from "../funciones/Funciones";
+import { testField, field,vacio } from "../funciones/Funciones";
 
 export const DatosGenerales = ({ data = [], estadocivil, nacionalidades, paises, regimenes, testada = false }) => {
    const [civil, setCivil] = useState();
@@ -9,22 +9,22 @@ export const DatosGenerales = ({ data = [], estadocivil, nacionalidades, paises,
    const [regimen, setRegimen] = useState();
 
    const {
-      Nombre,
-      PrimerApellido,
-      SegundoApellido,
-      Curp,
-      Rfc,
-      Homoclave,
-      CorreoInstitucional,
-      CorreoPersonal,
-      TelefonoCasa,
-      TelefonoCelularPersonal,
-      Id_EstadoCivil,
-      Aclaraciones,
-      Id_Nacionalidad,
-      Id_PaisNacimiento,
-      Id_RegimenMatrimonial
-   } = data[0];
+      Nombre = vacio(),
+      PrimerApellido = vacio(),
+      SegundoApellido = vacio(),
+      Curp = vacio(),
+      Rfc = vacio(),
+      Homoclave = vacio(),
+      CorreoInstitucional = vacio(),
+      CorreoPersonal = vacio(),
+      TelefonoCasa = vacio(),
+      TelefonoCelularPersonal = vacio(),
+      Id_EstadoCivil = vacio(),
+      Aclaraciones = vacio(),
+      Id_Nacionalidad = vacio(),
+      Id_PaisNacimiento = vacio(),
+      Id_RegimenMatrimonial = vacio(),
+   } = data[0] || {};
    useEffect(() => {
     
       setCivil(estadocivil.filter((item) => item.id === parseInt(Id_EstadoCivil))[0]?.text);

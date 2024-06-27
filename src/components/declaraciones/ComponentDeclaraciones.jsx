@@ -43,8 +43,8 @@ const ComponentDeclaraciones = () => {
 
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja : 8); // cambia de hoja
-   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja : 8); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
+   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja : 9); // cambia de hoja
+   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja : 9); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
    const dispatch = useDispatch();
    React.useEffect(() => {
       dispatch(foundLocalization());
@@ -301,7 +301,8 @@ const ComponentDeclaraciones = () => {
                      borderRadius: "10px",
                      padding: "20px 0",
                      boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-                     marginBottom: "20px"
+                     marginBottom: "20px",
+                     minHeight:"20rem",
                   }}
                >
                   {/* Título del paso con estilos mejorados */}

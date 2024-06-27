@@ -1,73 +1,73 @@
 import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../Reusables/pdf/PdfDeclaracion";
 import { DomiDeclarante } from "./DomiDeclarante";
-import { testField, field, testArrayField, arrayField } from "../funciones/Funciones";
+import { testField, field, testArrayField, arrayField, vacio } from "../funciones/Funciones";
 import { DatosDomicilio } from "./datosdomicilo/DatosDomicilio";
 
-export const DatosEmpleoCargo = ({ data = [], testada = false, nivelOrdenGobierno, ambitoPublico,municipios=[], entidades=[], paises=[] }) => {
+export const DatosEmpleoCargo = ({ data = [], testada = false, nivelOrdenGobierno, ambitoPublico, municipios = [], entidades = [], paises = [] }) => {
    const {
-      Id_DatosEmpleoCargoComision,
-      Id_SituacionPatrimonial,
-      Id_NivelOrdenGobierno,
-      Id_AmbitoPublico,
-      NombreEntePublico,
-      AreaAdscripcion,
-      EmpleoCargoComision,
-      ContratadoPorHonorarios,
-      NivelEmpleoCargoComision,
-      FuncionPrincipal,
-      FechaTomaConclusionPosesion,
-      ExtensionTelefonoOficina,
-      TelefonoOficina,
-      Calle,
-      NumeroExterior,
-      NumeroInterior,
-      ColoniaLocalidad,
-      Id_MunicipioAlcaldia,
-      Id_EntidadFederativa,
-      CiudadLocalidad,
-      EstadoProvincia,
-      Id_Pais,
-      CodigoPostal,
-      EsEnMexico,
-      CuentaConOtroCargoPublico,
-      Otro_Id_NivelOrdenGobierno,
-      Otro_Id_AmbitoPublico,
-      Otro_NombreEntePublico,
-      Otro_AreaAdscripcion,
-      Otro_EmpleoCargoComision,
-      Otro_ContratadoPorHonorarios,
-      Otro_NivelEmpleoCargoComision,
-      Otro_FuncionPrincipal,
-      Otro_FechaTomaConclusionPosesion,
-      Otro_ExtensionTelefonoOficina,
-      Otro_TelefonoOficina,
-      Otro_Calle,
-      Otro_NumeroExterior,
-      Otro_NumeroInterior,
-      Otro_ColoniaLocalidad,
-      Otro_Id_MunicipioAlcaldia,
-      Otro_Id_EntidadFederativa,
-      Otro_CiudadLocalidad,
-      Otro_EstadoProvincia,
-      Otro_Id_Pais,
-      Otro_CodigoPostal,
-      Otro_EsEnMexico,
-      Aclaraciones,
-      FechaRegistro,
-      EsActivo,
-      Rfc,
-      Puesto,
-      Sector,
-      SectorEspecificado,
-      OtroEntePublico
-   } = data[0];
+      Id_DatosEmpleoCargoComision=vacio(),
+      Id_SituacionPatrimonial=vacio(),
+      Id_NivelOrdenGobierno=vacio(),
+      Id_AmbitoPublico=vacio(),
+      NombreEntePublico=vacio(),
+      AreaAdscripcion=vacio(),
+      EmpleoCargoComision=vacio(),
+      ContratadoPorHonorarios=vacio(),
+      NivelEmpleoCargoComision=vacio(),
+      FuncionPrincipal=vacio(),
+      FechaTomaConclusionPosesion=vacio(),
+      ExtensionTelefonoOficina=vacio(),
+      TelefonoOficina=vacio(),
+      Calle=vacio(),
+      NumeroExterior=vacio(),
+      NumeroInterior=vacio(),
+      ColoniaLocalidad=vacio(),
+      Id_MunicipioAlcaldia=vacio(),
+      Id_EntidadFederativa=vacio(),
+      CiudadLocalidad=vacio(),
+      EstadoProvincia=vacio(),
+      Id_Pais=vacio(),
+      CodigoPostal=vacio(),
+      EsEnMexico=vacio(),
+      CuentaConOtroCargoPublico=vacio(),
+      Otro_Id_NivelOrdenGobierno=vacio(),
+      Otro_Id_AmbitoPublico=vacio(),
+      Otro_NombreEntePublico=vacio(),
+      Otro_AreaAdscripcion=vacio(),
+      Otro_EmpleoCargoComision=vacio(),
+      Otro_ContratadoPorHonorarios=vacio(),
+      Otro_NivelEmpleoCargoComision=vacio(),
+      Otro_FuncionPrincipal=vacio(),
+      Otro_FechaTomaConclusionPosesion=vacio(),
+      Otro_ExtensionTelefonoOficina=vacio(),
+      Otro_TelefonoOficina=vacio(),
+      Otro_Calle=vacio(),
+      Otro_NumeroExterior=vacio(),
+      Otro_NumeroInterior=vacio(),
+      Otro_ColoniaLocalidad=vacio(),
+      Otro_Id_MunicipioAlcaldia=vacio(),
+      Otro_Id_EntidadFederativa=vacio(),
+      Otro_CiudadLocalidad=vacio(),
+      Otro_EstadoProvincia=vacio(),
+      Otro_Id_Pais=vacio(),
+      Otro_CodigoPostal=vacio(),
+      Otro_EsEnMexico=vacio(),
+      Aclaraciones=vacio(),
+      FechaRegistro=vacio(),
+      EsActivo=vacio(),
+      Rfc=vacio(),
+      Puesto=vacio(),
+      Sector=vacio(),
+      SectorEspecificado=vacio(),
+      OtroEntePublico=vacio(),
+   } = data[0]||{};
    const test = () => {
       return "XXXXXXXXXX";
    };
    const vacio = () => {
       return "-----------------------";
    };
- 
+
    return (
       <>
          <TextPdf title={"Nivel/Orden de gobierno"} text={nivelOrdenGobierno.filter((item) => item.id === parseInt(Id_NivelOrdenGobierno))[0]?.text} />
@@ -83,10 +83,8 @@ export const DatosEmpleoCargo = ({ data = [], testada = false, nivelOrdenGobiern
          <TextPdf title={"Fecha de toma de posesion del empleo,cargo o comisión"} text={field(FechaTomaConclusionPosesion)} width={100} />
          <TextPdf title={"Teléfono de oficina y extensión"} text={field(TelefonoOficina + " EXT " + ExtensionTelefonoOficina)} width={100} />
          <TextPdf title={"Domiclio del empleo, cargo o comisión"} text={field(parseInt(EsEnMexico == 1) ? "En Mexico" : "En el extranjero")} width={100} />
-         <DatosDomicilio  key={'datos empleo'} entidades={entidades} paises={paises} data={data} municipios={municipios} testada={false}/>
+         <DatosDomicilio key={"datos empleo"} entidades={entidades} paises={paises} data={data} municipios={municipios} testada={false} />
          <TextPdf title={"Aclaraciones"} text={field(Aclaraciones)} width={100} />
-
-         
       </>
    );
 };

@@ -1,4 +1,4 @@
-import { testField, field, testArrayField, arrayField } from "../../funciones/Funciones";
+import { testField, field, testArrayField, arrayField, vacio } from "../../funciones/Funciones";
 import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../../Reusables/pdf/PdfDeclaracion";
 import { useEffect, useState } from "react";
 import { Ngif } from "../../../Reusables/conditionals/Ngif";
@@ -8,24 +8,24 @@ export const DatosDomicilio = ({ data = [], testada = false, municipios = [], en
    const [entidad, setEntidad] = useState();
    const [pais, setPais] = useState();
    const {
-      Aclaraciones,
-      Calle,
-      CiudadLocalidad,
-      CodigoPostal,
-      ColoniaLocalidad,
-      EsActivo,
-      EsEnMexico,
-      EstadoProvincia,
-      FechaRegistro,
-      Id_DomicilioDeclarante,
-      Id_EntidadFederativa,
-      Id_MunicipioAlcaldia,
-      Id_Pais,
-      Id_SituacionPatrimonial,
+      Aclaraciones = vacio(),
+      Calle = vacio(),
+      CiudadLocalidad = vacio(),
+      CodigoPostal = vacio(),
+      ColoniaLocalidad = vacio(),
+      EsActivo = vacio(),
+      EsEnMexico = vacio(),
+      EstadoProvincia = vacio(),
+      FechaRegistro = vacio(),
+      Id_DomicilioDeclarante = vacio(),
+      Id_EntidadFederativa = vacio(),
+      Id_MunicipioAlcaldia = vacio(),
+      Id_Pais = vacio(),
+      Id_SituacionPatrimonial = vacio(),
 
-      NumeroExterior,
-      NumeroInterior
-   } = data[0];
+      NumeroExterior = vacio(),
+      NumeroInterior = vacio()
+   } = data[0] || {};
    useEffect(() => {
       setMunicipio(testArrayField(municipios, Id_MunicipioAlcaldia, testada));
       setEntidad(testArrayField(entidades, Id_EntidadFederativa, testada));

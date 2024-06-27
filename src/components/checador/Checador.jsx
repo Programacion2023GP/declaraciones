@@ -23,6 +23,7 @@ import { ServidorPublico } from "./hojas/ServidorPublico";
 import { AvisoPrivacidad } from "./hojas/avisoprivacidad/AvisoPrivacidad";
 import { Notas } from "./hojas/notas/Notas";
 import { BienesInmuebles } from "./hojas/BienesInmuebles";
+import { Vehiculos } from "./hojas/Vehiculos";
 
 export const Checador = ({}) => {
    useEffect(() => {
@@ -45,7 +46,13 @@ export const Checador = ({}) => {
       instrumentos,
       bienenAjenacion,
       inmuebles,
-      titular
+      titular,
+      adquisicion,
+      pago,
+      monedas,
+      motivobaja,
+      titularVehiculos,
+      vehiculos
    } = Request({
       peticiones: [
          "estadocivil",
@@ -63,7 +70,13 @@ export const Checador = ({}) => {
          "instrumentos",
          "bienenAjenacion",
          "inmuebles",
-         "titular"
+         "titular",
+         "adquisicion",
+         "pago",
+         "monedas",
+         "motivobaja",
+         "titularVehiculos",
+         "vehiculos"
       ]
    });
 
@@ -80,6 +93,7 @@ export const Checador = ({}) => {
    const [ingresosNetos, setIngresosNetos] = useState([]);
    const [servidorPublico, setServidorPublico] = useState([]);
    const [bienesInmuebles, setBienesInmuebles] = useState([]);
+   const [tpVehiculos, setTpVehiculos] = useState([]);
 
    const [message, setMessage] = useState();
    const [loadingMessage, setLoadingMessage] = useState(null);
@@ -120,7 +134,13 @@ export const Checador = ({}) => {
          instrumentos,
          bienenAjenacion,
          inmuebles,
-         titular
+         titular,
+         adquisicion,
+         pago,
+         monedas,
+         motivobaja,
+         titularVehiculos,
+         vehiculos
       ]);
    }, [
       estadocivil,
@@ -138,7 +158,13 @@ export const Checador = ({}) => {
       instrumentos,
       bienenAjenacion,
       inmuebles,
-      titular
+      titular,
+      adquisicion,
+      pago,
+      monedas,
+      motivobaja,
+      titularVehiculos,
+      vehiculos
    ]);
    const init = async () => {
       setLoading(true);
@@ -198,38 +224,43 @@ export const Checador = ({}) => {
          setMessage("Datos empleos cargo Comisión");
          setDatosEmpleos(await GetAxios(`datoscargoscomision/index/${row.Folio}`));
 
+         setPass(5);
          setMessage("Experiencia Laboral");
          setExperienciaLaboral(await GetAxios(`experiencialaboral/index/${row.Folio}`));
          await delay(500); // Esperar medio segundo nuevamente
-         setPass(5);
          if (page > 6) {
+            setPass(6);
             setMessage("Datos de la pareja");
             setDatosPareja(await GetAxios(`datospareja/index/${row.Folio}`));
             await delay(500); // Esperar medio segundo nuevamente
-            setPass(6);
 
+            setPass(7);
             setMessage("Datos de los dependientes economicos");
             setDatosDependienteEconomicos(await GetAxios(`dependienteseconomicos/index/${row.Folio}`));
             await delay(500); // Esperar medio segundo nuevamente
-            setPass(7);
          }
 
+         setPass(page > 6 ? 8 : 6);
          setMessage("ingresos netos");
          setIngresosNetos(await GetAxios(`ingresos/index/${row.Folio}`));
          await delay(500); // Esperar medio segundo nuevamente
-         setPass(page > 6 ? 8 : 6);
 
          if (page == 15) {
+            setPass(9);
             setMessage("servidor publico");
             setServidorPublico(await GetAxios(`servidorpublico/index/${row.Folio}`));
             await delay(500); // Esperar medio segundo nuevamente
-            setPass(9);
          }
          setMessage("bienes inmuebles");
 
+         setPass(page == 15 ? 10 : page > 6 ? 8 : 6);
          setBienesInmuebles(await GetAxios(`bienesinmuebles/index/${row.Folio}`));
          await delay(500); // Esperar medio segundo nuevamente
-         setPass(page > 6 ? 8 : 6);
+
+         setPass(page == 15 ? 11 : page > 6 ? 9 : 7);
+         setMessage("vehiculos");
+         setTpVehiculos(await GetAxios(`vehiculos/index/${row.Folio}`));
+         await delay(500); // Esperar medio segundo nuevamente
       } catch (error) {
          console.error("Error al obtener datos:", error);
       } finally {
@@ -237,8 +268,8 @@ export const Checador = ({}) => {
       }
    };
    useEffect(() => {
-      console.log("bienesInmuebles", bienesInmuebles);
-   }, [selectedDeclaracion, bienesInmuebles]);
+      console.log("tpVehiculos", tpVehiculos);
+   }, [selectedDeclaracion, tpVehiculos]);
    const OpenPdf = () => {
       setModal(false);
       setMessage("");
@@ -392,7 +423,17 @@ export const Checador = ({}) => {
                         <Ngif condition={bienesInmuebles.length > 0}>
                            {bienesInmuebles.map((item, index) => (
                               <PagePdf key={index} title={"BIENES INMUEBLES"}>
-                                 <BienesInmuebles data={[item]} inmuebles={inmuebles} titular={titular} testada={true} />
+                                 <BienesInmuebles
+                                    data={[item]}
+                                    inmuebles={inmuebles}
+                                    titular={titular}
+                                    testada={true}
+                                    adquisicion={adquisicion}
+                                    pago={pago}
+                                    monedas={monedas}
+                                    relacion={relacion}
+                                    motivobaja={motivobaja}
+                                 />
                                  <Notas
                                     testada={true}
                                     message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
@@ -402,6 +443,26 @@ export const Checador = ({}) => {
                         </Ngif>
                         <Ngif condition={bienesInmuebles.length === 0}>
                            <PagePdf title={"BIENES INMUEBLES      (NINGUNO)"}>
+                              <Notas
+                                 testada={true}
+                                 message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                              />
+                           </PagePdf>
+                        </Ngif>
+
+                        <Ngif condition={tpVehiculos.length > 0}>
+                           {tpVehiculos.map((item, index) => (
+                              <PagePdf key={index} title={"VEHÍCULOS"}>
+                                 <Vehiculos data={[item]} testada={false} relacion={relacion} titular={titularVehiculos} vehiculos={vehiculos} />
+                                 <Notas
+                                    testada={true}
+                                    message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                 />
+                              </PagePdf>
+                           ))}
+                        </Ngif>
+                        <Ngif condition={tpVehiculos.length === 0}>
+                           <PagePdf title={"VEHÍCULOS (NINGUNO)"}>
                               <Notas
                                  testada={true}
                                  message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
