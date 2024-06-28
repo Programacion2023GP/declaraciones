@@ -54,8 +54,8 @@ export const DatosPareja = ({ data = [], testada = false, relacion = [] }) => {
          <TextPdf title={"Nombre"} text={testField(Nombre, testada)} />
          <TextPdf title={"Apellido Paterno"} text={testField(PrimerApellido, testada)} />
          <TextPdf title={"Apellido Materno"} text={testField(SegundoApellido, testada)} />
-         <SquardsTextPdf title={"Curp"} text={testField(Curp, testada)} width={60} />
-         <SquardsTextPdf title={"Rfc"} text={testField(RfcPareja, testada)} width={40} />
+         <TextPdf title={"Curp"} text={testField(Curp, testada)} width={50} />
+         <TextPdf title={"Rfc"} text={testField(RfcPareja, testada)} width={50} />
          <TextPdf title={"Fecha de nacimiento"} text={testField(FechaNacimiento, testada)} width={50} />
          <TextPdf title={"Relación con el declarante"} text={testArrayField(relacion, Id_RelacionDeclarante, testada)} width={50} />
          <TextPdf title={"¿Es ciudadano extranjero?"} text={testField(EsCiudadanoExtranjero == 1 ? "Si" : "No", testada)} width={50} />

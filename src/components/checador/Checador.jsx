@@ -24,6 +24,7 @@ import { AvisoPrivacidad } from "./hojas/avisoprivacidad/AvisoPrivacidad";
 import { Notas } from "./hojas/notas/Notas";
 import { BienesInmuebles } from "./hojas/BienesInmuebles";
 import { Vehiculos } from "./hojas/Vehiculos";
+import { BienesMuebles } from "./hojas/BienesMuebles";
 
 export const Checador = ({}) => {
    useEffect(() => {
@@ -52,7 +53,8 @@ export const Checador = ({}) => {
       monedas,
       motivobaja,
       titularVehiculos,
-      vehiculos
+      vehiculos,
+      tiposbienesmuebles
    } = Request({
       peticiones: [
          "estadocivil",
@@ -76,7 +78,8 @@ export const Checador = ({}) => {
          "monedas",
          "motivobaja",
          "titularVehiculos",
-         "vehiculos"
+         "vehiculos",
+         "tiposbienesmuebles"
       ]
    });
 
@@ -94,6 +97,7 @@ export const Checador = ({}) => {
    const [servidorPublico, setServidorPublico] = useState([]);
    const [bienesInmuebles, setBienesInmuebles] = useState([]);
    const [tpVehiculos, setTpVehiculos] = useState([]);
+   const [bienesMuebles, setBienesMuebles] = useState([]);
 
    const [message, setMessage] = useState();
    const [loadingMessage, setLoadingMessage] = useState(null);
@@ -102,7 +106,7 @@ export const Checador = ({}) => {
    const [peticionesLoading, setPeticionesLoading] = useState(false);
    const [selectedDeclaracion, setSelectedDeclaracion] = useState(0);
    const [pages, setPages] = useState(0);
-
+   const [name, setName] = useState(null);
    const existPeticiones = (peticiones) => {
       let count = 0;
       if (peticiones) {
@@ -140,7 +144,8 @@ export const Checador = ({}) => {
          monedas,
          motivobaja,
          titularVehiculos,
-         vehiculos
+         vehiculos,
+         tiposbienesmuebles
       ]);
    }, [
       estadocivil,
@@ -164,7 +169,8 @@ export const Checador = ({}) => {
       monedas,
       motivobaja,
       titularVehiculos,
-      vehiculos
+      vehiculos,
+      tiposbienesmuebles
    ]);
    const init = async () => {
       setLoading(true);
@@ -172,7 +178,8 @@ export const Checador = ({}) => {
       setLoading(false);
    };
    const handelPdf = async (row) => {
-      console.log(row.Declaracion, row.Tipo_declaracion);
+      setName(row.name);
+      // console.log(row.Declaracion, row.Tipo_declaracion);
       const declaracionMapping = {
          Simplificada: {
             Inicial: 4,
@@ -261,6 +268,11 @@ export const Checador = ({}) => {
          setMessage("vehiculos");
          setTpVehiculos(await GetAxios(`vehiculos/index/${row.Folio}`));
          await delay(500); // Esperar medio segundo nuevamente
+
+         setPass(page == 15 ? 12 : page > 6 ? 10 : 8);
+         setMessage("bienes muebles");
+         setBienesMuebles(await GetAxios(`bienesmuebles/index/${row.Folio}`));
+         await delay(500);
       } catch (error) {
          console.error("Error al obtener datos:", error);
       } finally {
@@ -268,8 +280,8 @@ export const Checador = ({}) => {
       }
    };
    useEffect(() => {
-      console.log("tpVehiculos", tpVehiculos);
-   }, [selectedDeclaracion, tpVehiculos]);
+      console.log("bienesMuebles", bienesMuebles);
+   }, [selectedDeclaracion, name, bienesMuebles]);
    const OpenPdf = () => {
       setModal(false);
       setMessage("");
@@ -453,7 +465,16 @@ export const Checador = ({}) => {
                         <Ngif condition={tpVehiculos.length > 0}>
                            {tpVehiculos.map((item, index) => (
                               <PagePdf key={index} title={"VEHÍCULOS"}>
-                                 <Vehiculos data={[item]} testada={false} relacion={relacion} titular={titularVehiculos} vehiculos={vehiculos} />
+                                 <Vehiculos
+                                    data={[item]}
+                                    testada={false}
+                                    relacion={relacion}
+                                    titular={titularVehiculos}
+                                    vehiculos={vehiculos}
+                                    adquisicion={adquisicion}
+                                    pago={pago}
+                                    monedas={monedas}
+                                 />
                                  <Notas
                                     testada={true}
                                     message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
@@ -463,6 +484,44 @@ export const Checador = ({}) => {
                         </Ngif>
                         <Ngif condition={tpVehiculos.length === 0}>
                            <PagePdf title={"VEHÍCULOS (NINGUNO)"}>
+                              <Notas
+                                 testada={true}
+                                 message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                              />
+                           </PagePdf>
+                        </Ngif>
+
+                        <Ngif condition={bienesMuebles.length > 0}>
+                           {bienesMuebles.map((item, index) => (
+                              <PagePdf key={index} title={"BIENES MUEBLES"}>
+                                 <BienesMuebles
+                                    name={name}
+                                    data={[item]}
+                                    testada={false}
+                                    adquisicion={adquisicion}
+                                    bienes={tiposbienesmuebles}
+                                    monedas={monedas}
+                                    motivosBajas={motivobaja}
+                                    pago={pago}
+                                    relacion={relacion}
+                                    titular={titular}
+
+                                    // relacion={relacion}
+                                    // titular={titularVehiculos}
+                                    // vehiculos={vehiculos}
+                                    // adquisicion={adquisicion}
+                                    // pago={pago}
+                                    // monedas={monedas}
+                                 />
+                                 <Notas
+                                    testada={true}
+                                    message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                 />
+                              </PagePdf>
+                           ))}
+                        </Ngif>
+                        <Ngif condition={bienesMuebles.length === 0}>
+                           <PagePdf title={"BIENES MUEBLES (NINGUNO)"}>
                               <Notas
                                  testada={true}
                                  message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
@@ -500,7 +559,7 @@ const ModalComponent = ({ modal, setModal, message, pass, page }) => {
                {message}
             </Typography>
             <Loading /> {/* Indicador de carga circular */}
-            <Typography mt={2} variant="h6" color="initial">
+            <Typography mt={6} variant="h6" color="initial">
                {pass} de {page}
             </Typography>
          </Box>

@@ -11,20 +11,29 @@ export const TipoBien = ({ titular, tiposbienesmuebles, tercero, setTercero, tip
    const dispatch = useDispatch();
    const handleTercero = (name, value) => {
       setTercero(value == 1 ? true : false);
-      dispatch(addValidacionesBienesMuebles({tipo:value == 1 ? "NombreRazon" : "NoNombreRazon"}));
+      dispatch(addValidacionesBienesMuebles({ tipo: value == 1 ? "NombreRazon" : "NoNombreRazon" }));
    };
    const handleTitular = (name, value) => {
       setTiposBienes(value == 6 ? true : false);
-      dispatch(addValidacionesBienesMuebles({tipo:value == 6 ? "OtroTipo" : "NoOtroTipo"}));
+      dispatch(addValidacionesBienesMuebles({ tipo: value == 6 ? "OtroTipo" : "NoOtroTipo" }));
    };
    useEffect(() => {
-      dispatch(addValidacionesBienesMuebles({tipo:tiposBienes == 1 ? "OtroTipo" : "NoOtroTipo"}));
-      dispatch(addValidacionesBienesMuebles({tipo:tercero == 6 ? "NombreRazon" : "NoNombreRazon"}));
-
-
+      dispatch(addValidacionesBienesMuebles({ tipo: tiposBienes == 1 ? "OtroTipo" : "NoOtroTipo" }));
+      dispatch(addValidacionesBienesMuebles({ tipo: tercero == 6 ? "NombreRazon" : "NoNombreRazon" }));
    }, []);
    return (
       <Grid container spacing={1}>
+         <CustomRadio
+            col={12}
+            title={"Tercero"}
+            name={"TR_Id_TipoPersona"}
+            options={[
+               { value: 1, label: "Persona Física" },
+               { value: 2, label: "Persona Moral" }
+            ]}
+         />
+         <Text label={"Nombre del tercero o terceros"} name="TR_NombreRazonSocial" col={6} />
+         <Text label={"Rfc"} name="TR_Rfc" col={6} />
          <AutoComplete col={6} name={"Id_Titular"} label={"Titular del Bien"} options={titular} />
          <AutoComplete col={6} name={"Id_TipoBien"} label={"Tipo de Bien"} options={tiposbienesmuebles} handleGetValue={handleTitular} />
          <Ngif condition={tiposBienes}>
@@ -47,7 +56,7 @@ export const TipoBien = ({ titular, tiposbienesmuebles, tercero, setTercero, tip
             <CustomRadio
                col={12}
                title={"Tipo de persona"}
-               name={"TR_Id_TipoPersona"}
+               name={"T_Id_TipoPersona"}
                options={[
                   { value: 1, label: "Persona Física" },
                   { value: 2, label: "Persona Moral" }
@@ -55,8 +64,8 @@ export const TipoBien = ({ titular, tiposbienesmuebles, tercero, setTercero, tip
                   // Agrega más opciones aquí según sea necesario
                ]}
             />
-            <Text col={12} name={"TR_NombreRazonSocial"} label={"Nombre del tercero o terceros"} />
-            <Text col={12} name={"TR_Rfc"} label={"Rfc"} />
+            <Text col={12} name={"T_NombreRazonSocial"} label={"Nombre del tercero o terceros"} />
+            <Text col={12} name={"T_Rfc"} label={"Rfc"} />
          </Ngif>
       </Grid>
    );

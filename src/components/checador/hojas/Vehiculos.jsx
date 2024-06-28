@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../Reusables/pdf/PdfDeclaracion";
 import { testField, field, vacio, arrayField, testArrayField } from "../funciones/Funciones";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
-export const Vehiculos = ({ data = [], testada = false, titular, vehiculos, relacion }) => {
+export const Vehiculos = ({ data = [], testada = false, titular, vehiculos, relacion, adquisicion = [], pago = [], monedas = [] }) => {
    const {
       Id_Vehiculos = vacio(),
       Id_SituacionPatrimonial = vacio(),
@@ -46,10 +46,10 @@ export const Vehiculos = ({ data = [], testada = false, titular, vehiculos, rela
             title={"Titular del vehículo"}
          />
          <TextPdf
-            text={parseInt(T_Id_TipoPersona) != 0 || parseInt(T_Id_TipoPersona) == 1 ? testField(T_NombreRazonSocial) : field(T_NombreRazonSocial)}
+            text={parseInt(T_Id_TipoPersona) != 0 || parseInt(T_Id_TipoPersona) == 1 ? testField(T_NombreRazonSocial,testada) : field(T_NombreRazonSocial)}
             title={"Transmisor"}
          />
-         <TextPdf text={parseInt(T_Id_TipoPersona) != 0 || parseInt(T_Id_TipoPersona) == 1 ? testField(T_Rfc) : field(T_Rfc)} title={"RFC"} />
+         <TextPdf text={parseInt(T_Id_TipoPersona) != 0 || parseInt(T_Id_TipoPersona) == 1 ? testField(T_Rfc,testada) : field(T_Rfc)} title={"RFC"} />
          <Ngif condition={parseInt(T_Id_TipoPersona) == 1}>
             <TextPdf
                text={parseInt(T_Id_TipoPersona) != 0 ? testArrayField(relacion, Id_Relacion, testada) : arrayField(relacion, Id_Relacion)}
@@ -63,22 +63,43 @@ export const Vehiculos = ({ data = [], testada = false, titular, vehiculos, rela
          </Ngif>
          <TextPdf text={parseInt(T_Id_TipoPersona) != 0 ? testField(Marca, testada) : field(Marca)} title={"Marca"} />
          <TextPdf text={parseInt(T_Id_TipoPersona) != 0 ? testField(Modelo, testada) : field(Modelo)} title={"Modelo"} />
-         <TextPdf text={parseInt(T_Id_TipoPersona) != 0 ? testField(Anio, testada) : field(Anio)} title={"Año"} />
-         <TextPdf text={parseInt(T_Id_TipoPersona) != 0 ? testField(NumeroSerieRegistro, testada) : field(NumeroSerieRegistro)} title={"Número de serie o registro"} />
+         <TextPdf text={parseInt(T_Id_TipoPersona) != 0 ? testField(Anio, testada) : field(Anio)} title={"Año"} width={50} />
+         <TextPdf text={testField(NumeroSerieRegistro, testada)} title={"Número de serie o registro"} width={50} />
          {/* col={12}
             title={"¿Dónde se encuentra registrado?"}
             name={"EsEnMexico"}
             options={[
                { value: 0, label: "En el extranjero" },
                { value: 1, label: "En México" } */}
+         <TextPdf text={testField(parseInt(EsEnMexico) == 1 ? "En méxico" : "En el extranjero", testada)} title={"¿Dónde se encuentra registrado?"} width={100} />
          <TextPdf
-            text={
-               parseInt(T_Id_TipoPersona) != 0
-                  ? testField(parseInt(EsEnMexico) == 1 ? "En méxico" : "En el extranjero")
-                  : field(parseIn(EsEnMexico) == 1 ? "En méxico" : "En el extranjero")
-            }
-            title={"¿Dónde se encuentra registrado?"}
+            text={parseInt(T_Id_TipoPersona) != 0 ? testArrayField(adquisicion, Id_FormaAdquisicion, testada) : arrayField(adquisicion, Id_FormaAdquisicion)}
+            title={`Forma de adquisición`}
+            width={50}
          />
+         <TextPdf
+            text={parseInt(T_Id_TipoPersona) != 0 ? testField(FechaAdquisicion,testada) : field(FechaAdquisicion)}
+            title={"Fecha de adquisición del vehículo"}
+            width={50}
+         />
+
+         <TextPdf
+            text={parseInt(T_Id_TipoPersona) != 0 ? testField(ValorAdquisicion,testada) : field(ValorAdquisicion)}
+            title={"Valor de adquisición del vehículo"}
+            width={100}
+         />
+         <TextPdf
+            text={parseInt(T_Id_TipoPersona) != 0 ? testArrayField(pago, Id_FormaPago, testada) : arrayField(pago, Id_FormaPago)}
+            title={`Forma de pago`}
+            width={100}
+         />
+         <TextPdf
+            text={parseInt(T_Id_TipoPersona) != 0 ? testArrayField(monedas, Id_MonedaValorAdquisicion, testada) : arrayField(monedas, Id_MonedaValorAdquisicion)}
+            title={`Tipo de moneda
+            `}
+            width={100}
+         />
+         <TextPdf title={"Aclaraciones/Observaciones"} width={100} text={testField(Aclaraciones, testada)} />
       </>
    );
 };

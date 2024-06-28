@@ -18,6 +18,11 @@ const initialState ={
     EspecifiqueOtroTipo:"",
 }
 const validationSchema ={
+    TR_NombreRazonSocial: Yup.string().required("La razon social es requerida"),
+    TR_Rfc: Yup.string()
+       .required("El rfc es requerido")
+       .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
+       .length(10, "El rfc debe contar con 10 caracteres"),
     Id_Titular:Yup.number("El formato es incorrecto es numerico").min(1,"El titular es requerido").required("El titular es requerido"),
     Id_TipoBien:Yup.number("El formato es incorrecto es numerico").min(1,"El tipo de bien es requerido").required("El tipo de bien es requerido"),
     DescripcionGeneralBien:Yup.string("El formato es incorrecto").required("La descripción del bien es requerida"),
@@ -29,10 +34,11 @@ const validationSchema ={
     FechaAdquisicion:Yup.date("El formato es incorrecto").required("La fecha es requerida")
 }
 const NombreRazon ={
-    TR_NombreRazonSocial:Yup.string("El formato texto es requerido").required("El Nombre de terceros es requerido"),
-    TR_Id_TipoPersona:Yup.number("El formato es incorrecto es numerico").required("El tipo de persona es requerido"),
 
-    TR_Rfc: Yup.string()
+    T_NombreRazonSocial:Yup.string("El formato texto es requerido").required("El Nombre de terceros es requerido"),
+    T_Id_TipoPersona:Yup.number("El formato es incorrecto es numerico").required("El tipo de persona es requerido"),
+
+    T_Rfc: Yup.string()
     .required("El rfc es requerido")
     .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
     .length(10, "El rfc debe contar con 10 caracteres"),

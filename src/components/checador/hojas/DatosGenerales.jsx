@@ -39,14 +39,14 @@ export const DatosGenerales = ({ data = [], estadocivil, nacionalidades, paises,
          <TextPdf title={"Nombre"} text={field(Nombre, testada)} />
          <TextPdf title={"Apellido Paterno"} text={field(PrimerApellido, testada)} />
          <TextPdf title={"Apellido Materno"} text={field(SegundoApellido, testada)} />
-         <SquardsTextPdf title={"CURP"} text={testada ? "XXXXXXXXXXXXXXXXXX" : Curp} width={60} />
-         <SquardsTextPdf title={"Rfc"} text={testField(Rfc, testada)} width={40} />
-         <SquardsTextPdf title={"Homoclave"} text={testada ? "XXX" : Homoclave} width={33} />
+         <TextPdf title={"CURP"} text={testada ? "XXXXXXXXXXXXXXXXXX" : Curp} width={50} />
+         <TextPdf title={"Rfc"} text={testField(Rfc, testada)} width={50} />
+         <TextPdf title={"Homoclave"} text={testada ? "XXX" : Homoclave} width={50} />
          <TextPdf title={"Correo institucional"} text={testField(CorreoInstitucional, testada)} />
          <TextPdf title={"Correo personal"} text={testField(CorreoPersonal, testada)} />
-         <TextPdf title={"Número telefonico de casa"} text={testField(TelefonoCasa, testada)} width={33} />
-         <TextPdf title={"Número personal"} text={testField(TelefonoCelularPersonal, testada)} width={33} />
-         <TextPdf title={"Situacíon Personal/ Estado civil"} text={testField(civil, testada)} width={33} />
+         <TextPdf title={"Número telefonico de casa"} text={testField(TelefonoCasa, testada)} width={50} />
+         <TextPdf title={"Número personal"} text={testField(TelefonoCelularPersonal, testada)} width={50} />
+         <TextPdf title={"Situacíon Personal/ Estado civil"} text={testField(civil, testada)} width={50} />
          <TextPdf title={"Régimen Matrimonial"} text={testField(regimen, testada)} />
          <TextPdf title={"País de nacimiento"} text={testField(pais, testada)} />
          <TextPdf title={"Nacionalidad"} text={testField(nacionalidad, testada)} />

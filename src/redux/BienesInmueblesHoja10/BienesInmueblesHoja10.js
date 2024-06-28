@@ -10,13 +10,18 @@ const initialState = {
    Id_Relacion: 0,
    Id_ValorConformeA: 0,
    OtroMotivoBaja: "",
-   T_Id_TipoPersona: 1,
-   T_NombreRazonSocial: "",
    Id_FormaAdquisicion: 0,
    Id_FormaPago: 0,
    ValorAdquisicion: 0,
    Id_MonedaValorAdquisicion: 0,
    FechaAdquisicion: "",
+   //#region tercero
+   T_Id_TipoPersona: 1,
+   T_NombreRazonSocial: "",
+   T_Rfc: "",
+   //#region transmisor
+   TR_Id_TipoPersona: 1,
+   TR_NombreRazonSocial: "",
    TR_Rfc: "",
    DatoIdentificacion: "",
    EsEnMexico: 0,
@@ -36,12 +41,18 @@ const initialState = {
 };
 const TerceroAgregado = {
    T_NombreRazonSocial: Yup.string().required("La razon social es requerida"),
-   TR_Rfc: Yup.string()
+   T_Rfc: Yup.string()
       .required("El rfc es requerido")
       .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
       .length(10, "El rfc debe contar con 10 caracteres")
 };
 const validationSchema = {
+   TR_NombreRazonSocial: Yup.string().required("La razon social es requerida"),
+   TR_Rfc: Yup.string()
+      .required("El rfc es requerido")
+      .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
+      .length(10, "El rfc debe contar con 10 caracteres"),
+
    tercero: Yup.number("El formato es numerico").min(0, "Cuenta con tercero es requerido").required("Cuenta con tercero es requerido"),
    Id_TipoInmueble: Yup.number("El formato es numerico").min(1, "El tipo de inmueble es requerido").required("El tipo de inmueble es requerido"),
    Id_Titular: Yup.number("El formato es numerico").min(1, "El titular es requerido").required("El titular es requerido"),

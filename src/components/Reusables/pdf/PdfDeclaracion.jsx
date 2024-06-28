@@ -138,7 +138,7 @@ export const TextPdf = ({ title, text, width }) => {
       wrap={false}
          style={[
             styles.column,
-            { flexBasis: `${width || 30}%` } // Ajustado el ancho predeterminado
+            { flexBasis: `${width || 50}%` } // Ajustado el ancho predeterminado
          ]}
       >
          <Text style={styles.label}>{title}</Text>

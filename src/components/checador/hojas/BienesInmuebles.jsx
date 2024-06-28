@@ -62,6 +62,16 @@ export const BienesInmuebles = ({
    const ids = [2, 5, 6];
    return (
       <>
+          <TextPdf
+               text={ids.includes(parseInt(Id_Titular)) || parseInt(T_Id_TipoPersona) == 1 ? testField(TR_NombreRazonSocial, testada) : field(T_NombreRazonSocial)}
+               title={`Transmisor`}
+               width={50}
+            />
+            <TextPdf
+               text={ids.includes(parseInt(Id_Titular)) || parseInt(T_Id_TipoPersona) == 1 ? testField(TR_Rfc, testada) : field(T_Rfc)}
+               title={`RFC`}
+               width={50}
+            />
          <TextPdf
             text={ids.includes(parseInt(Id_Titular)) ? testArrayField(inmuebles, Id_TipoInmueble, testada) : arrayField(inmuebles, Id_TipoInmueble)}
             title={`Tipo de inmueble`}
