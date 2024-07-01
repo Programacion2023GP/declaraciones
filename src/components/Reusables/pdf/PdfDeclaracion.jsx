@@ -124,7 +124,7 @@ const TablePdf = ({ title, children }) => {
       <>
       <View style={styles.section}>
 
-            <Text style={styles.sectionHeader}>{title}</Text>
+           {title &&  <Text style={styles.sectionHeader}>{title}</Text>}
       </View>
               {children}
       </>

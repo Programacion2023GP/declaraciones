@@ -822,7 +822,6 @@ const DataTable = ({
                                                 color: tdRead === id && line == index && lightBlue[600],
                                                 fontWeight: tdRead === id && line == index && "bold"
                                              }}
-                                           
                                              cols={value}
                                           >
                                              {value}
@@ -842,7 +841,6 @@ const DataTable = ({
                                              color: tdRead === id && line == index && lightBlue[600],
                                              fontWeight: tdRead === id && line == index && "bold"
                                           }}
-                                        
                                           cols={value}
                                        >
                                           {value}
@@ -969,6 +967,7 @@ const DataTable = ({
 };
 
 const MoreButtons = ({ item, moreButtons, checkConditionsMoreButton, buttonsMenu = false }) => {
+   useEffect(() => {}, [moreButtons]);
    return (
       <>
          {moreButtons.map((element, i) => {
@@ -981,30 +980,25 @@ const MoreButtons = ({ item, moreButtons, checkConditionsMoreButton, buttonsMenu
                      <Ngif condition={buttonsMenu}>
                         <MenuItem
                            onClick={() => {
-                              console.log("aqui", item);
                               element.handleButton(item);
                            }}
                         >
-                           <IconButton
-                              key={i} // Añadido un key único para cada elemento del array
-                              aria-label="edit"
-                              color="warning"
-                           >
-                              <element.icon style={{ color: element.color }} />
-                           </IconButton>
+                        Profile
                         </MenuItem>
                      </Ngif>
                      <Ngif condition={!buttonsMenu}>
-                        <IconButton
-                           key={i} // Añadido un key único para cada elemento del array
-                           aria-label="edit"
-                           color="warning"
-                           onClick={() => {
-                              element.handleButton(item);
-                           }}
-                        >
-                           <element.icon style={{ color: element.color }} />
-                        </IconButton>
+                        <Tooltip title={element.toltip} placement="top-start">
+                           <IconButton style={{color:element.color}}
+                              onClick={() => {
+                                 element.handleButton(item);
+                              }}
+                              variant="outlined"
+                            
+                           >
+                              <element.icon />
+                              {element.message}
+                           </IconButton >
+                        </Tooltip>
                      </Ngif>
                   </>
                );

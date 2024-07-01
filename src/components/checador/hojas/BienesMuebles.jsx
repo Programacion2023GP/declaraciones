@@ -44,18 +44,14 @@ export const BienesMuebles = ({ data = [], testada, bienes = [], titular = [], r
          />
          <TextPdf
             title={`Transmisor`}
-            text={
-               ids.includes(parseInt(Id_Titular)) || parseInt(T_Id_TipoPersona) == 1
-                  ? testField(TR_Id_TipoPersona == 1 ? "Si" : "No", testada)
-                  : field(TR_Id_TipoPersona == 1 ? "Si" : "No")
-            }
+            text={ids.includes(parseInt(Id_Titular)) ? testField(TR_Id_TipoPersona == 1 ? "Persona física" : "Persona moral", testada) : field(TR_Id_TipoPersona == 1 ? "Persona física" : "Persona moral")}
          />
          <TextPdf
             title={`Nombre o razón social del transmisor`}
-            text={ids.includes(parseInt(Id_Titular)) || parseInt(T_Id_TipoPersona) == 1 ? testField(TR_NombreRazonSocial, testada) : field(TR_NombreRazonSocial)}
+            text={ids.includes(parseInt(Id_Titular)) ? testField(TR_NombreRazonSocial, testada) : field(TR_NombreRazonSocial)}
          />
-         <TextPdf title={`RFC`}   text={ids.includes(parseInt(Id_Titular))  ? testField(TR_Rfc, testada) : field(TR_Rfc)}/>
-         
+         <TextPdf title={`RFC`} text={ids.includes(parseInt(Id_Titular)) ? testField(TR_Rfc, testada) : field(TR_Rfc)} />
+
          <TextPdf title={`Relación del transmisor del mueble con el titular`} />
          <Ngif condition={parseInt(Copropiedad) == 1}>
             <TextPdf
@@ -73,14 +69,25 @@ export const BienesMuebles = ({ data = [], testada, bienes = [], titular = [], r
          <TextPdf title={`RFC`} /> */}
          </Ngif>
 
-         <TextPdf title={`Descripcion General del Bien`} />
-         <TextPdf title={`Forma de adquisición`} />
-         <TextPdf title={`Fecha de adquisición`} />
-         <TextPdf title={`Valor de adquisición del mueble`} />
-         <TextPdf title={`Forma de pago`} />
-         <TextPdf title={`Tipo de moneda`} />
-         <TextPdf title={`En caso de baja del mueble incluir motivo`} />
-         <TextPdf title={`Aclaraciones/Observaciones`} width={100} />
+         <TextPdf
+            title={`Descripcion General del Bien`}
+            text={ids.includes(parseInt(Id_Titular)) ? testField(DescripcionGeneralBien, testada) : field(DescripcionGeneralBien)}
+         />
+         <TextPdf
+            title={`Forma de adquisición`}
+            text={ids.includes(parseInt(Id_Titular)) ? testArrayField(adquisicion, Id_FormaAdquisicion, testada) : arrayField(adquisicion, Id_FormaAdquisicion)}
+         />
+         <TextPdf
+            title={`Fecha de adquisición`}
+            text={ids.includes(parseInt(Id_Titular)) ? testField(FechaAdquisicion, testada) : field(FechaAdquisicion)}
+         />
+         <TextPdf title={`Valor de adquisición del mueble`} 
+         text={ids.includes(parseInt(Id_Titular)) ? testField(ValorAdquisicion, testada) : field(ValorAdquisicion)}
+         />
+         <TextPdf title={`Forma de pago`}   text={ids.includes(parseInt(Id_Titular)) ? testArrayField(pago, Id_FormaPago, testada) : arrayField(pago, Id_FormaPago)} />
+         <TextPdf title={`Tipo de moneda`}  text={ids.includes(parseInt(Id_Titular)) ? testArrayField(monedas, Id_MonedaValorAdquisicion, testada) : arrayField(monedas, Id_MonedaValorAdquisicion)}/>
+         {/* <TextPdf title={`En caso de baja del mueble incluir motivo`} /> */}
+         <TextPdf title={`Aclaraciones/Observaciones`} text={testField(Aclaraciones,testada)} width={100} />
       </>
    );
 };

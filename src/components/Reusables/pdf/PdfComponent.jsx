@@ -238,7 +238,7 @@ export const stylesPDF = StyleSheet.create({
       width: "70%", // Ajustado al 90% del ancho disponible
       margin: "0 auto", // Para centrar horizontalmente
       minHeight: 675 // Altura mínima de 675px
-   },   
+   },
    column: {
       flexDirection: "column"
    },
@@ -366,17 +366,19 @@ const formDataInitial = {
 };
 
 // Componente que representa el documento OficioPDF
-export const DocumentPDF = ({ children, watermark = "Departamento Emisor", formData = { formDataInitial }, isOfficialDoc = true }) => {
+export const DocumentPDF = ({ children, watermark = "", formData = { formDataInitial }, isOfficialDoc = true }) => {
    return (
       <>
          <Page size="LETTER" style={{ ...stylesPDF.row }} wrap>
             {/* <View style={stylesPDF.pageBody}> */}
-            <View style={stylesPDF.viewBgImage}>
-               <Text style={stylesPDF.header} fixed>
-                  ~ {watermark} ~
-               </Text>
-               {/* {isOfficialDoc && <Image style={stylesPDF.bgImage} src={backgroundImage} />} */}
-            </View>
+            {watermark && (
+               <View style={stylesPDF.viewBgImage}>
+                  <Text style={stylesPDF.header} fixed>
+                     ~ {watermark} ~
+                  </Text>
+                  {/* {isOfficialDoc && <Image style={stylesPDF.bgImage} src={backgroundImage} />} */}
+               </View>
+            )}
             {isOfficialDoc ? (
                <View style={{ ...stylesPDF.viewContainer, ...stylesPDF.viewContainer, ...stylesPDF.messageBody }}>
                   <Image style={stylesPDF.stamp} src={formData.voucher.requesterStamp} />
@@ -456,7 +458,11 @@ export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", waterm
    useLayoutEffect(() => {
       // console.log("estoy en el useLayoutEffect", drivers);
    }, []);
-
+   const handleRender = ({ success }) => {
+      if (success) {
+         alert("render")
+      }
+    };
    return (
       <div>
          <Dialog
@@ -502,7 +508,7 @@ export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", waterm
             </DialogTitle>
             <DialogContent sx={{ pb: 0, height: "90vh" }}>
                <PDFViewer width={"100%"} height={"99%"}>
-                  <Document watermark={watermark} formData={formData} isOfficialDoc={isOfficialDoc}>
+                  <Document  watermark={watermark} formData={formData} isOfficialDoc={isOfficialDoc}>
                      {children}
                   </Document>
                </PDFViewer>
