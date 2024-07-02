@@ -36,7 +36,7 @@ export const CuentasValores = ({ data = [], testada = false, inversiones = [], s
          />
          <TextPdf
             title={"Titular de la inversión, cuenta bancaria y otro tipo de valores"}
-            text={ids.includes(parseInt(Id_Titular)) ? testArrayField(titular, Id_Titular, testada) : arrayField(titular, Id_Titular)}
+            text={ids.includes(parseInt(Id_Titular)) || parseInt(Id_Titular) == 1 ? testArrayField(titular, Id_Titular, testada) : arrayField(titular, Id_Titular, testada)}
          />
          <Ngif condition={parseInt(Id_Titular) == 6}>
             <TextPdf title={"Tercero"} text={testField(parseInt(T_Id_TipoPersona) == 1 ? "Persona física" : "Persona moral", testada)} />
@@ -51,7 +51,7 @@ export const CuentasValores = ({ data = [], testada = false, inversiones = [], s
          <TextPdf title={"Afores y otros"} text={``} /> */}
          <TextPdf
             title={"Número de cuenta, contrato o póliza"}
-            text={ids.includes(parseInt(Id_Titular)) ? testField(NumeroCuentaContrato, testada) : field(NumeroCuentaContrato)}
+            text={ids.includes(parseInt(Id_Titular)) ? testField(NumeroCuentaContrato, testada) : testField(NumeroCuentaContrato, testada)}
          />
          <TextPdf
             title={"¿Dónde se localiza la inversión, cuenta bancaria y otro tipo de valores?"}

@@ -112,7 +112,7 @@ export const Checador = ({}) => {
    const [bienesMuebles, setBienesMuebles] = useState([]);
    const [cuentaValores, setCuentaValores] = useState([]);
    const [adeudos, setAdeudos] = useState([]);
-
+   const [prestamosComodatos, setPrestamosComodatos] = useState([]);
    const [message, setMessage] = useState();
    const [loadingMessage, setLoadingMessage] = useState(null);
    const [modal, setModal] = useState(false);
@@ -297,29 +297,41 @@ export const Checador = ({}) => {
          }
          if (page > 6) {
             setMessage("bienes inmuebles");
-            setPass(page == 15 ? 10 : page > 6 ? 8 : 6);
+            setPass(page == 15 ? 10 : page > 6 ? 9 : 7);
             setBienesInmuebles(await GetAxios(`bienesinmuebles/index/${row.Folio}`));
             await delay(500); // Esperar medio segundo nuevamente
 
-            setPass(page == 15 ? 11 : page > 6 ? 9 : 7);
+            setPass(page == 15 ? 11 : page > 6 ? 10 : 8);
             setMessage("vehiculos");
             setTpVehiculos(await GetAxios(`vehiculos/index/${row.Folio}`));
             await delay(500); // Esperar medio segundo nuevamente
 
-            setPass(page == 15 ? 12 : page > 6 ? 10 : 8);
+            setPass(page == 15 ? 12 : page > 6 ? 11 : 9);
             setMessage("bienes muebles");
             setBienesMuebles(await GetAxios(`bienesmuebles/index/${row.Folio}`));
             await delay(500);
 
-            setPass(page == 15 ? 13 : page > 6 ? 11 : 9);
+            setPass(page == 15 ? 13 : page > 6 ? 12 : 10);
             setMessage("inversiones cuentas valores");
             setCuentaValores(await GetAxios(`inversionescuentas/index/${row.Folio}`));
             await delay(500);
 
-            setPass(page == 15 ? 14 : page > 6 ? 12 : 10);
+            setPass(page == 15 ? 14 : page > 6 ? 13 : 11);
             setMessage("adeudos");
             setAdeudos(await GetAxios(`adeudospasivos/index/${row.Folio}`));
             await delay(500);
+
+
+            setPass(page == 15 ? 15 : page > 6 ? 14 : 12);
+            setMessage("prestamos comodatos");
+            setPrestamosComodatos(await GetAxios(`prestamoscomodatos/index/${row.Folio}`));
+            await delay(500);
+
+
+
+
+
+            
          }
       } catch (error) {
          console.error("Error al obtener datos:", error);
@@ -328,8 +340,8 @@ export const Checador = ({}) => {
       }
    };
    useEffect(() => {
-      console.log("adeudos", adeudos);
-   }, [selectedDeclaracion, name, adeudos]);
+      console.log("prestamosComodatos", prestamosComodatos);
+   }, [selectedDeclaracion, name, prestamosComodatos]);
    const OpenPdf = () => {
       setModal(false);
       setMessage("");
@@ -624,6 +636,33 @@ export const Checador = ({}) => {
                            ))}
                         </Ngif>
                         <Ngif condition={cuentaValores.length === 0}>
+                           <PagePdf title={"ADEUDOS PASIVOS (NINGUNO)"}>
+                              <Notas
+                                 testada={tester}
+                                 message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                              />
+                           </PagePdf>
+                        </Ngif>
+
+                        <Ngif condition={prestamosComodatos.length > 0}>
+                           {prestamosComodatos.map((item, index) => (
+                              <PagePdf key={index} title={"ADEUDOS PASIVOS"}>
+                                 <AdeudosPasivos
+                                    data={[item]}
+                                    testada={false}
+                                    // inversiones={tipoinversion}
+                                    // titular={titular}
+                                    // monedas={monedas}
+                                    // subInversiones={subInversiones}
+                                 />
+                                 <Notas
+                                    testada={tester}
+                                    message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                 />
+                              </PagePdf>
+                           ))}
+                        </Ngif>
+                        <Ngif condition={prestamosComodatos.length === 0}>
                            <PagePdf title={"ADEUDOS PASIVOS (NINGUNO)"}>
                               <Notas
                                  testada={tester}

@@ -102,8 +102,8 @@ conforme a escrituración o contrato`}
          <TextPdf
             text={
                ids.includes(parseInt(Id_Titular))
-                  ? testField(parseInt(TR_Id_TipoPersona) == 1 ? "SI" : "NO", testada)
-                  : field(parseInt(TR_Id_TipoPersona) == 1 ? "SI" : "NO")
+                  ? testField(parseInt(TR_Id_TipoPersona) == 1 ? "Persona física" : "Persona moral", testada)
+                  : field(parseInt(TR_Id_TipoPersona) == 1 ? "Persona física" : "Persona moral")
             }
             title={`Tercero`}
             width={50}
