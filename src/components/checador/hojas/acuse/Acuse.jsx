@@ -1,6 +1,7 @@
 import React from "react";
 import { Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import GomezLogo from "../../../../assets/icons/logo-gpd.png";
+import moment from 'moment-timezone';
 
 // Definir estilos
 const styles = StyleSheet.create({
@@ -9,7 +10,7 @@ const styles = StyleSheet.create({
    },
    header: {
       textAlign: "center",
-      marginBottom: 5
+      marginBottom: 5,
    },
    title: {
       fontSize: 14,
@@ -57,17 +58,34 @@ const styles = StyleSheet.create({
       width: 200,
       height: 100,
       marginBottom: 10
+   },
+   headerRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: 10
+   },
+   folioTextContainer: {
+      flexDirection: "column",
+      alignItems: "flex-end"
+   },
+   folioText: {
+      fontSize: 12,
+      textAlign: "right",
+      marginLeft: 10
    }
 });
 
-export const Acuse = ({ data = [],declaracion="", }) => {
+export const Acuse = ({ data = [], declaracion = "" }) => {
    const {
       Nombre = "",
       PrimerApellido = "",
       SegundoApellido = "",
       Curp = "",
       Rfc = "",
-      FechaRegistro="",
+      FechaRegistro = "",
+      DenominacionCargo = "",
+      AreaAdscripcion = "",
       Homoclave = "",
       CorreoInstitucional = "",
       CorreoPersonal = "",
@@ -77,21 +95,49 @@ export const Acuse = ({ data = [],declaracion="", }) => {
       Aclaraciones = "",
       Id_Nacionalidad = "",
       Id_PaisNacimiento = "",
-      Id_RegimenMatrimonial = ""
+      Id_RegimenMatrimonial = "",
+      Id_SituacionPatrimonial = ""
    } = data[0] || {};
+
+   const formatFecha = (fecha) => {
+      const date = moment.tz(fecha, 'America/Monterrey'); // Asegúrate de que fecha tenga la zona horaria correcta
+      const year = date.format('YYYY');
+      const month = date.format('MM');
+      const day = date.format('DD');
+      const hours = date.format('hh'); // Usa 'hh' para horas en formato 12 horas
+      const minutes = date.format('mm');
+      const seconds = date.format('ss');
+      const ampm = date.format('a'); // 'a' para indicar am/pm
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`;
+    };
+    
+    
+    const hoy = formatFecha(moment()); // Usando moment() para obtener la fecha y hora actual
+    const fechaRegistro = formatFecha(FechaRegistro);
+    
+  
+  
    return (
       <Page style={styles.page}>
          <View style={styles.header}>
-            <Image src={GomezLogo} style={styles.logo} />
+            <View style={styles.headerRow}>
+               <Image src={GomezLogo} style={styles.logo} />
+               <View style={styles.folioTextContainer}>
+                  <Text style={styles.folioText}>FOLIO DE RECEPCIÓN DE INTERNET</Text>
+                  <Text style={styles.folioText}>
+                     {Id_SituacionPatrimonial} - {hoy}
+                  </Text>
+               </View>
+            </View>
          </View>
 
          <View style={styles.title}>
             <Text>DECLARACIÓN DE SITUACIÓN PATRIMONIAL</Text>
          </View>
-
+         {/* Id_SituacionPatrimonial */}
          <View style={styles.section}>
             <Text style={styles.subtitle}>Gómez Palacio, Dgo., 2024-7-1</Text>
-            <Text style={styles.subtitle}>TIPO DE RECEPCIÓN: INTERNET 2024-3-11</Text>
+            <Text style={styles.subtitle}>TIPO DE RECEPCIÓN: INTERNET {fechaRegistro}</Text>
             <Text style={styles.subtitle}>DECLARACIÓN: SITUACIÓN PATRIMONIAL - {declaracion}</Text>
             <Text style={styles.subtitle}>AÑO DECLARADO: {new Date(FechaRegistro).getFullYear()}</Text>
          </View>
@@ -128,9 +174,9 @@ export const Acuse = ({ data = [],declaracion="", }) => {
 
          <View style={styles.section}>
             <Text style={styles.bold}>DEL SERVICIO PÚBLICO:</Text>
-            <Text>Cargo: Síndico Municipal</Text>
+            <Text>Cargo: {DenominacionCargo}</Text>
             <Text>Dependencia: Republicano Ayuntamiento de Gómez Palacio, Durango</Text>
-            <Text>Área de adscripción (Dirección, Departamento o Coordinación): Sindicatura Municipal</Text>
+            <Text>Área de adscripción (Dirección, Departamento o Coordinación): {AreaAdscripcion}</Text>
          </View>
 
          <View style={styles.footer}>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../Reusables/pdf/PdfDeclaracion";
-import { testField, field, testArrayField, arrayField } from "../funciones/Funciones";
+import { testField, field, testArrayField, arrayField, vacio } from "../funciones/Funciones";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 export const BienesMuebles = ({ data = [], testada, bienes = [], titular = [], relacion = [], adquisicion = [], pago = [], monedas = [], motivosBajas = [] }) => {
    const {

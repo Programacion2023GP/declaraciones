@@ -32,6 +32,7 @@ export const Request = ({ peticiones = [] }) => {
    const [municipios, setMunicipios] = useState([]);
    const [instrumentos, SetInstrumentos] = useState([]);
    const [bienenAjenacion, setBieneAjenacion] = useState([]);
+   const [subInversiones, setSubInversiones] = useState([]);
 
    // usuarios form
    const [intengrantes, setIntengrantes] = useState([]);
@@ -43,6 +44,7 @@ export const Request = ({ peticiones = [] }) => {
          peticiones.includes("municipios") && setMunicipios(await GetAxios("municipios/show"));
          peticiones.includes("instrumentos") && SetInstrumentos(await GetAxios("tipoinstrumento/show"));
          peticiones.includes("bienenAjenacion") && setBieneAjenacion(await GetAxios("bienenajenacion/show"));
+         peticiones.includes("subInversiones") && setSubInversiones(await GetAxios("subtiposinversion/showAll"));
 
          peticiones.includes("inmuebles") && setInmuebles(await GetAxios("tipoinmueble/show"));
          peticiones.includes("titular") && setTitular(await GetAxios("titularbien/show"));
@@ -111,6 +113,7 @@ export const Request = ({ peticiones = [] }) => {
       adscripcion,
       municipios,
       instrumentos,
-      bienenAjenacion
+      bienenAjenacion,
+      subInversiones
    };
 };

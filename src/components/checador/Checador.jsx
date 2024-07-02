@@ -29,6 +29,8 @@ import Print from "@mui/icons-material/LocalPrintshopRounded";
 import PrintTest from "@mui/icons-material/LocalPrintshopTwoTone";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import { Acuse } from "./hojas/acuse/Acuse";
+import { CuentasValores } from "./hojas/CuentasValores";
+import { AdeudosPasivos } from "./hojas/AdeudosPasivos";
 // Acuse
 export const Checador = ({}) => {
    useEffect(() => {
@@ -58,9 +60,13 @@ export const Checador = ({}) => {
       motivobaja,
       titularVehiculos,
       vehiculos,
-      tiposbienesmuebles
+      tiposbienesmuebles,
+      tipoinversion,
+      subInversiones,
+      tipoAdeudos
    } = Request({
       peticiones: [
+         "tipoAdeudos",
          "estadocivil",
          "regimenes",
          "paises",
@@ -83,7 +89,9 @@ export const Checador = ({}) => {
          "motivobaja",
          "titularVehiculos",
          "vehiculos",
-         "tiposbienesmuebles"
+         "tiposbienesmuebles",
+         "tipoinversion",
+         "subInversiones"
       ]
    });
 
@@ -102,6 +110,8 @@ export const Checador = ({}) => {
    const [bienesInmuebles, setBienesInmuebles] = useState([]);
    const [tpVehiculos, setTpVehiculos] = useState([]);
    const [bienesMuebles, setBienesMuebles] = useState([]);
+   const [cuentaValores, setCuentaValores] = useState([]);
+   const [adeudos, setAdeudos] = useState([]);
 
    const [message, setMessage] = useState();
    const [loadingMessage, setLoadingMessage] = useState(null);
@@ -112,7 +122,7 @@ export const Checador = ({}) => {
    const [pages, setPages] = useState(0);
    const [name, setName] = useState(null);
    const [tester, setTexter] = useState(false);
-   const [acuse,setAcuse] = useState(false);
+   const [acuse, setAcuse] = useState(false);
    const [tpDeclaracion, setTtpDeclaracion] = useState(null);
    const existPeticiones = (peticiones) => {
       let count = 0;
@@ -152,7 +162,10 @@ export const Checador = ({}) => {
          motivobaja,
          titularVehiculos,
          vehiculos,
-         tiposbienesmuebles
+         tiposbienesmuebles,
+         tipoinversion,
+         subInversiones,
+         tipoAdeudos
       ]);
    }, [
       estadocivil,
@@ -177,7 +190,10 @@ export const Checador = ({}) => {
       motivobaja,
       titularVehiculos,
       vehiculos,
-      tiposbienesmuebles
+      tiposbienesmuebles,
+      tipoinversion,
+      subInversiones,
+      tipoAdeudos
    ]);
    const init = async () => {
       setLoading(true);
@@ -193,10 +209,10 @@ export const Checador = ({}) => {
       handelPdf(row);
    };
    const handleAcuse = async (row) => {
-      setDatosGenerales(await GetAxios(`datosgenerales/index/${row.Folio}`));
-      setTtpDeclaracion(row.Tipo_declaracion)
+      setDatosGenerales(await GetAxios(`datosgenerales/acuse/${row.Folio}`));
+      setTtpDeclaracion(row.Tipo_declaracion);
       setAcuse(true);
-   }
+   };
 
    const handelPdf = async (row) => {
       setName(row.name);
@@ -293,8 +309,18 @@ export const Checador = ({}) => {
             setPass(page == 15 ? 12 : page > 6 ? 10 : 8);
             setMessage("bienes muebles");
             setBienesMuebles(await GetAxios(`bienesmuebles/index/${row.Folio}`));
+            await delay(500);
+
+            setPass(page == 15 ? 13 : page > 6 ? 11 : 9);
+            setMessage("inversiones cuentas valores");
+            setCuentaValores(await GetAxios(`inversionescuentas/index/${row.Folio}`));
+            await delay(500);
+
+            setPass(page == 15 ? 14 : page > 6 ? 12 : 10);
+            setMessage("adeudos");
+            setAdeudos(await GetAxios(`adeudospasivos/index/${row.Folio}`));
+            await delay(500);
          }
-         await delay(500);
       } catch (error) {
          console.error("Error al obtener datos:", error);
       } finally {
@@ -302,8 +328,8 @@ export const Checador = ({}) => {
       }
    };
    useEffect(() => {
-      console.log("bienesMuebles", bienesMuebles);
-   }, [selectedDeclaracion, name, bienesMuebles]);
+      console.log("adeudos", adeudos);
+   }, [selectedDeclaracion, name, adeudos]);
    const OpenPdf = () => {
       setModal(false);
       setMessage("");
@@ -363,9 +389,9 @@ export const Checador = ({}) => {
                </Box>
             </Card>
 
-               <PdfDeclaracion title={"ACUSE"} open={acuse} setOpen={setAcuse} formTitle={"ACUSE"}>
-                     <Acuse data={datosGenerales} declaracion={tpDeclaracion} />
-               </PdfDeclaracion>
+            <PdfDeclaracion title={"ACUSE"} open={acuse} setOpen={setAcuse} formTitle={"ACUSE"}>
+               <Acuse data={datosGenerales} declaracion={tpDeclaracion} />
+            </PdfDeclaracion>
 
             {loadingMessage != null ? (
                !loadingMessage && peticionesLoading ? (
@@ -535,13 +561,6 @@ export const Checador = ({}) => {
                                     pago={pago}
                                     relacion={relacion}
                                     titular={titular}
-
-                                    // relacion={relacion}
-                                    // titular={titularVehiculos}
-                                    // vehiculos={vehiculos}
-                                    // adquisicion={adquisicion}
-                                    // pago={pago}
-                                    // monedas={monedas}
                                  />
                                  <Notas
                                     testada={tester}
@@ -552,6 +571,60 @@ export const Checador = ({}) => {
                         </Ngif>
                         <Ngif condition={bienesMuebles.length === 0}>
                            <PagePdf title={"BIENES MUEBLES (NINGUNO)"}>
+                              <Notas
+                                 testada={tester}
+                                 message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                              />
+                           </PagePdf>
+                        </Ngif>
+
+                        <Ngif condition={cuentaValores.length > 0}>
+                           {cuentaValores.map((item, index) => (
+                              <PagePdf key={index} title={"INVERSIONES, CUENTAS BANCARIAS Y OTRO TIPO DE VALORES / ACTIVOS"}>
+                                 <CuentasValores
+                                    data={[item]}
+                                    testada={false}
+                                    inversiones={tipoinversion}
+                                    titular={titular}
+                                    monedas={monedas}
+                                    subInversiones={subInversiones}
+                                 />
+                                 <Notas
+                                    testada={tester}
+                                    message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                 />
+                              </PagePdf>
+                           ))}
+                        </Ngif>
+                        <Ngif condition={cuentaValores.length === 0}>
+                           <PagePdf title={"INVERSIONES, CUENTAS BANCARIAS Y OTRO TIPO DE VALORES / ACTIVOS (NINGUNO)"}>
+                              <Notas
+                                 testada={tester}
+                                 message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                              />
+                           </PagePdf>
+                        </Ngif>
+
+                        <Ngif condition={cuentaValores.length > 0}>
+                           {cuentaValores.map((item, index) => (
+                              <PagePdf key={index} title={"ADEUDOS PASIVOS"}>
+                                 <AdeudosPasivos
+                                    data={[item]}
+                                    testada={false}
+                                    // inversiones={tipoinversion}
+                                    // titular={titular}
+                                    // monedas={monedas}
+                                    // subInversiones={subInversiones}
+                                 />
+                                 <Notas
+                                    testada={tester}
+                                    message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                 />
+                              </PagePdf>
+                           ))}
+                        </Ngif>
+                        <Ngif condition={cuentaValores.length === 0}>
+                           <PagePdf title={"ADEUDOS PASIVOS (NINGUNO)"}>
                               <Notas
                                  testada={tester}
                                  message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}

@@ -52,9 +52,7 @@ export const InversionesCuentasValores = ({ loading, data, next, previous, title
             setDatasTable([]);
             // setUpdate(true);
             data.forEach((values, index) => {
-               console.log('====================================');
-               console.log(values);
-               console.log('====================================');
+            
                delete values.Id_InversionesCuentasValores;
                addDataTableModified(values, index);
             });
