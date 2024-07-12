@@ -57,20 +57,8 @@ export const ExperienciaLaboral = ({ data = [], ambitopublico }) => {
          </Ngif>
          <TextPdf title={"Fecha de ingreso"} text={field(FechaIngreso)} width={50} />
          <TextPdf title={"Fecha de egreso "} text={field(FechaEngreso)} width={50} />
-         <TextPdf
-            title={"Lugar donde se ubica"}
-            text={arrayField(
-               [
-                  { value: 1, label: "Si" },
-                  { value: 0, label: "No" }
-               ],
-               FueEnMexico
-            )}
-            width={50}
-         />
+         <TextPdf title={"Lugar donde se ubica"} text={field(parseInt(FueEnMexico) == 1 ? "México" : "En el extranjero")} width={50} />
          <TextPdf title={"Aclaraciones"} text={field(Aclaraciones)} width={100} />
-
-
       </>
    );
 };

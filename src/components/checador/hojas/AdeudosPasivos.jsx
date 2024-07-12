@@ -2,7 +2,15 @@ import { useEffect, useState } from "react";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../Reusables/pdf/PdfDeclaracion";
 import { testField, field, testArrayField, arrayField, vacio } from "../funciones/Funciones";
-export const AdeudosPasivos = ({ data = [], testada = false, adeudos = [], titular,monedas=[] }) => {
+export const AdeudosPasivos = ({ data = [], testada = false, adeudos = [], titular, monedas = [] }) => {
+   useEffect(() => {
+      // console.log("====================================");
+      // console.log(monedas, Id_SaldoInsolutoSituacionActual);
+      // console.log("====================================");
+      // console.log("====================================");
+      // console.log(adeudos, Id_TipoAdeudo);
+      // console.log("====================================");
+   }, []);
    const {
       Id_AdeudosPasivos = vacio(),
       Id_SituacionPatrimonial = vacio(),
@@ -35,10 +43,12 @@ export const AdeudosPasivos = ({ data = [], testada = false, adeudos = [], titul
             title={`Titular del adeudo`}
             text={ids.includes(parseInt(Id_Titular)) ? testArrayField(titular, Id_Titular, testada) : arrayField(titular, Id_Titular)}
          />
-         <TextPdf
-            title={`Tipo de adeudo`}
-            text={ids.includes(parseInt(Id_Titular)) ? testArrayField(adeudos, Id_TipoAdeudo, testada) : arrayField(adeudos, Id_TipoAdeudo)}
-         />
+         {parseInt(Id_TipoAdeudo) > 0 && (
+            <TextPdf
+               title={`Tipo de adeudo`}
+               text={ids.includes(parseInt(Id_Titular)) ? testArrayField(adeudos, Id_TipoAdeudo, testada) : arrayField(adeudos, Id_TipoAdeudo)}
+            />
+         )}
          <TextPdf
             title={`Número de cuenta o contrato`}
             text={ids.includes(parseInt(Id_Titular)) ? testField(NumeroCuentaContrato, testada) : testField(NumeroCuentaContrato, testada)}
@@ -50,14 +60,16 @@ export const AdeudosPasivos = ({ data = [], testada = false, adeudos = [], titul
          />
 
          <TextPdf title={`Monto original del adeudo / pasivo`} text={ids.includes(parseInt(Id_Titular)) ? testField(Monto, testada) : field(Monto)} />
-         <TextPdf
-            title={`Tipo de moneda`}
-            text={
-               ids.includes(parseInt(Id_Titular))
-                  ? testArrayField(monedas, Id_SaldoInsolutoSituacionActual, testada)
-                  : arrayField(monedas, Id_SaldoInsolutoSituacionActual)
-            }
-         />
+         {parseInt(Id_SaldoInsolutoSituacionActual) > 0 && (
+            <TextPdf
+               title={`Tipo de moneda`}
+               text={
+                  ids.includes(parseInt(Id_Titular))
+                     ? testArrayField(monedas, Id_SaldoInsolutoSituacionActual, testada)
+                     : arrayField(monedas, Id_SaldoInsolutoSituacionActual)
+               }
+            />
+         )}
          <TextPdf
             title={`Saldo insoluto`}
             text={ids.includes(parseInt(Id_Titular)) ? testField(SaldoInsolutoSituacionActual, testada) : testField(SaldoInsolutoSituacionActual, testada)}

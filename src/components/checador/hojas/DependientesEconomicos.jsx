@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../Reusables/pdf/PdfDeclaracion";
 import { testField, field, testArrayField, arrayField, vacio } from "../funciones/Funciones";
-export const DependientesEconomicos = ({ data = {}, testada = false,relacion=[] }) => {
-    
+export const DependientesEconomicos = ({ data = {}, testada = false, relacion = [] }) => {
    const {
       Id_DatosDependienteEconomico = vacio(),
       Id_SituacionPatrimonial = vacio(),
@@ -53,31 +52,34 @@ export const DependientesEconomicos = ({ data = {}, testada = false,relacion=[] 
          <TextPdf title={"Nombre"} text={testField(Nombre, testada)} />
          <TextPdf title={"Apellido Paterno"} text={testField(PrimerApellido, testada)} />
          <TextPdf title={"Apellido Materno"} text={testField(SegundoApellido, testada)} />
-         <SquardsTextPdf title={"Curp"} text={testField(Curp, testada)} width={60} />
-         <SquardsTextPdf title={"Rfc"} text={testField(RfcDependiente, testada)} width={40} />
-         <TextPdf title={"Fecha de nacimiento"} text={testField(FechaNacimiento,testada)} width={50} />
+         <TextPdf title={"Curp"} text={testField(Curp, testada)} width={50} />
+         <TextPdf title={"Rfc"} text={testField(RfcDependiente, testada)} width={50} />
+         <TextPdf title={"Fecha de nacimiento"} text={testField(FechaNacimiento, testada)} width={50} />
          <TextPdf title={"Parentesco / relación con el declarante"} text={testArrayField(relacion, Id_ParentescoRelacion, testada)} width={50} />
-         <TextPdf title={"¿Es ciudadano extranjero?"} text={testField((EsCiudadanoExtranjero == 1 ? "Si" : "No"),testada)} width={50} />
+         <TextPdf title={"¿Es ciudadano extranjero?"} text={testField(EsCiudadanoExtranjero == 1 ? "Si" : "No", testada)} width={50} />
          {/* <TextPdf title={"¿Es dependiente economico?"} text={testField(EsDependienteEconomico == 1 ? "Si" : "No")} width={50} /> */}
-         <TextPdf title={"¿Habita en el domicilio del declarante?"} text={testField((HabitaDomicilioDeclarante == 1 ? "Si" : "No"),testada)} width={50} />
-         <TextPdf title={"Lugar donde recide"} text={testField((EsMexico == 1 ? "México" : "Extranjero"),testada)} width={50} />
+         <TextPdf title={"¿Habita en el domicilio del declarante?"} text={testField(HabitaDomicilioDeclarante == 1 ? "Si" : "No", testada)} width={50} />
+         <TextPdf title={"Lugar donde recide"} text={testField(EsMexico == 1 ? "México" : "Extranjero", testada)} width={50} />
          {/* <TextPdf title={"Lugar donde recide"} text={testField(EsMexico == 1 ? "México" : "Extranjero")} width={50} /> */}
          {/* <TextPdf title={"Domicilio de la pareja"} text={testField(EsMexico == 1 ? "México" : "Extranjero")} width={50} /> */}
-         <TextPdf
-            title={"Actividad Laboral"}
-            text={testArrayField(
-               [
-                  { value: 1, label: "Privado" },
-                  { value: 2, label: "Público" },
-                  { value: 3, label: "Ninguno" },
-                  { value: 4, label: "Otro" }
-               ],
-               Id_ActividadLaboral,
-               testada
-            )}
-            width={50}
-         />
-         <TextPdf title={"Aclaraciones/Observaciones"} text={testField(Aclaraciones,testada)} width={100} />
+         {parseInt(Id_ActividadLaboral) > 0 && parseInt(Id_ActividadLaboral) < 5 && (
+            <TextPdf
+               title="Actividad Laboral"
+               text={testArrayField(
+                  [
+                     { value: 1, label: "Privado" },
+                     { value: 2, label: "Público" },
+                     { value: 3, label: "Ninguno" },
+                     { value: 4, label: "Otro" }
+                  ],
+                  Id_ActividadLaboral,
+                  testada
+               )}
+               width={50}
+            />
+         )}
+
+         <TextPdf title={"Aclaraciones/Observaciones"} text={testField(Aclaraciones, testada)} width={100} />
       </>
    );
 };

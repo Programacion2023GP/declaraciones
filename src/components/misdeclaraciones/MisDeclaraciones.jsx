@@ -5,7 +5,7 @@ import { Request } from "../Reusables/request/Request";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Axios, GetAxios } from "../../services/services";
 import { Error, Success } from "../../toasts/toast";
-export const MisDeclaraciones = ({}) => {
+ const MisDeclaraciones = ({}) => {
    useEffect(() => {
       init();
    }, []);
@@ -109,3 +109,4 @@ export const MisDeclaraciones = ({}) => {
       </>
    );
 };
+export default MisDeclaraciones;

@@ -5,7 +5,7 @@ import LogoBlue from "../../assets/images/logo_blue.svg";
 import LogoWhite from "../../assets/images/logo_white.svg";
 import Gomez from "../../assets/icons/logo-gpd.png";
 import { MdOutlineClose } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Sidebar.scss";
 import { SidebarContext } from "../../context/SidebarContext";
 import { Items } from "./items/Items";
@@ -312,3 +312,5 @@ const RecursivoMenu = ({ array, i, handleSelect }) => {
 };
 
 export default Sidebar;
+
+

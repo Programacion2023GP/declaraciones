@@ -148,7 +148,7 @@ export const AutoComplete = ({
          options = [];
          setLoader(false);
       }
-   }, [options, formik.values[name]]);
+   }, [options, formik.values[name],label]);
 
    // useEffect(()=>{
    //    formik.setFieldValue(name, 0);

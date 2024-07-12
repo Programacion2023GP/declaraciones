@@ -3,7 +3,7 @@ import { Catalogo } from "../../Reusables/catalogo/Catalogo";
 import { useParams } from "react-router-dom";
 import { Create } from "../create/Create";
 import { Request } from "../../Reusables/request/Request";
-export const ComponentCatalogo = ({ pagina }) => {
+const ComponentCatalogo = ({ pagina }) => {
    let { tipoinversion, roles, intengrantes, adscripcion } = Request({ peticiones: ["tipoinversion", "roles", "intengrantes", "adscripcion"] });
    const [children, setChildren] = useState(<></>);
    const { catalogo } = useParams();
@@ -68,3 +68,5 @@ export const ComponentCatalogo = ({ pagina }) => {
       </Catalogo>
    );
 };
+
+export default ComponentCatalogo;

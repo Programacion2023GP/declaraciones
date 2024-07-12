@@ -74,10 +74,10 @@ export const DatosEmpleoCargo = ({ data = [], testada = false, nivelOrdenGobiern
          <TextPdf title={"Ámbito público"} text={ambitoPublico.filter((item) => item.id === parseInt(Id_AmbitoPublico))[0]?.text} />
          <TextPdf title={"Nombre del ente público"} text={field(NombreEntePublico)} />
          <TextPdf title={"Área de adscripción"} text={field(AreaAdscripcion)} width={50} />
-         <TextPdf title={"Empleo, cargo o comisión"} text={field(EmpleoCargoComision)} width={50} />
+         <TextPdf title={"Empleo, cargo o comisión"} text={field(EmpleoCargoComision)} width={100} />
          <TextPdf title={"¿Está contratado por honorarios?"} text={field(parseInt(ContratadoPorHonorarios) == 1 ? "Si" : "No")} width={50} />
 
-         <TextPdf title={"Empleo, cargo o comisión"} text={field(NivelEmpleoCargoComision)} width={50} />
+         <TextPdf title={"Nivel del empleo, cargo o comision"} text={field(NivelEmpleoCargoComision)} width={50} />
          <TextPdf title={"Función principal"} text={field(FuncionPrincipal)} width={100} />
 
          <TextPdf title={"Fecha de toma de posesion del empleo,cargo o comisión"} text={field(FechaTomaConclusionPosesion)} width={100} />

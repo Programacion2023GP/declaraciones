@@ -32,6 +32,8 @@ import { isNumber } from "highcharts";
 import { Ngif } from "../Reusables/conditionals/Ngif";
 import Loading from "../Reusables/loading/Loading";
 import { Info } from "../../toasts/toast";
+import { ParticipacionEmpresas } from "../interes/components/participacionempresas/ParticipacionEmpresas";
+import { ParticipacionTomaDecisiones } from "../interes/components/participaciontomadecisiones/ParticipacionTomaDecisiones";
 
 // Importa aquí los componentes correspondientes a cada paso
 
@@ -43,8 +45,8 @@ const ComponentDeclaraciones = () => {
 
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja : 12); // cambia de hoja
-   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja : 12); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
+   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja : 16); // cambia de hoja
+   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja : 16); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
    const dispatch = useDispatch();
    React.useEffect(() => {
       dispatch(foundLocalization());
@@ -174,6 +176,25 @@ const ComponentDeclaraciones = () => {
          component: <PrestamosComodatos next={handleExit} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
          exist: [1, 2, 3],
          url: "prestamoscomodatos"
+      },
+      {
+         label: "Participación en empresas, sociedades o asociaciones (Hasta los 2 últimos años)",
+         component: (
+            <ParticipacionEmpresas
+               next={handleExit}
+               previous={handleBack}
+               title={`Participación en empresas, sociedades o asociaciones (Hasta los 2 últimos años)`}
+               setSend={setSend}
+            />
+         ),
+         exist: [2],
+         url: ""
+      },
+      {
+         label: "Participa en la toma de decisiones de alguna de estas instituciones? (Hasta los 2 últimos años)",
+         component: <ParticipacionTomaDecisiones next={handleExit} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         exist: [2],
+         url: ""
       }
 
       // {
@@ -245,7 +266,7 @@ const ComponentDeclaraciones = () => {
             if (parseInt(situacionPatrimonial.Id_SituacionPatrimonial) > 0) {
                const response = await GetAxios(`${url}/index/${parseInt(situacionPatrimonial.Id_SituacionPatrimonial)}`);
                setupdate(false);
-             
+
                if (response.length > 0) {
                   console.log(response);
                   Info("Cargando informacion de tu anterior declaración");
@@ -302,7 +323,7 @@ const ComponentDeclaraciones = () => {
                      padding: "20px 0",
                      boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
                      marginBottom: "20px",
-                     minHeight:"20rem",
+                     minHeight: "20rem"
                   }}
                >
                   {/* Título del paso con estilos mejorados */}

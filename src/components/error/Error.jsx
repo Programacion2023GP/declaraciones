@@ -2,7 +2,7 @@ import "./Error.scss";
 import svg from "../../assets/404.svg";
 import { Box, Button } from "@mui/material";
 
-export const Error = ({}) => {
+ const Error = ({}) => {
    return (
       <>
          <div className="cont-404">
@@ -14,3 +14,4 @@ export const Error = ({}) => {
       </>
    );
 };
+export default Error;

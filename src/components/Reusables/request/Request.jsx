@@ -33,6 +33,9 @@ export const Request = ({ peticiones = [] }) => {
    const [instrumentos, SetInstrumentos] = useState([]);
    const [bienenAjenacion, setBieneAjenacion] = useState([]);
    const [subInversiones, setSubInversiones] = useState([]);
+   //intereses
+   const [tipoParticipacion, setTipoParticipacion] = useState([]);
+   const [sectores, setSectores] = useState([]);
 
    // usuarios form
    const [intengrantes, setIntengrantes] = useState([]);
@@ -41,6 +44,9 @@ export const Request = ({ peticiones = [] }) => {
    const [apartados, setApartados] = useState([]);
    useEffect(() => {
       const responses = async () => {
+         peticiones.includes("sectores") && setSectores(await GetAxios("sector/show"));
+
+         peticiones.includes("tipoParticipacion") && setTipoParticipacion(await GetAxios("tipoparticipacion/show"));
          peticiones.includes("municipios") && setMunicipios(await GetAxios("municipios/show"));
          peticiones.includes("instrumentos") && SetInstrumentos(await GetAxios("tipoinstrumento/show"));
          peticiones.includes("bienenAjenacion") && setBieneAjenacion(await GetAxios("bienenajenacion/show"));
@@ -114,6 +120,8 @@ export const Request = ({ peticiones = [] }) => {
       municipios,
       instrumentos,
       bienenAjenacion,
-      subInversiones
+      subInversiones,
+      tipoParticipacion,
+      sectores
    };
 };

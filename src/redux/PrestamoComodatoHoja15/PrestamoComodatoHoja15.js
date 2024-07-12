@@ -25,7 +25,7 @@ const initialState = {
    RfcTitular:"",
    Id_Relacion:0,
    Aclaraciones:"",
-
+   EsEnMexico:1,
 
 };
 const validationSchema = {
@@ -57,6 +57,7 @@ const inmueble = {
    CiudadLocalidad: Yup.string().required("La colonia localidad es requerida"),
 };
 const vehiculo = {
+   EsEnMexico: Yup.number("Debe ser numerico").required("Es requerido que selecione una opcion"),
    Id_TipoVehiculo: Yup.string("El formato es texto").required("El tipo de vehiculo es requerido"),
    Marca: Yup.string("El formato es texto").required("La marca es requerida"),
    Modelo: Yup.string("El formato es texto").required("El modelo es requerido"),

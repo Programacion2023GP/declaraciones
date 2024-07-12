@@ -57,9 +57,7 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
       }
    }, [data, parentescos]);
    useEffect(()=>{
-      console.log('====================================');
-      console.log("my loading",loading,update);
-      console.log('====================================');
+
    },[loading,update])
    const addDataTableModified = (values, index) => {
       values.id = index;

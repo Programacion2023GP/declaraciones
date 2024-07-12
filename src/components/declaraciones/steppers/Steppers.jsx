@@ -34,7 +34,7 @@ const steps = [
    }
 ];
 
-export const Steppers = () => {
+const Steppers = () => {
    const { checked, selected, checkedPlazo, checkedProtesta, dialog, setDialog, resetStepper } = useStepperContext();
    const [activeStep, setActiveStep] = useState(0);
    const [skipped, setSkipped] = useState(new Set());
@@ -149,3 +149,5 @@ export const Steppers = () => {
       </Box>
    );
 };
+
+export default Steppers;

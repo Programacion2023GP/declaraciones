@@ -1,19 +1,22 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { createBrowserRouter, createHashRouter, RouterProvider } from "react-router-dom";
 import { Header } from "../components/header/Header";
-import { Box, Grid } from "@mui/material";
+import { Backdrop, Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { MenuContext } from "react-pro-sidebar";
 import { useMenuContext } from "../context/MenuContext";
 import TemporaryDrawer from "../components/sidebar/Sidebar";
 import { Inspector } from "../components/Reusables/Inspector/Inspector";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Ngif } from "../components/Reusables/conditionals/Ngif";
 import { useDispatch } from "react-redux";
 import { locationAuth } from "../user/auth/auth";
+import { AnimatePresence, motion } from "framer-motion";
 
 const BaseLayout = () => {
    const location = useLocation();
    const [loading, setLoading] = useState(false);
+   const [exit, setExit] = useState(false);
+
    const dispatch = useDispatch();
    useEffect(() => {
       dispatch(locationAuth());
@@ -41,15 +44,7 @@ const BaseLayout = () => {
                   xs={12}
                   item
                ></Grid>
-               <Grid
-                  item
-                  xs={12}
-                  sm={12}
-                  md={12}
-                  lg={12}
-                  xl={12}
-                  sx={{marginBottom:"3rem"}}
-               >
+               <Grid item xs={12} sm={12} md={12} lg={12} xl={12} sx={{ marginBottom: "3rem" }}>
                   <Header />
                </Grid>
                {open && (
@@ -71,8 +66,31 @@ const BaseLayout = () => {
                      <TemporaryDrawer />
                   </Grid>
                )}
-               <Grid sx={{minHeight:"100vh"}} item xs={12} sm={12} md={open ? 8 : 12} lg={open ? 9 : 12} xl={open ? 10 : 12} >
-                  <Outlet />
+               <Grid sx={{ minHeight: "100vh" }} item xs={12} sm={12} md={open ? 8 : 12} lg={open ? 9 : 12} xl={open ? 10 : 12}>
+                  {/* <Suspense
+                     fallback={
+                        <Backdrop sx={{ color: "#fff", zIndex: (theme) => 1000000 }} open>
+                           <Typography variant="h1" sx={{ color: "#fff" }}>
+                              CARGANDO... <CircularProgress color="inherit" />
+                           </Typography>
+                                
+                        </Backdrop>
+                     }
+                  > */}
+                     {/* <AnimatePresence key={location.pathname}>
+                        {!exit && (
+                           <motion.div
+                              initial={{ opacity: 0, y: -50 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: 50 }}
+                              transition={{ duration: 1.8, easings: ["easeInOut"] }}
+                              className="container"
+                           > */}
+                              <Outlet />
+                           {/* </motion.div>
+                        )}
+                     </AnimatePresence> */}
+                  {/* </Suspense> */}
                </Grid>
             </Grid>
          </Box>

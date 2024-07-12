@@ -31,8 +31,9 @@ import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import { Acuse } from "./hojas/acuse/Acuse";
 import { CuentasValores } from "./hojas/CuentasValores";
 import { AdeudosPasivos } from "./hojas/AdeudosPasivos";
+import { PrestamoComodato } from "./hojas/PrestamoComodato";
 // Acuse
-export const Checador = ({}) => {
+ const Checador = ({}) => {
    useEffect(() => {
       init();
    }, []);
@@ -321,17 +322,10 @@ export const Checador = ({}) => {
             setAdeudos(await GetAxios(`adeudospasivos/index/${row.Folio}`));
             await delay(500);
 
-
             setPass(page == 15 ? 15 : page > 6 ? 14 : 12);
             setMessage("prestamos comodatos");
             setPrestamosComodatos(await GetAxios(`prestamoscomodatos/index/${row.Folio}`));
             await delay(500);
-
-
-
-
-
-            
          }
       } catch (error) {
          console.error("Error al obtener datos:", error);
@@ -535,7 +529,7 @@ export const Checador = ({}) => {
                               <PagePdf key={index} title={"VEHÍCULOS"}>
                                  <Vehiculos
                                     data={[item]}
-                                    testada={false}
+                                    testada={tester}
                                     relacion={relacion}
                                     titular={titularVehiculos}
                                     vehiculos={vehiculos}
@@ -565,7 +559,7 @@ export const Checador = ({}) => {
                                  <BienesMuebles
                                     name={name}
                                     data={[item]}
-                                    testada={false}
+                                    testada={tester}
                                     adquisicion={adquisicion}
                                     bienes={tiposbienesmuebles}
                                     monedas={monedas}
@@ -595,7 +589,7 @@ export const Checador = ({}) => {
                               <PagePdf key={index} title={"INVERSIONES, CUENTAS BANCARIAS Y OTRO TIPO DE VALORES / ACTIVOS"}>
                                  <CuentasValores
                                     data={[item]}
-                                    testada={false}
+                                    testada={tester}
                                     inversiones={tipoinversion}
                                     titular={titular}
                                     monedas={monedas}
@@ -622,7 +616,10 @@ export const Checador = ({}) => {
                               <PagePdf key={index} title={"ADEUDOS PASIVOS"}>
                                  <AdeudosPasivos
                                     data={[item]}
-                                    testada={false}
+                                    titular={titular}
+                                    monedas={monedas}
+                                    adeudos={adeudos}
+                                    testada={tester}
                                     // inversiones={tipoinversion}
                                     // titular={titular}
                                     // monedas={monedas}
@@ -646,9 +643,15 @@ export const Checador = ({}) => {
 
                         <Ngif condition={prestamosComodatos.length > 0}>
                            {prestamosComodatos.map((item, index) => (
-                              <PagePdf key={index} title={"ADEUDOS PASIVOS"}>
-                                 <AdeudosPasivos
+                              <PagePdf key={index} title={"PRESTAMO O COMODATO POR TERCEROS"}>
+                                 <PrestamoComodato
                                     data={[item]}
+                                    municipios={municipios}
+                                    entidades={entidades}
+                                    paises={paises}
+                                    relacion={relacion}
+                                    inmuebles={inmuebles}
+                                    vehiculos={vehiculos}
                                     testada={false}
                                     // inversiones={tipoinversion}
                                     // titular={titular}
@@ -663,7 +666,7 @@ export const Checador = ({}) => {
                            ))}
                         </Ngif>
                         <Ngif condition={prestamosComodatos.length === 0}>
-                           <PagePdf title={"ADEUDOS PASIVOS (NINGUNO)"}>
+                           <PagePdf title={"PRESTAMO O COMODATO POR TERCEROS (NINGUNO)"}>
                               <Notas
                                  testada={tester}
                                  message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
@@ -708,3 +711,5 @@ const ModalComponent = ({ modal, setModal, message, pass, page }) => {
       </Modal>
    );
 };
+
+export default Checador;

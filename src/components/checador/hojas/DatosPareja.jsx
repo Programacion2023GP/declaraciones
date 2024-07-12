@@ -64,21 +64,24 @@ export const DatosPareja = ({ data = [], testada = false, relacion = [] }) => {
          {/* <TextPdf title={"¿Habita en el domicilio del declarante?"} text={testField(EsMexico == 1 ? "México" : "Extranjero")} width={50} /> */}
          <TextPdf title={"Lugar donde recide"} text={testField(EsMexico == 1 ? "México" : "Extranjero", testada)} width={50} />
          {/* <TextPdf title={"Domicilio de la pareja"} text={testField(EsMexico == 1 ? "México" : "Extranjero")} width={50} /> */}
-         <TextPdf
-            title={"Actividad Laboral"}
-            text={testArrayField(
-               [
-                  { value: 1, label: "Privado" },
-                  { value: 2, label: "Público" },
-                  { value: 3, label: "Ninguno" },
-                  { value: 4, label: "Otro" }
-               ],
-               Id_ActividadLaboral,
-               testada
-            )}
-            width={50}
-         />
-         <TextPdf title={"Aclaraciones/Observaciones"} text={testField(Aclaraciones,testada)} width={50} />
+         {parseInt(Id_ActividadLaboral) > 0 && parseInt(Id_ActividadLaboral) < 5 && (
+            <TextPdf
+               title="Actividad Laboral"
+               text={testArrayField(
+                  [
+                     { value: 1, label: "Privado" },
+                     { value: 2, label: "Público" },
+                     { value: 3, label: "Ninguno" },
+                     { value: 4, label: "Otro" }
+                  ],
+                  Id_ActividadLaboral,
+                  testada
+               )}
+               width={50}
+            />
+         )}
+
+         <TextPdf title={"Aclaraciones/Observaciones"} text={testField(Aclaraciones, testada)} width={50} />
       </>
    );
 };

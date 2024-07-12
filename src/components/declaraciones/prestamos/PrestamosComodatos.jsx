@@ -52,8 +52,7 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
       // dispatch(addVehiculosPrestamos())
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.PrestamoComodato.validationSchema), useSelector((state) => state.PrestamoComodato.initialState)]);
-   useEffect(() => {
-   }, [formik.current]);
+   useEffect(() => {}, [formik.current]);
    useEffect(() => {
       if (inmuebles.length > 0 && vehiculos.length > 0) {
          if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
@@ -121,9 +120,7 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
    const deleteRow = (row) => {
       setDatas(datas.filter((element) => element.identificador != row.id));
       setDatasTable(datasTable.filter((element) => element.id != row.id));
-      console.log("====================================");
-      console.log(datas.filter((element) => element.identificador != row.id));
-      console.log("====================================");
+
       Success("Se borro de la tabla");
    };
    const sendData = async () => {
@@ -200,7 +197,7 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm ref={formik} initialValues={dataForm} validationSchema={validationSchema} submit={submit} title={title} >
+            <FormikForm ref={formik} initialValues={dataForm} validationSchema={validationSchema} submit={submit} title={title}>
                <CustomRadio
                   col={12}
                   title={"Tipo de Bien"}
@@ -228,10 +225,21 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
                   <Text col={12} name={"Marca"} label={"Marca"} />
                   <Text col={12} name={"Modelo"} label={"Modelo"} />
                   <AutoComplete col={12} name={"Anio"} label={"Año"} options={yearOptions} />
-                  <Text col={12} name={"NumeroSerieRegistro"} label={"Numero de serie de registro"} />
                   <CustomRadio
                      col={12}
                      title={"¿Dónde se encuentra registrado?"}
+                     name={"EsEnMexico"}
+                     options={[
+                        { value: 1, label: "Mexíco" },
+                        { value: 0, label: "En el extranjero" }
+
+                        // Agrega más opciones aquí según sea necesario
+                     ]}
+                  />
+                  <Text col={12} name={"NumeroSerieRegistro"} label={"Numero de serie de registro"} />
+                  <CustomRadio
+                     col={12}
+                     title={"Dueño o Titular"}
                      name={"Id_TipoDuenoTitular"}
                      options={[
                         { value: 1, label: "Persona Física" },

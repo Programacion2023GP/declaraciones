@@ -15,7 +15,7 @@ import Loading from "../Reusables/loading/Loading";
 import { Opacity } from "@mui/icons-material";
 // import { Card, CardContent, Typography, CardMedia, Button, Box } from '@mui/material';
 
-export const Login = () => {
+ const Login = () => {
    const [messages, setMessages] = useState(false);
    const [loading, setLoading] = useState(false);
    const [loadingPost, setLoadingPost] = useState(false);
@@ -127,3 +127,4 @@ export const Login = () => {
       </Ngif>
    );
 };
+export default Login;
