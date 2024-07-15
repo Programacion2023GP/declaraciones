@@ -41,10 +41,12 @@ export const Request = ({ peticiones = [] }) => {
    const [intengrantes, setIntengrantes] = useState([]);
    const [roles, setRoles] = useState([]);
    //mis declaraciones
+   const [instituciones, setInstituciones] = useState([]);
    const [apartados, setApartados] = useState([]);
    useEffect(() => {
       const responses = async () => {
          peticiones.includes("sectores") && setSectores(await GetAxios("sector/show"));
+         peticiones.includes("instituciones") && setInstituciones(await GetAxios("tipoinstituciones/show"));
 
          peticiones.includes("tipoParticipacion") && setTipoParticipacion(await GetAxios("tipoparticipacion/show"));
          peticiones.includes("municipios") && setMunicipios(await GetAxios("municipios/show"));
@@ -122,6 +124,7 @@ export const Request = ({ peticiones = [] }) => {
       bienenAjenacion,
       subInversiones,
       tipoParticipacion,
-      sectores
+      sectores,
+      instituciones
    };
 };

@@ -68,6 +68,8 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
       setMexico(value == 1 ? true : false);
    };
    const submit = async (values, { resetForm }) => {
+      formik.current.resetForm();
+
       Success("se agrego a la tabla");
       values.id = idUnique;
 
@@ -119,12 +121,14 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
                const response = await PostAxios(url, newDatas);
                localStorage.setItem("id_Intereses", response.data.result);
                Success(response.data.message);
+               if (parseInt(response.data.result) > 0) {
+               }
             };
             await sendApi();
-
+            
             // dispatch(clearData());
-            // setDatasTable([]);
-            // next();
+            setDatasTable([]);
+            setDatas([]);
          } catch (error) {
             if (error.response?.data?.message) {
                Error(error.response.data.message);
@@ -139,10 +143,10 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
          try {
             const response = await Axios.post(`apartados/interes/0/1/0/${parseInt(localStorage.getItem("Id_User"))}`);
             Success("Continuemos llenando los formularios");
-            dispatch(clearData());
             setDatasTable([]);
             next();
          } catch (error) {
+            console.log("error", error);
             Error(error.response.data.message);
          }
       }
