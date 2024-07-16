@@ -10,7 +10,7 @@ import { Text } from "../../../Reusables/input/Input";
 import DatePickerComponentV2 from "../../../Reusables/datepicker/DatePickerComponentV2";
 import { Request } from "../../../Reusables/request/Request";
 import { AutoComplete } from "../../../Reusables/autocomplete/autocomplete";
-import { PostAxios } from "../../../../services/services";
+import { Axios, PostAxios } from "../../../../services/services";
 
 export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, title }) => {
    const [datas, setDatas] = useState([]);
@@ -20,7 +20,7 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
    const [mexico, setMexico] = useState(true);
    const [idUnique, setIdUnique] = useState(1);
    const [update, setUpdate] = useState(loading);
-   const formik = useRef(null)
+   const formik = useRef(null);
    //TipoInstrumento
    const { paises, entidades, instituciones } = Request({ peticiones: ["paises", "entidades", "instituciones"] });
    const tipoRelaciones = [
@@ -134,7 +134,7 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
          }
       } else {
          try {
-            const response = await Axios.post(`apartados/interes/0/1/0/${parseInt(localStorage.getItem("Id_User"))}`);
+            const response = await Axios.post(`apartados/interes/${parseInt(localStorage.getItem("id_Intereses"))}/2/1/${parseInt(localStorage.getItem("Id_User"))}`);
             Success("Continuemos llenando los formularios");
             setDatasTable([]);
             next();

@@ -36,7 +36,8 @@ export const Request = ({ peticiones = [] }) => {
    //intereses
    const [tipoParticipacion, setTipoParticipacion] = useState([]);
    const [sectores, setSectores] = useState([]);
-
+   const [tipoApoyos,setTipoApoyos] = useState([]);
+   const [formaRecepcion,setFormaRecepcion] = useState([]);
    // usuarios form
    const [intengrantes, setIntengrantes] = useState([]);
    const [roles, setRoles] = useState([]);
@@ -47,6 +48,8 @@ export const Request = ({ peticiones = [] }) => {
       const responses = async () => {
          peticiones.includes("sectores") && setSectores(await GetAxios("sector/show"));
          peticiones.includes("instituciones") && setInstituciones(await GetAxios("tipoinstituciones/show"));
+         peticiones.includes("tipoApoyos") && setTipoApoyos(await GetAxios("tipoapoyos/show"));
+         peticiones.includes("formaRecepcion") && setFormaRecepcion(await GetAxios("formarecepcion/show"));
 
          peticiones.includes("tipoParticipacion") && setTipoParticipacion(await GetAxios("tipoparticipacion/show"));
          peticiones.includes("municipios") && setMunicipios(await GetAxios("municipios/show"));
@@ -125,6 +128,8 @@ export const Request = ({ peticiones = [] }) => {
       subInversiones,
       tipoParticipacion,
       sectores,
-      instituciones
+      instituciones,
+      tipoApoyos,
+      formaRecepcion
    };
 };

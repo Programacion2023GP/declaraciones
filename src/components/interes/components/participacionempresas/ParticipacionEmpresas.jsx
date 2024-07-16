@@ -44,7 +44,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
       Id_PaisUbicacion: 1,
       Id_EntidadFederativa: 0,
       Id_Sector: 0,
-      EsEnMexico: 0,
+      EsEnMexico: 1,
       Aclaraciones: ""
    };
    const validationSchema = Yup.object().shape({
@@ -125,7 +125,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
                }
             };
             await sendApi();
-            
+
             // dispatch(clearData());
             setDatasTable([]);
             setDatas([]);
@@ -142,6 +142,8 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
       } else {
          try {
             const response = await Axios.post(`apartados/interes/0/1/0/${parseInt(localStorage.getItem("Id_User"))}`);
+            localStorage.setItem("id_Intereses", response.data.data.result);
+
             Success("Continuemos llenando los formularios");
             setDatasTable([]);
             next();
