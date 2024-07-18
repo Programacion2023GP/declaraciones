@@ -35,6 +35,10 @@ import { Info } from "../../toasts/toast";
 import { ParticipacionEmpresas } from "../interes/components/participacionempresas/ParticipacionEmpresas";
 import { ParticipacionTomaDecisiones } from "../interes/components/participaciontomadecisiones/ParticipacionTomaDecisiones";
 import { ApoyosBeneficiarios } from "../interes/components/apoyosbeneficiarios/ApoyosBeneficiarios";
+import { Representacion } from "../interes/components/representacion/Representacion";
+import { Clientes } from "../interes/components/clientes/Clientes";
+import { BeneficiosPrivados } from "../interes/components/beneficiosprivados/BeneficiosPrivados";
+import { Fideocomisos } from "../interes/components/fideocomisos/Fideocomisos";
 
 // Importa aquí los componentes correspondientes a cada paso
 
@@ -46,8 +50,8 @@ const ComponentDeclaraciones = () => {
 
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja : 15); // cambia de hoja
-   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja : 15); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
+   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja : 21); // cambia de hoja
+   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja : 21); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
    const dispatch = useDispatch();
    React.useEffect(() => {
       dispatch(foundLocalization());
@@ -199,7 +203,31 @@ const ComponentDeclaraciones = () => {
       },
       {
          label: "Apoyos o Beneficios Públicos (Hasta los 2 últimos años)",
-         component: <ApoyosBeneficiarios next={handleExit} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         component: <ApoyosBeneficiarios next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         exist: [2],
+         url: ""
+      },
+      {
+         label: "Representación (Hasta los 2 últimos años)",
+         component: <Representacion next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         exist: [2],
+         url: ""
+      },
+      {
+         label: "Clientes principales (Hasta los 2 últimos años)",
+         component: <Clientes next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         exist: [2],
+         url: ""
+      },
+      {
+         label: "Beneficios Privados (Hasta los 2 últimos años)",
+         component: <BeneficiosPrivados next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         exist: [2],
+         url: ""
+      },
+      {
+         label: "Fideicomisos (Hasta los 2 últimos años)",
+         component: <Fideocomisos next={handleExit} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
          exist: [2],
          url: ""
       }

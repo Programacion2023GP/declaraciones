@@ -38,6 +38,11 @@ export const Request = ({ peticiones = [] }) => {
    const [sectores, setSectores] = useState([]);
    const [tipoApoyos,setTipoApoyos] = useState([]);
    const [formaRecepcion,setFormaRecepcion] = useState([]);
+   const [representacion,setRepresentacion] = useState([]);
+   const [tipoPersona,setTipoPersona] = useState([]);
+   const [tipoBeneficios,setTipoBeneficios] = useState([]);
+   const [tipoFideocomisos,setTipoFideocomisos] = useState([]);
+
    // usuarios form
    const [intengrantes, setIntengrantes] = useState([]);
    const [roles, setRoles] = useState([]);
@@ -50,6 +55,10 @@ export const Request = ({ peticiones = [] }) => {
          peticiones.includes("instituciones") && setInstituciones(await GetAxios("tipoinstituciones/show"));
          peticiones.includes("tipoApoyos") && setTipoApoyos(await GetAxios("tipoapoyos/show"));
          peticiones.includes("formaRecepcion") && setFormaRecepcion(await GetAxios("formarecepcion/show"));
+         peticiones.includes("representacion") && setRepresentacion(await GetAxios("representacion/show"));
+         peticiones.includes("tipoPersona") && setTipoPersona(await GetAxios("tipopersona/show"));
+         peticiones.includes("tipoBeneficios") && setTipoBeneficios(await GetAxios("tipobeneficios/show"));
+         peticiones.includes("tipoFideocomisos") && setTipoFideocomisos(await GetAxios("tipofideocomisos/show"));
 
          peticiones.includes("tipoParticipacion") && setTipoParticipacion(await GetAxios("tipoparticipacion/show"));
          peticiones.includes("municipios") && setMunicipios(await GetAxios("municipios/show"));
@@ -130,6 +139,10 @@ export const Request = ({ peticiones = [] }) => {
       sectores,
       instituciones,
       tipoApoyos,
-      formaRecepcion
+      formaRecepcion,
+      representacion,
+      tipoPersona,
+      tipoBeneficios,
+      tipoFideocomisos
    };
 };
