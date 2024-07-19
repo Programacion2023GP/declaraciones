@@ -50,12 +50,10 @@ const ComponentDeclaraciones = () => {
 
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja : 21); // cambia de hoja
-   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja : 21); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
+   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja : 0); // cambia de hoja
+   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja : 0); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
    const dispatch = useDispatch();
-   React.useEffect(() => {
-      dispatch(foundLocalization());
-   }, [activeStep]);
+
    const handleExit = () => {
       dispatch(locationAuth());
       localStorage.removeItem("id_SituacionPatrimonial");
@@ -178,10 +176,17 @@ const ComponentDeclaraciones = () => {
       },
       {
          label: "Préstamo o Comodato por Terceros (Situación actual)",
-         component: <PrestamosComodatos next={declaracion!=2? handleNext : handleExit} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         component: <PrestamosComodatos next={declaracion != 2 ? handleNext : handleExit} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
          exist: [1, 2, 3],
          url: "prestamoscomodatos"
-      },
+      }
+
+      // {
+      //    label: "Bienes Inmuebles (Situación Actual)",
+      //    component: <></>
+      // }
+   ];
+   const declaracionIntereses = [
       {
          label: "Participación en empresas, sociedades o asociaciones (Hasta los 2 últimos años)",
          component: (
@@ -231,11 +236,6 @@ const ComponentDeclaraciones = () => {
          exist: [2],
          url: ""
       }
-
-      // {
-      //    label: "Bienes Inmuebles (Situación Actual)",
-      //    component: <></>
-      // }
    ];
    const [view, setView] = React.useState(false);
    const [filteredSteps, setFiltersStepers] = React.useState(steps.filter((step) => step.exist.includes(declaracion)));
@@ -344,6 +344,20 @@ const ComponentDeclaraciones = () => {
    const getStepSubtitule = () => {
       return filteredSteps[activeStep]?.subtitule;
    };
+   React.useEffect(() => {
+      dispatch(foundLocalization());
+      if (activeStep == 9) {
+         verifiedServidorPublico();
+      }
+   }, [activeStep]);
+   const verifiedServidorPublico = async () => {
+      const response = await GetAxios(`servidorpublico/index/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
+      if (response.length > 0) {
+         console.log("aca donde es", response);
+         Info("Se agrego la declaracion de intereses");
+         setFiltersStepers((prev=>prev.concat(...declaracionIntereses)))
+      }
+   };
    return (
       <Ngif condition={true}>
          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "10px" }}>
@@ -383,7 +397,7 @@ const ComponentDeclaraciones = () => {
                   </Typography>
 
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
-                     {steps.map((step, index) => {
+                     {filteredSteps.map((step, index) => {
                         return (
                            step.exist.includes(declaracion) && (
                               <div
