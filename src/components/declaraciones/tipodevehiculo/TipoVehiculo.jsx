@@ -178,7 +178,7 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
                <DataTable
-                  loading={loading && datas.length > 0}
+                  // loading={loading && datas.length > 0}
                   dataHidden={["identificador"]}
                   data={dataTable}
                   headers={["Tipo de Vehículo", "Forma de Adquisición", "Forma de Pago"]}

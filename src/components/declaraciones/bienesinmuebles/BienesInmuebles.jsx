@@ -147,7 +147,7 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
                <DataTable
-                  loading={loading && datas.length > 0}
+                  // loading={loading && datas.length > 0}
                   dataHidden={["identificador"]}
                   headers={["Tipo de Inmueble", "Forma de Adquisición", "Nombre Tercero"]}
                   data={datas}

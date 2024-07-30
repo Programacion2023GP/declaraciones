@@ -239,7 +239,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
                   headers={["Sector", "Ente publico o Nombre de la empresa", "Lugar", "Fecha de ingreso", "Fecha de salida"]}
                   dataHidden={["id"]}
                   data={datasVisuales}
-                  loading={loading && datas.length > 0}
+                  // loading={loading && datas.length > 0}
                   // editButton={true}
                   // handleEdit={Edit}
                   deleteButton={true}

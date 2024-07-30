@@ -181,7 +181,7 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
                <DataTable
-                  loading={loading && datas.length > 0}
+                  // loading={loading && datas.length > 0}
                   dataHidden={["id"]}
                   headers={["Tipo de bien", "Especificación del bien"]}
                   data={datasTable}

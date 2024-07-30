@@ -5,7 +5,7 @@ import { Text } from "../../../Reusables/input/Input";
 import { CustomRadio } from "../../../Reusables/radiobutton/Radio";
 import { Request } from "../../../Reusables/request/Request";
 import DataTable from "../../../Reusables/table/DataTable";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Ngif } from "../../../Reusables/conditionals/Ngif";
 import * as Yup from "yup";
 import { Error, Success } from "../../../../toasts/toast";
@@ -67,12 +67,51 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
    const handleMexico = (name, value) => {
       setMexico(value == 1 ? true : false);
    };
+
+   useEffect(() => {
+      if (relacion.length > 0 && monedas.length > 0 && paises.length > 0 && entidades.length > 0 && tipoParticipacion.length > 0 && sectores.length > 0) {
+         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+            // Crea arrays temporales para los nuevos datos
+            const newDatas = [];
+            const newDatasTable = [];
+
+            data.forEach((values, index) => {
+               delete values.Id_PrestamoComodato;
+
+               // Asignar identificador
+               values.identificador = index;
+
+               // Crear datos para datasTable
+               const newData = {
+                  id: values.identificador,
+                  NombreEmpresaSociedadAsociacion: values.NombreEmpresaSociedadAsociacion,
+                  Porcentaje: values.PorcentajeParticipacion,
+                  "Recibe remuneración": values.RecibeRemuneracion > 0 ? "Si" : "No",
+                  tipoRelaciones: tipoRelaciones.find((item) => item.value === parseInt(values.Id_TipoRelacion))?.label,
+                  "En México": values.EsEnMexico == 1 ? "En México" : "En el extranjero"
+               };
+
+               // Añadir datos a los arrays temporales
+               newDatas.push(values);
+               newDatasTable.push(newData);
+            });
+
+            // Actualizar el estado con los nuevos datos
+            setDatas(newDatas);
+            setDatasTable(newDatasTable);
+            console.log(newDatas);
+            // Ajustar el identificador único
+            setIdUnique(data.length);
+         }
+      }
+   }, [data, relacion, monedas, paises, entidades, tipoParticipacion, sectores]);
+
    const submit = async (values, { resetForm }) => {
       formik.current.resetForm();
 
       Success("se agrego a la tabla");
-      values.id = idUnique;
-
+      values.identificador = idUnique;
+      values.Id_Intereses = parseInt(localStorage.getItem("id_Intereses"));
       setDatas(datas.concat(values));
       // dispatch(addDatosDependiente(values));
       adDataTable(values);
@@ -81,7 +120,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
       const newDatasVisuales = [
          ...datasTable,
          {
-            id: values.id,
+            id: values.identificador,
             NombreEmpresaSociedadAsociacion: values.NombreEmpresaSociedadAsociacion,
             Porcentaje: values.PorcentajeParticipacion,
             "Recibe remuneración": values.RecibeRemuneracion > 0 ? "Si" : "No",
@@ -102,14 +141,14 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
 
    const deleteRow = (row) => {
       // dispatch(deleteDatosDependiente({ id: row.id }));
-      setDatas(datas.filter((item) => item.id != row.id));
+      setDatas(datas.filter((item) => item.identificador != row.id));
       const itemTable = datasTable.filter((item) => item.id != row.id);
       setDatasTable(itemTable);
       Success("se elimino de la tabla");
    };
    const sendDatas = async () => {
       const newDatas = [...datas];
-      const url = `participacionempresas/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
+      const url = `participacionempresas/${update ? `update/${localStorage.getItem("id_Intereses")}` : "create"}`;
       // console.log(newDatas,url);
       if (newDatas.length > 0) {
          try {
@@ -125,7 +164,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
                }
             };
             await sendApi();
-
+            next()
             // dispatch(clearData());
             setDatasTable([]);
             setDatas([]);
@@ -141,8 +180,14 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
          }
       } else {
          try {
-            const response = await Axios.post(`apartados/interes/0/1/0/${parseInt(localStorage.getItem("Id_User"))}`);
-            localStorage.setItem("id_Intereses", response.data.data.result);
+            const crear =!isNaN(parseInt(localStorage.getItem("id_Intereses"), 10)) && parseInt(localStorage.getItem("id_Intereses"), 10) > 0 ? 0 : 1
+            console.log("Ocurrio un error");
+            const response = await Axios.post(
+               `apartados/interes/${parseInt(localStorage.getItem("id_Intereses") || "0")}/1/1/${parseInt(localStorage.getItem("Id_User"))}/${crear}`
+            );
+            if (crear==1) {
+               localStorage.setItem("id_Intereses", response.data.data.result);
+            }
 
             Success("Continuemos llenando los formularios");
             setDatasTable([]);

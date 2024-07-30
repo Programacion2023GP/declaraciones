@@ -1,7 +1,7 @@
 import { Box, Button, Card, FormControlLabel, FormGroup, Switch } from "@mui/material";
 import DataTable from "../../../Reusables/table/DataTable";
 import { Ngif } from "../../../Reusables/conditionals/Ngif";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Error, Success } from "../../../../toasts/toast";
 import { CustomRadio } from "../../../Reusables/radiobutton/Radio";
 import * as Yup from "yup";
@@ -23,6 +23,42 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
    const formik = useRef(null);
    //TipoInstrumento
    const { paises, entidades, instituciones } = Request({ peticiones: ["paises", "entidades", "instituciones"] });
+   useEffect(() => {
+      if (instituciones.length > 0 && paises.length > 0 && entidades.length > 0) {
+         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+            // Crea arrays temporales para los nuevos datos
+            const newDatas = [];
+            const newDatasTable = [];
+
+            data.forEach((values, index) => {
+               delete values.Id_PrestamoComodato;
+
+               // Asignar identificador
+               values.identificador = index;
+
+               // Crear datos para datasTable
+               const newData = {
+                  id: values.identificador,
+                  NombreInstitucion: values.NombreInstitucion,
+                  RfcInstitucion: values.RfcInstitucion,
+                  FechaInicioParticipacion: values.FechaInicioParticipacion,
+                  "Recibe remuneración": values.RecibeRemuneracion > 0 ? "Si" : "No"
+               };
+
+               // Añadir datos a los arrays temporales
+               newDatas.push(values);
+               newDatasTable.push(newData);
+            });
+
+            // Actualizar el estado con los nuevos datos
+            setDatas(newDatas);
+            setDatasTable(newDatasTable);
+            console.log(newDatas);
+            // Ajustar el identificador único
+            setIdUnique(data.length);
+         }
+      }
+   }, [data, paises, entidades, instituciones]);
    const tipoRelaciones = [
       { value: 1, label: "Declarante" },
       { value: 2, label: "Pareja" },
@@ -63,7 +99,8 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
    };
    const deleteRow = (row) => {
       // dispatch(deleteDatosDependiente({ id: row.id }));
-      setDatas(datas.filter((item) => item.id != row.id));
+      setDatas(datas.filter((item) => item.identificador != row.id));
+      console.log(datas.filter((item) => item.identificador != row.id));
       const itemTable = datasTable.filter((item) => item.id != row.id);
       setDatasTable(itemTable);
       Success("se elimino de la tabla");
@@ -72,7 +109,7 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
       formik.current.resetForm();
 
       Success("se agrego a la tabla");
-      values.id = idUnique;
+      values.identificador = idUnique;
 
       setDatas(datas.concat(values));
       // dispatch(addDatosDependiente(values));
@@ -82,7 +119,7 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
       const newDatasVisuales = [
          ...datasTable,
          {
-            id: values.id,
+            id: values.identificador,
             NombreInstitucion: values.NombreInstitucion,
             RfcInstitucion: values.RfcInstitucion,
             FechaInicioParticipacion: values.FechaInicioParticipacion,
@@ -101,7 +138,8 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
    };
    const sendDatas = async () => {
       const newDatas = [...datas];
-      const url = `tomadecisiones/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
+      console.log("enviado", newDatas);
+      const url = `tomadecisiones/${update ? `update/${localStorage.getItem("id_Intereses")}` : "create"}`;
       // console.log(newDatas,url);
       if (newDatas.length > 0) {
          try {
@@ -111,11 +149,11 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
                   // delete newDatas[i].identificador;
                }
                const response = await PostAxios(url, newDatas);
+               next();
                // localStorage.setItem("id_Intereses", response.data.result);
                Success(response.data.message);
                setDatasTable([]);
                setDatas([]);
-               next();
             };
             await sendApi();
 

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Error, Success } from "../../../../toasts/toast";
 import { FormikForm } from "../../../Reusables/formik/FormikForm";
 import { Box, Button, Card, FormControlLabel, FormGroup, Switch } from "@mui/material";
@@ -39,11 +39,46 @@ export const Clientes = ({ loading, data, next, previous, title }) => {
       Id_PaisUbicacion: 0,
       Id_EntidadFederativa: 0,
       Aclaraciones: "",
-      EsEnMexico:1,
+      EsEnMexico: 1
    };
    const { tipoPersona, sectores, monedas, entidades, paises } = Request({
       peticiones: ["tipoPersona", "sectores", "monedas", "entidades", "paises"]
    });
+   useEffect(() => {
+      if (tipoPersona.length > 0 && monedas.length > 0 && paises.length > 0 && entidades.length > 0 && sectores.length > 0) {
+         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+            // Crea arrays temporales para los nuevos datos
+            const newDatas = [];
+            const newDatasTable = [];
+
+            data.forEach((values, index) => {
+               delete values.Id_PrestamoComodato;
+
+               // Asignar identificador
+               values.identificador = index;
+
+               // Crear datos para datasTable
+               const newData = {
+                  id: values.identificador,
+                  "Nombre empresa o servicio": values.NombreEmpresa,
+                  "Cliente Principal": tipoPersona.find((item) => item.id === parseInt(values.Id_TipoPersona))?.text,
+                  "Monto Mensual": values.MontoAproximadoGanancia,
+                  "Sector Productivo": sectores.find((item) => item.id === parseInt(values.Id_Sector))?.text
+               };
+
+               // Añadir datos a los arrays temporales
+               newDatas.push(values);
+               newDatasTable.push(newData);
+            });
+
+            // Actualizar el estado con los nuevos datos
+            setDatas(newDatas);
+            setDatasTable(newDatasTable);
+            // Ajustar el identificador único
+            setIdUnique(data.length);
+         }
+      }
+   }, [data, tipoPersona, sectores, monedas, entidades, paises]);
    const submit = async (values, { resetForm }) => {
       formik.current.resetForm();
 
@@ -61,11 +96,11 @@ export const Clientes = ({ loading, data, next, previous, title }) => {
       const newDatasVisuales = [
          ...datasTable,
          {
-            id: values.id,
+            id: values.identificador,
             "Nombre empresa o servicio": values.NombreEmpresa,
             "Cliente Principal": tipoPersona.find((item) => item.id === parseInt(values.Id_TipoPersona))?.text,
             "Monto Mensual": values.MontoAproximadoGanancia,
-            "Sector Productivo": sectores.find((item) => item.id === parseInt(values.Id_Sector))?.text,
+            "Sector Productivo": sectores.find((item) => item.id === parseInt(values.Id_Sector))?.text
          }
       ];
       setDatasTable(newDatasVisuales);
@@ -76,55 +111,55 @@ export const Clientes = ({ loading, data, next, previous, title }) => {
       setMexico(value == 1 ? true : false);
    };
    const sendDatas = async () => {
-    const newDatas = [...datas];
-    const url = `clientesprincipales/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
-    // console.log(newDatas,url);
-    if (newDatas.length > 0) {
-       try {
-          const sendApi = async () => {
-             for (let i = 0; i < newDatas.length; i++) {
-                //   dispatch(addDatosDependiente(newDatas[i]));
-                // delete newDatas[i].identificador;
-             }
-             const response = await PostAxios(url, newDatas);
-             // localStorage.setItem("id_Intereses", response.data.result);
-             Success(response.data.message);
-             setDatasTable([]);
-             setDatas([]);
-             next();
-          };
-          await sendApi();
+      const newDatas = [...datas];
+      const url = `clientesprincipales/${update ? `update/${localStorage.getItem("id_Intereses")}` : "create"}`;
+      // console.log(newDatas,url);
+      if (newDatas.length > 0) {
+         try {
+            const sendApi = async () => {
+               for (let i = 0; i < newDatas.length; i++) {
+                  //   dispatch(addDatosDependiente(newDatas[i]));
+                  // delete newDatas[i].identificador;
+               }
+               const response = await PostAxios(url, newDatas);
+               // localStorage.setItem("id_Intereses", response.data.result);
+               Success(response.data.message);
+               setDatasTable([]);
+               setDatas([]);
+               next();
+            };
+            await sendApi();
 
-          // dispatch(clearData());
-          // setDatasTable([]);
-          // next();
-       } catch (error) {
-          if (error.response?.data?.message) {
-              console.log("ee",error)
-             Error(error.response.data.message);
-          } else {
-             console.error("error", error);
-             Error("Ocurrio un error");
-          }
-          // dispatch(clearData());
-          // setDatasTable([]);
-       }
-    } else {
-       try {
-          const response = await Axios.post(`apartados/interes/${parseInt(localStorage.getItem("id_Intereses"))}/5/1/${parseInt(localStorage.getItem("Id_User"))}`);
-          Success("Continuemos llenando los formularios");
-          setDatasTable([]);
-          next();
-       } catch (error) {
-          console.log("🚀 ~ sendDatas ~ error:", error)
-          
-          Error(error.response.data.message);
-       }
-    }
- };
+            // dispatch(clearData());
+            // setDatasTable([]);
+            // next();
+         } catch (error) {
+            if (error.response?.data?.message) {
+               console.log("ee", error);
+               Error(error.response.data.message);
+            } else {
+               console.error("error", error);
+               Error("Ocurrio un error");
+            }
+            // dispatch(clearData());
+            // setDatasTable([]);
+         }
+      } else {
+         try {
+            const response = await Axios.post(`apartados/interes/${parseInt(localStorage.getItem("id_Intereses"))}/5/1/${parseInt(localStorage.getItem("Id_User"))}`);
+            Success("Continuemos llenando los formularios");
+            setDatasTable([]);
+            next();
+         } catch (error) {
+            console.log("🚀 ~ sendDatas ~ error:", error);
+
+            Error(error.response.data.message);
+         }
+      }
+   };
    const deleteRow = (row) => {
       // dispatch(deleteDatosDependiente({ id: row.id }));
-      setDatas(datas.filter((item) => item.id != row.id));
+      setDatas(datas.filter((item) => item.identificador != row.id));
       const itemTable = datasTable.filter((item) => item.id != row.id);
       setDatasTable(itemTable);
       Success("se elimino de la tabla");

@@ -33,7 +33,8 @@ export const GetPostales = async (codigo)=>{
 export const PostAxios = async (url, values) => {
     try {
         const response = await Axios.post(url, values);
-        Success(response.data.data.message);
+        // Success(response.data.data.message);
+        // console.log("postaxios",response);
         return response.data;
     } catch (error) {
         Error(error.response.data.data.message);

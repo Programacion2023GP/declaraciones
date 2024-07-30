@@ -151,7 +151,7 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
                <DataTable
                   dataHidden={["identificador"]}
-                  loading={loading && datas.length > 0}
+                  // loading={loading && datas.length > 0}
                   headers={["Tipo de Bien", "Titular del Bien", "Descripción del Bien"]}
                   data={dataTable}
                   handleDelete={deleteRow}

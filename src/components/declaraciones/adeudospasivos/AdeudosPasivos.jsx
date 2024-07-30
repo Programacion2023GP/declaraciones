@@ -126,7 +126,7 @@ export const AdeudosPasivos = ({ loading, data, title, next, previous, setSend }
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
                <DataTable
-                  loading={loading && datas.length > 0}
+                  // loading={loading && datas.length > 0}
                   dataHidden={["id"]}
                   headers={["Nombre", "Titular del Adeudo", "No. Cuenta"]}
                   data={datasTable}

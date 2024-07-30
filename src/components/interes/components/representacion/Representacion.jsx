@@ -2,7 +2,7 @@ import { Box, Button, Card, FormControlLabel, FormGroup, Switch } from "@mui/mat
 import { Ngif } from "../../../Reusables/conditionals/Ngif";
 import { FormikForm } from "../../../Reusables/formik/FormikForm";
 import { CustomRadio } from "../../../Reusables/radiobutton/Radio";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Error, Success } from "../../../../toasts/toast";
 import { Request } from "../../../Reusables/request/Request";
 import { AutoComplete } from "../../../Reusables/autocomplete/autocomplete";
@@ -49,11 +49,48 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
       EsEnMexico: 1,
       Aclaraciones: ""
    };
+   useEffect(() => {
+      if (tipoPersona.length > 0 && representacion.length > 0 && monedas.length > 0 && paises.length > 0 && entidades.length > 0 && sectores.length > 0) {
+         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+            // Crea arrays temporales para los nuevos datos
+            const newDatas = [];
+            const newDatasTable = [];
+
+            data.forEach((values, index) => {
+               delete values.Id_PrestamoComodato;
+
+               // Asignar identificador
+               values.identificador = index;
+
+               // Crear datos para datasTable
+               console.log("Cargando ....", values);
+               const newData =  {
+                  id: values.identificador,
+                  "Tipo Relación": tipoRelaciones.find((item) => item.value === parseInt(values.Id_TipoRelacion))?.label,
+                  "Tipo de Representacion	": representacion.find((item) => item.id === parseInt(values.Id_TipoRepresentacion))?.text,
+                  "Fecha Inicio": values.FechaInicioRepresentacion,
+                  "Nombre o Razón Social": values.NombreRazonSocial
+               };
+
+               // Añadir datos a los arrays temporales
+               newDatas.push(values);
+               newDatasTable.push(newData);
+            });
+
+            // Actualizar el estado con los nuevos datos
+            setDatas(newDatas);
+            setDatasTable(newDatasTable);
+            console.log(newDatas);
+            // Ajustar el identificador único
+            setIdUnique(data.length);
+         }
+      }
+   }, [data, tipoPersona, representacion, monedas, paises, entidades, sectores]);
    const submit = async (values, { resetForm }) => {
       formik.current.resetForm();
 
       Success("se agrego a la tabla");
-      values.id = idUnique;
+      values.identificador = idUnique;
 
       setDatas(datas.concat(values));
       // dispatch(addDatosDependiente(values));
@@ -63,7 +100,7 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
       const newDatasVisuales = [
          ...datasTable,
          {
-            id: values.id,
+            id: values.identificador,
             "Tipo Relación": tipoRelaciones.find((item) => item.value === parseInt(values.Id_TipoRelacion))?.label,
             "Tipo de Representacion	": representacion.find((item) => item.id === parseInt(values.Id_TipoRepresentacion))?.text,
             "Fecha Inicio": values.FechaInicioRepresentacion,
@@ -82,7 +119,7 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
    };
    const sendDatas = async () => {
       const newDatas = [...datas];
-      const url = `representaciones/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
+      const url = `representaciones/${update ? `update/${localStorage.getItem("id_Intereses")}` : "create"}`;
       // console.log(newDatas,url);
       if (newDatas.length > 0) {
          try {
@@ -105,7 +142,7 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
             // next();
          } catch (error) {
             if (error.response?.data?.message) {
-                console.log("ee",error)
+               console.log("ee", error);
                Error(error.response.data.message);
             } else {
                console.error("error", error);
@@ -121,22 +158,22 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
             setDatasTable([]);
             next();
          } catch (error) {
-            console.log("🚀 ~ sendDatas ~ error:", error)
-            
+            console.log("🚀 ~ sendDatas ~ error:", error);
+
             Error(error.response.data.message);
          }
       }
    };
    const deleteRow = (row) => {
-    // dispatch(deleteDatosDependiente({ id: row.id }));
-    setDatas(datas.filter((item) => item.id != row.id));
-    const itemTable = datasTable.filter((item) => item.id != row.id);
-    setDatasTable(itemTable);
-    Success("se elimino de la tabla");
- };
+      // dispatch(deleteDatosDependiente({ id: row.id }));
+      setDatas(datas.filter((item) => item.identificador != row.id));
+      const itemTable = datasTable.filter((item) => item.id != row.id);
+      setDatasTable(itemTable);
+      Success("se elimino de la tabla");
+   };
    return (
       <>
-        <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
+         <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
                <DataTable
                   headers={["Tipo Relación	", "Tipo de Representacion	", "Fecha Inicio", "Nombre o Razón Social"]}
