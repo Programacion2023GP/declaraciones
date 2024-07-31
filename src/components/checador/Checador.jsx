@@ -342,7 +342,36 @@ import { PrestamoComodato } from "./hojas/PrestamoComodato";
       setPass(0);
       setLoadingMessage(false);
    };
-
+   const idRole = parseInt(localStorage.getItem('Id_Role'), 10);
+   const isRoleOne = idRole === 1;
+ 
+   // Construcción condicional del array de botones
+   const moreButtons = [
+     isRoleOne && {
+       tooltip: 'Imprimir',
+       color: '#27AE60',
+       icon: Print,
+       toltip: "Imprimir",
+       handleButton: handlePdfPrint,
+       conditions: ["Tstatus == 'Terminada'"]
+     },
+     {
+       tooltip: 'Imprimir testada',
+       color: 'black',
+       icon: PrintTest,
+       toltip: "Imprimir testada",
+       handleButton: handlePdfTester,
+       conditions: ["Tstatus == 'Terminada'"]
+     },
+     isRoleOne && {
+       tooltip: 'Acuse',
+       color: '#F39C12',
+       icon: ReceiptOutlinedIcon,
+       toltip: "Acuse",
+       handleButton: handleAcuse,
+       conditions: ["Tstatus == 'Terminada'"]
+     }
+   ].filter(Boolean);
    return (
       <>
          <Box
@@ -364,11 +393,7 @@ import { PrestamoComodato } from "./hojas/PrestamoComodato";
                   <DataTable
                      options={["CHARTS", "EXCEL", "COLORS"]}
                      // , "PDF",
-                     moreButtons={[
-                        { toltip: "Imprimir", color: "#27AE60", icon: Print, handleButton: handlePdfPrint, conditions: ["Tstatus == 'Terminada'"] },
-                        { toltip: "Imprimir testada", color: "black", icon: PrintTest, handleButton: handlePdfTester, conditions: ["Tstatus == 'Terminada'"] },
-                        { toltip: "Acuse", color: "#F39C12 ", icon: ReceiptOutlinedIcon, handleButton: handleAcuse, conditions: ["Tstatus == 'Terminada'"] }
-                     ]}
+                     moreButtons={moreButtons}
                      // captionButtons={[
                      //    {text:"mas",handleButton:()=>{alert("dd")},icon:VisibilityIcon}
                      // ]}

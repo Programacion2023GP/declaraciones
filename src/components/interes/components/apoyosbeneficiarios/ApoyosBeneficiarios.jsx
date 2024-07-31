@@ -38,7 +38,16 @@ export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) =>
       // apellido: '',
       // //...
    };
-   const validationSchema = {};
+   const validationSchema = Yup.object().shape({
+      Id_BeneficiarioPrograma:Yup.number("").min(1, "El beneficiario del programa es requerido").required("El beneficiario del programa es requerido"),
+      NombrePrograma: Yup.string("").required("El nombre del programa es requerido"),
+      InstitucionOtorgante: Yup.string("").required("La institucion otorgante es requerida"),
+      Id_NivelOrdenGobierno: Yup.number("").min(1, "El nivel u orden de gobierno es requerido").required("El nivel u orden de gobierno es requerido"),
+      Id_TipoApoyo: Yup.number("").min(1, "El tipo de apoyo es requerido").required("El tipo de apoyo es requerido"),
+      Id_FormaRecepcion: Yup.number("").min(1, "La forma de recepcion es requerida").required("La forma de recepcion es requerida"),
+      // MontoApoyoMensual: Yup.number('').required('El monto es requerido'),
+
+   });
    const handleChange = (event) => {
       setChecked(event.target.checked);
    };
@@ -52,7 +61,7 @@ export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) =>
       // dispatch(addDatosDependiente(values));
       adDataTable(values);
    };
-   
+
    useEffect(() => {
       if (relacion.length > 0 && nivelOrdenGobierno.length > 0 && tipoApoyos.length > 0 && formaRecepcion.length > 0) {
          if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
@@ -67,7 +76,7 @@ export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) =>
                values.identificador = index;
 
                // Crear datos para datasTable
-               console.log('Cargando ....',values)
+               console.log("Cargando ....", values);
                const newData = {
                   id: values.identificador,
                   beneficiario: relacion.find((item) => item.id === parseInt(values.Id_BeneficiarioPrograma))?.text,
@@ -181,7 +190,16 @@ export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) =>
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm ref={formik} initialValues={initialValue} submit={submit} button>
+            <FormikForm
+               messageButton="Agregar a la tabla"
+               previousButton
+               handlePrevious={previous}
+               ref={formik}
+               initialValues={initialValue}
+               submit={submit}
+               button
+               validationSchema={validationSchema}
+            >
                <AutoComplete col={6} name={"Id_BeneficiarioPrograma"} label={`Beneficiario de algún programa publico`} options={relacion} />
                <Text col={6} name={"NombrePrograma"} label={`Nombre del Programa`} />
                <Text col={6} name={"InstitucionOtorgante"} label={`Institución que otorga el apoyo`} />

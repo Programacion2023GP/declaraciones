@@ -3,7 +3,7 @@ import { Text } from "../../../Reusables/input/Input";
 import * as Yup from "yup";
 import { Request } from "../../../Reusables/request/Request";
 import { AutoComplete } from "../../../Reusables/autocomplete/autocomplete";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Box, Button, Card, FormControlLabel, FormGroup, Switch } from "@mui/material";
 import { Ngif } from "../../../Reusables/conditionals/Ngif";
 import { Error, Success } from "../../../../toasts/toast";
@@ -18,8 +18,8 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
    const [update, setUpdate] = useState(loading);
    const [mexico, setMexico] = useState(true);
    const formik = useRef(null);
-   const { tipoParticipacion, sectores, tipoPersona,tipoFideocomisos } = Request({
-      peticiones: ["tipoParticipacion", "sectores", "tipoPersona",'tipoFideocomisos']
+   const { tipoParticipacion, sectores, tipoPersona, tipoFideocomisos } = Request({
+      peticiones: ["tipoParticipacion", "sectores", "tipoPersona", "tipoFideocomisos"]
    });
    const tipoRelaciones = [
       { value: 1, label: "Declarante" },
@@ -40,15 +40,71 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
       Id_TipoPersonaFideicomisario: 0,
       NombreRazonSocialFideicomisario: "",
       RfcFideicomisario: "",
-      EsEnMexico:0,
+      EsEnMexico: 0,
       Id_Sector: 0,
-      Aclaraciones: "",
+      Aclaraciones: ""
    };
+   const validationSchema = Yup.object().shape({
+      Id_TipoPersonaFideicomisario: Yup.number()
+         .min(1, "El tipo de persona de fidecomisario es requerido")
+         .required("El tipo de persona de fidecomisario es requerido"),
+      Id_TipoRelacion: Yup.number().min(1, "El tipo de relación es requerida").required("El tipo de relación es requerida"),
+      Id_TipoFideicomiso: Yup.number().min(1, "El tipo de fideocomiso es requerido").required("El tipo de fideocomiso es requerido"),
+      Id_TipoParticipacion: Yup.number().min(1, "El tipo de participación es requerido").required("El tipo de participación es requerido"),
+      RfcFideicomiso: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres"),
+      Id_TipoPersonaFideicomitente: Yup.number().min(1, "El tipo del fideicomitente es requerido").required("El tipo del fideicomitente es requerido"),
+      NombreRazonSocialFideicomitente: Yup.string().required("Nombre social del fidecomitente es requerido"),
+      RfcFideicomitente: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres"),
+      RfcFiduciario: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres"),
+      RfcFideicomisario: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres"),
+      NombreRazonSocialFiduciario: Yup.string().required("Nombre de razon social de fiducario es requerido"),
+      NombreRazonSocialFideicomisario: Yup.string().required("Nombre de razon social de fide comisario es requerido"),
+      Id_Sector: Yup.number().min(1, "El tipo de sector es requerido").required("El tipo de sector es requerido"),
+      EsEnMexico: Yup.number().min(1, "El donde se localiza el fidecomiso").required("El donde se localiza el fidecomiso")
+      // RecibeRemuneracion: Yup.number().min(0, 'El
+   });
+   useEffect(() => {
+      if (tipoParticipacion.length > 0 && sectores.length > 0 && tipoPersona.length > 0 && tipoFideocomisos.length > 0) {
+         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+            // Crea arrays temporales para los nuevos datos
+            const newDatas = [];
+            const newDatasTable = [];
+
+            data.forEach((values, index) => {
+               delete values.Id_PrestamoComodato;
+
+               // Asignar identificador
+               values.identificador = index;
+
+               // Crear datos para datasTable
+               console.log("Cargando ....", values);
+               const newData = {
+                  id: values.identificador,
+                  "Tipo de Fideicomiso": tipoFideocomisos.find((item) => item.id === parseInt(values.Id_TipoFideicomiso))?.text,
+                  "Nombre o Razón Social": values.NombreRazonSocialFideicomitente,
+                  "Sector al que Pertenece": sectores.find((item) => item.id === parseInt(values.Id_Sector))?.text,
+                  "Donde se Localiza": values.EsEnMexico == 1 ? "En méxico" : "En el extranjero"
+               };
+
+               // Añadir datos a los arrays temporales
+               newDatas.push(values);
+               newDatasTable.push(newData);
+            });
+
+            // Actualizar el estado con los nuevos datos
+            setDatas(newDatas);
+            setDatasTable(newDatasTable);
+            // Ajustar el identificador único
+            setIdUnique(data.length);
+         }
+      }
+   }, [data, tipoParticipacion, sectores, tipoPersona, tipoFideocomisos]);
+
    const submit = async (values, { resetForm }) => {
       formik.current.resetForm();
 
       Success("se agrego a la tabla");
-      values.id = idUnique;
+      values.identificador = idUnique;
 
       setDatas(datas.concat(values));
       // dispatch(addDatosDependiente(values));
@@ -58,15 +114,14 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
       setChecked(event.target.checked);
    };
    const adDataTable = (values) => {
-
       const newDatasVisuales = [
          ...datasTable,
          {
-            id: values.id,
+            id: values.identificador,
             "Tipo de Fideicomiso": tipoFideocomisos.find((item) => item.id === parseInt(values.Id_TipoFideicomiso))?.text,
             "Nombre o Razón Social": values.NombreRazonSocialFideicomitente,
-            "Sector al que Pertenece":sectores.find((item) => item.id === parseInt(values.Id_Sector))?.text,
-            "Donde se Localiza": values.EsEnMexico==1?'En méxico':'En el extranjero'
+            "Sector al que Pertenece": sectores.find((item) => item.id === parseInt(values.Id_Sector))?.text,
+            "Donde se Localiza": values.EsEnMexico == 1 ? "En méxico" : "En el extranjero"
          }
       ];
       setDatasTable(newDatasVisuales);
@@ -78,7 +133,7 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
    };
    const sendDatas = async () => {
       const newDatas = [...datas];
-      const url = `fideocomisos/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
+      const url = `fideocomisos/${update ? `update/${localStorage.getItem("id_Intereses")}` : "create"}`;
       // console.log(newDatas,url);
       if (newDatas.length > 0) {
          try {
@@ -125,7 +180,7 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
    };
    const deleteRow = (row) => {
       // dispatch(deleteDatosDependiente({ id: row.id }));
-      setDatas(datas.filter((item) => item.id != row.id));
+      setDatas(datas.filter((item) => item.identificador != row.id));
       const itemTable = datasTable.filter((item) => item.id != row.id);
       setDatasTable(itemTable);
       Success("se elimino de la tabla");
@@ -150,25 +205,30 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
          <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
             <FormControlLabel
                control={<Switch checked={checked} onChange={handleChange} name="gilad" color={datasTable.length > 0 ? "secondary" : "primary"} />}
-               label={
-                  datasTable.length > 0
-                     ? "¿Deseas seguir agregando fideocomisos?"
-                     : "¿Tiene fideocomisos?"
-               }
+               label={datasTable.length > 0 ? "¿Deseas seguir agregando fideocomisos?" : "¿Tiene fideocomisos?"}
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm ref={formik} initialValues={initialValues} submit={submit} button>
+            <FormikForm
+               validationSchema={validationSchema}
+               messageButton="Agregar a la tabla"
+               previousButton
+               handlePrevious={previous}
+               ref={formik}
+               initialValues={initialValues}
+               submit={submit}
+               button
+            >
                <CustomRadio col={12} name={"Id_TipoRelacion"} label={""} options={tipoRelaciones} />
-                <AutoComplete col={12}  name={'Id_TipoFideicomiso'} label={`Tipo de fideicomiso`} options={tipoFideocomisos} />
+               <AutoComplete col={12} name={"Id_TipoFideicomiso"} label={`Tipo de fideicomiso`} options={tipoFideocomisos} />
                <AutoComplete col={12} name={"Id_TipoParticipacion"} label={"Tipo de participación"} options={tipoParticipacion} />
                <Text col={12} name={"RfcFideicomiso"} label={"RFC del fideicomiso"} />
-               <AutoComplete col={12} name={"Id_TipoPersonaFideicomitente"} label={"Fideicomitente"} options={tipoPersona} />
+               <AutoComplete col={12} name={"Id_TipoPersonaFideicomitente"} label={"Fide del comitente"} options={tipoPersona} />
                <Text col={12} name={"NombreRazonSocialFideicomitente"} label={"Nombre o Razón Social del fideicomitente"} />
                <Text col={12} name={"RfcFideicomitente"} label={"RFC"} />
                <Text col={12} name={"NombreRazonSocialFiduciario"} label={"Nombre o Razón Social del fiduciario"} />
                <Text col={12} name={"RfcFiduciario"} label={"RFC"} />
-               <AutoComplete col={12} name={"Id_TipoPersonaFideicomisario"} label={"Fideicomisario"} options={tipoPersona} />
+               <AutoComplete col={12} name={"Id_TipoPersonaFideicomisario"} label={"Fide del comisario"} options={tipoPersona} />
                <Text col={12} name={"NombreRazonSocialFideicomisario"} label={"Nombre o Razón Social del fideicomisario"} />
                <Text col={12} name={"RfcFideicomisario"} label={"RFC"} />
                <AutoComplete col={12} name={"Id_Sector"} label={"Sector productivo al que pertenece"} options={sectores} />

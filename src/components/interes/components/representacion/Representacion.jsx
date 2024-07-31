@@ -10,6 +10,7 @@ import DatePickerComponentV2 from "../../../Reusables/datepicker/DatePickerCompo
 import { Text } from "../../../Reusables/input/Input";
 import DataTable from "../../../Reusables/table/DataTable";
 import { Axios, PostAxios } from "../../../../services/services";
+import * as Yup from "yup";
 
 export const Representacion = ({ loading, data, next, previous, title }) => {
    const [checked, setChecked] = useState(true);
@@ -49,6 +50,22 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
       EsEnMexico: 1,
       Aclaraciones: ""
    };
+   const validationSchema = Yup.object().shape({
+      Id_TipoRelacion: Yup.number().min(1, "El tipo de relacion es requerida").required("El tipo de relacion es requerida"),
+      Id_TipoRepresentacion: Yup.number().min(1, "El tipo de representacion es requerida").required("El tipo de representacion es requerida"),
+      FechaInicioRepresentacion: Yup.date("se requiere fecha").required("La fecha de inicio de representación es requerida"),
+      Id_TipoPersona: Yup.number().min(1, "El tipo de persona es requerida").required("El tipo de persona es requerida"),
+      NombreRazonSocial: Yup.string().required("El nombre o razón social es requerido"),
+      Rfc: Yup.string()
+         .required("El RFC es requerido")
+         .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
+         .length(10, "El rfc debe contar con 10 caracteres"),
+      Id_Sector: Yup.number().min(1, "El sector es requerido").required("El sector es requerido"),
+      Id_PaisUbicacion: !mexico && Yup.number().min(1, "El país de ubicación es requerido").required("El país de ubicación es requerido"),
+      Id_EntidadFederativa: mexico && Yup.number().min(1, "La entidad federativa es requerida").required("La entidad federativa es requerida")
+      // RecibeRemuneracion: Yup.number().min(0, 'El
+   });
+
    useEffect(() => {
       if (tipoPersona.length > 0 && representacion.length > 0 && monedas.length > 0 && paises.length > 0 && entidades.length > 0 && sectores.length > 0) {
          if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
@@ -64,7 +81,7 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
 
                // Crear datos para datasTable
                console.log("Cargando ....", values);
-               const newData =  {
+               const newData = {
                   id: values.identificador,
                   "Tipo Relación": tipoRelaciones.find((item) => item.value === parseInt(values.Id_TipoRelacion))?.label,
                   "Tipo de Representacion	": representacion.find((item) => item.id === parseInt(values.Id_TipoRepresentacion))?.text,
@@ -195,7 +212,16 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm ref={formik} initialValues={initialValues} submit={submit} button>
+            <FormikForm
+               messageButton="Agregar a la tabla"
+               previousButton
+               handlePrevious={previous}
+               ref={formik}
+               initialValues={initialValues}
+               submit={submit}
+               button
+               validationSchema={validationSchema}
+            >
                <CustomRadio col={12} title={``} name={`Id_TipoRelacion`} options={tipoRelaciones} />
                <AutoComplete col={12} name={`Id_TipoRepresentacion`} label={`Tipo de representación`} options={representacion} />
                <DatePickerComponentV2 name={`FechaInicioRepresentacion`} label={`Fecha de inicio de participación dentro de la institución`} format={"DD/MM/YYYY"} />

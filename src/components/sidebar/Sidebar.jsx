@@ -23,6 +23,7 @@ const Sidebar = () => {
          text: "Declaraciones",
          legend: "selección de apartado de declaración",
          active: false,
+         permision:[2,3],
          children: [
             {
                path: "misdeclaraciones",
@@ -43,6 +44,8 @@ const Sidebar = () => {
          text: "Catalogos",
          legend: "catalogos generales",
          active: false,
+         permision:[1],
+
          children: [
             {
                path: "catalogos/estadocivil",
@@ -165,20 +168,26 @@ const Sidebar = () => {
          path: "",
          text: "Reportes",
          legend: "reportes del sistema",
-         active: false
+         active: false,
+         permision:[],
+
       },
       {
          path: "checador",
          text: "Checador",
          legend: "checador",
-         active: false
+         active: false,
+         permision:[1,5],
+
       },
       {
          path: "usuarios",
          text: "Usuarios",
          legend: "registro de usuarios",
 
-         active: false
+         active: false,
+         permision:[1,4],
+
       }
    ]);
    // closing the navbar when clicked outside the sidebar area
@@ -230,6 +239,9 @@ const Sidebar = () => {
             <div className="sidebar-menu">
                <ul className="menu-list">
                   {routes.map((item, i) => (
+                     <Ngif condition={item.permision.includes(parseInt(localStorage.getItem('Id_Role')))}>
+
+                    
                      <li className="menu-item" key={i}>
                         <Items
                            message={item.legend ? item.legend : item.text.toLowerCase()}
@@ -262,6 +274,7 @@ const Sidebar = () => {
                            </ul>
                         </div>
                      </li>
+                     </Ngif>
                   ))}
                </ul>
             </div>

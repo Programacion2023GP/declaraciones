@@ -9,6 +9,7 @@ import { Text } from "../../../Reusables/input/Input";
 import { AutoComplete } from "../../../Reusables/autocomplete/autocomplete";
 import DataTable from "../../../Reusables/table/DataTable";
 import { Axios, PostAxios } from "../../../../services/services";
+import * as Yup from "yup";
 
 export const Clientes = ({ loading, data, next, previous, title }) => {
    const [checked, setChecked] = useState(true);
@@ -41,6 +42,25 @@ export const Clientes = ({ loading, data, next, previous, title }) => {
       Aclaraciones: "",
       EsEnMexico: 1
    };
+   const validationSchema = Yup.object().shape({
+      Id_TipoRelacion: Yup.number().min(1, "El tipo de relacion es requerida").required("El tipo de relacion es requerida"),
+      NombreEmpresa: Yup.string().required("El nombre de la empresa o servicio es requerido"),
+      RfcEmpresa: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres"),
+      Id_TipoPersona: Yup.number().min(1, "El tipo de persona es requerido").required("El tipo de persona es requerido"),
+      NombreRazonSocial: Yup.string().required("El nombre de la empresa o servicio es requerido"),
+      RfcCliente: Yup.string()
+         .required("El RFC del cliente es requerido")
+         .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
+         .length(10, "El rfc debe contar con 10 caracteres"),
+      Id_Sector: Yup.number().min(1, "El sector es requerido").required("El sector es requerido"),
+
+      MontoAproximadoGanancia: Yup.number().min(0, "El monto aproximado de ganancia es requerido").required("El monto aproximado de ganancia es requerido"),
+      Id_MontoAproximadoGanancia:Yup.number().min(1, "El tipo de moneda es requerida").required("El tipo de moneda es requerida"),
+      Id_PaisUbicacion: !mexico && Yup.number().min(1, "El país de ubicación es requerido").required("El país de ubicación es requerido"),
+      Id_EntidadFederativa: mexico && Yup.number().min(1, "La entidad federativa es requerida").required("La entidad federativa es requerida")
+      // RecibeRemuneracion: Yup.number().min(0, 'El
+   });
+
    const { tipoPersona, sectores, monedas, entidades, paises } = Request({
       peticiones: ["tipoPersona", "sectores", "monedas", "entidades", "paises"]
    });
@@ -192,7 +212,16 @@ export const Clientes = ({ loading, data, next, previous, title }) => {
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm ref={formik} initialValues={initialValues} submit={submit} button>
+            <FormikForm
+               validationSchema={validationSchema}
+               messageButton="Agregar a la tabla"
+               previousButton
+               handlePrevious={previous}
+               ref={formik}
+               initialValues={initialValues}
+               submit={submit}
+               button
+            >
                <CustomRadio col={12} title={``} name={`Id_TipoRelacion`} options={tipoRelaciones} />
                <Text col={12} name={"NombreEmpresa"} label={"Nombre de la empresa o servicio que proporciona"} />
                <Text col={12} name={"RfcEmpresa"} label={"RFC"} />

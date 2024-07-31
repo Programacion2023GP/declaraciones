@@ -66,7 +66,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
 
    const Form = () => {
       useEffect(()=>{
-         // console.log("render dd")
+         console.log("usuarios",roles.filter(r => parseInt(localStorage.getItem('role')) == 4  ? [2, 3].includes(r.id) : true))
       },[])
       return (
          <>
@@ -76,7 +76,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
                <Text col={6} disabled={true} name={"PaternalSurname"} label={"Apellido Paterno"} />
                <Text col={6} disabled={true} name={"MaternalSurname"} label={"Apellido Materno"} />
                <Text type={"email"} col={12} name={"Email"} label={"Correo"} />
-               <AutoComplete col={12} name={"Id_Role"} label={"Rol del usuario en el sistema"} options={roles} />
+               <AutoComplete col={12} name={"Id_Role"} label={"Rol del usuario en el sistema"} options={roles.filter(r => parseInt(localStorage.getItem('Id_Role')) == 4  ? [2, 3].includes(r.id) : true)} />
                <AutoComplete col={12} name={"Id_TipoIntegrante"} label={"Tipo de integrante del sujeto obligado"} options={intengrantes} />
                <AutoComplete
                   col={12}

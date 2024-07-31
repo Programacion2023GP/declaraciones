@@ -222,7 +222,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm ref={formik} initialValues={initialValues} submit={submit} validationSchema={validationSchema} button>
+            <FormikForm messageButton='Agregar a la tabla' previousButton  handlePrevious ={previous}  ref={formik} initialValues={initialValues} submit={submit} validationSchema={validationSchema} button>
                <CustomRadio col={12} title={``} name={`Id_TipoRelacion`} options={tipoRelaciones} />
                <Text col={6} name={`NombreEmpresaSociedadAsociacion`} label={`Nombre de la empresa, sociedad o asociación`} />
                <Text col={6} name={`RfcEmpresa`} label={`RFC`} />

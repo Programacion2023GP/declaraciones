@@ -205,7 +205,7 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm ref={formik} button initialValues={initialValues} validationSchema={validationSchema} submit={submit}>
+            <FormikForm messageButton='Agregar a la tabla' previousButton  handlePrevious ={previous} ref={formik} button initialValues={initialValues} validationSchema={validationSchema} submit={submit}>
                <CustomRadio col={12} title={``} name={`Id_TipoRelacion`} options={tipoRelaciones} />
                <AutoComplete col={6} name={"Id_TipoInstitucion"} label={`Tipo de institución`} options={instituciones} />
                <Text col={6} name={`NombreInstitucion`} label={`Nombre de la institucion`} />

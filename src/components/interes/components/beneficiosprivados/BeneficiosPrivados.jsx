@@ -3,12 +3,13 @@ import { Text } from "../../../Reusables/input/Input";
 import * as Yup from "yup";
 import { Request } from "../../../Reusables/request/Request";
 import { AutoComplete } from "../../../Reusables/autocomplete/autocomplete";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Box, Button, Card, FormControlLabel, FormGroup, Switch } from "@mui/material";
 import { Ngif } from "../../../Reusables/conditionals/Ngif";
 import { Error, Success } from "../../../../toasts/toast";
 import DataTable from "../../../Reusables/table/DataTable";
 import { Axios, PostAxios } from "../../../../services/services";
+
 export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => {
    const [checked, setChecked] = useState(true);
    const [datas, setDatas] = useState([]);
@@ -18,7 +19,9 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
    const [mexico, setMexico] = useState(true);
 
    const formik = useRef(null);
-   const {tipoBeneficios,relacion,tipoPersona,formaRecepcion,monedas,sectores} = Request({peticiones:['tipoBeneficios','relacion','tipoPersona','formaRecepcion','monedas','sectores']})
+   const { tipoBeneficios, relacion, tipoPersona, formaRecepcion, monedas, sectores } = Request({
+      peticiones: ["tipoBeneficios", "relacion", "tipoPersona", "formaRecepcion", "monedas", "sectores"]
+   });
    const initialValues = {
       Id_Intereses: parseInt(localStorage.getItem("id_Intereses")),
       Id_TipoBeneficio: 0,
@@ -26,19 +29,70 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
       Id_TipoPersona: 0,
       NombreRazonSocial: "",
       RfcCliente: "",
-      Id_FormaRecepcion:0,
+      Id_FormaRecepcion: 0,
       Id_Sector: 0,
-      EspecifiqueBeneficio:"",
+      EspecifiqueBeneficio: "",
       MontoMensualAproximado: 0,
       Id_MontoMensualAproximado: 0,
-      Aclaraciones: "",
+      Aclaraciones: ""
    };
+   const validationSchema = Yup.object().shape({
+      Id_TipoBeneficio:Yup.number().min(1,'El tipo de beneficio es requerido').required('El tipo de beneficio es requerido'),
+      Id_BeneficiarioPrograma:Yup.number().min(1,'El beneficiario de programa es requerido').required('El beneficiario de programa es requerido'),
+      Id_TipoPersona: Yup.number().min(1, "El tipo de persona es requerido").required("El tipo de persona es requerido"),
+      NombreRazonSocial: Yup.string().required("El nombre de la empresa o servicio es requerido"),
+      RfcCliente: Yup.string()
+      .required("El RFC del cliente es requerido")
+      .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
+      .length(10, "El rfc debe contar con 10 caracteres"),
+      Id_FormaRecepcion:Yup.number().min(1,'La forma de recepción es requerida').required('La forma de recepción es requerida'),
+      Id_Sector:Yup.number().min(1,'El sector productivo es requerido').required('El sector productivo es requerido'),
+      MontoMensualAproximado:Yup.number().min(0,'El monto es requerido').required('El monto es requerido'),
+      Id_MontoMensualAproximado:Yup.number().min(1,'El tipo de moneda es requerida').required('El tipo de moneda es requerida')
+      // RecibeRemuneracion: Yup.number().min(0, 'El
+   });
+   useEffect(() => {
+      if (tipoBeneficios.length > 0 && relacion.length > 0 && tipoPersona.length > 0 && formaRecepcion.length > 0 && monedas.length > 0 && sectores.length > 0) {
+         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+            // Crea arrays temporales para los nuevos datos
+            const newDatas = [];
+            const newDatasTable = [];
+
+            data.forEach((values, index) => {
+               delete values.Id_PrestamoComodato;
+
+               // Asignar identificador
+               values.identificador = index;
+
+               // Crear datos para datasTable
+               console.log("Cargando ....", values);
+               const newData = {
+                  id: values.identificador,
+                  "Nombre empresa o servicio": values.NombreRazonSocial,
+                  "Cliente Principal": tipoPersona.find((item) => item.id === parseInt(values.Id_TipoPersona))?.text,
+                  "Monto Mensual": values.MontoMensualAproximado,
+                  "Sector Productivo": sectores.find((item) => item.id === parseInt(values.Id_Sector))?.text
+               };
+
+               // Añadir datos a los arrays temporales
+               newDatas.push(values);
+               newDatasTable.push(newData);
+            });
+
+            // Actualizar el estado con los nuevos datos
+            setDatas(newDatas);
+            setDatasTable(newDatasTable);
+            // Ajustar el identificador único
+            setIdUnique(data.length);
+         }
+      }
+   }, [data, tipoBeneficios, relacion, tipoPersona, formaRecepcion, monedas, sectores]);
 
    const submit = async (values, { resetForm }) => {
       formik.current.resetForm();
 
       Success("se agrego a la tabla");
-      values.id = idUnique;
+      values.identificador = idUnique;
 
       setDatas(datas.concat(values));
       // dispatch(addDatosDependiente(values));
@@ -51,7 +105,7 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
       const newDatasVisuales = [
          ...datasTable,
          {
-            id: values.id,
+            id: values.identificador,
             "Nombre empresa o servicio": values.NombreRazonSocial,
             "Cliente Principal": tipoPersona.find((item) => item.id === parseInt(values.Id_TipoPersona))?.text,
             "Monto Mensual": values.MontoMensualAproximado,
@@ -67,7 +121,7 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
    };
    const sendDatas = async () => {
       const newDatas = [...datas];
-      const url = `beneficiosprivados/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
+      const url = `beneficiosprivados/${update ? `update/${localStorage.getItem("id_Intereses")}` : "create"}`;
       // console.log(newDatas,url);
       if (newDatas.length > 0) {
          try {
@@ -114,7 +168,7 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
    };
    const deleteRow = (row) => {
       // dispatch(deleteDatosDependiente({ id: row.id }));
-      setDatas(datas.filter((item) => item.id != row.id));
+      setDatas(datas.filter((item) => item.identificador != row.id));
       const itemTable = datasTable.filter((item) => item.id != row.id);
       setDatasTable(itemTable);
       Success("se elimino de la tabla");
@@ -147,19 +201,33 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm ref={formik} initialValues={initialValues} submit={submit} button>
-             <AutoComplete col={12}  name={`Id_TipoBeneficio`} label={`Tipo de Beneficio`} options={tipoBeneficios} />
-             <AutoComplete col={12}  name={`Id_BeneficiarioPrograma`} label={`Beneficiario`} options={relacion} />
-             <AutoComplete col={12}  name={`Id_TipoPersona`} label={`Otorgante`} options={tipoPersona} />
-             <Text col={12} name={`NombreRazonSocial`} label={`Nombre o Razón Social del otorgante`}  />
-             <Text col={12} name={`RfcCliente`} label={`RFC`}  />
-             <AutoComplete col={12}  name={`Id_FormaRecepcion`} label={`Forma Recepción del Beneficio`} options={formaRecepcion} />
-             <Text col={12} name={'EspecifiqueBeneficio'} label={'Especifique el Beneficio'}  />
-             <Text col={12} name={`MontoMensualAproximado`} label={`Monto mensual aproximado del Beneficio`}  />
-             <AutoComplete col={12}  name={`Id_MontoMensualAproximado`} label={'Tipo de Moneda'} options={monedas} />
-             <AutoComplete col={12}  name={'Id_Sector'} label={'Sector Productivo al que pertenece'} options={sectores} />
-             <Text col={12} name={`Aclaraciones`} label={`Aclaraciones/Observaciones
-`}  rows={10}/>
+            <FormikForm
+               validationSchema={validationSchema}
+               messageButton="Agregar a la tabla"
+               previousButton
+               handlePrevious={previous}
+               ref={formik}
+               initialValues={initialValues}
+               submit={submit}
+               button
+            >
+               <AutoComplete col={12} name={`Id_TipoBeneficio`} label={`Tipo de Beneficio`} options={tipoBeneficios} />
+               <AutoComplete col={12} name={`Id_BeneficiarioPrograma`} label={`Beneficiario`} options={relacion} />
+               <AutoComplete col={12} name={`Id_TipoPersona`} label={`Otorgante`} options={tipoPersona} />
+               <Text col={12} name={`NombreRazonSocial`} label={`Nombre o Razón Social del otorgante`} />
+               <Text col={12} name={`RfcCliente`} label={`RFC`} />
+               <AutoComplete col={12} name={`Id_FormaRecepcion`} label={`Forma Recepción del Beneficio`} options={formaRecepcion} />
+               <Text col={12} name={"EspecifiqueBeneficio"} label={"Especifique el Beneficio"} />
+               <Text col={12} name={`MontoMensualAproximado`} label={`Monto mensual aproximado del Beneficio`} />
+               <AutoComplete col={12} name={`Id_MontoMensualAproximado`} label={"Tipo de Moneda"} options={monedas} />
+               <AutoComplete col={12} name={"Id_Sector"} label={"Sector Productivo al que pertenece"} options={sectores} />
+               <Text
+                  col={12}
+                  name={`Aclaraciones`}
+                  label={`Aclaraciones/Observaciones
+`}
+                  rows={10}
+               />
             </FormikForm>
          </Ngif>
 
