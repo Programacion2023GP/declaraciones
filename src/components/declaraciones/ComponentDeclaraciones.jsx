@@ -50,8 +50,8 @@ const ComponentDeclaraciones = () => {
 
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja : 0); // cambia de hoja
-   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja : 0); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
+   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja>14? hoja-14:hoja : 9); // cambia de hoja
+   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja>14? hoja-14:hoja : 9); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
    const dispatch = useDispatch();
 
    const handleExit = () => {
@@ -60,7 +60,6 @@ const ComponentDeclaraciones = () => {
       window.location.hash = "/dashboard/misdeclaraciones";
    };
    const handleNext = () => {
-      console.log("siguiente");
       setSend(false);
       setDataPage([]);
       setPageAfterSituacion((prevActiveStep) => {
@@ -287,9 +286,9 @@ const ComponentDeclaraciones = () => {
       }
    ];
    const [view, setView] = React.useState(false);
-   const [filteredSteps, setFilteredSteps] = React.useState(() => {
+   const [filteredSteps, setFiltersStepers] = React.useState(() => {
       const filtered = steps.filter((step) => step.exist.includes(declaracion));
-      return hoja > 14 && declaracion==2 ? filtered.concat(declaracionIntereses) : filtered;
+      return hoja > 14 && declaracion==2 ? declaracionIntereses : filtered;
    });
 
    const [update, setupdate] = React.useState(false);
@@ -450,6 +449,7 @@ const ComponentDeclaraciones = () => {
    }, [activeStep]);
    const verifiedServidorPublico = async () => {
       const response = await GetAxios(`servidorpublico/index/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
+      console.log("acaaaa",response);
       if (response.length > 0) {
          Info("Se agrego la declaracion de intereses");
          setFiltersStepers((prev) => prev.concat(...declaracionIntereses));

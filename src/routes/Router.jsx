@@ -40,6 +40,7 @@ import store from "../redux/store";
 import { element } from "prop-types";
 import { Backdrop, CircularProgress, Typography } from "@mui/material";
 import { Ngif } from "../components/Reusables/conditionals/Ngif";
+import { NotasAclaratorias } from "../components/notasaclaratorias/NotasAclaratorias";
 // import DeclaracionInteres from "../components/interes/DeclaracionInteres";
 // import { MisDeclaraciones } from "../components/misdeclaraciones/MisDeclaraciones";
 // import { ComponentCatalogo } from "../components/catalogos/componentcatalogo/ComponentCatalogo";
@@ -103,6 +104,24 @@ export const router = createHashRouter([
             element: (
                <ComponentPermissions condition={[2, 3].includes(parseInt(localStorage.getItem("Id_Role")))}>
                   <MisDeclaracionesLayout />
+               </ComponentPermissions>
+            )
+         },
+         {
+            path: "notasaclaratorias",
+            index:true,
+            element: (
+               <ComponentPermissions condition={[2,3].includes(parseInt(localStorage.getItem("Id_Role")))}>
+                  <NotasAclaratorias  />
+               </ComponentPermissions>
+            )
+         },
+         {
+            path: "checadornotasalacaratorias",
+            index:true,
+            element: (
+               <ComponentPermissions condition={[1].includes(parseInt(localStorage.getItem("Id_Role")))}>
+                  <NotasAclaratorias  />
                </ComponentPermissions>
             )
          },

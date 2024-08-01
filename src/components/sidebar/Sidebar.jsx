@@ -32,6 +32,12 @@ const Sidebar = () => {
                active: false
             },
             {
+               path: "notasaclaratorias",
+               text: "Notas aclaratorias",
+               // legend: "crear nueva declaracion",
+               active: false,
+            },
+            {
                path: "declaraciones/steppers",
                text: "Generar declaración",
                legend: "crear nueva declaracion",
@@ -179,6 +185,13 @@ const Sidebar = () => {
          active: false,
          permision:[1,5],
 
+      },
+      {
+         path: "checadornotasalacaratorias",
+         text: "Notas aclaratorias (checador)",
+         legend: "Notas aclaratorias (checador)",
+         active: false,
+         permision:[1],
       },
       {
          path: "usuarios",

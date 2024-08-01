@@ -66,7 +66,6 @@ const Usuarios = ({ formik, setId, peticiones }) => {
 
    const Form = () => {
       useEffect(()=>{
-         console.log("usuarios",roles.filter(r => parseInt(localStorage.getItem('role')) == 4  ? [2, 3].includes(r.id) : true))
       },[])
       return (
          <>

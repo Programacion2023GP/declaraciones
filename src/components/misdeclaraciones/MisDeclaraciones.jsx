@@ -17,10 +17,14 @@ import { Error, Success } from "../../toasts/toast";
       setLoading(false);
    };
    const handleEditDeclaracion = (row) => {
+      
       const { Folio, Tipo_declaracion, Declaracion, Hoja } = row;
       localStorage.setItem("id_SituacionPatrimonial", Folio);
       let number = Declara(Declaracion, Tipo_declaracion);
       let page = Hoja;
+      if (Declaracion == "Interes") {
+         window.location.hash = `dashboard/declaraciones/2/${parseInt(page) + (+14- 1)}`;
+      }
       if ((Declaracion == "Completa" && Tipo_declaracion == 1 && Hoja >= "Inicial") || (Declaracion == "Completa" && Tipo_declaracion == "Conclusión" && Hoja >= 9)) {
          page = parseInt(page) - 1;
       }
@@ -31,7 +35,7 @@ import { Error, Success } from "../../toasts/toast";
       if (Declaracion =="Simplificada") {
          page = parseInt(page) + 1;
       }
-      window.location.hash = `dashboard/declaraciones/${number}/${parseInt(page) - 1}`;
+      // window.location.hash = `dashboard/declaraciones/${number}/${parseInt(page) - 1}`;
    };
    const handleDelete = async (row) => {
       setLoading(true);

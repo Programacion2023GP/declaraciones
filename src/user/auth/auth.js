@@ -13,15 +13,13 @@ export const Auth = createSlice({
    initialState: initialState,
    reducers: {
       loginAuth: (state, action) => {
-       
          state.idUser = parseInt(localStorage.getItem("Id_User"));
          state.idRol = parseInt(localStorage.getItem("Id_Role"));
          state.location = "/";
          if (state.idUser > 0 && state.idRol > 0) {
-
             switch (parseInt(localStorage.getItem("Id_Role"))) {
                case 1:
-                  window.location.hash = "/dashboard/misdeclaraciones";
+                  window.location.hash = "/dashboard/checador";
 
                   break;
 
@@ -33,8 +31,12 @@ export const Auth = createSlice({
                   window.location.hash = "/dashboard/misdeclaraciones";
                   break;
                case 4:
+                  window.location.hash = "/dashboard/usuarios";
+
                   break;
                case 5:
+                  window.location.hash = "/dashboard/checador";
+
                   break;
             }
          }

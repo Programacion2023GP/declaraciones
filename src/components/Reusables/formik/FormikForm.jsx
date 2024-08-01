@@ -9,7 +9,22 @@ import "./FormikForm.scss";
 
 export const FormikForm = forwardRef(
    (
-      { className, initialValues, validationSchema, sizeTitle, submit, title, children, message, button, previousButton, handlePrevious, advertence, messageButton },
+      {
+         className,
+         initialValues,
+         validationSchema,
+         sizeTitle,
+         submit,
+         title,
+         children,
+         message,
+         button,
+         previousButton,
+         handlePrevious,
+         advertence,
+         messageButton,
+         maxWidth
+      },
       ref
    ) => {
       const getErrorMessages = (errors, touched) => {
@@ -27,7 +42,7 @@ export const FormikForm = forwardRef(
       };
       useEffect(() => {}, []);
       return (
-         <Card className={className} sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}>
+         <Card className={className} sx={{ maxWidth: maxWidth ? maxWidth : "90%", margin: "auto", padding: ".8rem" }}>
             <CardContent>
                <Typography variant={sizeTitle ? sizeTitle : "h5"} align="center" color="textPrimary" style={{ fontWeight: "500" }}>
                   {title}
@@ -86,7 +101,6 @@ export const Voice = ({ message, title = "", info = "", flex = true, velocity = 
    const [isSpeaking, setIsSpeaking] = useState(false); // Estado para rastrear si se está hablando
 
    useEffect(() => {
-     
       if (message && Object.keys(message).length > 0) {
          setTexts([]);
          setTexts((prevTexts) => [...prevTexts, ...Object.values(message)]);
@@ -125,7 +139,7 @@ export const Voice = ({ message, title = "", info = "", flex = true, velocity = 
                // Establecer el estado de lectura actual
                if (setSpeaking && index % 2 === 1) {
                   setSpeaking((previndex) => previndex + 1);
-               } 
+               }
 
                // Monitorear si la síntesis de voz está activa
                const interval = setInterval(() => {
@@ -177,9 +191,8 @@ export const Voice = ({ message, title = "", info = "", flex = true, velocity = 
                className={isSpeaking ? "speaking" : ""}
                onClick={() => {
                   handleReadAllAloud();
-                  if(setLine){
-                  
-                     setLine(line)
+                  if (setLine) {
+                     setLine(line);
                   }
                }}
                aria-label="Leer errores"

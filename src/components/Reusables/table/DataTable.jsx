@@ -51,11 +51,11 @@ const SearchInput = ({ column, data, getData, previousData }) => {
    };
 
    return (
-      <Box sx={{ "& > :not(style)": { m: 0.5 }, width: "80%", height: "fit-content" }}>
-         <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box sx={{ width: "100%", height: "100%" }}>
+         <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
             <SearchIcon sx={{ color: "action.active", mr: 0.5, my: 0.5 }} />
             <TextField
-               size="small"
+               fullWidth // Asegura que el TextField ocupe todo el ancho disponible
                value={searchText}
                onChange={searchData}
                id="input-with-sx"
@@ -64,7 +64,7 @@ const SearchInput = ({ column, data, getData, previousData }) => {
                InputProps={{
                   endAdornment: (
                      <InputAdornment position="end">
-                        <IconButton onClick={handleClear}>{/* <ClearIcon /> */}</IconButton>
+                        <IconButton onClick={handleClear}>{/* <ClearIcon /> Descomenta esto si quieres el icono de borrar */}</IconButton>
                      </InputAdornment>
                   )
                }}
@@ -126,6 +126,11 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
                         <th
                            key={"titlesMap" + title}
                            style={{
+                              marginLeft: "15rem",
+                              marginRight: "15rem",
+                              // paddingLeft: ".3rem",
+                              // paddingRight: ".3rem",
+                            
                               border: "1px solid #BDBDBD",
                               height: "fit-content"
                            }}
@@ -983,21 +988,21 @@ const MoreButtons = ({ item, moreButtons, checkConditionsMoreButton, buttonsMenu
                               element.handleButton(item);
                            }}
                         >
-                        Profile
+                           Profile
                         </MenuItem>
                      </Ngif>
                      <Ngif condition={!buttonsMenu}>
                         <Tooltip title={element.toltip} placement="top-start">
-                           <IconButton style={{color:element.color}}
+                           <IconButton
+                              style={{ color: element.color }}
                               onClick={() => {
                                  element.handleButton(item);
                               }}
                               variant="outlined"
-                            
                            >
                               <element.icon />
                               {element.message}
-                           </IconButton >
+                           </IconButton>
                         </Tooltip>
                      </Ngif>
                   </>
