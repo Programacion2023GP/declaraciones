@@ -15,7 +15,7 @@ import Loading from "../Reusables/loading/Loading";
 import { Opacity } from "@mui/icons-material";
 // import { Card, CardContent, Typography, CardMedia, Button, Box } from '@mui/material';
 
- const Login = () => {
+const Login = () => {
    const [messages, setMessages] = useState(false);
    const [loading, setLoading] = useState(false);
    const [loadingPost, setLoadingPost] = useState(false);
@@ -75,20 +75,54 @@ import { Opacity } from "@mui/icons-material";
                         try {
                            setLoadingPost(true);
                            const response = await Axios.post("usuarios/login", values);
-                           localStorage.setItem("Id_User", response.data.data.result.user.Id_User);
-                           localStorage.setItem("Id_Person", response.data.data.result.user.Id_Person);
-                           localStorage.setItem("Id_Role", response.data.data.result.user.Id_Role);
-                           localStorage.setItem("Name", response.data.data.result.user.Name);
-                           localStorage.setItem("PaternalSurname", response.data.data.result.user.PaternalSurname);
-
-                           window.location.hash = "/dashboard/declaraciones";
-                           // console.log(response.data.data);
+                           const user = response.data.data.result.user;
+                        
+                           localStorage.setItem("Id_User", user.Id_User);
+                           localStorage.setItem("Id_Person", user.Id_Person);
+                           localStorage.setItem("Id_Role", user.Id_Role);
+                           localStorage.setItem("Name", user.Name);
+                           localStorage.setItem("PaternalSurname", user.PaternalSurname);
+                        
+                           console.log("Updated", user.Id_Role);
+                        
+                           const checkLocalStorage = () => {
+                              return localStorage.getItem("Id_Role") !== null;
+                           };
+                        
+                           const waitUntilStorageIsUpdated = async () => {
+                              while (!checkLocalStorage()) {
+                                 await new Promise(resolve => setTimeout(resolve, 100)); // Espera 100ms antes de volver a verificar
+                              }
+                           };
+                        
+                           await waitUntilStorageIsUpdated();
+                        
+                           switch (parseInt(user.Id_Role)) {
+                              case 1:
+                                 window.location.hash = "/dashboard/checador";
+                                 break;
+                              case 2:
+                                 window.location.hash = "/dashboard/misdeclaraciones";
+                                 break;
+                              case 3:
+                                 window.location.hash = "/dashboard/misdeclaraciones";
+                                 break;
+                              case 4:
+                                 window.location.hash = "/dashboard/usuarios";
+                                 break;
+                              case 5:
+                                 window.location.hash = "/dashboard/checador";
+                                 break;
+                              default:
+                                 console.error("Invalid Id_Role");
+                           }
                         } catch (error) {
                            console.error(error);
-                           Error("Credenciales incorrectas")
+                           Error("Credenciales incorrectas");
                         } finally {
                            setLoadingPost(false);
                         }
+                        
                      }}
                   >
                      {({ values, handleSubmit, handleChange, errors, touched, handleBlur }) => (

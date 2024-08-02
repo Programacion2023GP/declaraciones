@@ -5,7 +5,7 @@ import { createBrowserRouter, createHashRouter, RouterProvider } from "react-rou
 import StepperContextProvider from "../context/StepperContext";
 import MenuContextProvider from "../context/MenuContext";
 // import { Steppers } from "../components/declaraciones/steppers/Steppers";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 
 // import { Login } from "../components/autenticacion/login";
 const Loadable = (Component) => (props) => (
@@ -33,6 +33,9 @@ const ComponentCatalogoLayout = Loadable(lazy(() => import("../components/catalo
 const MisDeclaracionesLayout = Loadable(lazy(() => import("../components/misdeclaraciones/MisDeclaraciones")));
 const ErrorLayout = Loadable(lazy(() => import("../components/error/Error")));
 const ComponentDeclaracionesLayout = Loadable(lazy(() => import("../components/declaraciones/ComponentDeclaraciones")));
+const ComponentIncumplimientosLayout = Loadable(lazy(() => import("../components/reportes/incumplimientos/Incumplimientos")));
+const ComponentTrasparenciaLayout = Loadable(lazy(() => import("../components/reportes/trasparencia/Trasparencia")));
+
 const DeclaracionInteresLayout = Loadable(lazy(() => import("../components/interes/DeclaracionInteres")));
 // import ComponentDeclaraciones from "../components/declaraciones/ComponentDeclaraciones";
 import { Provider } from "react-redux";
@@ -41,14 +44,29 @@ import { element } from "prop-types";
 import { Backdrop, CircularProgress, Typography } from "@mui/material";
 import { Ngif } from "../components/Reusables/conditionals/Ngif";
 import { NotasAclaratorias } from "../components/notasaclaratorias/NotasAclaratorias";
+import Loading from "../components/Reusables/loading/Loading";
 // import DeclaracionInteres from "../components/interes/DeclaracionInteres";
 // import { MisDeclaraciones } from "../components/misdeclaraciones/MisDeclaraciones";
 // import { ComponentCatalogo } from "../components/catalogos/componentcatalogo/ComponentCatalogo";
 // import { Error } from "../components/error/Error";
 // import { Checador } from "../components/checador/Checador";
 const ComponentPermissions = ({ condition, children }) => {
-   if (condition) {
-      return <>{children}</>; // Usa fragmentos para envolver los `children` sin agregar nodos extra al DOM
+   const [role, setRole] = useState(null);
+
+   useEffect(() => {
+      const storedRole = localStorage.getItem("Id_Role");
+      if (storedRole) {
+         setRole(parseInt(storedRole, 10));
+      }
+   }, []);
+
+   if (role === null) {
+      // Podrías mostrar un spinner o alguna indicación de carga aquí si lo deseas
+      return <Loading />;
+   }
+
+   if (condition(role)) {
+      return <>{children}</>;
    } else {
       throw new Error("Access denied: condition not met");
    }
@@ -70,7 +88,7 @@ export const router = createHashRouter([
                   path: "steppers",
                   element: (
                      <StepperContextProvider>
-                        <ComponentPermissions condition={[2, 3].includes(parseInt(localStorage.getItem("Id_Role")))}>
+                        <ComponentPermissions condition={(role) => [2, 3].includes(role)}>
                            <SteppersLayout />
                         </ComponentPermissions>
                      </StepperContextProvider>
@@ -80,7 +98,7 @@ export const router = createHashRouter([
                   path: ":declaracion",
                   element: (
                      <Provider store={store}>
-                        <ComponentPermissions condition={[2, 3].includes(parseInt(localStorage.getItem("Id_Role")))}>
+                        <ComponentPermissions condition={(role) => [2, 3].includes(role)}>
                            <ComponentDeclaracionesLayout />
                         </ComponentPermissions>
                      </Provider>
@@ -89,7 +107,7 @@ export const router = createHashRouter([
                      {
                         path: ":hoja?",
                         element: (
-                           <ComponentPermissions condition={[2, 3].includes(parseInt(localStorage.getItem("Id_Role")))}>
+                           <ComponentPermissions condition={(role) => [2, 3].includes(role)}>
                               <ComponentDeclaracionesLayout />
                            </ComponentPermissions>
                         )
@@ -102,26 +120,26 @@ export const router = createHashRouter([
             path: "misdeclaraciones",
             index: true,
             element: (
-               <ComponentPermissions condition={[2, 3].includes(parseInt(localStorage.getItem("Id_Role")))}>
+               <ComponentPermissions condition={(role) => [2, 3].includes(role)}>
                   <MisDeclaracionesLayout />
                </ComponentPermissions>
             )
          },
          {
             path: "notasaclaratorias",
-            index:true,
+            index: true,
             element: (
-               <ComponentPermissions condition={[2,3].includes(parseInt(localStorage.getItem("Id_Role")))}>
-                  <NotasAclaratorias  />
+               <ComponentPermissions condition={(role) => [2, 3].includes(role)}>
+                  <NotasAclaratorias />
                </ComponentPermissions>
             )
          },
          {
             path: "checadornotasalacaratorias",
-            index:true,
+            index: true,
             element: (
-               <ComponentPermissions condition={[1].includes(parseInt(localStorage.getItem("Id_Role")))}>
-                  <NotasAclaratorias  />
+               <ComponentPermissions condition={(role) => [1].includes(role)}>
+                  <NotasAclaratorias />
                </ComponentPermissions>
             )
          },
@@ -129,7 +147,7 @@ export const router = createHashRouter([
             path: "checador",
             index: true,
             element: (
-               <ComponentPermissions condition={[1, 5].includes(parseInt(localStorage.getItem("Id_Role")))}>
+               <ComponentPermissions condition={(role) => [1, 5].includes(role)}>
                   <ChecadorLayout />
                </ComponentPermissions>
             )
@@ -138,7 +156,7 @@ export const router = createHashRouter([
             path: "usuarios",
             // element:<EstadoCivil/>,
             element: (
-               <ComponentPermissions condition={[1,4].includes(parseInt(localStorage.getItem("Id_Role")))}>
+               <ComponentPermissions condition={(role) => [1, 4].includes(role)}>
                   <ComponentCatalogoLayout pagina={"usuarios"} />
                </ComponentPermissions>
             )
@@ -150,8 +168,29 @@ export const router = createHashRouter([
                {
                   path: ":catalogo",
                   element: (
-                     <ComponentPermissions condition={[1].includes(parseInt(localStorage.getItem("Id_Role")))}>
+                     <ComponentPermissions condition={(role) => [1].includes(role)}>
                         <ComponentCatalogoLayout />
+                     </ComponentPermissions>
+                  )
+               }
+            ]
+         },
+         {
+            path: "reportes",
+            children: [
+               {
+                  path: "incumplimientos",
+                  element: (
+                     <ComponentPermissions condition={(role) => [1, 2, 3, 4, 5].includes(role)}>
+                        <ComponentIncumplimientosLayout />
+                     </ComponentPermissions>
+                  )
+               },
+               {
+                  path: "trasparencia",
+                  element: (
+                     <ComponentPermissions condition={(role) => [1, 2, 3, 4, 5].includes(role)}>
+                        <ComponentTrasparenciaLayout />
                      </ComponentPermissions>
                   )
                }

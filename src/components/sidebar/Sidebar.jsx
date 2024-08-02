@@ -23,7 +23,7 @@ const Sidebar = () => {
          text: "Declaraciones",
          legend: "selección de apartado de declaración",
          active: false,
-         permision:[2,3],
+         permision: [2, 3],
          children: [
             {
                path: "misdeclaraciones",
@@ -35,7 +35,7 @@ const Sidebar = () => {
                path: "notasaclaratorias",
                text: "Notas aclaratorias",
                // legend: "crear nueva declaracion",
-               active: false,
+               active: false
             },
             {
                path: "declaraciones/steppers",
@@ -50,7 +50,7 @@ const Sidebar = () => {
          text: "Catalogos",
          legend: "catalogos generales",
          active: false,
-         permision:[1],
+         permision: [1],
 
          children: [
             {
@@ -162,12 +162,12 @@ const Sidebar = () => {
                path: "catalogos/tipobien",
                text: "Tipo de bien mueble",
                active: false
-            },{
-               path:"catalogos/tipoadeudo",
-               text:"Tipo de adeudo",
-               active:false
+            },
+            {
+               path: "catalogos/tipoadeudo",
+               text: "Tipo de adeudo",
+               active: false
             }
-            
          ]
       },
       {
@@ -175,23 +175,35 @@ const Sidebar = () => {
          text: "Reportes",
          legend: "reportes del sistema",
          active: false,
-         permision:[],
-
+         permision: [1, 2, 3, 4, 5],
+         children: [
+            {
+               path: "reportes/incumplimientos",
+               text: "Incumplimientos",
+               legend: "reportes de incumplimientos",
+               active: false
+            },
+            {
+               path: "reportes/trasparencia",
+               text: "Trasparencia",
+               legend: "reportes de trasparencia",
+               active: false
+            }
+         ]
       },
       {
          path: "checador",
          text: "Checador",
          legend: "checador",
          active: false,
-         permision:[1,5],
-
+         permision: [1, 5]
       },
       {
          path: "checadornotasalacaratorias",
          text: "Notas aclaratorias (checador)",
          legend: "Notas aclaratorias (checador)",
          active: false,
-         permision:[1],
+         permision: [1]
       },
       {
          path: "usuarios",
@@ -199,8 +211,7 @@ const Sidebar = () => {
          legend: "registro de usuarios",
 
          active: false,
-         permision:[1,4],
-
+         permision: [1, 4]
       }
    ]);
    // closing the navbar when clicked outside the sidebar area
@@ -252,41 +263,39 @@ const Sidebar = () => {
             <div className="sidebar-menu">
                <ul className="menu-list">
                   {routes.map((item, i) => (
-                     <Ngif condition={item.permision.includes(parseInt(localStorage.getItem('Id_Role')))}>
-
-                    
-                     <li className="menu-item" key={i}>
-                        <Items
-                           message={item.legend ? item.legend : item.text.toLowerCase()}
-                           active={item.active}
-                           classprop={"active"}
-                           path={item.path}
-                           key={`${item.path}-${i}`}
-                           text={item.text}
-                           childrens={item.children != undefined ? (item.children.length > 0 ? true : false) : false}
-                           index={i}
-                           handleClickContinue={handleSelect}
-                        ></Items>
-                        <div
-                           className={item.active && (item.children?.length ?? 0) > 0 ? "subitemactive" : "subitem"}
-                           style={
-                              {
-                                 // position: "relative",
-                                 // // border: "1px solid blue",
-                                 // padding: "1rem",
-                                 // borderRadius: "5px",
-                                 // overflow: "hidden",
-                                 // transition: "box-shadow 0.3s"
+                     <Ngif condition={item.permision.includes(parseInt(localStorage.getItem("Id_Role")))}>
+                        <li className="menu-item" key={i}>
+                           <Items
+                              message={item.legend ? item.legend : item.text.toLowerCase()}
+                              active={item.active}
+                              classprop={"active"}
+                              path={item.path}
+                              key={`${item.path}-${i}`}
+                              text={item.text}
+                              childrens={item.children != undefined ? (item.children.length > 0 ? true : false) : false}
+                              index={i}
+                              handleClickContinue={handleSelect}
+                           ></Items>
+                           <div
+                              className={item.active && (item.children?.length ?? 0) > 0 ? "subitemactive" : "subitem"}
+                              style={
+                                 {
+                                    // position: "relative",
+                                    // // border: "1px solid blue",
+                                    // padding: "1rem",
+                                    // borderRadius: "5px",
+                                    // overflow: "hidden",
+                                    // transition: "box-shadow 0.3s"
+                                 }
                               }
-                           }
-                        >
-                           <ul className="menu-list">
-                              <Ngif condition={item.children && Array.isArray(item.children)}>
-                                 <RecursivoMenu array={item.children} i={i} handleSelect={handleSelect} />
-                              </Ngif>
-                           </ul>
-                        </div>
-                     </li>
+                           >
+                              <ul className="menu-list">
+                                 <Ngif condition={item.children && Array.isArray(item.children)}>
+                                    <RecursivoMenu array={item.children} i={i} handleSelect={handleSelect} />
+                                 </Ngif>
+                              </ul>
+                           </div>
+                        </li>
                      </Ngif>
                   ))}
                </ul>
@@ -300,7 +309,7 @@ const RecursivoMenu = ({ array, i, handleSelect }) => {
    const style = {
       height: "100%",
       background: "linear-gradient(to bottom right, rgba(255, 255, 255, 0.3) 49%, rgba(71, 91, 232, 0.2) 50%)",
-      backdropFilter: "blur(3px)",
+      backdropFilter: "blur(3px)"
       // padding:".1rem "
    };
    return (
@@ -338,5 +347,3 @@ const RecursivoMenu = ({ array, i, handleSelect }) => {
 };
 
 export default Sidebar;
-
-
