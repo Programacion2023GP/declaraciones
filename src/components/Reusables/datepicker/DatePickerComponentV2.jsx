@@ -1,9 +1,9 @@
 import { FormControl, FormHelperText } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import  'dayjs/locale/es'; 
 import { Field, useFormikContext } from "formik";
 import { useEffect } from "react";
-import  'dayjs/locale/es'; 
 
 const DatePickerComponentV2 = ({
    name,

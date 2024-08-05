@@ -130,7 +130,7 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
                               marginRight: "15rem",
                               // paddingLeft: ".3rem",
                               // paddingRight: ".3rem",
-                            
+
                               border: "1px solid #BDBDBD",
                               height: "fit-content"
                            }}
@@ -343,12 +343,14 @@ const DataTable = ({
    handleEdit,
    handleDelete,
    captionButtons = [],
+   captionFilters = <></>,
    filterGlobal,
    conditionExistEditButton = [],
    conditionExistDeleteButton = [],
    loading,
    moreButtons = [],
    Trbacground = [],
+   link = [],
    buttonsMenu = false,
    speakRow = false
 }) => {
@@ -659,6 +661,8 @@ const DataTable = ({
          <table width={"100%"} style={{ borderCollapse: "collapse" }}>
             <caption>
                <div style={{ marginLeft: "2rem", marginTop: ".5rem", display: "flex", justifyContent: "flex-start" }}>
+                  <Ngif condition={captionFilters}> {captionFilters}</Ngif>
+
                   <Ngif condition={captionButtons.length > 0}>
                      {captionButtons.map((item, index) => {
                         console.log(item);
@@ -829,7 +833,7 @@ const DataTable = ({
                                              }}
                                              cols={value}
                                           >
-                                             {value}
+                                             {link.includes(id) ? <a href={value}>{value}</a> : <>{value}</>}
                                           </td>
                                        );
                                     }
@@ -848,7 +852,7 @@ const DataTable = ({
                                           }}
                                           cols={value}
                                        >
-                                          {value}
+                                          {link.includes(id) ? <a href={value}>{value}</a> : <>{value}</>}
                                        </td>
                                     );
                                  }
