@@ -171,26 +171,14 @@ const Sidebar = () => {
          ]
       },
       {
-         path: "",
-         text: "Reportes",
-         legend: "reportes del sistema",
+         path: "usuarios",
+         text: "Usuarios",
+         legend: "registro de usuarios",
+
          active: false,
-         permision: [1, 2, 3, 4, 5],
-         children: [
-            {
-               path: "reportes/incumplimientos",
-               text: "Incumplimientos",
-               legend: "reportes de incumplimientos",
-               active: false
-            },
-            {
-               path: "reportes/trasparencia",
-               text: "Trasparencia",
-               legend: "reportes de trasparencia",
-               active: false
-            }
-         ]
+         permision: [1, 4]
       },
+    
       {
          path: "checador",
          text: "Checador",
@@ -206,13 +194,26 @@ const Sidebar = () => {
          permision: [1]
       },
       {
-         path: "usuarios",
-         text: "Usuarios",
-         legend: "registro de usuarios",
-
+         path: "",
+         text: "Reportes",
+         legend: "reportes del sistema",
          active: false,
-         permision: [1, 4]
-      }
+         permision: [1],
+         children: [
+            {
+               path: "reportes/incumplimientos",
+               text: "Incumplimientos",
+               legend: "reportes de incumplimientos",
+               active: false
+            },
+            {
+               path: "reportes/trasparencia",
+               text: "Trasparencia",
+               legend: "reportes de trasparencia",
+               active: false
+            }
+         ]
+      },
    ]);
    // closing the navbar when clicked outside the sidebar area
    const handleClickOutside = (event) => {

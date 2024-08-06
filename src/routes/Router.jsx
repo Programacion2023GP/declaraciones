@@ -181,7 +181,7 @@ export const router = createHashRouter([
                {
                   path: "incumplimientos",
                   element: (
-                     <ComponentPermissions condition={(role) => [1, 2, 3, 4, 5].includes(role)}>
+                     <ComponentPermissions condition={(role) => [1].includes(role)}>
                         <ComponentIncumplimientosLayout />
                      </ComponentPermissions>
                   )
@@ -189,7 +189,7 @@ export const router = createHashRouter([
                {
                   path: "trasparencia",
                   element: (
-                     <ComponentPermissions condition={(role) => [1, 2, 3, 4, 5].includes(role)}>
+                     <ComponentPermissions condition={(role) => [1].includes(role)}>
                         <ComponentTrasparenciaLayout />
                      </ComponentPermissions>
                   )
