@@ -22,9 +22,9 @@ export const CodigosPostales = axios.create({
 })
 
 export const GetPostales = async (codigo)=>{ 
-     
     try {
         const response = await CodigosPostales.get(codigo);
+
         return response.data.data.result
     } catch (error) {
         return error; 

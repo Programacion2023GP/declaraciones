@@ -21,13 +21,13 @@ export const DomicilioDeclaranteGeneral = memo(({ mex, estado, CodigoPostal }) =
       if (!isNaN(parseInt(CodigoPostal))) {
          codigo("", CodigoPostal, false);
       }
-      console.log(typeof (CodigoPostal));
    }, [mex, estado, CodigoPostal]);
    const handleGetValue = (name, value) => {
       setMexico(value == 1 ? true : false);
 
       // dispatch(configValidationsDependiente({ tipo: (value = 1 ? "Mexico" : "NoesMexico") }));
    };
+
    const codigo = async (name, value, nullable = true) => {
       nullable && formik.setFieldValue("ColoniaLocalidad", null);
       if (value.length == 5) {

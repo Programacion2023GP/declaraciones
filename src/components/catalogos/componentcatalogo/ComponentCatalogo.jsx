@@ -29,7 +29,6 @@ const ComponentCatalogo = ({ pagina }) => {
    });
    const formulario = () => {
       setChildren(<Form />);
-    
    };
 
    useEffect(() => {
@@ -38,16 +37,16 @@ const ComponentCatalogo = ({ pagina }) => {
       }
       setChange(change + 1);
    }, [catalogo, pagina]);
-   useEffect(()=>{
+   useEffect(() => {
       formulario();
-   },[catalogo])
+   }, [catalogo]);
    useEffect(() => {
       formulario();
    }, [tipoinversion.length > 0 && roles.length > 0 && intengrantes.length > 0 && adscripcion.length > 0]);
 
    return (
       <Catalogo
-      key={change}
+         key={change}
          idTable={key == undefined ? "id" : key}
          id={id}
          setId={setId}

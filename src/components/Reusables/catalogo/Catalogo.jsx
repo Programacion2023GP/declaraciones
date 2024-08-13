@@ -27,6 +27,7 @@ export const Catalogo = forwardRef(
       ref
    ) => {
       const [loadForm,setLoadForm] = useState(false)
+      const [loading,setLoading] = useState(false)
       const submit = async (values, { resetForm }) => {
          ref.current, resetForm();
          try {
@@ -61,7 +62,10 @@ export const Catalogo = forwardRef(
       };
       const [data, setData] = useState([]);
       const init = async () => {
+         setLoading(true);
          setData(await GetAxios(`${urlData}/index`));
+         setLoading(false);
+
       };
       useEffect(() => {
          init();
@@ -144,6 +148,7 @@ export const Catalogo = forwardRef(
                            <DataTable
                               // filter={true}
                               // speakRow
+                              loading={loading}
                               handleEdit={handleEdit}
                               pagination={[5, 10]}
                               filterGlobal={true}

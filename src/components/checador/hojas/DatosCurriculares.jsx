@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../Reusables/pdf/PdfDeclaracion";
-import { testField, field, testArrayField, arrayField } from "../funciones/Funciones";
+import { testField, field, testArrayField, arrayField, vacio } from "../funciones/Funciones";
 
 export const DatosCurriculares = ({ data = [], testada = false, nivelEstudios = [], estatus = [], documentosObtenidos = [] }) => {
    const [estudio, setEstudio] = useState();

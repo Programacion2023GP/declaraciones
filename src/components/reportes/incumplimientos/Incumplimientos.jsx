@@ -123,7 +123,11 @@ const Incumplimiento = ({}) => {
                   // por hacer  getUrl ={}
                   // refreshRequest ={}
                   //
-                  pagination={[2, 5, 10, 50, 75, 100]}
+                  pagination={[2, 5, 10, 50, 75, 100]}  
+                  
+                  
+
+                  
                   //  conditionExistEditButton={["Status !='Terminada'"]}
                   speakRow
                   // conditionExistDeleteButton={["Status !='Terminada'"]}

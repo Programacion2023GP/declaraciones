@@ -30,6 +30,8 @@ import { Voice } from "../formik/FormikForm";
 import { lightBlue } from "@mui/material/colors";
 import Alert from "@mui/material/Alert";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
+import Swal from "sweetalert2";
+
 const SearchInput = ({ column, data, getData, previousData }) => {
    const [searchText, setSearchText] = useState("");
    const [previousDataFilter, setPreviousDataFilter] = useState(data);
@@ -368,6 +370,25 @@ const DataTable = ({
    const handleSeparateData = async (option) => {
       modifiedData(dataFilter);
       setSelectRow(option);
+   };
+   const handleDeleteSecurity = (item) => {
+      Swal.fire({
+         title: "¿Estás seguro?",
+         text: "Una vez eliminado, ¡no podrás recuperar la informacion!",
+         icon: "warning",
+         showCancelButton: true,
+         confirmButtonText: "Sí, eliminarlo",
+         cancelButtonText: "No, cancelar",
+         reverseButtons: true
+      }).then((result) => {
+         if (result.isConfirmed) {
+            // Aquí pones la lógica para eliminar el elemento, por ejemplo, una llamada a una API
+
+            handleDelete(item);
+         } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire("Cancelado", "", "error");
+         }
+      });
    };
 
    const applyFilters = (page = null) => {
@@ -873,7 +894,7 @@ const DataTable = ({
                                           <Ngif condition={deleteButton && checkConditionsDelete(item)}>
                                              <MenuItem
                                                 onClick={() => {
-                                                   handleDelete(item);
+                                                   handleDeleteSecurity(item);
                                                 }}
                                              >
                                                 <DeleteButton handleDelete={handleDelete} item={item} />
@@ -892,7 +913,7 @@ const DataTable = ({
                                           <EditButton handleEdit={handleEdit} item={item} />
                                        </Ngif>
                                        <Ngif condition={deleteButton && checkConditionsDelete(item)}>
-                                          <DeleteButton handleDelete={handleDelete} item={item} />
+                                          <DeleteButton handleDelete={handleDeleteSecurity} item={item} />
                                        </Ngif>
 
                                        <Ngif condition={moreButtons.length > 0}>

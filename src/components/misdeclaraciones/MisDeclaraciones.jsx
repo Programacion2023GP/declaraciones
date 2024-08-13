@@ -35,7 +35,7 @@ import { Error, Success } from "../../toasts/toast";
       if (Declaracion =="Simplificada") {
          page = parseInt(page) + 1;
       }
-      // window.location.hash = `dashboard/declaraciones/${number}/${parseInt(page) - 1}`;
+      window.location.hash = `dashboard/declaraciones/${number}/${parseInt(page) - 1}`;
    };
    const handleDelete = async (row) => {
       setLoading(true);

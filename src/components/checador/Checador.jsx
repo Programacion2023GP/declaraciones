@@ -33,7 +33,7 @@ import { CuentasValores } from "./hojas/CuentasValores";
 import { AdeudosPasivos } from "./hojas/AdeudosPasivos";
 import { PrestamoComodato } from "./hojas/PrestamoComodato";
 // Acuse
- const Checador = ({}) => {
+const Checador = ({}) => {
    useEffect(() => {
       init();
    }, []);
@@ -342,35 +342,35 @@ import { PrestamoComodato } from "./hojas/PrestamoComodato";
       setPass(0);
       setLoadingMessage(false);
    };
-   const idRole = parseInt(localStorage.getItem('Id_Role'), 10);
+   const idRole = parseInt(localStorage.getItem("Id_Role"), 10);
    const isRoleOne = idRole === 1;
- 
+
    // Construcción condicional del array de botones
    const moreButtons = [
-     isRoleOne && {
-       tooltip: 'Imprimir',
-       color: '#27AE60',
-       icon: Print,
-       toltip: "Imprimir",
-       handleButton: handlePdfPrint,
-       conditions: ["Tstatus == 'Terminada'"]
-     },
-     {
-       tooltip: 'Imprimir testada',
-       color: 'black',
-       icon: PrintTest,
-       toltip: "Imprimir testada",
-       handleButton: handlePdfTester,
-       conditions: ["Tstatus == 'Terminada'"]
-     },
-     isRoleOne && {
-       tooltip: 'Acuse',
-       color: '#F39C12',
-       icon: ReceiptOutlinedIcon,
-       toltip: "Acuse",
-       handleButton: handleAcuse,
-       conditions: ["Tstatus == 'Terminada'"]
-     }
+      isRoleOne && {
+         tooltip: "Imprimir",
+         color: "#27AE60",
+         icon: Print,
+         toltip: "Imprimir",
+         handleButton: handlePdfPrint,
+         conditions: ["Tstatus == 'Terminada'"]
+      },
+      {
+         tooltip: "Imprimir testada",
+         color: "black",
+         icon: PrintTest,
+         toltip: "Imprimir testada",
+         handleButton: handlePdfTester,
+         conditions: ["Tstatus == 'Terminada'"]
+      },
+      isRoleOne && {
+         tooltip: "Acuse",
+         color: "#F39C12",
+         icon: ReceiptOutlinedIcon,
+         toltip: "Acuse",
+         handleButton: handleAcuse,
+         conditions: ["Tstatus == 'Terminada'"]
+      }
    ].filter(Boolean);
    return (
       <>
