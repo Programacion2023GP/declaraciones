@@ -164,7 +164,8 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
                }
             };
             await sendApi();
-            next()
+            console.log("angel")
+            next();
             // dispatch(clearData());
             setDatasTable([]);
             setDatas([]);
@@ -180,18 +181,18 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
          }
       } else {
          try {
-            const crear =!isNaN(parseInt(localStorage.getItem("id_Intereses"), 10)) && parseInt(localStorage.getItem("id_Intereses"), 10) > 0 ? 0 : 1
-            console.log("Ocurrio un error");
+            const crear = !isNaN(parseInt(localStorage.getItem("id_Intereses"), 10)) && parseInt(localStorage.getItem("id_Intereses"), 10) > 0 ? 0 : 1;
             const response = await Axios.post(
                `apartados/interes/${parseInt(localStorage.getItem("id_Intereses") || "0")}/1/1/${parseInt(localStorage.getItem("Id_User"))}/${crear}`
             );
-            if (crear==1) {
+            if (crear == 1) {
                localStorage.setItem("id_Intereses", response.data.data.result);
             }
+            next();
+            console.log("angel")
 
             Success("Continuemos llenando los formularios");
             setDatasTable([]);
-            next();
          } catch (error) {
             console.log("error", error);
             Error(error.response.data.message);
@@ -222,7 +223,16 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm messageButton='Agregar a la tabla' previousButton  handlePrevious ={previous}  ref={formik} initialValues={initialValues} submit={submit} validationSchema={validationSchema} button>
+            <FormikForm
+               messageButton="Agregar a la tabla"
+               // previousButton
+               handlePrevious={previous}
+               ref={formik}
+               initialValues={initialValues}
+               submit={submit}
+               validationSchema={validationSchema}
+               button
+            >
                <CustomRadio col={12} title={``} name={`Id_TipoRelacion`} options={tipoRelaciones} />
                <Text col={6} name={`NombreEmpresaSociedadAsociacion`} label={`Nombre de la empresa, sociedad o asociación`} />
                <Text col={6} name={`RfcEmpresa`} label={`RFC`} />

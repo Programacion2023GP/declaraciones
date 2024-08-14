@@ -43,33 +43,57 @@ import { Fideocomisos } from "../interes/components/fideocomisos/Fideocomisos";
 // Importa aquí los componentes correspondientes a cada paso
 
 const ComponentDeclaraciones = () => {
-   const [dataPage, setDataPage] = React.useState([]);
+   const [dataPage, setDataPage] = React.useState(null);
    let { declaracion, hoja } = useParams();
    declaracion = parseInt(declaracion);
    hoja = parseInt(hoja);
 
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? hoja>14? hoja-14:hoja :0); // cambia de hoja
-   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? hoja>14? hoja-14:hoja :0); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
+   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? (hoja > 14 ? hoja - 14 : hoja) : 0); // cambia de hoja
+   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? (hoja > 14 ? hoja - 14 : hoja) : 0); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
+   const [servidor, setServidor] = React.useState(false);
    const dispatch = useDispatch();
 
-   const handleExit = () => {
-      dispatch(locationAuth());
-      localStorage.removeItem("id_SituacionPatrimonial");
-      window.location.hash = "/dashboard/misdeclaraciones";
-   };
    const handleNext = () => {
       setSend(false);
-      setDataPage([]);
+      // setDataPage([]);
       setPageAfterSituacion((prevActiveStep) => {
          const nextStepIndex = prevActiveStep + 1;
-         return filteredSteps[nextStepIndex] ? nextStepIndex : prevActiveStep;
+         return nextStepIndex;
       });
       setActiveStep((prevActiveStep) => {
          const nextStepIndex = prevActiveStep + 1;
-         return filteredSteps[nextStepIndex] ? nextStepIndex : prevActiveStep;
+         return nextStepIndex;
       });
+   };
+   const handleExit = async () => {
+      try {
+         if (declaracion === 2 && activeStep == 14) {
+            const idSituacion = localStorage.getItem("id_SituacionPatrimonial");
+            const response = await GetAxios(`servidorpublico/index/${parseInt(idSituacion)}`);
+
+            if (response.length > 0) {
+               localStorage.removeItem("id_SituacionPatrimonial");
+               handleNext();
+               Info("La declaración patrimonial está completa. Continúa con la declaración de intereses.");
+               // console.log("Proceso completado.");
+            } else {
+               exit();
+            }
+         } else {
+            exit();
+         }
+      } catch (error) {
+         console.error("Error al procesar la solicitud", error);
+         exit(); // Maneja el error saliendo
+      }
+   };
+
+   const exit = () => {
+      dispatch(locationAuth());
+      localStorage.removeItem("id_SituacionPatrimonial");
+      window.location.hash = "/dashboard/misdeclaraciones";
    };
    // const comparationData = (step) => {};
    // Método para manejar el paso anterior
@@ -176,35 +200,11 @@ const ComponentDeclaraciones = () => {
       },
       {
          label: "Préstamo o Comodato por Terceros (Situación actual)",
-         component: <PrestamosComodatos next={declaracion != 2 ? handleNext : handleExit} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         component: <PrestamosComodatos next={handleExit} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
          exist: [1, 2, 3],
          url: "prestamoscomodatos"
       }
-      // {
-      //    label: "Participación en empresas, sociedades o asociaciones (Hasta los 2 últimos años)",
-      //    component: (
-      //       <ParticipacionEmpresas
-      //          next={handleNext}
-      //          previous={handleBack}
-      //          title={`Participación en empresas, sociedades o asociaciones (Hasta los 2 últimos años)`}
-      //          setSend={setSend}
-      //       />
-      //    ),
-      //    exist: [2],
-      //    url: "participacionempresas"
-      // },
-      // {
-      //    label: "Participa en la toma de decisiones de alguna de estas instituciones? (Hasta los 2 últimos años)",
-      //    component: <ParticipacionTomaDecisiones next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
-      //    exist: [2],
-      //    url: "tomadecisiones"
-      // },
-      // {
-      //    label: "Apoyos o Beneficios Públicos (Hasta los 2 últimos años)",
-      //    component: <ApoyosBeneficiarios next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
-      //    exist: [2],
-      //    url: "apoyos"
-      // },
+
       // {
       //    label: "Representación (Hasta los 2 últimos años)",
       //    component: <Representacion next={handleNext} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
@@ -285,11 +285,11 @@ const ComponentDeclaraciones = () => {
          url: "fideocomisos"
       }
    ];
-   const [view, setView] = React.useState(false);
    const [filteredSteps, setFiltersStepers] = React.useState(() => {
       const filtered = steps.filter((step) => step.exist.includes(declaracion));
-      return hoja > 14 && declaracion==2 ? declaracionIntereses : filtered;
+      return hoja > 14 && declaracion == 2 ? declaracionIntereses : filtered;
    });
+   const [view, setView] = React.useState(false);
 
    const [update, setupdate] = React.useState(false);
    // Método para manejar el siguiente paso
@@ -304,7 +304,18 @@ const ComponentDeclaraciones = () => {
       // console.log('dd')
       // console.log("view", view);
    }, [update, view]);
-   React.useEffect(() => {}, [dataPage]);
+   React.useEffect(() => {
+      // Verificar si dataPage tiene datos válidos
+      if (
+         (Array.isArray(dataPage) && dataPage.length > 0) || // Si es un array y tiene elementos
+         (typeof dataPage === "object" && dataPage !== null && Object.keys(dataPage).length > 0) || // Si es un objeto con propiedades
+         (typeof dataPage === "string" && dataPage.trim() !== "") // Si es un string y no está vacío
+      ) {
+         console.log("dataPage",dataPage)
+         setView(true); // Solo cuando hay datos válidos
+      }
+   }, [dataPage]);
+
    // React.useEffect(() => {
    //    setLoading(true);
    // }, [loading, dataPage]);
@@ -342,14 +353,14 @@ const ComponentDeclaraciones = () => {
    const init = async (page = null) => {
       try {
          // Obtener la situación patrimonial
+         setView(false);
          const propierty = activeStep < 15 ? "id_SituacionPatrimonial" : "id_Intereses";
-         const propiertyDb =   activeStep < 15 ? "Id_SituacionPatrimonial" : "id_Intereses";
+         const propiertyDb = activeStep < 15 ? "Id_SituacionPatrimonial" : "id_Intereses";
          const userId = parseInt(localStorage.getItem("Id_User"));
          let step = activeStep + 1 + (declaracion !== 2 && activeStep >= 8 ? 1 : 0);
 
          // Obtener y ajustar el valor de la propiedad
          let propertyValue = parseInt(localStorage.getItem(propierty));
-         console.log(propertyValue);
          // Restar 14 si propierty es 'Id_Intereses'
          if (propierty === "id_Intereses") {
             step -= 15;
@@ -359,7 +370,6 @@ const ComponentDeclaraciones = () => {
          const peticion = `situacionpatrimonial/index/${userId}/${step}/${!isNaN(propertyValue) ? propertyValue : 0}`;
 
          const situacionPatrimonial = await GetAxios(peticion);
-         console.log('ulti',situacionPatrimonial,propierty);
          const url = filteredSteps[page == null ? activeStep : page].url;
          // console.log("url: " + filteredSteps[page == null ? activeStep : page].label)
          const datasArrays = [
@@ -382,23 +392,20 @@ const ComponentDeclaraciones = () => {
          //? SI ESTAMOS EN LA PAGINA ACTUAL APAGA EL ACTUALIZAR Y CARGA LA INFO DE TU ANTERIOR DECLARACION
          // Verificar si la página después de la situación es el paso activo
          if (pageAfterSituacion === activeStep) {
-            console.log ("aquiiii",parseInt(situacionPatrimonial[propiertyDb]))
             if (parseInt(situacionPatrimonial[propiertyDb]) > 0) {
-               console.log("2");
-
                const response = await GetAxios(
                   `${url}/index/${activeStep < 15 ? parseInt(situacionPatrimonial[propiertyDb]) : parseInt(localStorage.getItem("id_Intereses"))}`
                );
-         
-               setupdate(false);
 
+               setupdate(false);
+               console.log("response: ", response);
                if (response.length > 0) {
-                  console.log(response);
                   Info("Cargando informacion de tu anterior declaración");
                   setDataPage(datasArrays.includes(url) ? response : response[0]);
+                  // setView(true);
                } else {
+                  setDataPage("VER PAGINA");
                   setupdate(false);
-                  console.log("Cargando");
                }
             }
          }
@@ -412,14 +419,14 @@ const ComponentDeclaraciones = () => {
                const response = await GetAxios(
                   `${url}/index/${activeStep > 14 ? parseInt(localStorage.getItem("id_Intereses")) : parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`
                );
-               console.log(
-                  `${url}/index/${activeStep > 14 ? parseInt(localStorage.getItem("id_Intereses")) : parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`
-               );
+
                setDataPage(datasArrays.includes(url) ? response : response[0]);
                if (response.length == 0) {
                   setupdate(false);
                }
             } else {
+               setDataPage("VER PAGINA");
+
                setupdate(false);
             }
          }
@@ -427,7 +434,6 @@ const ComponentDeclaraciones = () => {
          console.error("Error en la inicialización:", error);
          // Manejar errores si es necesario
       } finally {
-         setView(true);
       }
    };
 
@@ -435,7 +441,6 @@ const ComponentDeclaraciones = () => {
 
    // Función para obtener el título del paso actual
    const getStepTitle = () => {
-
       return filteredSteps[activeStep]?.label;
    };
    const getStepSubtitule = () => {
@@ -443,15 +448,17 @@ const ComponentDeclaraciones = () => {
    };
    React.useEffect(() => {
       dispatch(foundLocalization());
-      if (activeStep == 9) {
+      if (activeStep > 9 && !servidor) {
          verifiedServidorPublico();
       }
-   }, [activeStep]);
+   }, [activeStep, servidor]);
    const verifiedServidorPublico = async () => {
+      // setFiltersStepers(declaracion);
       const response = await GetAxios(`servidorpublico/index/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
-      console.log("acaaaa",response);
+
       if (response.length > 0) {
          Info("Se agrego la declaracion de intereses");
+         setServidor(true);
          setFiltersStepers((prev) => prev.concat(...declaracionIntereses));
       }
    };

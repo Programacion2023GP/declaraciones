@@ -5,7 +5,7 @@ import { Request } from "../Reusables/request/Request";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Axios, GetAxios } from "../../services/services";
 import { Error, Success } from "../../toasts/toast";
- const MisDeclaraciones = ({}) => {
+const MisDeclaraciones = ({}) => {
    useEffect(() => {
       init();
    }, []);
@@ -17,13 +17,14 @@ import { Error, Success } from "../../toasts/toast";
       setLoading(false);
    };
    const handleEditDeclaracion = (row) => {
-      
       const { Folio, Tipo_declaracion, Declaracion, Hoja } = row;
-      localStorage.setItem("id_SituacionPatrimonial", Folio);
+      localStorage.setItem(Declaracion == "Interes" ? "id_Intereses" : "id_SituacionPatrimonial", Folio);
       let number = Declara(Declaracion, Tipo_declaracion);
       let page = Hoja;
       if (Declaracion == "Interes") {
-         window.location.hash = `dashboard/declaraciones/2/${parseInt(page) + (+14- 1)}`;
+         window.location.hash = `dashboard/declaraciones/2/${parseInt(page) + (+15 - 1)}`;
+         // console.log("aqui",`dashboard/declaraciones/2/${parseInt(page) + (Hoja ==1 ?1:0) + (+14- 1)}`);
+         return;
       }
       if ((Declaracion == "Completa" && Tipo_declaracion == 1 && Hoja >= "Inicial") || (Declaracion == "Completa" && Tipo_declaracion == "Conclusión" && Hoja >= 9)) {
          page = parseInt(page) - 1;
@@ -32,16 +33,18 @@ import { Error, Success } from "../../toasts/toast";
       if (Declaracion == "Completa" && Tipo_declaracion == "Modificación") {
          page = parseInt(page) + 1;
       }
-      if (Declaracion =="Simplificada") {
+      if (Declaracion == "Simplificada") {
          page = parseInt(page) + 1;
       }
       window.location.hash = `dashboard/declaraciones/${number}/${parseInt(page) - 1}`;
    };
    const handleDelete = async (row) => {
+      const { Declaracion } = row;
+
       setLoading(true);
-    
+
       try {
-         const response = await Axios.delete(`situacionpatrimonial/delete/${row.Folio}`);
+         const response = await Axios.delete(`situacionpatrimonial/${Declaracion === "Interes" ? "interes/" : "delete/"}${row.Folio}`);
          init();
          setLoading(false);
 

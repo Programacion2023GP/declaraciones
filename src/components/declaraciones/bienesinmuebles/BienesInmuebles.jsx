@@ -37,6 +37,7 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
    }, [useSelector((state) => state.BienesInmuebles.validationSchema), useSelector((state) => state.BienesInmuebles.initialState)]);
    useEffect(() => {}, []);
    useEffect(() => {
+      console.log("bienes",data)
       if (adquisicion.length > 0 && inmuebles.length > 0) {
          if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
             setDatas([]);

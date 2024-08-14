@@ -1,7 +1,24 @@
 import { Grid } from "@mui/material";
 import { Text } from "../../../Reusables/input/Input";
+import { useEffect } from "react";
+import { useFormikContext } from "formik";
 
 export const DatosGeneral = ({}) => {
+   const formik = useFormikContext();
+   useEffect(() => {
+      formik.setFieldValue("Nombre", localStorage.getItem("Name"));
+      formik.setFieldValue("PrimerApellido", localStorage.getItem("PaternalSurname"));
+      formik.setFieldValue("SegundoApellido", localStorage.getItem("MaternalSurname"));
+
+      // formik.setFieldValue('Nombre',localStorage.getItem("Name"))
+
+      // formik.setValues({
+      //    Nombre: localStorage.getItem("Name"),
+      //    PrimerApellido: localStorage.getItem("PaternalSurname"),
+      //    SegundoApellido: ""
+      // });
+   }, [formik.values["Nombre"], formik.values["PrimerApellido"], formik.values["SegundoApellido"]]);
+
    return (
       <Grid container spacing={1}>
          <Text

@@ -27,7 +27,7 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
       { value: 3, label: "Dependiente económico" }
    ];
    const initialValues = {
-      Id_Intereses: 0,
+      Id_Intereses: parseInt(localStorage.getItem("id_Intereses")),
       Id_TipoFideicomiso: 0,
       Id_TipoRelacion: 0,
       Id_TipoParticipacion: 0,
@@ -51,12 +51,12 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
       Id_TipoRelacion: Yup.number().min(1, "El tipo de relación es requerida").required("El tipo de relación es requerida"),
       Id_TipoFideicomiso: Yup.number().min(1, "El tipo de fideocomiso es requerido").required("El tipo de fideocomiso es requerido"),
       Id_TipoParticipacion: Yup.number().min(1, "El tipo de participación es requerido").required("El tipo de participación es requerido"),
-      RfcFideicomiso: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres"),
+      RfcFideicomiso: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres").max(9, "El RFC de empresa debe tener  menos de 9 caracteres"),
       Id_TipoPersonaFideicomitente: Yup.number().min(1, "El tipo del fideicomitente es requerido").required("El tipo del fideicomitente es requerido"),
       NombreRazonSocialFideicomitente: Yup.string().required("Nombre social del fidecomitente es requerido"),
-      RfcFideicomitente: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres"),
-      RfcFiduciario: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres"),
-      RfcFideicomisario: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres"),
+      RfcFideicomitente: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres").max(9, "El RFC de empresa debe tener  menos de 9 caracteres"),
+      RfcFiduciario: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres").max(9, "El RFC de empresa debe tener  menos de 9 caracteres"),
+      RfcFideicomisario: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres").max(9, "El RFC de empresa debe tener  menos de 9 caracteres"),
       NombreRazonSocialFiduciario: Yup.string().required("Nombre de razon social de fiducario es requerido"),
       NombreRazonSocialFideicomisario: Yup.string().required("Nombre de razon social de fide comisario es requerido"),
       Id_Sector: Yup.number().min(1, "El tipo de sector es requerido").required("El tipo de sector es requerido"),

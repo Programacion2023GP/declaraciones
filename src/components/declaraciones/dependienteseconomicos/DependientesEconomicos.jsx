@@ -33,17 +33,17 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
    const [reinilaize, setRenalize] = useState(1);
    const datasRedux = useSelector((state) => state.DependientesEconomicos.datas);
    const [update, setUpdate] = useState(loading);
+   const formik = useRef();
 
    const submit = async (values, { resetForm }) => {
+      formik.current.resetForm();
       values.id = idUnique;
       setDatas(datas.concat(values));
       // dispatch(addDatosDependiente(values));
       adDataTable(values);
       Success("se agrego a la tabla");
    };
-   const formik = useRef();
    useEffect(() => {
-
       if (parentescos.length > 0) {
          if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
             setDatas([]);
@@ -56,9 +56,7 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
          // modifiedDataEmpleosCargos();
       }
    }, [data, parentescos]);
-   useEffect(()=>{
-
-   },[loading,update])
+   useEffect(() => {}, [loading, update]);
    const addDataTableModified = (values, index) => {
       values.id = index;
       const newDatas = [...datas, values];
@@ -117,6 +115,7 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
       }
    };
    const adDataTable = (values) => {
+      // addDataTableModified(values,idUnique)
       const parentesco = parentescos.find((item) => item.id === values.Id_ParentescoRelacion)?.text;
       const newDatasVisuales = [
          ...datasTable,
@@ -127,9 +126,10 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
             Empleo: values.EmpleoCargoComision
          }
       ];
+      console.log("newDatasVisuales", newDatasVisuales);
       setDatasTable(newDatasVisuales);
       setIdUnique(idUnique + 1);
-      setRenalize(reinilaize + 1);
+      // setRenalize(reinilaize + 1);
    };
    const handleGetValue = (name, value) => {
       // console.log("aquiiiiiiiiii");
@@ -160,6 +160,7 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
    useEffect(() => {
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.DependientesEconomicos.validationSchema), datasRedux]);
+   
    return (
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
@@ -197,7 +198,7 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
                previousButton
                handlePrevious={previous}
                messageButton={"Agregar a la tabla"}
-               key={reinilaize}
+               // key={reinilaize}
                validationSchema={validationSchema}
                initialValues={dataForm}
                submit={submit}
@@ -213,8 +214,7 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ marginLeft: "1rem" }} type="submit" variant="contained" color="primary" onClick={sendDatass}>
-               {loading?"Actualizar y Continuar":datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
-
+               {loading ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>

@@ -628,7 +628,6 @@ const DataTable = ({
    useEffect(() => {}, [loading, Trbacground]);
    useEffect(() => {
       setDataFilter(data);
-
       const init = () => {
          if (Object.keys(objectValues).length !== 0) {
             applyFilters(objectValues);

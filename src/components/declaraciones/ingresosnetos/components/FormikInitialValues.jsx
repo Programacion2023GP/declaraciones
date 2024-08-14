@@ -9,7 +9,6 @@ import { labelRenumeracion } from "../../funciones/ingresosEservidor/labels";
 
 export const FormikInitialValues = ({messageButton}) => {
    useEffect(()=>{
-      console.log(messageButton);
    },[messageButton])
    //   const [names,setNames]=useState([])
    let { declaracion } = useParams();

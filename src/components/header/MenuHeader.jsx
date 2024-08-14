@@ -46,6 +46,7 @@ const MenuHeader = () => {
    React.useEffect(() => {
       const firstLetter = localStorage.getItem("Name")[0];
       const SecondLetter = localStorage.getItem("PaternalSurname")[0];
+      
       setText(firstLetter + SecondLetter);
    }, []);
    const dispatch = useDispatch();

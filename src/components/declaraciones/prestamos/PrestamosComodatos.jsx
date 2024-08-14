@@ -124,6 +124,7 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
       Success("Se borro de la tabla");
    };
    const sendData = async () => {
+      // next();
       const url = `prestamoscomodatos/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
 
       if (datas.length > 0) {

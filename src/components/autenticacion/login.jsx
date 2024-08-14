@@ -76,13 +76,15 @@ const Login = () => {
                            setLoadingPost(true);
                            const response = await Axios.post("usuarios/login", values);
                            const user = response.data.data.result.user;
-                        
+                           console.log("user",user)
                            localStorage.setItem("Id_User", user.Id_User);
                            localStorage.setItem("Id_Person", user.Id_Person);
                            localStorage.setItem("Id_Role", user.Id_Role);
                            localStorage.setItem("Name", user.Name);
+                           
                            localStorage.setItem("PaternalSurname", user.PaternalSurname);
-                        
+                           localStorage.setItem("MaternalSurname", user.MaternalSurname);
+
                            console.log("Updated", user.Id_Role);
                         
                            const checkLocalStorage = () => {

@@ -25,9 +25,7 @@ export const Totales = ({}) => {
 
    const event = () => {
       const Tot = total();
-      console.log("====================================");
-      console.log(Tot);
-      console.log("====================================");
+    
       dispatch(configValidationsDependientesEconomicos({ tipo: "Totales", total: parseInt(Tot) }));
       formik.setFieldValue("IngresoMensualAnualConclusionNeto", Tot);
       dispatch(
@@ -38,7 +36,7 @@ export const Totales = ({}) => {
       );
       formik.setFieldValue(
          "TotalIngresosNetos",
-         parseInt(Tot) + parseInt(Tot) + (!isNaN(parseInt(formik.values.IngresoNetoParejaDependiente)) ? parseInt(formik.values.IngresoNetoParejaDependiente) : 0)
+         parseInt(Tot) + (!isNaN(parseInt(formik.values.IngresoNetoParejaDependiente)) ? parseInt(formik.values.IngresoNetoParejaDependiente) : 0)
       );
    };
    useEffect(() => {

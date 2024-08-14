@@ -58,6 +58,7 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.Vehiculos.validationSchema), useSelector((state) => state.Vehiculos.initialState), useSelector((state) => state.Vehiculos.datas)]);
    useEffect(() => {
+      console.log("data", data);
       if (vehiculos.length > 0 && adquisicion.length > 0 && pago.length > 0) {
          if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
             setDatas([]);

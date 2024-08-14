@@ -15,7 +15,7 @@ export const FormikInitialValues = ({ messageButton }) => {
             <Periodos />
          </TabSegment>
          <TabSegment
-            label={`Renumeración  ${declaracion === 2 || declaracion === 4 ? "mensual" : declaracion === 1 || declaracion === 3 ? "anual" : "hasta la fecha"}`}
+            label={`Renumeración  ${declaracion === 2 || declaracion === 4 ? "anual" : declaracion === 1 || declaracion === 3 ? "mensual" : "hasta la fecha"}`}
          >
             <SPublicoI />
          </TabSegment>

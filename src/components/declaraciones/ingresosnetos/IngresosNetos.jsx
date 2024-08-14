@@ -41,16 +41,13 @@ export const IngresosNetos = ({ loading, data, next, previous, title }) => {
    }, [data]);
    const modifiedDataIngresos = () => {
       if (loading) {
-         console.log('====================================');
-         console.log(loading);
-         console.log('====================================');
+   
          setID(parseInt(data.Id_Ingresos));
       }
       delete data.Id_Ingresos;
       insertFormik(formik, data);
    };
    useEffect(() => {
-      console.log(loading);
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.IngresosNetos.validationSchema), useSelector((state) => state.IngresosNetos.initialState)]);
    return (

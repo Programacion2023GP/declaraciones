@@ -60,7 +60,7 @@ export const IngresosII = ({}) => {
 
       formik.setFieldValue(
          "TotalIngresosNetos",
-         parseInt(formik.values.IngresoNetoParejaDependiente) > 0 ? parseInt(Tot) + parseInt(formik.values.IngresoNetoParejaDependiente) : parseInt(Tot)
+         parseInt(Tot) +  (!isNaN(parseInt(formik.values.IngresoNetoParejaDependiente)) ? parseInt(formik.values.IngresoNetoParejaDependiente) : 0)
       );
    };
    useEffect(() => {
@@ -107,13 +107,7 @@ export const IngresosII = ({}) => {
             handleGetValue={handleingresosNetos}
          />
          <Text name="SP_TipoServicioPrestado" label="Tipo de servicio prestado" />
-         <Text
-            type={"number"}
-            col={12}
-            name={"EB_RemuneracionTotal"}
-            label={"II.4 Por enajenacion de bienes"}
-            handleGetValue={handleingresosNetos}
-         />
+         <Text type={"number"} col={12} name={"EB_RemuneracionTotal"} label={"II.4 Por enajenacion de bienes"} handleGetValue={handleingresosNetos} />
          <AutoComplete options={bienenAjenacion} name="EB_Id_TipoBienEnajenado" label={"Tipo de bien enajenado"} col={12} />
          <Text
             type={"number"}
