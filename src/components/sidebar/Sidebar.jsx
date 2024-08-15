@@ -42,6 +42,12 @@ const Sidebar = () => {
                text: "Generar declaración",
                legend: "crear nueva declaracion",
                active: false
+            },
+            {
+               path: "declaraciones/2/15",
+               text: "Interes",
+               legend: "crear nueva declaración de Interes",
+               active: false
             }
          ]
       },
@@ -91,6 +97,11 @@ const Sidebar = () => {
             {
                path: "catalogos/aereaadscripcion",
                text: "Aerea de adscripción",
+               active: false
+            },
+            {
+               path: "catalogos/empleos",
+               text: "Empleos",
                active: false
             },
             {

@@ -21,6 +21,7 @@ import DataTable from "../../Reusables/table/DataTable";
 import { Success } from "../../../toasts/toast";
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
+import Loading from "../../Reusables/loading/Loading";
 
 export const PrestamosComodatos = ({ loading, data, title, previous, next, setSend }) => {
    const validations = useSelector((state) => state.PrestamoComodato.validationSchema);
@@ -38,6 +39,8 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
    let { declaracion } = useParams();
    const [bien, setBien] = useState(1);
    const [update, setUpdate] = useState(loading);
+   const [loadData, setLoadData] = useState(data);
+   const [loadings, setLoadings] = useState(false);
 
    const message =
       declaracion == 1 || declaracion == 3
@@ -54,36 +57,43 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
    }, [useSelector((state) => state.PrestamoComodato.validationSchema), useSelector((state) => state.PrestamoComodato.initialState)]);
    useEffect(() => {}, [formik.current]);
    useEffect(() => {
+      if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+         setLoadings(true);
+      }
       if (inmuebles.length > 0 && vehiculos.length > 0) {
-         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
-            setDatas([]);
-            setDatasTable([]);
-            // setUpdate(true);
-            data.forEach((values, index) => {
+         if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+            let newDatasArray = [];
+            let newDataTableArray = [];
+
+            loadData.forEach((values, index) => {
                delete values.Id_PrestamoComodato;
-               addDataTableModified(values, index);
+               const { newSendData, newData } = addDataTableModified(values, index);
+               newDatasArray.push(newSendData);
+               newDataTableArray.push(newData);
             });
+
+            setDatas(newDatasArray);
+            setDatasTable(newDataTableArray);
+            setLoadings(false);
+
          }
       }
    }, [data, inmuebles, vehiculos]);
+
    const addDataTableModified = (values, index) => {
-      values.identificador = index;
-      const newDatas = [...datas, values];
+      const valuesCopy = { ...values, identificador: index };
 
       const newData = {
          id: index,
-         "Tipo de bien": parseInt(values.TipoBien) == 0 ? "Inmueble" : "Vehículo",
+         "Tipo de bien": parseInt(values.TipoBien) === 0 ? "Inmueble" : "Vehículo",
          "Especificación del bien":
-            values.EspecifiqueOtro != ""
-               ? inmuebles.filter((item) => item.id === parseInt(values.Id_TipoInmueble))[0]?.text ||
-                 vehiculos.filter((item) => item.id === parseInt(values.Id_TipoVehiculo))[0]?.text
+            values.EspecifiqueOtro !== ""
+               ? inmuebles.find((item) => item.id === parseInt(values.Id_TipoInmueble))?.text ||
+                 vehiculos.find((item) => item.id === parseInt(values.Id_TipoVehiculo))?.text
                : values.EspecifiqueOtro
       };
 
-      setDatasTable((prevDatasTable) => prevDatasTable.concat(newData));
-      setDatas((prevDatas) => prevDatas.concat(newDatas));
-
-      setIdUnique(index + 1);
+      return { newSendData: valuesCopy, newData };
    };
    const submit = async (values) => {
       values.identificador = idUnique;
@@ -181,6 +191,8 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+            {loadings && <Loading />}
+
                <DataTable
                   // loading={loading && datas.length > 0}
                   dataHidden={["id"]}

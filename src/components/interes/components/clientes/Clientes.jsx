@@ -10,6 +10,7 @@ import { AutoComplete } from "../../../Reusables/autocomplete/autocomplete";
 import DataTable from "../../../Reusables/table/DataTable";
 import { Axios, PostAxios } from "../../../../services/services";
 import * as Yup from "yup";
+import Loading from "../../../Reusables/loading/Loading";
 
 export const Clientes = ({ loading, data, next, previous, title }) => {
    const [checked, setChecked] = useState(true);
@@ -18,6 +19,8 @@ export const Clientes = ({ loading, data, next, previous, title }) => {
    const [idUnique, setIdUnique] = useState(1);
    const [update, setUpdate] = useState(loading);
    const [mexico, setMexico] = useState(true);
+   const [loadData, setLoadData] = useState(data);
+   const [loadings, setLoadings] = useState(false);
 
    const formik = useRef(null);
    const tipoRelaciones = [
@@ -55,7 +58,7 @@ export const Clientes = ({ loading, data, next, previous, title }) => {
       Id_Sector: Yup.number().min(1, "El sector es requerido").required("El sector es requerido"),
 
       MontoAproximadoGanancia: Yup.number().min(0, "El monto aproximado de ganancia es requerido").required("El monto aproximado de ganancia es requerido"),
-      Id_MontoAproximadoGanancia:Yup.number().min(1, "El tipo de moneda es requerida").required("El tipo de moneda es requerida"),
+      Id_MontoAproximadoGanancia: Yup.number().min(1, "El tipo de moneda es requerida").required("El tipo de moneda es requerida"),
       Id_PaisUbicacion: !mexico && Yup.number().min(1, "El país de ubicación es requerido").required("El país de ubicación es requerido"),
       Id_EntidadFederativa: mexico && Yup.number().min(1, "La entidad federativa es requerida").required("La entidad federativa es requerida")
       // RecibeRemuneracion: Yup.number().min(0, 'El
@@ -65,13 +68,16 @@ export const Clientes = ({ loading, data, next, previous, title }) => {
       peticiones: ["tipoPersona", "sectores", "monedas", "entidades", "paises"]
    });
    useEffect(() => {
+      if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+         setLoadings(true);
+      }
       if (tipoPersona.length > 0 && monedas.length > 0 && paises.length > 0 && entidades.length > 0 && sectores.length > 0) {
-         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+         if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
             // Crea arrays temporales para los nuevos datos
             const newDatas = [];
             const newDatasTable = [];
 
-            data.forEach((values, index) => {
+            loadData.forEach((values, index) => {
                delete values.Id_PrestamoComodato;
 
                // Asignar identificador
@@ -94,6 +100,8 @@ export const Clientes = ({ loading, data, next, previous, title }) => {
             // Actualizar el estado con los nuevos datos
             setDatas(newDatas);
             setDatasTable(newDatasTable);
+            setLoadings(false);
+
             // Ajustar el identificador único
             setIdUnique(data.length);
          }
@@ -188,6 +196,8 @@ export const Clientes = ({ loading, data, next, previous, title }) => {
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+            {loadings && <Loading />}
+
                <DataTable
                   headers={["Nombre empresa o servicio", "Cliente Principal	", "Monto Mensual", "Sector Productivo	"]}
                   dataHidden={["id"]}

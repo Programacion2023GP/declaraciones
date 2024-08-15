@@ -24,7 +24,7 @@ export const DatosGenerales = ({ loading, data, next, previous, title, setSend }
    let { declaracion } = useParams();
    declaracion = parseInt(declaracion);
    const formik = useRef(null);
-
+   
    useEffect(() => {
       declaracion == 2 ? dispatch(addValidacioneServidorPublico({ tipo: "servidorPublico" })) : "";
       setValidationSchema(Yup.object().shape(validations));

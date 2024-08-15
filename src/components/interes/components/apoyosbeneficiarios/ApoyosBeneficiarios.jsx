@@ -9,6 +9,7 @@ import { Ngif } from "../../../Reusables/conditionals/Ngif";
 import { Error, Success } from "../../../../toasts/toast";
 import DataTable from "../../../Reusables/table/DataTable";
 import { Axios, PostAxios } from "../../../../services/services";
+import Loading from "../../../Reusables/loading/Loading";
 
 export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) => {
    const { relacion, nivelOrdenGobierno, tipoApoyos, formaRecepcion } = Request({ peticiones: ["relacion", "nivelOrdenGobierno", "tipoApoyos", "formaRecepcion"] });
@@ -18,6 +19,9 @@ export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) =>
    const [checked, setChecked] = useState(true);
    const [idUnique, setIdUnique] = useState(1);
    const [update, setUpdate] = useState(loading);
+   const [loadData, setLoadData] = useState(data);
+   const [loadings, setLoadings] = useState(false);
+
    const initialValue = {
       Id_Intereses: parseInt(localStorage.getItem("id_Intereses")),
       Id_BeneficiarioPrograma: 0,
@@ -39,14 +43,13 @@ export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) =>
       // //...
    };
    const validationSchema = Yup.object().shape({
-      Id_BeneficiarioPrograma:Yup.number("").min(1, "El beneficiario del programa es requerido").required("El beneficiario del programa es requerido"),
+      Id_BeneficiarioPrograma: Yup.number("").min(1, "El beneficiario del programa es requerido").required("El beneficiario del programa es requerido"),
       NombrePrograma: Yup.string("").required("El nombre del programa es requerido"),
       InstitucionOtorgante: Yup.string("").required("La institucion otorgante es requerida"),
       Id_NivelOrdenGobierno: Yup.number("").min(1, "El nivel u orden de gobierno es requerido").required("El nivel u orden de gobierno es requerido"),
       Id_TipoApoyo: Yup.number("").min(1, "El tipo de apoyo es requerido").required("El tipo de apoyo es requerido"),
-      Id_FormaRecepcion: Yup.number("").min(1, "La forma de recepcion es requerida").required("La forma de recepcion es requerida"),
+      Id_FormaRecepcion: Yup.number("").min(1, "La forma de recepcion es requerida").required("La forma de recepcion es requerida")
       // MontoApoyoMensual: Yup.number('').required('El monto es requerido'),
-
    });
    const handleChange = (event) => {
       setChecked(event.target.checked);
@@ -63,13 +66,16 @@ export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) =>
    };
 
    useEffect(() => {
+      if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+         setLoadings(true);
+      }
       if (relacion.length > 0 && nivelOrdenGobierno.length > 0 && tipoApoyos.length > 0 && formaRecepcion.length > 0) {
-         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+         if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
             // Crea arrays temporales para los nuevos datos
             const newDatas = [];
             const newDatasTable = [];
 
-            data.forEach((values, index) => {
+            loadData.forEach((values, index) => {
                delete values.Id_PrestamoComodato;
 
                // Asignar identificador
@@ -88,6 +94,7 @@ export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) =>
                // Añadir datos a los arrays temporales
                newDatas.push(values);
                newDatasTable.push(newData);
+               setLoadings(false);
             });
 
             // Actualizar el estado con los nuevos datos
@@ -170,6 +177,8 @@ export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) =>
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+            {loadings && <Loading />}
+
                <DataTable
                   headers={["Beneficiario", "Nombre de Programa	", "Nivel u Orden", "Tipo de Apoyo"]}
                   dataHidden={["id"]}

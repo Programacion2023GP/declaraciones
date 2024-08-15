@@ -34,6 +34,7 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
    const datasRedux = useSelector((state) => state.DependientesEconomicos.datas);
    const [update, setUpdate] = useState(loading);
    const formik = useRef();
+   const [loadData, setLoadData] = useState(data);
 
    const submit = async (values, { resetForm }) => {
       formik.current.resetForm();
@@ -45,38 +46,47 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
    };
    useEffect(() => {
       if (parentescos.length > 0) {
-         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
-            setDatas([]);
-            setDatasTable([]);
-            data.forEach((values, index) => {
+         if (typeof data !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+            let newDatasArray = [];
+            let newDataTableArray = [];
+
+            loadData.forEach((values, index) => {
                delete values.Id_DatosDependienteEconomico;
-               addDataTableModified(values, index);
+               const modifiedData = addDataTableModified(values, index);
+               newDatasArray.push(modifiedData.newData);
+               newDataTableArray.push(modifiedData.newDataTable);
             });
+
+            setDatas(newDatasArray);
+            setDatasTable(newDataTableArray);
          }
-         // modifiedDataEmpleosCargos();
       }
    }, [data, parentescos]);
-   useEffect(() => {}, [loading, update]);
+
    const addDataTableModified = (values, index) => {
       values.id = index;
-      const newDatas = [...datas, values];
 
       const parentesco = parentescos.find((item) => item.id === parseInt(values.Id_ParentescoRelacion))?.text;
       const newData = {
+         ...values,
+         id: index
+      };
+
+      const newDataTable = {
          id: index,
          Parentesco: parentesco,
          RFC: values.RfcDependiente,
          Empleo: values.EmpleoCargoComision
       };
-      setDatas((prevDatas) => prevDatas.concat(newDatas));
 
-      setDatasTable((prevDatasTable) => prevDatasTable.concat(newData));
       setIdUnique(index + 1);
+
+      return { newData, newDataTable };
    };
+
    const sendDatass = async () => {
       const newDatas = [...datas];
       const url = `dependienteseconomicos/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
-      // console.log(newDatas,url);
       if (newDatas.length > 0) {
          try {
             const sendApi = async () => {
@@ -160,7 +170,7 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
    useEffect(() => {
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.DependientesEconomicos.validationSchema), datasRedux]);
-   
+
    return (
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>

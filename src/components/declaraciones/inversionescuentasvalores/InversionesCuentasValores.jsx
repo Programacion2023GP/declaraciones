@@ -11,6 +11,7 @@ import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { addInversionesCuentasValores } from "../../../redux/InversionesCuentasValoresHoja13/InversionesCuentasValores";
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
+import Loading from "../../Reusables/loading/Loading";
 
 export const InversionesCuentasValores = ({ loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.InversionesCuentasValores.initialState);
@@ -23,6 +24,8 @@ export const InversionesCuentasValores = ({ loading, data, next, previous, title
    const formik = useRef(null);
    const [checked, setChecked] = useState(true);
    const [update, setUpdate] = useState(loading);
+   const [loadData, setLoadData] = useState(data);
+   const [loadings, setLoadings] = useState(false);
 
    const dispatch = useDispatch();
    const handleChange = (event) => {
@@ -46,34 +49,47 @@ export const InversionesCuentasValores = ({ loading, data, next, previous, title
       formik.current.resetForm();
    };
    useEffect(() => {
+      if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+         setLoadings(true);
+      }
       if (tipoinversion.length > 0 && titular.length > 0) {
-         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
-            setDatas([]);
-            setDatasTable([]);
-            // setUpdate(true);
-            data.forEach((values, index) => {
-            
+         if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+            let newDatasArray = [];
+            let newDataTableArray = [];
+
+            loadData.forEach((values, index) => {
                delete values.Id_InversionesCuentasValores;
-               addDataTableModified(values, index);
+               const modifiedData = addDataTableModified(values, index);
+               newDatasArray.push(modifiedData.newSendData);
+               newDataTableArray.push(modifiedData.newData);
             });
+
+            setDatas(newDatasArray); // Actualizamos con el array completo
+            setDatasTable(newDataTableArray); // Actualizamos con el array completo
+            setLoadings(false);
+
          }
       }
    }, [data, tipoinversion, titular]);
-   const addDataTableModified = (values, index) => {
-      values.identificador = index;
-      const newDatas = [...datas, values];
 
+   const addDataTableModified = (values, index) => {
+      // Crear una copia del objeto values
+      const valuesCopy = { ...values, identificador: index };
+
+      // Obtener los textos correspondientes
+      const tipoInversion = tipoinversion.find((item) => item.id === parseInt(values.Id_TipoInversion))?.text;
+      const titularBien = titular.find((item) => item.id === parseInt(values.Id_Titular))?.text;
+
+      // Crear el nuevo objeto de datos visuales
       const newData = {
          identificador: index,
-         tipoinversion: tipoinversion.filter((item) => item.id === parseInt(values.Id_TipoInversion))[0]?.text,
-         titular: titular.filter((item) => item.id === parseInt(values.Id_Titular))[0]?.text,
+         tipoinversion: tipoInversion,
+         titular: titularBien,
          InstitucionRazonSocial: values.InstitucionRazonSocial
       };
 
-      setDatasTable((prevDatasTable) => prevDatasTable.concat(newData));
-      setDatas((prevDatas) => prevDatas.concat(newDatas));
-
-      setIdUnique(index + 1);
+      // Retornar ambos objetos: uno para visualización y otro para el envío de datos
+      return { newData, newSendData: valuesCopy };
    };
    const deleteRow = (row) => {
       setDatas(datas.filter((element) => element.identificador != row.identificador));
@@ -113,6 +129,8 @@ export const InversionesCuentasValores = ({ loading, data, next, previous, title
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+            {loadings && <Loading />}
+
                <DataTable
                   // loading={loading && datas.length > 0}
                   dataHidden={["identificador"]}
@@ -130,7 +148,7 @@ export const InversionesCuentasValores = ({ loading, data, next, previous, title
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm  ref={formik} initialValues={dataForm} validationSchema={validationSchema} title={title} submit={submit}>
+            <FormikForm ref={formik} initialValues={dataForm} validationSchema={validationSchema} title={title} submit={submit}>
                <InitialValues titular={titular} tipoinversion={tipoinversion} monedas={monedas} />
                <Button onClick={previous} sx={{ marginTop: "1rem", marginRight: "1rem" }} type="button" variant="text" color="inherit">
                   Regresar a la pagina anterior
@@ -144,7 +162,6 @@ export const InversionesCuentasValores = ({ loading, data, next, previous, title
             <Button onClick={sendData} sx={{ marginTop: "1rem", marginLeft: "1rem" }} type="submit" variant="contained" color="primary">
                {/* {datas.length > 0 ? "Registrar y continuar" : "Continuar"} */}
                {loading ? "Actualizar y Continuar" : datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
-
             </Button>
          </Ngif>
       </>

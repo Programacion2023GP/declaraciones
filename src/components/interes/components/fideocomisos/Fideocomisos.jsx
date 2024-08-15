@@ -10,6 +10,7 @@ import { Error, Success } from "../../../../toasts/toast";
 import DataTable from "../../../Reusables/table/DataTable";
 import { Axios, PostAxios } from "../../../../services/services";
 import { CustomRadio } from "../../../Reusables/radiobutton/Radio";
+import Loading from "../../../Reusables/loading/Loading";
 export const Fideocomisos = ({ loading, data, next, previous, title }) => {
    const [checked, setChecked] = useState(true);
    const [datas, setDatas] = useState([]);
@@ -18,6 +19,9 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
    const [update, setUpdate] = useState(loading);
    const [mexico, setMexico] = useState(true);
    const formik = useRef(null);
+   const [loadData, setLoadData] = useState(data);
+   const [loadings, setLoadings] = useState(false);
+
    const { tipoParticipacion, sectores, tipoPersona, tipoFideocomisos } = Request({
       peticiones: ["tipoParticipacion", "sectores", "tipoPersona", "tipoFideocomisos"]
    });
@@ -51,12 +55,24 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
       Id_TipoRelacion: Yup.number().min(1, "El tipo de relación es requerida").required("El tipo de relación es requerida"),
       Id_TipoFideicomiso: Yup.number().min(1, "El tipo de fideocomiso es requerido").required("El tipo de fideocomiso es requerido"),
       Id_TipoParticipacion: Yup.number().min(1, "El tipo de participación es requerido").required("El tipo de participación es requerido"),
-      RfcFideicomiso: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres").max(9, "El RFC de empresa debe tener  menos de 9 caracteres"),
+      RfcFideicomiso: Yup.string()
+         .required("El RFC es requerido")
+         .min(3, "El RFC de empresa debe tener al menos 3 caracteres")
+         .max(9, "El RFC de empresa debe tener  menos de 9 caracteres"),
       Id_TipoPersonaFideicomitente: Yup.number().min(1, "El tipo del fideicomitente es requerido").required("El tipo del fideicomitente es requerido"),
       NombreRazonSocialFideicomitente: Yup.string().required("Nombre social del fidecomitente es requerido"),
-      RfcFideicomitente: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres").max(9, "El RFC de empresa debe tener  menos de 9 caracteres"),
-      RfcFiduciario: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres").max(9, "El RFC de empresa debe tener  menos de 9 caracteres"),
-      RfcFideicomisario: Yup.string().required("El RFC es requerido").min(3, "El RFC de empresa debe tener al menos 3 caracteres").max(9, "El RFC de empresa debe tener  menos de 9 caracteres"),
+      RfcFideicomitente: Yup.string()
+         .required("El RFC es requerido")
+         .min(3, "El RFC de empresa debe tener al menos 3 caracteres")
+         .max(9, "El RFC de empresa debe tener  menos de 9 caracteres"),
+      RfcFiduciario: Yup.string()
+         .required("El RFC es requerido")
+         .min(3, "El RFC de empresa debe tener al menos 3 caracteres")
+         .max(9, "El RFC de empresa debe tener  menos de 9 caracteres"),
+      RfcFideicomisario: Yup.string()
+         .required("El RFC es requerido")
+         .min(3, "El RFC de empresa debe tener al menos 3 caracteres")
+         .max(9, "El RFC de empresa debe tener  menos de 9 caracteres"),
       NombreRazonSocialFiduciario: Yup.string().required("Nombre de razon social de fiducario es requerido"),
       NombreRazonSocialFideicomisario: Yup.string().required("Nombre de razon social de fide comisario es requerido"),
       Id_Sector: Yup.number().min(1, "El tipo de sector es requerido").required("El tipo de sector es requerido"),
@@ -64,13 +80,16 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
       // RecibeRemuneracion: Yup.number().min(0, 'El
    });
    useEffect(() => {
+      if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+         setLoadings(true);
+      }
       if (tipoParticipacion.length > 0 && sectores.length > 0 && tipoPersona.length > 0 && tipoFideocomisos.length > 0) {
-         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+         if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
             // Crea arrays temporales para los nuevos datos
             const newDatas = [];
             const newDatasTable = [];
 
-            data.forEach((values, index) => {
+            loadData.forEach((values, index) => {
                delete values.Id_PrestamoComodato;
 
                // Asignar identificador
@@ -94,6 +113,8 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
             // Actualizar el estado con los nuevos datos
             setDatas(newDatas);
             setDatasTable(newDatasTable);
+            setLoadings(false);
+
             // Ajustar el identificador único
             setIdUnique(data.length);
          }
@@ -189,6 +210,8 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+            {loadings && <Loading />}
+
                <DataTable
                   headers={["Tipo de Fideicomiso", "Nombre o Razón Social", "Sector al que Pertenece", "Donde se Localiza"]}
                   dataHidden={["id"]}

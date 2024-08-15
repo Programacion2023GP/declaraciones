@@ -4,7 +4,9 @@ import { useParams } from "react-router-dom";
 import { Create } from "../create/Create";
 import { Request } from "../../Reusables/request/Request";
 const ComponentCatalogo = ({ pagina }) => {
-   let { tipoinversion, roles, intengrantes, adscripcion } = Request({ peticiones: ["tipoinversion", "roles", "intengrantes", "adscripcion"] });
+   let { tipoinversion, roles, intengrantes, adscripcion, organismo } = Request({
+      peticiones: ["tipoinversion", "roles", "intengrantes", "adscripcion", "organismo"]
+   });
    const [children, setChildren] = useState(<></>);
    const { catalogo } = useParams();
    const [initialized, setInitialized] = useState(false);
@@ -21,6 +23,7 @@ const ComponentCatalogo = ({ pagina }) => {
       catalogo: pagina ? pagina : catalogo,
       formik,
       peticiones: {
+         organismo: organismo,
          tipoinversion: tipoinversion,
          roles: roles,
          intengrantes: intengrantes,

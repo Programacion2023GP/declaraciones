@@ -50,8 +50,8 @@ const ComponentDeclaraciones = () => {
 
    const [send, setSend] = React.useState(false);
    const theme = useTheme();
-   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? (hoja > 14 ? hoja - 14 : hoja) : 0); // cambia de hoja
-   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? (hoja > 14 ? hoja - 14 : hoja) : 0); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
+   const [activeStep, setActiveStep] = React.useState(isNumber(hoja) ? (hoja > 14 ? hoja - 15 : hoja) : 3); // cambia de hoja
+   const [pageAfterSituacion, setPageAfterSituacion] = React.useState(isNumber(hoja) ? (hoja > 14 ? hoja - 15 : hoja) : 3); // funciona con hojas solo para arriba no disminuye para traer la data de la ultima situacion ->
    const [servidor, setServidor] = React.useState(false);
    const dispatch = useDispatch();
 
@@ -68,26 +68,7 @@ const ComponentDeclaraciones = () => {
       });
    };
    const handleExit = async () => {
-      try {
-         if (declaracion === 2 && activeStep == 14) {
-            const idSituacion = localStorage.getItem("id_SituacionPatrimonial");
-            const response = await GetAxios(`servidorpublico/index/${parseInt(idSituacion)}`);
-
-            if (response.length > 0) {
-               localStorage.removeItem("id_SituacionPatrimonial");
-               handleNext();
-               Info("La declaración patrimonial está completa. Continúa con la declaración de intereses.");
-               // console.log("Proceso completado.");
-            } else {
-               exit();
-            }
-         } else {
-            exit();
-         }
-      } catch (error) {
-         console.error("Error al procesar la solicitud", error);
-         exit(); // Maneja el error saliendo
-      }
+      exit();
    };
 
    const exit = () => {
@@ -301,17 +282,19 @@ const ComponentDeclaraciones = () => {
       // setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
    }, [activeStep, declaracion]);
    React.useEffect(() => {
-      // console.log('dd')
+      console.log("view", view);
       // console.log("view", view);
    }, [update, view]);
    React.useEffect(() => {
       // Verificar si dataPage tiene datos válidos
+      console.log("dataPage", dataPage);
+
       if (
-         (Array.isArray(dataPage) && dataPage.length > 0) || // Si es un array y tiene elementos
+         Array.isArray(dataPage) || // Si es un array y tiene elementos
          (typeof dataPage === "object" && dataPage !== null && Object.keys(dataPage).length > 0) || // Si es un objeto con propiedades
          (typeof dataPage === "string" && dataPage.trim() !== "") // Si es un string y no está vacío
       ) {
-         console.log("dataPage",dataPage)
+         console.log("dataPage", dataPage);
          setView(true); // Solo cuando hay datos válidos
       }
    }, [dataPage]);
@@ -457,9 +440,9 @@ const ComponentDeclaraciones = () => {
       const response = await GetAxios(`servidorpublico/index/${parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`);
 
       if (response.length > 0) {
-         Info("Se agrego la declaracion de intereses");
-         setServidor(true);
-         setFiltersStepers((prev) => prev.concat(...declaracionIntereses));
+         Info("ES NECESARIO PRESENTAR UNA DECLARACION DE INTERES AL FINALIZAR ESTA");
+         // setServidor(true);
+         // setFiltersStepers((prev) => prev.concat(...declaracionIntereses));
       }
    };
    return (

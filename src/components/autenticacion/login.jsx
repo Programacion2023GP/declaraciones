@@ -84,6 +84,7 @@ const Login = () => {
                            
                            localStorage.setItem("PaternalSurname", user.PaternalSurname);
                            localStorage.setItem("MaternalSurname", user.MaternalSurname);
+                           localStorage.setItem("Sexo", user.Sexo);
 
                            console.log("Updated", user.Id_Role);
                         

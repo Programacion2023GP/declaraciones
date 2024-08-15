@@ -29,6 +29,8 @@ export const Request = ({ peticiones = [] }) => {
    const [tipoinversion, setTipoInversion] = useState([]);
    const [tipoAdeudos, setTipoAdeudos] = useState([]);
    const [adscripcion, setAdscripcion] = useState([]);
+   const [adscripcionOrganismo, setAdscripcionOrganismo] = useState([]);
+
    const [municipios, setMunicipios] = useState([]);
    const [instrumentos, SetInstrumentos] = useState([]);
    const [bienenAjenacion, setBieneAjenacion] = useState([]);
@@ -36,12 +38,13 @@ export const Request = ({ peticiones = [] }) => {
    //intereses
    const [tipoParticipacion, setTipoParticipacion] = useState([]);
    const [sectores, setSectores] = useState([]);
-   const [tipoApoyos,setTipoApoyos] = useState([]);
-   const [formaRecepcion,setFormaRecepcion] = useState([]);
-   const [representacion,setRepresentacion] = useState([]);
-   const [tipoPersona,setTipoPersona] = useState([]);
-   const [tipoBeneficios,setTipoBeneficios] = useState([]);
-   const [tipoFideocomisos,setTipoFideocomisos] = useState([]);
+   const [tipoApoyos, setTipoApoyos] = useState([]);
+   const [formaRecepcion, setFormaRecepcion] = useState([]);
+   const [representacion, setRepresentacion] = useState([]);
+   const [tipoPersona, setTipoPersona] = useState([]);
+   const [tipoBeneficios, setTipoBeneficios] = useState([]);
+   const [tipoFideocomisos, setTipoFideocomisos] = useState([]);
+   const [organismo, setOrganismo] = useState([]);
 
    // usuarios form
    const [intengrantes, setIntengrantes] = useState([]);
@@ -51,9 +54,13 @@ export const Request = ({ peticiones = [] }) => {
    const [apartados, setApartados] = useState([]);
    useEffect(() => {
       const responses = async () => {
+         peticiones.includes("adscripcionOrganismo") && setAdscripcionOrganismo(await GetAxios("adscripcion/index"));
+
          peticiones.includes("sectores") && setSectores(await GetAxios("sector/show"));
          peticiones.includes("instituciones") && setInstituciones(await GetAxios("tipoinstituciones/show"));
          peticiones.includes("tipoApoyos") && setTipoApoyos(await GetAxios("tipoapoyos/show"));
+         peticiones.includes("organismo") && setOrganismo(await GetAxios("adscripcion/organismo"));
+
          peticiones.includes("formaRecepcion") && setFormaRecepcion(await GetAxios("formarecepcion/show"));
          peticiones.includes("representacion") && setRepresentacion(await GetAxios("representacion/show"));
          peticiones.includes("tipoPersona") && setTipoPersona(await GetAxios("tipopersona/show"));
@@ -143,6 +150,8 @@ export const Request = ({ peticiones = [] }) => {
       representacion,
       tipoPersona,
       tipoBeneficios,
-      tipoFideocomisos
+      tipoFideocomisos,
+      organismo,
+      adscripcionOrganismo
    };
 };

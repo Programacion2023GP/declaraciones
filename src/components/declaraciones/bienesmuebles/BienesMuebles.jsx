@@ -14,6 +14,7 @@ import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { addValidacionesBienesMuebles } from "../../../redux/BienesMueblesHoja12/BienesMuebles";
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
+import Loading from "../../Reusables/loading/Loading";
 
 export const BienesMuebles = ({ loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.BienesMuebles.initialState);
@@ -25,6 +26,8 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
    const [postStepper, setPostStepper] = useState(false);
    const [checked, setChecked] = useState(true);
    const [update, setUpdate] = useState(loading);
+   const [loadData, setLoadData] = useState(data);
+   const [loadings, setLoadings] = useState(false);
 
    // actives (activaciones de campos)
    const [tercero, setTercero] = useState(false);
@@ -51,36 +54,49 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
       Success("Se agrego a la tabla");
    };
    useEffect(() => {
+      if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+         setLoadings(true);
+      }
       if (tiposbienesmuebles.length > 0 && titular.length > 0) {
-         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
-            setDatas([]);
-            setDataTable([]);
-            // setUpdate(true);
-            data.forEach((values, index) => {
+         if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+            let newDatasArray = [];
+            let newDataTableArray = [];
+   
+            loadData.forEach((values, index) => {
                delete values.Id_BienesMuebles;
-               addDataTableModified(values, index);
+               const modifiedData = addDataTableModified(values, index);
+               newDatasArray.push(modifiedData.newSendData);
+               newDataTableArray.push(modifiedData.newData);
             });
+   
+            setDatas(newDatasArray);       // Actualizamos con el array completo
+            setDataTable(newDataTableArray); // Actualizamos con el array completo
+            setLoadings(false);
+
          }
       }
    }, [data, tiposbienesmuebles, titular]);
-
+   
    const addDataTableModified = (values, index) => {
+      // Crear una copia del objeto values
       const valuesCopy = { ...values, identificador: index };
-
-      const newDatas = [...datas, valuesCopy];
-
+   
+      // Obtener los textos correspondientes
+      const tipoBien = tiposbienesmuebles.find((item) => item.id === parseInt(values.Id_TipoBien))?.text;
+      const titularBien = titular.find((item) => item.id === parseInt(values.Id_Titular))?.text;
+   
+      // Crear el nuevo objeto de datos visuales
       const newData = {
          identificador: index,
-         "Tipo de bien": tiposbienesmuebles.filter((item) => item.id === parseInt(values.Id_TipoBien))[0]?.text,
-         "Titular del bien": titular.filter((item) => item.id === parseInt(values.Id_Titular))[0]?.text,
+         "Tipo de bien": tipoBien,
+         "Titular del bien": titularBien,
          "Descripción del Bien": values.DescripcionGeneralBien
       };
-
-      setDataTable((prevDatasTable) => prevDatasTable.concat(newData));
-      setDatas((prevDatas) => prevDatas.concat(newDatas));
-
-      setIdunique(index + 1);
+   
+      // Retornar ambos objetos: uno para visualización y otro para el envío de datos
+      return { newData, newSendData: valuesCopy };
    };
+   
    const sendData = async () => {
       if (datas.length > 0) {
          const newDatas = [...datas];
@@ -149,6 +165,8 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+            {loadings && <Loading />}
+
                <DataTable
                   dataHidden={["identificador"]}
                   // loading={loading && datas.length > 0}

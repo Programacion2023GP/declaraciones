@@ -12,6 +12,7 @@ import { addAdeudosPasivos } from "../../../redux/AdeudosPasivoshoja14/AdeudosPa
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
+import Loading from "../../Reusables/loading/Loading";
 
 export const AdeudosPasivos = ({ loading, data, title, next, previous, setSend }) => {
    const validations = useSelector((state) => state.AdeudosPasivos.validationSchema);
@@ -25,6 +26,8 @@ export const AdeudosPasivos = ({ loading, data, title, next, previous, setSend }
    const { titular, monedas, tipoAdeudos } = Request({ peticiones: ["titular", "monedas", "tipoAdeudos"] });
    const [datasTable, setDatasTable] = useState([]);
    const [update, setUpdate] = useState(loading);
+   const [loadData, setLoadData] = useState(data);
+   const [loadings, setLoadings] = useState(false);
 
    let { declaracion } = useParams();
    declaracion = parseInt(declaracion);
@@ -46,33 +49,40 @@ export const AdeudosPasivos = ({ loading, data, title, next, previous, setSend }
       Success("Se borro de la tabla");
    };
    useEffect(() => {
+      if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+         setLoadings(true);
+      }
       if (titular.length > 0) {
-         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
-            setDatas([]);
-            setDatasTable([]);
-            // setUpdate(true);
-            data.forEach((values, index) => {
+         if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+            let newDatasArray = [];
+            let newDataTableArray = [];
+
+            loadData.forEach((values, index) => {
                delete values.Id_AdeudosPasivos;
-               addDataTableModified(values, index);
+               const { newSendData, newData } = addDataTableModified(values, index);
+               newDatasArray.push(newSendData);
+               newDataTableArray.push(newData);
             });
+
+            setDatas(newDatasArray);
+            setDatasTable(newDataTableArray);
+            setLoadings(false);
+
          }
       }
    }, [data, titular]);
+
    const addDataTableModified = (values, index) => {
-      values.identificador = index;
-      const newDatas = [...datas, values];
+      const valuesCopy = { ...values, identificador: index };
 
       const newData = {
          id: index,
          nombre: values.OC_NombreRazonSocial,
-         titular: titular.filter((item) => item.id === parseInt(values.Id_Titular))[0]?.text,
+         titular: titular.find((item) => item.id === parseInt(values.Id_Titular))?.text,
          NumeroCuentaContrato: values.NumeroCuentaContrato
       };
 
-      setDatasTable((prevDatasTable) => prevDatasTable.concat(newData));
-      setDatas((prevDatas) => prevDatas.concat(newDatas));
-
-      setIdUnique(index + 1);
+      return { newSendData: valuesCopy, newData };
    };
    const handleChange = (event) => {
       setChecked(event.target.checked);
@@ -125,6 +135,8 @@ export const AdeudosPasivos = ({ loading, data, title, next, previous, setSend }
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+            {loadings && <Loading />}
+
                <DataTable
                   // loading={loading && datas.length > 0}
                   dataHidden={["id"]}
@@ -157,7 +169,6 @@ export const AdeudosPasivos = ({ loading, data, title, next, previous, setSend }
             <Button onClick={sendData} sx={{ marginTop: "1rem", marginLeft: "1rem" }} type="submit" variant="contained" color="primary">
                {/* {datas.length > 0 ? "Registrar y Continuar" : "Continuar"} */}
                {loading ? "Actualizar y Continuar" : datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
-
             </Button>
          </Ngif>
       </>

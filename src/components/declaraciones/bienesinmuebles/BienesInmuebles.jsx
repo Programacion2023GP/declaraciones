@@ -11,6 +11,7 @@ import { Success } from "../../../toasts/toast";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
+import Loading from "../../Reusables/loading/Loading";
 
 export const BienesInmuebles = ({ loading, data, next, previous, title, setSend }) => {
    const validations = useSelector((state) => state.BienesInmuebles.validationSchema);
@@ -29,7 +30,8 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
    const [checked, setChecked] = useState(true);
    const [sendDatas, setSendDatas] = useState([]);
    const [update, setUpdate] = useState(loading);
-
+   const [loadData, setLoadData] = useState(data);
+   const [loadings, setLoadings] = useState(false);
    const message = `Todos los datos de Bienes Inmuebles declarados a nombre de la pareja, 
    dependientes económicos y/o terceros o que sean en copropiedad con el declarante no serán públicos.`;
    useEffect(() => {
@@ -37,46 +39,48 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
    }, [useSelector((state) => state.BienesInmuebles.validationSchema), useSelector((state) => state.BienesInmuebles.initialState)]);
    useEffect(() => {}, []);
    useEffect(() => {
-      console.log("bienes",data)
+      if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+         setLoadings(true);
+      }
       if (adquisicion.length > 0 && inmuebles.length > 0) {
-         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
-            setDatas([]);
-            setSendDatas([]);
-            data.forEach((values, index) => {
+         if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+            let newDatasArray = [];
+            let newSendDatasArray = [];
+            loadData.forEach((values, index) => {
                delete values.Id_BienesInmuebles;
-               addDataTableModified(values, index);
+               const modifiedData = addDataTableModified(values, index);
+               newDatasArray.push(modifiedData.newData);
+               newSendDatasArray.push(modifiedData.newSendData);
             });
+
+            setDatas(newDatasArray); // Actualizamos con el array completo
+            setSendDatas(newSendDatasArray); // Actualizamos con el array completo
+            setLoadings(false);
          }
       }
    }, [data, inmuebles, adquisicion]);
+
    const addDataTableModified = (values, index) => {
       // Crear una copia del objeto values
       const valuesCopy = { ...values, identificador: index };
-      
-      // Crear un nuevo array de datos
-      const newDatas = [...sendDatas, valuesCopy];
-    
+
       // Obtener los textos correspondientes
-      const inmueble = inmuebles.filter((item) => item.id === parseInt(values.Id_TipoInmueble))[0]?.text;
-      const adquirir = adquisicion.filter((item) => item.id === parseInt(values.Id_FormaAdquisicion))[0]?.text;
-      const tercero = values.T_Id_TipoPersona == 1 ? "Persona Física" : "Persona Moral";
-      
-      // Crear el nuevo objeto de datos
+      const inmueble = inmuebles.find((item) => item.id === parseInt(values.Id_TipoInmueble))?.text;
+      const adquirir = adquisicion.find((item) => item.id === parseInt(values.Id_FormaAdquisicion))?.text;
+      const tercero = values.T_Id_TipoPersona === 1 ? "Persona Física" : "Persona Moral";
+
+      // Crear el nuevo objeto de datos visuales
       const newData = {
-        identificador: index,
-        tipo_inmueble: inmueble,
-        "forma adquisicion": adquirir,
-        tercero: tercero
+         identificador: index,
+         tipo_inmueble: inmueble,
+         "forma adquisicion": adquirir,
+         tercero: tercero
       };
-    
-      // Actualizar los estados
-      setDatas((prevDatasTable) => prevDatasTable.concat(newData));
-      setSendDatas((prevDatas) => prevDatas.concat(newDatas));
-    
-      // Actualizar el identificador único
-      setIdUnique(index + 1);
-    };
-    
+
+      // Retornar ambos objetos: uno para visualización y otro para el envío de datos
+      return { newData, newSendData: valuesCopy };
+   };
+
    const submit = async (values) => {
       dispatch(validationBienesInmuebles({ tipo: "restart" }));
       setAnimateSend(true);
@@ -147,8 +151,9 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+         {loadings && <Loading />}
                <DataTable
-                  // loading={loading && datas.length > 0}
+                  // loading={}
                   dataHidden={["identificador"]}
                   headers={["Tipo de Inmueble", "Forma de Adquisición", "Nombre Tercero"]}
                   data={datas}
@@ -192,8 +197,7 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ ml: 2 }} type="button" variant="contained" onClick={sendData} color="primary">
-               {loading?"Actualizar y Continuar":sendDatas.length > 0 ? "Registrar y Continuar" : "Continuar"}
-
+               {loading ? "Actualizar y Continuar" : sendDatas.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>

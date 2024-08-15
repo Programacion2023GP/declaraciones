@@ -15,6 +15,7 @@ import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Post } from "../funciones/post";
 import { addVehiculo } from "../../../redux/VehiculosHoja11/VehiculosHoja11";
 import { Axios } from "../../../services/services";
+import Loading from "../../Reusables/loading/Loading";
 
 export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.Vehiculos.initialState);
@@ -25,6 +26,8 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
    const [otroVehiculo, setOtroVehiculo] = useState(true);
    const [titularVehiculo, seTitularVehiculo] = useState(0);
+   const [loadings, setLoadings] = useState(false);
+
    const dispatch = useDispatch();
    const formik = useRef(null);
    let { declaracion } = useParams();
@@ -36,6 +39,7 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
    const [otroMotivoBaja, SetMotivoBaja] = useState(true);
    const [checked, setChecked] = useState(true);
    const [update, setUpdate] = useState(loading);
+   const [loadData, setLoadData] = useState(data);
 
    const message = ` Todos los datos de Vehículos declarados a nombre de la pareja, dependientes económicos y/o terceros o que sean en copropiedad con el declarante no serán públicos. `;
    const submit = async (values) => {
@@ -58,36 +62,50 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
       setValidationSchema(Yup.object().shape(validations));
    }, [useSelector((state) => state.Vehiculos.validationSchema), useSelector((state) => state.Vehiculos.initialState), useSelector((state) => state.Vehiculos.datas)]);
    useEffect(() => {
-      console.log("data", data);
+      if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+         setLoadings(true);
+      }
       if (vehiculos.length > 0 && adquisicion.length > 0 && pago.length > 0) {
-         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
-            setDatas([]);
-            setDataTable([]);
-            // setUpdate(true);
-            data.forEach((values, index) => {
+         if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+            let newDatasArray = [];
+            let newDataTableArray = [];
+
+            loadData.forEach((values, index) => {
                delete values.Id_Vehiculos;
-               addDataTableModified(values, index);
+               const modifiedData = addDataTableModified(values, index);
+               newDatasArray.push(modifiedData.newSendData);
+               newDataTableArray.push(modifiedData.newData);
             });
-            // modifiedDataEmpleosCargos();
+
+            setDatas(newDatasArray); // Actualizamos con el array completo
+            setDataTable(newDataTableArray); // Actualizamos con el array completo
+            setLoadings(false);
+
          }
       }
    }, [data, vehiculos, adquisicion, pago]);
-   const addDataTableModified = (values, index) => {
-      values.identificador = index;
-      const newDatas = [...datas, values];
 
+   const addDataTableModified = (values, index) => {
+      // Crear una copia del objeto values
+      const valuesCopy = { ...values, identificador: index };
+
+      // Obtener los textos correspondientes
+      const tipoVehiculo = values.Id_TipoVehiculo != 4 ? vehiculos.find((item) => item.id === parseInt(values.Id_TipoVehiculo))?.text : values.EspecifiqueVehiculo;
+      const formaAdquisicion = adquisicion.find((item) => item.id === parseInt(values.Id_FormaAdquisicion))?.text;
+      const formaPago = pago.find((item) => item.id === parseInt(values.Id_FormaPago))?.text;
+
+      // Crear el nuevo objeto de datos visuales
       const newData = {
          identificador: index,
-         "Tipo de Vehículo":
-            values.Id_TipoVehiculo != 4 ? vehiculos.filter((item) => item.id === parseInt(values.Id_TipoVehiculo))[0]?.text : values.EspecifiqueVehiculo,
-         "Forma de Adquisición": adquisicion.filter((item) => item.id === parseInt(values.Id_FormaAdquisicion))[0]?.text,
-         "Forma de Pago": pago.filter((item) => item.id === parseInt(values.Id_FormaPago))[0]?.text
+         "Tipo de Vehículo": tipoVehiculo,
+         "Forma de Adquisición": formaAdquisicion,
+         "Forma de Pago": formaPago
       };
 
-      setDataTable((prevDatasTable) => prevDatasTable.concat(newData));
-      setDatas((prevDatas) => prevDatas.concat(newDatas));
-      setIdunique(index + 1);
+      // Retornar ambos objetos: uno para visualización y otro para el envío de datos
+      return { newData, newSendData: valuesCopy };
    };
+
    const generateYearOptions = () => {
       const currentYear = new Date().getFullYear();
       const years = [];
@@ -178,6 +196,8 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+            {loadings && <Loading />}
+
                <DataTable
                   // loading={loading && datas.length > 0}
                   dataHidden={["identificador"]}
@@ -217,5 +237,3 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
       </>
    );
 };
-
-

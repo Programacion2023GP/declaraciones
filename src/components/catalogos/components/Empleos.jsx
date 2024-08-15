@@ -1,39 +1,39 @@
 import * as Yup from "yup";
 import { Text } from "../../Reusables/input/Input";
 import { AutoComplete } from "../../Reusables/autocomplete/autocomplete";
-import { useEffect, useState } from "react";
-import { Ngif } from "../../Reusables/conditionals/Ngif";
 import Loading from "../../Reusables/loading/Loading";
-const AereaAdscripcion = ({ formik, setId, peticiones }) => {
-   const table = true;
+import { Ngif } from "../../Reusables/conditionals/Ngif";
+const Empleos = ({ formik, setId, peticiones }) => {
    const { organismo } = peticiones;
-   const title = "Formulario de aerea de adscripción";
+   const table = true;
+
+   const title = "Formulario de Empleos";
    const initialState = {
-      nombre: ""
+      valor: ""
    };
-   const headersDatable = ["Aereas de adscripción", "Organismo"];
-   const urlData = "adscripcion";
+   const headersDatable = ["Aerea de adscripción", "Empleo"];
+   const urlData = "empleos";
    const dataHiddenDatable = ["id"];
 
    const validator = {
-      nombre: Yup.string("El formato es texto").required("El aerea de adscripción es requerido"),
+      valor: Yup.string("El formato es texto").required("El Empleos es requerido"),
       organismo: Yup.string("El formato es texto").required("El organismo es requerido")
    };
 
    const handleEdit = (row) => {
       formik.current.setFieldValue("organismo", row["organismo"]);
 
-      formik.current.setFieldValue("nombre", row["text"]);
+      formik.current.setFieldValue("valor", row["text"]);
       setId(row.id);
    };
 
    const Form = () => {
-    
       return (
          <>
             <Ngif condition={organismo.length > 0}>
-               <AutoComplete col={12} name={"organismo"} label={"Organismo"} options={organismo} />
-               <Text col={12} name={"nombre"} label={"Escribe el aerea de adscripción"} />{" "}
+               <AutoComplete col={12} name={"organismo"} label={"Área de adscripción"} options={organismo} />
+
+               <Text col={12} name={"valor"} label={"Escribe la Empleos"} />
             </Ngif>
 
             <Ngif condition={organismo.length < 1}>
@@ -45,4 +45,4 @@ const AereaAdscripcion = ({ formik, setId, peticiones }) => {
 
    return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table };
 };
-export default AereaAdscripcion;
+export default Empleos;

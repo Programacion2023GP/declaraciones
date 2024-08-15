@@ -11,6 +11,7 @@ import { Text } from "../../../Reusables/input/Input";
 import DataTable from "../../../Reusables/table/DataTable";
 import { Axios, PostAxios } from "../../../../services/services";
 import * as Yup from "yup";
+import Loading from "../../../Reusables/loading/Loading";
 
 export const Representacion = ({ loading, data, next, previous, title }) => {
    const [checked, setChecked] = useState(true);
@@ -21,6 +22,8 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
    const formik = useRef(null);
    const [renumeracion, setRenumeracion] = useState(true);
    const [mexico, setMexico] = useState(true);
+   const [loadData, setLoadData] = useState(data);
+   const [loadings, setLoadings] = useState(false);
 
    const tipoRelaciones = [
       { value: 1, label: "Declarante" },
@@ -67,13 +70,16 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
    });
 
    useEffect(() => {
+      if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+         setLoadings(true);
+      }
       if (tipoPersona.length > 0 && representacion.length > 0 && monedas.length > 0 && paises.length > 0 && entidades.length > 0 && sectores.length > 0) {
-         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+         if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
             // Crea arrays temporales para los nuevos datos
             const newDatas = [];
             const newDatasTable = [];
 
-            data.forEach((values, index) => {
+            loadData.forEach((values, index) => {
                delete values.Id_PrestamoComodato;
 
                // Asignar identificador
@@ -97,7 +103,7 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
             // Actualizar el estado con los nuevos datos
             setDatas(newDatas);
             setDatasTable(newDatasTable);
-            console.log(newDatas);
+            setLoadings(false);
             // Ajustar el identificador único
             setIdUnique(data.length);
          }
@@ -192,6 +198,8 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+            {loadings && <Loading />}
+
                <DataTable
                   headers={["Tipo Relación	", "Tipo de Representacion	", "Fecha Inicio", "Nombre o Razón Social"]}
                   dataHidden={["id"]}

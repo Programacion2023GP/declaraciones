@@ -11,6 +11,7 @@ import DatePickerComponentV2 from "../../../Reusables/datepicker/DatePickerCompo
 import { Request } from "../../../Reusables/request/Request";
 import { AutoComplete } from "../../../Reusables/autocomplete/autocomplete";
 import { Axios, PostAxios } from "../../../../services/services";
+import Loading from "../../../Reusables/loading/Loading";
 
 export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, title }) => {
    const [datas, setDatas] = useState([]);
@@ -19,18 +20,25 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
    const [renumeracion, setRenumeracion] = useState(true);
    const [mexico, setMexico] = useState(true);
    const [idUnique, setIdUnique] = useState(1);
+   const [loadings, setLoadings] = useState(false);
+
    const [update, setUpdate] = useState(loading);
    const formik = useRef(null);
    //TipoInstrumento
+   const [loadData, setLoadData] = useState(data);
+
    const { paises, entidades, instituciones } = Request({ peticiones: ["paises", "entidades", "instituciones"] });
    useEffect(() => {
+      if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+         setLoadings(true);
+      }
       if (instituciones.length > 0 && paises.length > 0 && entidades.length > 0) {
-         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+         if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
             // Crea arrays temporales para los nuevos datos
             const newDatas = [];
             const newDatasTable = [];
 
-            data.forEach((values, index) => {
+            loadData.forEach((values, index) => {
                delete values.Id_PrestamoComodato;
 
                // Asignar identificador
@@ -48,6 +56,8 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
                // Añadir datos a los arrays temporales
                newDatas.push(values);
                newDatasTable.push(newData);
+               setLoadings(false);
+
             });
 
             // Actualizar el estado con los nuevos datos
@@ -185,6 +195,8 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+            {loadings && <Loading />}
+
                <DataTable
                   headers={["Nombre de Empresa	", "RFC", "Fecha Inicio", "Recibe remuneración"]}
                   dataHidden={["id"]}
@@ -205,7 +217,16 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm messageButton='Agregar a la tabla' previousButton  handlePrevious ={previous} ref={formik} button initialValues={initialValues} validationSchema={validationSchema} submit={submit}>
+            <FormikForm
+               messageButton="Agregar a la tabla"
+               previousButton
+               handlePrevious={previous}
+               ref={formik}
+               button
+               initialValues={initialValues}
+               validationSchema={validationSchema}
+               submit={submit}
+            >
                <CustomRadio col={12} title={``} name={`Id_TipoRelacion`} options={tipoRelaciones} />
                <AutoComplete col={6} name={"Id_TipoInstitucion"} label={`Tipo de institución`} options={instituciones} />
                <Text col={6} name={`NombreInstitucion`} label={`Nombre de la institucion`} />

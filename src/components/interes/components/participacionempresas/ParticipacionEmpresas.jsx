@@ -11,6 +11,7 @@ import * as Yup from "yup";
 import { Error, Success } from "../../../../toasts/toast";
 import { Post } from "../../../declaraciones/funciones/post";
 import { Axios, PostAxios } from "../../../../services/services";
+import Loading from "../../../Reusables/loading/Loading";
 
 export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) => {
    const { relacion, monedas, paises, entidades, tipoParticipacion, sectores } = Request({
@@ -24,6 +25,8 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
    const [mexico, setMexico] = useState(true);
    const [renumeracion, setRenumeracion] = useState(true);
    const [update, setUpdate] = useState(loading);
+   const [loadData, setLoadData] = useState(data);
+   const [loadings, setLoadings] = useState(false);
 
    const tipoRelaciones = [
       { value: 1, label: "Declarante" },
@@ -69,13 +72,16 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
    };
 
    useEffect(() => {
+      if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+         setLoadings(true);
+      }
       if (relacion.length > 0 && monedas.length > 0 && paises.length > 0 && entidades.length > 0 && tipoParticipacion.length > 0 && sectores.length > 0) {
-         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+         if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
             // Crea arrays temporales para los nuevos datos
             const newDatas = [];
             const newDatasTable = [];
 
-            data.forEach((values, index) => {
+            loadData.forEach((values, index) => {
                delete values.Id_PrestamoComodato;
 
                // Asignar identificador
@@ -94,6 +100,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
                // Añadir datos a los arrays temporales
                newDatas.push(values);
                newDatasTable.push(newData);
+               setLoadings(false);
             });
 
             // Actualizar el estado con los nuevos datos
@@ -164,7 +171,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
                }
             };
             await sendApi();
-            console.log("angel")
+            console.log("angel");
             next();
             // dispatch(clearData());
             setDatasTable([]);
@@ -189,7 +196,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
                localStorage.setItem("id_Intereses", response.data.data.result);
             }
             next();
-            console.log("angel")
+            console.log("angel");
 
             Success("Continuemos llenando los formularios");
             setDatasTable([]);
@@ -203,6 +210,8 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+            {loadings && <Loading />}
+
                <DataTable
                   headers={["Nombre empresa	", "Porcentaje", "Recibe remuneración", " Tipo", " Lugar"]}
                   dataHidden={["id"]}

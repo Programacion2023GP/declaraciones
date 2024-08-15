@@ -31,10 +31,10 @@ export const DomicilioDeclarante = memo(({ mex, activeState, idEntidad, CodigoPo
    };
    const codigo = async (name, value, nullable = true) => {
       nullable && formik.setFieldValue("ColoniaLocalidad", null);
-
       if (value.length == 5) {
          setLoading(true);
          const response = await GetPostales(value);
+
          const newDatas = response.map((item) => ({ id: item.Colonia, text: item.Colonia }));
 
          setLoading(false);

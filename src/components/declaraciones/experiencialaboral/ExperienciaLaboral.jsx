@@ -33,24 +33,35 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
    const [continuar, setContinuar] = useState(false);
    const [checked, setChecked] = useState(true);
    const [update, setUpdate] = useState(loading);
+   const [loadData, setLoadData] = useState(data);
+
    useEffect(() => {
-      if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
-         setDatas([]);
-         setDatasVisuales([]);
-         data.forEach((values, index) => {
+      if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+         let newDatasArray = [];
+         let newDatasVisualesArray = [];
+
+         loadData.forEach((values, index) => {
             delete values.Id_ExperienciaLaboral;
-            addDataTableModified(values, index);
+            const modifiedData = addDataTableModified(values, index);
+            newDatasArray.push(modifiedData.newData);
+            newDatasVisualesArray.push(modifiedData.newDataVisual);
          });
-         // modifiedDataEmpleosCargos();
+
+         setDatas(newDatasArray); // Actualizamos el estado de una sola vez
+         setDatasVisuales(newDatasVisualesArray); // Actualizamos el estado de una sola vez
       }
    }, [data, loading]);
+
    useEffect(() => {}, [update]);
+
    const addDataTableModified = (values, index) => {
       values.identificador = index;
 
-      const newDatas = [...datas, values];
-
       const newData = {
+         ...values
+      };
+
+      const newDataVisual = {
          id: index,
          Id_Sector: parseInt(values.Id_AmbitoSector) === 1 ? "PÚBLICO" : "PRIVADO",
          "Empleo, Ámbito cargo o comisión": values.NombreEntePublico,
@@ -59,9 +70,9 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
          "Fecha egreso": values.FechaEngreso
       };
 
-      setDatas((prevDatas) => prevDatas.concat(newDatas));
-      setDatasVisuales((prevDatasVisuales) => prevDatasVisuales.concat(newData));
       setIdUnique(index + 1);
+
+      return { newData, newDataVisual };
    };
 
    const dispatch = useDispatch();

@@ -11,12 +11,16 @@ import { Ngif } from "../components/Reusables/conditionals/Ngif";
 import { useDispatch } from "react-redux";
 import { locationAuth } from "../user/auth/auth";
 import { AnimatePresence, motion } from "framer-motion";
+import SexSelection from "./SexSelection";
 
 const BaseLayout = () => {
    const location = useLocation();
+   const [reload, setReload] = useState(false);
    const [loading, setLoading] = useState(false);
    const [exit, setExit] = useState(false);
-
+   const idRole = parseInt(localStorage.getItem("Id_Role"), 10);
+   const sexo = localStorage.getItem("Sexo");
+   const shouldShowOutlet = ([2, 3].includes(idRole) && sexo != null && sexo !== "") || ![2, 3].includes(idRole);
    const dispatch = useDispatch();
    useEffect(() => {
       dispatch(locationAuth());
@@ -24,6 +28,9 @@ const BaseLayout = () => {
 
       // Coloca aquí el código que deseas ejecutar cuando cambie la ruta
    }, [location.pathname]);
+   useEffect(() => {
+      console.log(reload);
+   }, [reload]);
    const { open } = useMenuContext();
    return (
       <Ngif condition={loading}>
@@ -67,30 +74,7 @@ const BaseLayout = () => {
                   </Grid>
                )}
                <Grid sx={{ minHeight: "100vh" }} item xs={12} sm={12} md={open ? 8 : 12} lg={open ? 9 : 12} xl={open ? 10 : 12}>
-                  {/* <Suspense
-                     fallback={
-                        <Backdrop sx={{ color: "#fff", zIndex: (theme) => 1000000 }} open>
-                           <Typography variant="h1" sx={{ color: "#fff" }}>
-                              CARGANDO... <CircularProgress color="inherit" />
-                           </Typography>
-                                
-                        </Backdrop>
-                     }
-                  > */}
-                     {/* <AnimatePresence key={location.pathname}>
-                        {!exit && (
-                           <motion.div
-                              initial={{ opacity: 0, y: -50 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: 50 }}
-                              transition={{ duration: 1.8, easings: ["easeInOut"] }}
-                              className="container"
-                           > */}
-                              <Outlet />
-                           {/* </motion.div>
-                        )}
-                     </AnimatePresence> */}
-                  {/* </Suspense> */}
+                  {shouldShowOutlet ? <Outlet /> : <SexSelection setReload={setReload} />}
                </Grid>
             </Grid>
          </Box>

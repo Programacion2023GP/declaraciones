@@ -9,6 +9,7 @@ import { Ngif } from "../../../Reusables/conditionals/Ngif";
 import { Error, Success } from "../../../../toasts/toast";
 import DataTable from "../../../Reusables/table/DataTable";
 import { Axios, PostAxios } from "../../../../services/services";
+import Loading from "../../../Reusables/loading/Loading";
 
 export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => {
    const [checked, setChecked] = useState(true);
@@ -17,6 +18,8 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
    const [idUnique, setIdUnique] = useState(1);
    const [update, setUpdate] = useState(loading);
    const [mexico, setMexico] = useState(true);
+   const [loadData, setLoadData] = useState(data);
+   const [loadings, setLoadings] = useState(false);
 
    const formik = useRef(null);
    const { tipoBeneficios, relacion, tipoPersona, formaRecepcion, monedas, sectores } = Request({
@@ -37,28 +40,31 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
       Aclaraciones: ""
    };
    const validationSchema = Yup.object().shape({
-      Id_TipoBeneficio:Yup.number().min(1,'El tipo de beneficio es requerido').required('El tipo de beneficio es requerido'),
-      Id_BeneficiarioPrograma:Yup.number().min(1,'El beneficiario de programa es requerido').required('El beneficiario de programa es requerido'),
+      Id_TipoBeneficio: Yup.number().min(1, "El tipo de beneficio es requerido").required("El tipo de beneficio es requerido"),
+      Id_BeneficiarioPrograma: Yup.number().min(1, "El beneficiario de programa es requerido").required("El beneficiario de programa es requerido"),
       Id_TipoPersona: Yup.number().min(1, "El tipo de persona es requerido").required("El tipo de persona es requerido"),
       NombreRazonSocial: Yup.string().required("El nombre de la empresa o servicio es requerido"),
       RfcCliente: Yup.string()
-      .required("El RFC del cliente es requerido")
-      .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
-      .length(10, "El rfc debe contar con 10 caracteres"),
-      Id_FormaRecepcion:Yup.number().min(1,'La forma de recepción es requerida').required('La forma de recepción es requerida'),
-      Id_Sector:Yup.number().min(1,'El sector productivo es requerido').required('El sector productivo es requerido'),
-      MontoMensualAproximado:Yup.number().min(0,'El monto es requerido').required('El monto es requerido'),
-      Id_MontoMensualAproximado:Yup.number().min(1,'El tipo de moneda es requerida').required('El tipo de moneda es requerida')
+         .required("El RFC del cliente es requerido")
+         .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
+         .length(10, "El rfc debe contar con 10 caracteres"),
+      Id_FormaRecepcion: Yup.number().min(1, "La forma de recepción es requerida").required("La forma de recepción es requerida"),
+      Id_Sector: Yup.number().min(1, "El sector productivo es requerido").required("El sector productivo es requerido"),
+      MontoMensualAproximado: Yup.number().min(0, "El monto es requerido").required("El monto es requerido"),
+      Id_MontoMensualAproximado: Yup.number().min(1, "El tipo de moneda es requerida").required("El tipo de moneda es requerida")
       // RecibeRemuneracion: Yup.number().min(0, 'El
    });
    useEffect(() => {
+      if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
+         setLoadings(true);
+      }
       if (tipoBeneficios.length > 0 && relacion.length > 0 && tipoPersona.length > 0 && formaRecepcion.length > 0 && monedas.length > 0 && sectores.length > 0) {
-         if (typeof data !== "undefined" && Array.isArray(data) && data.length > 0) {
+         if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
             // Crea arrays temporales para los nuevos datos
             const newDatas = [];
             const newDatasTable = [];
 
-            data.forEach((values, index) => {
+            loadData.forEach((values, index) => {
                delete values.Id_PrestamoComodato;
 
                // Asignar identificador
@@ -82,6 +88,8 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
             // Actualizar el estado con los nuevos datos
             setDatas(newDatas);
             setDatasTable(newDatasTable);
+            setLoadings(false);
+
             // Ajustar el identificador único
             setIdUnique(data.length);
          }
@@ -177,6 +185,8 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+            {loadings && <Loading />}
+
                <DataTable
                   headers={["Nombre empresa o servicio", "Cliente Principal	", "Monto Mensual", "Sector Productivo	"]}
                   dataHidden={["id"]}

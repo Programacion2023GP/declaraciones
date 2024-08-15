@@ -24,6 +24,7 @@ import TipoInversion from "../components/TipoInversion";
 import TipoSubInversion from "../components/TipoSubInversion";
 import TipoBien from "../components/TipoBIen";
 import TipoAdeudo from "../components/TipoAdeudo";
+import Empleos from "../components/Empleos";
 export const Create = ({ catalogo, formik,peticiones }) => {
    const [id, setId] = useState(0);
    useEffect(() => {}, [formik.current == undefined]);
@@ -52,6 +53,8 @@ export const Create = ({ catalogo, formik,peticiones }) => {
       { key: "tiposubinversion", instance: TipoSubInversion },
       { key: "tipobien", instance: TipoBien },
       { key: "tipoadeudo", instance: TipoAdeudo },
+      { key: "empleos", instance: Empleos },
+
       
    ];
    const foundMethod = methods.find((element) => element.key === catalogo);
