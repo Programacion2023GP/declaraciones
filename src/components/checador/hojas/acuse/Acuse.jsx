@@ -1,16 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import GomezLogo from "../../../../assets/icons/logo-gpd.png";
-import moment from 'moment-timezone';
+import moment from "moment-timezone";
+import { GetAxios } from "../../../../services/services";
 
 // Definir estilos
 const styles = StyleSheet.create({
+   signatureContainer: {
+      marginTop: 100, // Ajusta para posicionar la firma
+      textAlign: "center"
+   },
+   line: {
+      borderBottom: "1pt solid black",
+      width: "200pt",
+      marginBottom: 10,
+      marginHorizontal: "auto"
+   },
+   name: {
+      fontSize: 9,
+      color: "gray"
+   },
    page: {
       padding: 30
    },
    header: {
       textAlign: "center",
-      marginBottom: 5,
+      marginBottom: 5
    },
    title: {
       fontSize: 14,
@@ -76,7 +91,12 @@ const styles = StyleSheet.create({
    }
 });
 
-export const Acuse = ({ data = [], declaracion = "" }) => {
+export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) => {
+   const [ads, setAds] = useState(null);
+   useEffect(() => {
+      console.log("a", data[0]);
+   }, [row, adscripcion]);
+
    const {
       Nombre = "",
       PrimerApellido = "",
@@ -86,8 +106,8 @@ export const Acuse = ({ data = [], declaracion = "" }) => {
       FechaRegistro = "",
       DenominacionCargo = "",
       AreaAdscripcion = "",
-      Homoclave = "",
-      CorreoInstitucional = "",
+      valor = "",
+      EmpleoCargoComision = "",
       CorreoPersonal = "",
       TelefonoCasa = "",
       TelefonoCelularPersonal = "",
@@ -100,23 +120,20 @@ export const Acuse = ({ data = [], declaracion = "" }) => {
    } = data[0] || {};
 
    const formatFecha = (fecha) => {
-      const date = moment.tz(fecha, 'America/Monterrey'); // Asegúrate de que fecha tenga la zona horaria correcta
-      const year = date.format('YYYY');
-      const month = date.format('MM');
-      const day = date.format('DD');
-      const hours = date.format('hh'); // Usa 'hh' para horas en formato 12 horas
-      const minutes = date.format('mm');
-      const seconds = date.format('ss');
-      const ampm = date.format('a'); // 'a' para indicar am/pm
+      const date = moment.tz(fecha, "America/Monterrey"); // Asegúrate de que fecha tenga la zona horaria correcta
+      const year = date.format("YYYY");
+      const month = date.format("MM");
+      const day = date.format("DD");
+      const hours = date.format("hh"); // Usa 'hh' para horas en formato 12 horas
+      const minutes = date.format("mm");
+      const seconds = date.format("ss");
+      const ampm = date.format("a"); // 'a' para indicar am/pm
       return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`;
-    };
-    
-    
-    const hoy = formatFecha(moment()); // Usando moment() para obtener la fecha y hora actual
-    const fechaRegistro = formatFecha(FechaRegistro);
-    
-  
-  
+   };
+
+   const hoy = formatFecha(moment()); // Usando moment() para obtener la fecha y hora actual
+   const fechaRegistro = formatFecha(FechaRegistro);
+
    return (
       <Page style={styles.page}>
          <View style={styles.header}>
@@ -138,7 +155,9 @@ export const Acuse = ({ data = [], declaracion = "" }) => {
          <View style={styles.section}>
             <Text style={styles.subtitle}>Gómez Palacio, Dgo., 2024-7-1</Text>
             <Text style={styles.subtitle}>TIPO DE RECEPCIÓN: INTERNET {fechaRegistro}</Text>
-            <Text style={styles.subtitle}>DECLARACIÓN: SITUACIÓN PATRIMONIAL - {declaracion}</Text>
+            <Text style={styles.subtitle}>
+               DECLARACIÓN: SITUACIÓN PATRIMONIAL - {declaracion} - {row?.Declaracion}
+            </Text>
             <Text style={styles.subtitle}>AÑO DECLARADO: {new Date(FechaRegistro).getFullYear()}</Text>
          </View>
 
@@ -168,22 +187,30 @@ export const Acuse = ({ data = [], declaracion = "" }) => {
                      <Text style={styles.tableCell}>Nombre(s):</Text>
                      <Text style={styles.tableCell}>{Nombre}</Text>
                   </View>
+                  <View style={styles.tableCol}>
+                     <Text style={styles.tableCell}>Sexo</Text>
+                     <Text style={styles.tableCell}>{localStorage.getItem("Sexo")}</Text>
+                  </View>
                </View>
             </View>
          </View>
 
          <View style={styles.section}>
             <Text style={styles.bold}>DEL SERVICIO PÚBLICO:</Text>
-            <Text>Cargo: {DenominacionCargo}</Text>
-            <Text>Dependencia: Republicano Ayuntamiento de Gómez Palacio, Durango</Text>
+            <Text>Cargo: {EmpleoCargoComision}</Text>
+            <Text>Dependencia: {valor}</Text>
             <Text>Área de adscripción (Dirección, Departamento o Coordinación): {AreaAdscripcion}</Text>
          </View>
-
+        
          <View style={styles.footer}>
             <Text>
                ESTE DOCUMENTO VALIDA EL ENVÍO DE INFORMACIÓN A TRAVÉS DE INTERNET CONTINE UN IDENTIFICADOR ÚNICO PARA VALIDAR SU DECLARACIÓN EN CASO DE ACLARACIONES
             </Text>
             <Text>La fecha y hora de recepción efectiva de su declaración es la fecha y hora del servidor.</Text>
+         </View>
+         <View style={styles.signatureContainer}>
+            <View style={styles.line} />
+            <Text style={styles.name}>{row?.Nombre + " " + row?.ApPaterno + " " + row?.ApMaterno}</Text>
          </View>
       </Page>
    );

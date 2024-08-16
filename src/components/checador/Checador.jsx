@@ -125,6 +125,8 @@ const Checador = ({}) => {
    const [tester, setTexter] = useState(false);
    const [acuse, setAcuse] = useState(false);
    const [tpDeclaracion, setTtpDeclaracion] = useState(null);
+   const [myRow, setRow] = useState(null);
+   const [adscripcion, setAdscripcion] = useState([]);
    const existPeticiones = (peticiones) => {
       let count = 0;
       if (peticiones) {
@@ -198,9 +200,12 @@ const Checador = ({}) => {
    ]);
    const init = async () => {
       setLoading(true);
+      setAdscripcion(await GetAxios("adscripcion/show"));
       setData(await GetAxios(`apartados/all`));
       setLoading(false);
    };
+   useEffect(()=>{
+   },[adscripcion])
    const handlePdfTester = async (row) => {
       setTexter(true);
       handelPdf(row);
@@ -211,6 +216,7 @@ const Checador = ({}) => {
    };
    const handleAcuse = async (row) => {
       setDatosGenerales(await GetAxios(`datosgenerales/acuse/${row.Folio}`));
+      setRow(row);
       setTtpDeclaracion(row.Tipo_declaracion);
       setAcuse(true);
    };
@@ -334,7 +340,6 @@ const Checador = ({}) => {
       }
    };
    useEffect(() => {
-      console.log("prestamosComodatos", prestamosComodatos);
    }, [selectedDeclaracion, name, prestamosComodatos]);
    const OpenPdf = () => {
       setModal(false);
@@ -421,7 +426,7 @@ const Checador = ({}) => {
             </Card>
 
             <PdfDeclaracion title={"ACUSE"} open={acuse} setOpen={setAcuse} formTitle={"ACUSE"}>
-               <Acuse data={datosGenerales} declaracion={tpDeclaracion} />
+               <Acuse data={datosGenerales} adscripcion={adscripcion} row={myRow} declaracion={tpDeclaracion} />
             </PdfDeclaracion>
 
             {loadingMessage != null ? (

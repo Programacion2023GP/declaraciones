@@ -58,6 +58,7 @@ export const NotasAclaratorias = ({}) => {
       }
    };
    const handlePrintPDF = async (row) => {
+      console.log("row", row);
       setData(row);
       setPrint(true);
    };
@@ -135,7 +136,7 @@ export const NotasAclaratorias = ({}) => {
                         // loading={loading && datas.length > 0}
                         deleteButton={[3, 4].includes(parseInt(localStorage.getItem("Id_Role"))) ? true : false}
                         handleDelete={handleDelete}
-                        dataHidden={["Id_nota", "AreaAdscripcion"]}
+                        dataHidden={["Id_SituacionPatrimonial","Id_nota", "AreaAdscripcion"]}
                         headers={["Folio", "Nombre", "Apellido Paterno", "Apellido Materno", "Fecha", "Asunto", "Descripcion", "Correo"]}
                         data={datas}
                         pagination={[10, 20, 30, 50, 100, 200, 500]}

@@ -20,7 +20,8 @@ const BaseLayout = () => {
    const [exit, setExit] = useState(false);
    const idRole = parseInt(localStorage.getItem("Id_Role"), 10);
    const sexo = localStorage.getItem("Sexo");
-   const shouldShowOutlet = ([2, 3].includes(idRole) && sexo != null && sexo !== "") || ![2, 3].includes(idRole);
+   const shouldShowOutlet = ([2, 3].includes(idRole) && sexo != "null" && sexo !== "") || ![2, 3].includes(idRole);
+   
    const dispatch = useDispatch();
    useEffect(() => {
       dispatch(locationAuth());
@@ -29,7 +30,7 @@ const BaseLayout = () => {
       // Coloca aquí el código que deseas ejecutar cuando cambie la ruta
    }, [location.pathname]);
    useEffect(() => {
-      console.log(reload);
+
    }, [reload]);
    const { open } = useMenuContext();
    return (

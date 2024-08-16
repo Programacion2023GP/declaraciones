@@ -7,6 +7,20 @@ export const Nota = ({ data }) => {
       console.log(data);
    }, [data]);
    const styles = StyleSheet.create({
+      signatureContainer: {
+         marginTop: 100, // Ajusta para posicionar la firma
+         textAlign: "center"
+      },
+      line: {
+         borderBottom: "1pt solid black",
+         width: "200pt",
+         marginBottom: 10,
+         marginHorizontal: "auto"
+      },
+      name: {
+         fontSize: 9,
+         color: "gray"
+      },
       page: {
          padding: 30
       },
@@ -61,11 +75,11 @@ export const Nota = ({ data }) => {
          fontSize: 8
       },
       footer: {
-        textAlign: "start",
-        justifyContent: "flex-start",
-        marginVertical: 10,
-        padding: 10,
-        fontSize: 10
+         textAlign: "start",
+         justifyContent: "flex-start",
+         marginVertical: 10,
+         padding: 10,
+         fontSize: 10
       },
       logo: {
          width: 200,
@@ -89,21 +103,18 @@ export const Nota = ({ data }) => {
       }
    });
    const formatSpanishDate = (dateStr) => {
-    if (!dateStr) {
-        return "Fecha de Aclaración: Fecha inválida";
-    }
+      if (!dateStr) {
+         return "Fecha de Aclaración: Fecha inválida";
+      }
 
-    const months = [
-        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 
-        'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-    ];
+      const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
-    const [day, month, year] = dateStr.split('/').map(Number);
-    return ` ${day} de ${months[month - 1]} del ${year}`;
-};
+      const [day, month, year] = dateStr.split("/").map(Number);
+      return ` ${day} de ${months[month - 1]} del ${year}`;
+   };
 
-// Ejemplo de uso en React Native
-<Text style={styles.tableCell}>{formatSpanishDate(data?.Date)}</Text>
+   // Ejemplo de uso en React Native
+   <Text style={styles.tableCell}>{formatSpanishDate(data?.Date)}</Text>;
 
    return (
       <>
@@ -147,12 +158,19 @@ export const Nota = ({ data }) => {
                      </View>
                   </View>
                   <View style={styles.tableRow}>
-                     <View style={styles.tableCol2}>
+                     <View style={styles.tableCol}>
+                        <Text style={styles.tableCell}>Sexo</Text>
+                        <Text style={styles.tableCell}>{localStorage.getItem("Sexo")}</Text>
+                     </View>
+                     <View style={styles.tableCol}>
                         <Text style={styles.tableCell}>Área de adscripción (Dirección, Departamento o Coordinación):</Text>
                         <Text style={styles.tableCell}>{data?.AreaAdscripcion}</Text>
                      </View>
+                     <View style={styles.tableCol}>
+                        <Text style={styles.tableCell}>#De la ultima declaración:</Text>
+                        <Text style={styles.tableCell}>{data?.Id_SituacionPatrimonial}</Text>
+                     </View>
                   </View>
-
                   <View style={styles.tableRow}>
                      <View style={styles.tableCol}>
                         <Text style={styles.tableCell}>Asunto:</Text>
@@ -182,6 +200,10 @@ export const Nota = ({ data }) => {
                   BAJO PROTESTA DE DECIR VERDAD, REITERO QUE LA INFORMACIÓN VERTIDA EN ESTA NOTA ACLARATORIA ES VERAZ, DE CONFORMIDAD CON LOS ARTÍCULOS 32 Y33 DE LA
                   LEYDE RESPONSABILIDADES ADMINISTRATIVAS.
                </Text>
+            </View>
+            <View style={styles.signatureContainer}>
+               <View style={styles.line} />
+               <Text style={styles.name}>{data?.Name + " " + data?.PaternalSurname + " " + data?.MaternalSurname}</Text>
             </View>
          </Page>
       </>
