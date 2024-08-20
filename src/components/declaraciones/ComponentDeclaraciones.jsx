@@ -73,6 +73,7 @@ const ComponentDeclaraciones = () => {
 
    const exit = () => {
       dispatch(locationAuth());
+      localStorage.removeItem("id_Intereses");
       localStorage.removeItem("id_SituacionPatrimonial");
       window.location.hash = "/dashboard/misdeclaraciones";
    };
