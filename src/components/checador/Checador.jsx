@@ -32,7 +32,7 @@ import { Acuse } from "./hojas/acuse/Acuse";
 import { CuentasValores } from "./hojas/CuentasValores";
 import { AdeudosPasivos } from "./hojas/AdeudosPasivos";
 import { PrestamoComodato } from "./hojas/PrestamoComodato";
-import "react-datepicker/dist/react-datepicker.css";
+// import "react-datepicker/dist/react-datepicker.css";
 // import DatePicker from "react-datepicker";
 // import "./DateRangeSelector.css"; // Importa el archivo CSS para estilos adicionales
 
