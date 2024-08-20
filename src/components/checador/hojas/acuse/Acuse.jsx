@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
 export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) => {
    const [ads, setAds] = useState(null);
    useEffect(() => {
+      console.log(row,row?.Gender);
    }, [row, adscripcion]);
 
    const {
@@ -103,7 +104,7 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
       Curp = "",
       Rfc = "",
       FechaRegistro = "",
-      DenominacionCargo = "",
+      Gender = "",
       AreaAdscripcion = "",
       valor = "",
       EmpleoCargoComision = "",
@@ -153,7 +154,7 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
          {/* Id_SituacionPatrimonial */}
          <View style={styles.section}>
             <Text style={styles.subtitle}>Gómez Palacio, Dgo., 2024-7-1</Text>
-            <Text style={styles.subtitle}>TIPO DE RECEPCIÓN: INTERNET {fechaRegistro}</Text>
+            <Text style={styles.subtitle}>Fecha de presentación {fechaRegistro}</Text>
             <Text style={styles.subtitle}>
                DECLARACIÓN: SITUACIÓN PATRIMONIAL - {declaracion} - {row?.Declaracion}
             </Text>
@@ -188,7 +189,7 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
                   </View>
                   <View style={styles.tableCol}>
                      <Text style={styles.tableCell}>Sexo</Text>
-                     <Text style={styles.tableCell}>{localStorage.getItem("Sexo")}</Text>
+                     <Text style={styles.tableCell}>{row?.Gender}</Text>
                   </View>
                </View>
             </View>
@@ -200,7 +201,7 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
             <Text>Dependencia: {valor}</Text>
             <Text>Área de adscripción (Dirección, Departamento o Coordinación): {AreaAdscripcion}</Text>
          </View>
-        
+
          <View style={styles.footer}>
             <Text>
                ESTE DOCUMENTO VALIDA EL ENVÍO DE INFORMACIÓN A TRAVÉS DE INTERNET CONTINE UN IDENTIFICADOR ÚNICO PARA VALIDAR SU DECLARACIÓN EN CASO DE ACLARACIONES

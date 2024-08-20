@@ -32,6 +32,11 @@ import { Acuse } from "./hojas/acuse/Acuse";
 import { CuentasValores } from "./hojas/CuentasValores";
 import { AdeudosPasivos } from "./hojas/AdeudosPasivos";
 import { PrestamoComodato } from "./hojas/PrestamoComodato";
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
+import "./DateRangeSelector.css"; // Importa el archivo CSS para estilos adicionales
+import { es } from "date-fns/locale"; // Importa el locale en español
+
 // Acuse
 const Checador = ({}) => {
    useEffect(() => {
@@ -127,6 +132,8 @@ const Checador = ({}) => {
    const [tpDeclaracion, setTtpDeclaracion] = useState(null);
    const [myRow, setRow] = useState(null);
    const [adscripcion, setAdscripcion] = useState([]);
+   const [dates, setDates] = useState([null, null]);
+   const [testerDates, setTesterDates] = useState(false);
    const existPeticiones = (peticiones) => {
       let count = 0;
       if (peticiones) {
@@ -204,8 +211,7 @@ const Checador = ({}) => {
       setData(await GetAxios(`apartados/all`));
       setLoading(false);
    };
-   useEffect(()=>{
-   },[adscripcion])
+   useEffect(() => {}, [adscripcion]);
    const handlePdfTester = async (row) => {
       setTexter(true);
       handelPdf(row);
@@ -339,8 +345,126 @@ const Checador = ({}) => {
          OpenPdf();
       }
    };
-   useEffect(() => {
-   }, [selectedDeclaracion, name, prestamosComodatos]);
+   const handelPdfDates = async (data) => {
+   
+      // setName(row.name);
+      // console.log(row.Declaracion, row.Tipo_declaracion);
+      const declaracionMapping = {
+         Simplificada: {
+            Inicial: 4,
+            Modificación: 5,
+            Conclusión: 6
+         },
+         Completa: {
+            Inicial: 1,
+            Modificación: 2,
+            Conclusión: 3
+         }
+      };
+
+      if (row.Declaracion in declaracionMapping) {
+         const tipoDeclaracion = row.Tipo_declaracion.trim(); // Trimming para eliminar espacios en blanco adicionales
+
+         if (tipoDeclaracion in declaracionMapping[row.Declaracion]) {
+            setSelectedDeclaracion(declaracionMapping[row.Declaracion][tipoDeclaracion]);
+         }
+      }
+      const page = row.Declaracion == "Simplificada" ? 6 : row.Declaracion == "Completa" && row.Tipo_declaracion != "Modificación" ? 14 : 15;
+      setPages(page);
+      setOpen(true);
+      setModal(true);
+      setLoadingMessage(true);
+
+      // Función auxiliar para simular una pausa de medio segundo
+      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+      try {
+         setMessage("Datos generales");
+         setPass(1);
+         setDatosGenerales(await GetAxios(`datosgenerales/index/${row.Folio}`));
+
+         await delay(500); // Esperar medio segundo (500 milisegundos)
+         setPass(2);
+
+         setMessage("Domicilio declarante");
+         setDomiciliioDeclarante(await GetAxios(`domiciliodeclarante/index/${row.Folio}`));
+
+         await delay(500); // Esperar medio segundo nuevamente
+         setPass(3);
+
+         setMessage("Datos curriculares");
+         setDatosCurriculares(await GetAxios(`datoscurriculares/index/${row.Folio}`));
+         await delay(500); // Esperar medio segundo nuevamente
+         setPass(4);
+
+         setMessage("Datos empleos cargo Comisión");
+         setDatosEmpleos(await GetAxios(`datoscargoscomision/index/${row.Folio}`));
+
+         setPass(5);
+         setMessage("Experiencia Laboral");
+         setExperienciaLaboral(await GetAxios(`experiencialaboral/index/${row.Folio}`));
+         await delay(500); // Esperar medio segundo nuevamente
+         if (page > 6) {
+            setPass(6);
+            setMessage("Datos de la pareja");
+            setDatosPareja(await GetAxios(`datospareja/index/${row.Folio}`));
+            await delay(500); // Esperar medio segundo nuevamente
+
+            setPass(7);
+            setMessage("Datos de los dependientes economicos");
+            setDatosDependienteEconomicos(await GetAxios(`dependienteseconomicos/index/${row.Folio}`));
+            await delay(500); // Esperar medio segundo nuevamente
+         }
+
+         setPass(page > 6 ? 8 : 6);
+         setMessage("ingresos netos");
+         setIngresosNetos(await GetAxios(`ingresos/index/${row.Folio}`));
+         await delay(500); // Esperar medio segundo nuevamente
+
+         if (page == 15) {
+            setPass(9);
+            setMessage("servidor publico");
+            setServidorPublico(await GetAxios(`servidorpublico/index/${row.Folio}`));
+            await delay(500); // Esperar medio segundo nuevamente
+         }
+         if (page > 6) {
+            setMessage("bienes inmuebles");
+            setPass(page == 15 ? 10 : page > 6 ? 9 : 7);
+            setBienesInmuebles(await GetAxios(`bienesinmuebles/index/${row.Folio}`));
+            await delay(500); // Esperar medio segundo nuevamente
+
+            setPass(page == 15 ? 11 : page > 6 ? 10 : 8);
+            setMessage("vehiculos");
+            setTpVehiculos(await GetAxios(`vehiculos/index/${row.Folio}`));
+            await delay(500); // Esperar medio segundo nuevamente
+
+            setPass(page == 15 ? 12 : page > 6 ? 11 : 9);
+            setMessage("bienes muebles");
+            setBienesMuebles(await GetAxios(`bienesmuebles/index/${row.Folio}`));
+            await delay(500);
+
+            setPass(page == 15 ? 13 : page > 6 ? 12 : 10);
+            setMessage("inversiones cuentas valores");
+            setCuentaValores(await GetAxios(`inversionescuentas/index/${row.Folio}`));
+            await delay(500);
+
+            setPass(page == 15 ? 14 : page > 6 ? 13 : 11);
+            setMessage("adeudos");
+            setAdeudos(await GetAxios(`adeudospasivos/index/${row.Folio}`));
+            await delay(500);
+
+            setPass(page == 15 ? 15 : page > 6 ? 14 : 12);
+            setMessage("prestamos comodatos");
+            setPrestamosComodatos(await GetAxios(`prestamoscomodatos/index/${row.Folio}`));
+            await delay(500);
+         }
+      } catch (error) {
+         console.error("Error al obtener datos:", error);
+      } finally {
+         // OpenPdf();
+      }
+   };
+   useEffect(() => {}, [selectedDeclaracion, name, prestamosComodatos, testerDates]);
    const OpenPdf = () => {
       setModal(false);
       setMessage("");
@@ -377,6 +501,24 @@ const Checador = ({}) => {
          conditions: ["Tstatus == 'Terminada'"]
       }
    ].filter(Boolean);
+   const handleDateRangeSelected = (dates) => {
+      if (dates[0] !== null && dates[1] !== null) {
+         setTesterDates(true);
+         const startDate = dates[0];
+         const endDate = dates[1];
+         const filteredFolios = data
+            .filter((d) => {
+               const fechaRegistroTerminada = new Date(d.FechaRegistroTerminada);
+               return fechaRegistroTerminada >= startDate && fechaRegistroTerminada <= endDate;
+            })
+            .map((d) => d);
+         filteredFolios.map((f) => {
+            if (Object.keys(f).length > 1) {
+               handelPdfDates(f);
+            }
+         });
+      }
+   };
    return (
       <>
          <Box
@@ -395,10 +537,36 @@ const Checador = ({}) => {
          >
             <Card sx={{ maxWidth: "100%", margin: "auto" }}>
                <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
+                  {/* <div className="date-range-selector">
+                     <DatePicker
+                        selected={dates[0]}
+                        // onChange={(update) => setDates(update)}
+                        startDate={dates[0]}
+                        endDate={dates[1]}
+                        selectsRange
+                        open={open}
+                        onClickOutside={() => setOpen(false)}
+                        onCalendarOpen={() => setOpen(true)}
+                        onCalendarClose={() => setOpen(false)}
+                        dateFormat="dd/MM/yyyy"
+                        className="date-picker-input"
+                        popperPlacement="bottom-start"
+                        placeholderText="Selecciona un rango de fechas"
+                        onChange={(update) => {
+                           setDates(update);
+                           if (update.length === 2) {
+                              // Both dates have been selected, call your method here
+                              handleDateRangeSelected(update);
+                           }
+                        }}
+                        locale={es} // Configura el locale en español
+                     />
+                  </div> */}
                   <DataTable
                      options={["CHARTS", "EXCEL", "COLORS"]}
                      // , "PDF",
                      moreButtons={moreButtons}
+                     dataHidden={['Gender']}
                      // captionButtons={[
                      //    {text:"mas",handleButton:()=>{alert("dd")},icon:VisibilityIcon}
                      // ]}
@@ -411,7 +579,17 @@ const Checador = ({}) => {
                      loading={loading}
                      filterGlobal={true}
                      filter={true}
-                     headers={["Folio", "Nombre", "Apellido Paterno", "Apellido Materno", "Modalidad de la declaración", "Tipo de declaración", "Estatus", "Fecha"]}
+                     headers={[
+                        "Folio",
+                        "Nombre",
+                        "Apellido Paterno",
+                        "Apellido Materno",
+                        "Modalidad de la declaración",
+                        "Tipo de declaración",
+                        "Estatus",
+                        "Fecha registro",
+                        "Fecha finalizada",
+                     ]}
                      data={data}
                      // por hacer  getUrl ={}
                      // refreshRequest ={}

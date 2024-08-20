@@ -160,14 +160,14 @@ export const Nota = ({ data }) => {
                   <View style={styles.tableRow}>
                      <View style={styles.tableCol}>
                         <Text style={styles.tableCell}>Sexo</Text>
-                        <Text style={styles.tableCell}>{localStorage.getItem("Sexo")}</Text>
+                        <Text style={styles.tableCell}>{data?.Gender}</Text>
                      </View>
                      <View style={styles.tableCol}>
                         <Text style={styles.tableCell}>Área de adscripción (Dirección, Departamento o Coordinación):</Text>
                         <Text style={styles.tableCell}>{data?.AreaAdscripcion}</Text>
                      </View>
                      <View style={styles.tableCol}>
-                        <Text style={styles.tableCell}>#De la ultima declaración:</Text>
+                        <Text style={styles.tableCell}>#Folio de la declaración:</Text>
                         <Text style={styles.tableCell}>{data?.Id_SituacionPatrimonial}</Text>
                      </View>
                   </View>
