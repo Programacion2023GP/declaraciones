@@ -16,7 +16,7 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
    const [datas, setDatas] = useState([]);
    const [datasTable, setDatasTable] = useState([]);
    const [idUnique, setIdUnique] = useState(1);
-   const [update, setUpdate] = useState(loading);
+   const [update, setUpdate] = useState(data.length > 0);
    const [mexico, setMexico] = useState(true);
    const [loadData, setLoadData] = useState(data);
    const [loadings, setLoadings] = useState(false);
@@ -79,6 +79,7 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
                   "Monto Mensual": values.MontoMensualAproximado,
                   "Sector Productivo": sectores.find((item) => item.id === parseInt(values.Id_Sector))?.text
                };
+               setIdUnique(idUnique + 1);
 
                // Añadir datos a los arrays temporales
                newDatas.push(values);
@@ -243,7 +244,7 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
 
          <Ngif condition={!checked}>
             <Button sx={{ marginLeft: "1rem" }} type="submit" variant="contained" color="primary" onClick={sendDatas}>
-               {loading ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
+               {update ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>

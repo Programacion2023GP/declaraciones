@@ -92,7 +92,8 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
          "Titular del bien": titularBien,
          "Descripción del Bien": values.DescripcionGeneralBien
       };
-   
+      setIdUnique(index + 1);
+
       // Retornar ambos objetos: uno para visualización y otro para el envío de datos
       return { newData, newSendData: valuesCopy };
    };

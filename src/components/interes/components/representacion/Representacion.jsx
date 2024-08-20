@@ -18,7 +18,7 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
    const [datas, setDatas] = useState([]);
    const [datasTable, setDatasTable] = useState([]);
    const [idUnique, setIdUnique] = useState(1);
-   const [update, setUpdate] = useState(loading);
+   const [update, setUpdate] = useState(data.length > 0);
    const formik = useRef(null);
    const [renumeracion, setRenumeracion] = useState(true);
    const [mexico, setMexico] = useState(true);
@@ -44,7 +44,7 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
       Id_TipoPersona: 0,
       NombreRazonSocial: "",
       Rfc: "",
-      RecibeRemuneracion: 0,
+      RecibeRemuneracion: 1,
       MontoMensual: 0,
       Id_MontoMensual: 0,
       Id_PaisUbicacion: 0,
@@ -94,6 +94,7 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
                   "Fecha Inicio": values.FechaInicioRepresentacion,
                   "Nombre o Razón Social": values.NombreRazonSocial
                };
+               setIdUnique(idUnique + 1);
 
                // Añadir datos a los arrays temporales
                newDatas.push(values);
@@ -198,7 +199,7 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
-            {loadings && <Loading />}
+               {loadings && <Loading />}
 
                <DataTable
                   headers={["Tipo Relación	", "Tipo de Representacion	", "Fecha Inicio", "Nombre o Razón Social"]}
@@ -275,7 +276,7 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ marginLeft: "1rem" }} type="submit" variant="contained" color="primary" onClick={sendDatas}>
-               {loading ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
+               {update ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>

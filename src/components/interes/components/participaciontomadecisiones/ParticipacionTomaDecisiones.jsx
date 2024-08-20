@@ -22,7 +22,7 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
    const [idUnique, setIdUnique] = useState(1);
    const [loadings, setLoadings] = useState(false);
 
-   const [update, setUpdate] = useState(loading);
+   const [update, setUpdate] = useState(data.length > 0);
    const formik = useRef(null);
    //TipoInstrumento
    const [loadData, setLoadData] = useState(data);
@@ -52,12 +52,12 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
                   FechaInicioParticipacion: values.FechaInicioParticipacion,
                   "Recibe remuneración": values.RecibeRemuneracion > 0 ? "Si" : "No"
                };
+               setIdUnique(idUnique + 1);
 
                // Añadir datos a los arrays temporales
                newDatas.push(values);
                newDatasTable.push(newData);
                setLoadings(false);
-
             });
 
             // Actualizar el estado con los nuevos datos
@@ -83,7 +83,7 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
       EsEnMexico: 1,
       PuestoRol: "",
       FechaInicioParticipacion: "",
-      RecibeRemuneracion: 0,
+      RecibeRemuneracion: 1,
       MontoMensual: "",
       Id_MonedaMontoMensual: 0,
       Id_PaisUbicacion: 0,
@@ -195,7 +195,7 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
-            {loadings && <Loading />}
+               {loadings && <Loading />}
 
                <DataTable
                   headers={["Nombre de Empresa	", "RFC", "Fecha Inicio", "Recibe remuneración"]}
@@ -270,7 +270,7 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ marginLeft: "1rem" }} type="submit" variant="contained" color="primary" onClick={sendDatas}>
-               {loading ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
+               {update ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>

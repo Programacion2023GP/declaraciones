@@ -87,6 +87,7 @@ export const InversionesCuentasValores = ({ loading, data, next, previous, title
          titular: titularBien,
          InstitucionRazonSocial: values.InstitucionRazonSocial
       };
+      setIdUnique(index + 1);
 
       // Retornar ambos objetos: uno para visualización y otro para el envío de datos
       return { newData, newSendData: valuesCopy };

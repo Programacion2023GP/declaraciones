@@ -337,20 +337,23 @@ const ComponentDeclaraciones = () => {
       try {
          // Obtener la situación patrimonial
          setView(false);
-         const propierty = activeStep < 15 ? "id_SituacionPatrimonial" : "id_Intereses";
-         const propiertyDb = activeStep < 15 ? "Id_SituacionPatrimonial" : "id_Intereses";
+         console.log("hoja", hoja);
+         const propierty = hoja < 15 ? "id_SituacionPatrimonial" : "id_Intereses";
+         const propiertyDb = hoja < 15 ? "Id_SituacionPatrimonial" : "Id_Intereses";
          const userId = parseInt(localStorage.getItem("Id_User"));
          let step = activeStep + 1 + (declaracion !== 2 && activeStep >= 8 ? 1 : 0);
 
          // Obtener y ajustar el valor de la propiedad
          let propertyValue = parseInt(localStorage.getItem(propierty));
          // Restar 14 si propierty es 'Id_Intereses'
+         console.log("propertyValue", activeStep);
          if (propierty === "id_Intereses") {
-            step -= 15;
+            console.log("here");
+            // step -= 15;
          }
 
          // Construir la URL
-         const peticion = `situacionpatrimonial/index/${userId}/${step}/${!isNaN(propertyValue) ? propertyValue : 0}`;
+         const peticion = `situacionpatrimonial/index/${userId}/${hoja > 14 ? 15 + step : step}/${!isNaN(propertyValue) ? propertyValue : 0}`;
 
          const situacionPatrimonial = await GetAxios(peticion);
          const url = filteredSteps[page == null ? activeStep : page].url;
@@ -374,7 +377,8 @@ const ComponentDeclaraciones = () => {
          ];
          //? SI ESTAMOS EN LA PAGINA ACTUAL APAGA EL ACTUALIZAR Y CARGA LA INFO DE TU ANTERIOR DECLARACION
          // Verificar si la página después de la situación es el paso activo
-         if (pageAfterSituacion === activeStep) {
+         if (pageAfterSituacion === activeStep && propierty != "id_Intereses") {
+            console.log(parseInt(situacionPatrimonial[propiertyDb]) > 0, situacionPatrimonial);
             if (parseInt(situacionPatrimonial[propiertyDb]) > 0) {
                const response = await GetAxios(
                   `${url}/index/${activeStep < 15 ? parseInt(situacionPatrimonial[propiertyDb]) : parseInt(localStorage.getItem("id_Intereses"))}`
@@ -393,14 +397,16 @@ const ComponentDeclaraciones = () => {
             }
          }
          // Verificar si la situación patrimonial no es válida
-         if (parseInt(situacionPatrimonial[propierty]) == 0 || isNaN(parseInt(situacionPatrimonial[propierty]))) {
+         if (parseInt(situacionPatrimonial[propierty]) == 0 || isNaN(parseInt(situacionPatrimonial[propierty])) || propierty === "id_Intereses") {
+            console.log("adentro");
             const exist = await GetAxios(
-               `apartados/exist/${!isNaN(parseInt(localStorage.getItem(propierty))) ? parseInt(localStorage.getItem(propierty)) : 0}/${activeStep + 1 - (activeStep > 14 ? 15 : 0)}`
+               `apartados/exist/${!isNaN(parseInt(localStorage.getItem(propierty))) ? parseInt(localStorage.getItem(propierty)) : 0}/${activeStep + 1 - (hoja > 14 ? 15 : 0)}`
             );
 
             if (exist) {
+               console.log(localStorage.getItem("id_Intereses"));
                const response = await GetAxios(
-                  `${url}/index/${activeStep > 14 ? parseInt(localStorage.getItem("id_Intereses")) : parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`
+                  `${url}/index/${hoja > 14 ? parseInt(localStorage.getItem("id_Intereses")) : parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`
                );
 
                setDataPage(datasArrays.includes(url) ? response : response[0]);

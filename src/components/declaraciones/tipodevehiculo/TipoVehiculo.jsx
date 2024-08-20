@@ -101,6 +101,7 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
          "Forma de Adquisición": formaAdquisicion,
          "Forma de Pago": formaPago
       };
+      setIdUnique(index + 1);
 
       // Retornar ambos objetos: uno para visualización y otro para el envío de datos
       return { newData, newSendData: valuesCopy };

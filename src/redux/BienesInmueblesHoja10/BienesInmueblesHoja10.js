@@ -75,7 +75,8 @@ const validationSchema = {
    CodigoPostal: Yup.string()
       .matches(/^\d{5}$/, "El código postal debe tener exactamente 5 caracteres numéricos")
       .required("El código postal es requerido"),
-   ColoniaLocalidad: Yup.string().required("La colonia localidad es requerida"),
+      ColoniaLocalidad: Yup.string().min(1, "La colonia localidad es requerida").required("La colonia localidad es requerida")
+,
    Id_EntidadFederativa: Yup.number("Debe ser numerico").required("La entidad federativa es obligatoria").min(1, "La entidad federativa es obligatoria"),
    Id_MunicipioAlcaldia: Yup.number("Debe ser numerico").required("El municipio / alcadia es obligatoria").min(1, "El municipio / alcadia es obligatoria")
 };

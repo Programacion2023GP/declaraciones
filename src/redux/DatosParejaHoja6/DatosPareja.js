@@ -87,8 +87,9 @@ const validationsDomicilio = {
    CodigoPostal: Yup.string()
       .matches(/^\d{5}$/, "El código postal debe tener exactamente 5 caracteres numéricos")
       .required("El código postal es requerido"),
-   ColoniaLocalidad: Yup.string().required("La colonia localidad es requerida"),
-   Id_ActividadLaboral: Yup.number("Debe ser numerico").required("Es requerido que selecione una opcion").min(1, "Es requerido que selecione una opcion")
+      ColoniaLocalidad: Yup.string().min(1, "La colonia localidad es requerida").required("La colonia localidad es requerida")
+      ,
+      Id_ActividadLaboral: Yup.number("Debe ser numerico").required("Es requerido que selecione una opcion").min(1, "Es requerido que selecione una opcion")
 };
 const mexico = {
    Id_EntidadFederativa: Yup.number("Debe ser numerico").required("La entidad federativa es obligatoria").min(1, "La entidad federativa es obligatoria"),

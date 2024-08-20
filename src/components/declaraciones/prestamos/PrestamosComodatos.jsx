@@ -75,7 +75,6 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
             setDatas(newDatasArray);
             setDatasTable(newDataTableArray);
             setLoadings(false);
-
          }
       }
    }, [data, inmuebles, vehiculos]);
@@ -92,6 +91,7 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
                  vehiculos.find((item) => item.id === parseInt(values.Id_TipoVehiculo))?.text
                : values.EspecifiqueOtro
       };
+      setIdUnique(index + 1);
 
       return { newSendData: valuesCopy, newData };
    };
@@ -191,7 +191,7 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
-            {loadings && <Loading />}
+               {loadings && <Loading />}
 
                <DataTable
                   // loading={loading && datas.length > 0}

@@ -81,6 +81,7 @@ export const AdeudosPasivos = ({ loading, data, title, next, previous, setSend }
          titular: titular.find((item) => item.id === parseInt(values.Id_Titular))?.text,
          NumeroCuentaContrato: values.NumeroCuentaContrato
       };
+      setIdUnique(index + 1);
 
       return { newSendData: valuesCopy, newData };
    };

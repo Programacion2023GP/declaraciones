@@ -24,7 +24,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
    const [idUnique, setIdUnique] = useState(1);
    const [mexico, setMexico] = useState(true);
    const [renumeracion, setRenumeracion] = useState(true);
-   const [update, setUpdate] = useState(loading);
+   const [update, setUpdate] = useState(data.length > 0);
    const [loadData, setLoadData] = useState(data);
    const [loadings, setLoadings] = useState(false);
 
@@ -60,7 +60,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
       Id_TipoParticipacion: Yup.number().min(1, "El tipo de participación es requerido").required("El tipo de participación es requerido"),
       RfcEmpresa: Yup.string().min(3, "El RFC de empresa debe tener al menos 3 caracteres").required("El RFC de empresa es requerido"),
       MontoMensual: renumeracion && Yup.number().required("El monto mensual es requerido").min(0, "El monto mensual debe ser al menos 0"),
-      Id_MonedaMontoMensual: Yup.number().min(1, "La moneda del monto mensual es requerida").required("La moneda del monto mensual es requerida"),
+      Id_MonedaMontoMensual: renumeracion && Yup.number().min(1, "La moneda del monto mensual es requerida").required("La moneda del monto mensual es requerida"),
       Id_PaisUbicacion: !mexico && Yup.number().min(1, "El país de ubicación es requerido").required("El país de ubicación es requerido"),
       Id_EntidadFederativa: mexico && Yup.number().min(1, "La entidad federativa es requerida").required("La entidad federativa es requerida"),
       Id_Sector: Yup.number().min(1, "El sector es requerido").required("El sector es requerido"),
@@ -89,13 +89,14 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
 
                // Crear datos para datasTable
                const newData = {
-                  id: values.identificador,
+                  id: index + 1,
                   NombreEmpresaSociedadAsociacion: values.NombreEmpresaSociedadAsociacion,
                   Porcentaje: values.PorcentajeParticipacion,
                   "Recibe remuneración": values.RecibeRemuneracion > 0 ? "Si" : "No",
                   tipoRelaciones: tipoRelaciones.find((item) => item.value === parseInt(values.Id_TipoRelacion))?.label,
                   "En México": values.EsEnMexico == 1 ? "En México" : "En el extranjero"
                };
+               setIdUnique(idUnique + 1);
 
                // Añadir datos a los arrays temporales
                newDatas.push(values);
@@ -106,9 +107,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
             // Actualizar el estado con los nuevos datos
             setDatas(newDatas);
             setDatasTable(newDatasTable);
-            console.log(newDatas);
             // Ajustar el identificador único
-            setIdUnique(data.length);
          }
       }
    }, [data, relacion, monedas, paises, entidades, tipoParticipacion, sectores]);
@@ -147,6 +146,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
    };
 
    const deleteRow = (row) => {
+      // console.log(datasTable);
       // dispatch(deleteDatosDependiente({ id: row.id }));
       setDatas(datas.filter((item) => item.identificador != row.id));
       const itemTable = datasTable.filter((item) => item.id != row.id);
@@ -171,7 +171,6 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
                }
             };
             await sendApi();
-            console.log("angel");
             next();
             // dispatch(clearData());
             setDatasTable([]);
@@ -210,7 +209,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
-            {loadings && <Loading />}
+               {loadings && <Loading />}
 
                <DataTable
                   headers={["Nombre empresa	", "Porcentaje", "Recibe remuneración", " Tipo", " Lugar"]}
@@ -260,9 +259,9 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
                   handleGetValue={handleRenumeracion}
                />
                <Ngif condition={renumeracion}>
+                  <AutoComplete col={12} name={`Id_MonedaMontoMensual`} label={`Tipo de Moneda`} options={monedas} />
                   <Text col={12} name={`MontoMensual`} label={`Monto mensual neto`} type={"number"} />
                </Ngif>
-               <AutoComplete col={12} name={`Id_MonedaMontoMensual`} label={`Tipo de Moneda`} options={monedas} />
                <CustomRadio
                   col={12}
                   title={`Lugar donde se ubica
@@ -289,13 +288,11 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
                onClick={() => {
                   console.log(formik.current.errors);
                }}
-            >
-               err
-            </button>
+            ></button>
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ marginLeft: "1rem" }} type="submit" variant="contained" color="primary" onClick={sendDatas}>
-               {loading ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
+               {update ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>

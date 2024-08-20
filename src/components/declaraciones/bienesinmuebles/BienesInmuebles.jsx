@@ -76,6 +76,7 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
          "forma adquisicion": adquirir,
          tercero: tercero
       };
+      setIdUnique(index + 1);
 
       // Retornar ambos objetos: uno para visualización y otro para el envío de datos
       return { newData, newSendData: valuesCopy };
@@ -151,7 +152,7 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
-         {loadings && <Loading />}
+               {loadings && <Loading />}
                <DataTable
                   // loading={}
                   dataHidden={["identificador"]}

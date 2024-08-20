@@ -16,7 +16,7 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
    const [datas, setDatas] = useState([]);
    const [datasTable, setDatasTable] = useState([]);
    const [idUnique, setIdUnique] = useState(1);
-   const [update, setUpdate] = useState(loading);
+   const [update, setUpdate] = useState(data.length > 0);
    const [mexico, setMexico] = useState(true);
    const formik = useRef(null);
    const [loadData, setLoadData] = useState(data);
@@ -76,7 +76,7 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
       NombreRazonSocialFiduciario: Yup.string().required("Nombre de razon social de fiducario es requerido"),
       NombreRazonSocialFideicomisario: Yup.string().required("Nombre de razon social de fide comisario es requerido"),
       Id_Sector: Yup.number().min(1, "El tipo de sector es requerido").required("El tipo de sector es requerido"),
-      EsEnMexico: Yup.number().min(1, "El donde se localiza el fidecomiso").required("El donde se localiza el fidecomiso")
+      EsEnMexico: Yup.number().oneOf([0, 1], "El valor debe ser 0 o 1").required("EsEnMexico es requerido")
       // RecibeRemuneracion: Yup.number().min(0, 'El
    });
    useEffect(() => {
@@ -104,6 +104,7 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
                   "Sector al que Pertenece": sectores.find((item) => item.id === parseInt(values.Id_Sector))?.text,
                   "Donde se Localiza": values.EsEnMexico == 1 ? "En méxico" : "En el extranjero"
                };
+               setIdUnique(idUnique + 1);
 
                // Añadir datos a los arrays temporales
                newDatas.push(values);
@@ -210,7 +211,7 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
-            {loadings && <Loading />}
+               {loadings && <Loading />}
 
                <DataTable
                   headers={["Tipo de Fideicomiso", "Nombre o Razón Social", "Sector al que Pertenece", "Donde se Localiza"]}
@@ -270,7 +271,7 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
 
          <Ngif condition={!checked}>
             <Button sx={{ marginLeft: "1rem" }} type="submit" variant="contained" color="primary" onClick={sendDatas}>
-               {loading ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
+               {update ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
          </Ngif>
       </>
