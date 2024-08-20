@@ -33,9 +33,10 @@ import { CuentasValores } from "./hojas/CuentasValores";
 import { AdeudosPasivos } from "./hojas/AdeudosPasivos";
 import { PrestamoComodato } from "./hojas/PrestamoComodato";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker";
-import "./DateRangeSelector.css"; // Importa el archivo CSS para estilos adicionales
-import { es } from "date-fns/locale"; // Importa el locale en español
+// import DatePicker from "react-datepicker";
+// import "./DateRangeSelector.css"; // Importa el archivo CSS para estilos adicionales
+
+// import { es } from "date-fns/locale"; // Importa el locale en español
 
 // Acuse
 const Checador = ({}) => {
@@ -346,7 +347,6 @@ const Checador = ({}) => {
       }
    };
    const handelPdfDates = async (data) => {
-   
       // setName(row.name);
       // console.log(row.Declaracion, row.Tipo_declaracion);
       const declaracionMapping = {
@@ -566,7 +566,7 @@ const Checador = ({}) => {
                      options={["CHARTS", "EXCEL", "COLORS"]}
                      // , "PDF",
                      moreButtons={moreButtons}
-                     dataHidden={['Gender']}
+                     dataHidden={["Gender"]}
                      // captionButtons={[
                      //    {text:"mas",handleButton:()=>{alert("dd")},icon:VisibilityIcon}
                      // ]}
@@ -588,7 +588,7 @@ const Checador = ({}) => {
                         "Tipo de declaración",
                         "Estatus",
                         "Fecha registro",
-                        "Fecha finalizada",
+                        "Fecha finalizada"
                      ]}
                      data={data}
                      // por hacer  getUrl ={}
