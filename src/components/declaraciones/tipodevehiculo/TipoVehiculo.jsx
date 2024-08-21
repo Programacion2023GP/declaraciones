@@ -37,7 +37,7 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
    });
    const [postStepper, setPostStepper] = useState(false);
    const [otroMotivoBaja, SetMotivoBaja] = useState(true);
-   const [checked, setChecked] = useState(true);
+   const [checked, setChecked] = useState(false);
    const [update, setUpdate] = useState(loading);
    const [loadData, setLoadData] = useState(data);
 

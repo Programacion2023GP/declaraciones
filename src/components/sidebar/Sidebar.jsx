@@ -189,7 +189,7 @@ const Sidebar = () => {
          active: false,
          permision: [1, 4]
       },
-    
+
       {
          path: "checador",
          text: "Checador",
@@ -224,7 +224,7 @@ const Sidebar = () => {
                active: false
             }
          ]
-      },
+      }
    ]);
    // closing the navbar when clicked outside the sidebar area
    const handleClickOutside = (event) => {

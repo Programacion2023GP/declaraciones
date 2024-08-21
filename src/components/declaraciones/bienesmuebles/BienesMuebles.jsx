@@ -24,7 +24,7 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
    const [dataTable, setDataTable] = useState([]);
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
    const [postStepper, setPostStepper] = useState(false);
-   const [checked, setChecked] = useState(true);
+   const [checked, setChecked] = useState(false);
    const [update, setUpdate] = useState(loading);
    const [loadData, setLoadData] = useState(data);
    const [loadings, setLoadings] = useState(false);

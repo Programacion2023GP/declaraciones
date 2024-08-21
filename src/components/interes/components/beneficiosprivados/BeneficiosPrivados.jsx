@@ -12,7 +12,7 @@ import { Axios, PostAxios } from "../../../../services/services";
 import Loading from "../../../Reusables/loading/Loading";
 
 export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => {
-   const [checked, setChecked] = useState(true);
+   const [checked, setChecked] = useState(false);
    const [datas, setDatas] = useState([]);
    const [datasTable, setDatasTable] = useState([]);
    const [idUnique, setIdUnique] = useState(1);

@@ -29,7 +29,7 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
    const [datasTable, setDatasTable] = useState([]);
    const [idUnique, setIdUnique] = useState(1);
    const [parentescos, setParentescos] = useState([]);
-   const [checked, setChecked] = useState(true);
+   const [checked, setChecked] = useState(false);
    const [reinilaize, setRenalize] = useState(1);
    const datasRedux = useSelector((state) => state.DependientesEconomicos.datas);
    const [update, setUpdate] = useState(loading);

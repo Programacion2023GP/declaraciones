@@ -16,7 +16,7 @@ import Loading from "../../../Reusables/loading/Loading";
 export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, title }) => {
    const [datas, setDatas] = useState([]);
    const [datasTable, setDatasTable] = useState([]);
-   const [checked, setChecked] = useState(true);
+   const [checked, setChecked] = useState(false);
    const [renumeracion, setRenumeracion] = useState(true);
    const [mexico, setMexico] = useState(true);
    const [idUnique, setIdUnique] = useState(1);

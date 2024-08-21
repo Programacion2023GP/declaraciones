@@ -566,7 +566,7 @@ const Checador = ({}) => {
                      options={["CHARTS", "EXCEL", "COLORS"]}
                      // , "PDF",
                      moreButtons={moreButtons}
-                     dataHidden={["Gender"]}
+                     dataHidden={["Gender", "FechaRegistroTerminada"]}
                      // captionButtons={[
                      //    {text:"mas",handleButton:()=>{alert("dd")},icon:VisibilityIcon}
                      // ]}
@@ -587,8 +587,8 @@ const Checador = ({}) => {
                         "Modalidad de la declaración",
                         "Tipo de declaración",
                         "Estatus",
-                        "Fecha registro",
-                        "Fecha finalizada"
+                        "Fecha registro"
+                        // "Fecha finalizada"
                      ]}
                      data={data}
                      // por hacer  getUrl ={}

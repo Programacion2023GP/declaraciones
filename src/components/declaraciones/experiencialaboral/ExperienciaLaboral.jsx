@@ -31,7 +31,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
    const [idUnique, setIdUnique] = useState(1);
    const formikRef = useRef();
    const [continuar, setContinuar] = useState(false);
-   const [checked, setChecked] = useState(true);
+   const [checked, setChecked] = useState(false);
    const [update, setUpdate] = useState(loading);
    const [loadData, setLoadData] = useState(data);
 
@@ -277,11 +277,20 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
                   <Grid container spacing={2}></Grid>
                </Typography>
                <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
+                  <Typography>el valor del chequed {checked}</Typography>
                   <FormControlLabel
-                     control={<Switch checked={checked} onChange={handleChange} name="gilad" color={datasVisuales.length > 0 ? "secondary" : "primary"} />}
+                     control={
+                        <Switch
+                           checked={checked} // Este es el estado que controla el Switch
+                           onChange={handleChange} // Manejador de cambios
+                           name="gilad"
+                           color={datasVisuales.length > 0 ? "secondary" : "primary"}
+                        />
+                     }
                      label={datasVisuales.length > 0 ? "¿Deseas seguir agregando experiencias laborales?" : "¿Tienes experiencias laborales?"}
                   />
                </FormGroup>
+
                <Ngif condition={checked}>
                   <Formik innerRef={formikRef} initialValues={dataForm} validationSchema={validationSchema} onSubmit={submit}>
                      {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues }) => {
