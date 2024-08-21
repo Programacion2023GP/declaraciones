@@ -338,9 +338,11 @@ const ComponentDeclaraciones = () => {
       try {
          // Obtener la situación patrimonial
          setView(false);
-         console.log("hoja", hoja);
-         const propierty = hoja < 15 ? "id_SituacionPatrimonial" : "id_Intereses";
-         const propiertyDb = hoja < 15 ? "Id_SituacionPatrimonial" : "Id_Intereses";
+
+         const propierty = isNaN(hoja) ? "id_SituacionPatrimonial" : hoja < 15 ? "id_SituacionPatrimonial" : "id_Intereses";
+         const propiertyDb = isNaN(hoja) ? "Id_SituacionPatrimonial" : hoja < 15 ? "Id_SituacionPatrimonial" : "Id_Intereses";
+
+
          const userId = parseInt(localStorage.getItem("Id_User"));
          let step = activeStep + 1 + (declaracion !== 2 && activeStep >= 8 ? 1 : 0);
 
@@ -355,7 +357,6 @@ const ComponentDeclaraciones = () => {
 
          // Construir la URL
          const peticion = `situacionpatrimonial/index/${userId}/${hoja > 14 ? 15 + step : step}/${!isNaN(propertyValue) ? propertyValue : 0}`;
-
          const situacionPatrimonial = await GetAxios(peticion);
          const url = filteredSteps[page == null ? activeStep : page].url;
          // console.log("url: " + filteredSteps[page == null ? activeStep : page].label)
@@ -398,7 +399,7 @@ const ComponentDeclaraciones = () => {
             }
          }
          // Verificar si la situación patrimonial no es válida
-         if (parseInt(situacionPatrimonial[propierty]) == 0 || isNaN(parseInt(situacionPatrimonial[propierty])) || propierty === "id_Intereses") {
+         if (parseInt(situacionPatrimonial[propierty]) == 0 || isNaN(parseInt(situacionPatrimonial[propierty]))) {
             console.log("adentro");
             const exist = await GetAxios(
                `apartados/exist/${!isNaN(parseInt(localStorage.getItem(propierty))) ? parseInt(localStorage.getItem(propierty)) : 0}/${activeStep + 1 - (hoja > 14 ? 15 : 0)}`

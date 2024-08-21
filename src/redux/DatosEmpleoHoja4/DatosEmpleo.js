@@ -33,13 +33,13 @@ const validationSchema = {
    NombreEntePublico: Yup.number("El Nombre del ente público es requerido")
       .min(1, "El Nombre del ente público es requerido")
       .required("El Nombre del ente público es requerido"),
-   AreaAdscripcion: Yup.number("El Áerea de adscripción del ente público es requerido")
+   AreaAdscripcion: Yup.string("El Áerea de adscripción del ente público es requerido")
       .min(1, "El Áerea de adscripción del ente público es requerido")
       .required("El Áerea de adscripción del ente público es requerido"),
-   EmpleoCargoComision: Yup.number("El Empleo cargo comisión es requerido")
+   EmpleoCargoComision: Yup.string("El Empleo cargo comisión es requerido")
       .min(1, "El Empleo cargo comisión es requerido")
       .required("El Empleo cargo comisión es requerido"),
-   NivelEmpleoCargoComision: Yup.number().min(1, "El nivel empleo cargo comisión es requerido").required("El nivel empleo cargo comisión es requerido"),
+   NivelEmpleoCargoComision: Yup.string().min(1, "El nivel empleo cargo comisión es requerido").required("El nivel empleo cargo comisión es requerido"),
    // NivelEmpleoCargoComisionText: !activeEspecificarEmpleo ? Yup.string().required("El nivel empleo cargo comisión es requerido ") : "",
    FuncionPrincipal: Yup.string().required("La función principal es requerida"),
    FechaTomaConclusionPosesion: Yup.date("No cumple el formato valido de fecha").required("La fecha es requerida"),
