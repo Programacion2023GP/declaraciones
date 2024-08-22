@@ -326,6 +326,7 @@ const ComponentDeclaraciones = () => {
       } catch (error) {
          setupdate(false);
       } finally {
+         console.log("aquii");
          await init();
       }
    };
@@ -342,14 +343,12 @@ const ComponentDeclaraciones = () => {
          const propierty = isNaN(hoja) ? "id_SituacionPatrimonial" : hoja < 15 ? "id_SituacionPatrimonial" : "id_Intereses";
          const propiertyDb = isNaN(hoja) ? "Id_SituacionPatrimonial" : hoja < 15 ? "Id_SituacionPatrimonial" : "Id_Intereses";
 
-
          const userId = parseInt(localStorage.getItem("Id_User"));
          let step = activeStep + 1 + (declaracion !== 2 && activeStep >= 8 ? 1 : 0);
 
          // Obtener y ajustar el valor de la propiedad
          let propertyValue = parseInt(localStorage.getItem(propierty));
          // Restar 14 si propierty es 'Id_Intereses'
-         console.log("propertyValue", activeStep);
          if (propierty === "id_Intereses") {
             console.log("here");
             // step -= 15;
@@ -358,6 +357,12 @@ const ComponentDeclaraciones = () => {
          // Construir la URL
          const peticion = `situacionpatrimonial/index/${userId}/${hoja > 14 ? 15 + step : step}/${!isNaN(propertyValue) ? propertyValue : 0}`;
          const situacionPatrimonial = await GetAxios(peticion);
+         if (situacionPatrimonial == null) {
+            Info("No se encontraro información a recuperar");
+            setView(true);
+            return;
+         }
+         console.log("propertyValue", situacionPatrimonial);
          const url = filteredSteps[page == null ? activeStep : page].url;
          // console.log("url: " + filteredSteps[page == null ? activeStep : page].label)
          const datasArrays = [
@@ -400,7 +405,6 @@ const ComponentDeclaraciones = () => {
          }
          // Verificar si la situación patrimonial no es válida
          if (parseInt(situacionPatrimonial[propierty]) == 0 || isNaN(parseInt(situacionPatrimonial[propierty]))) {
-            console.log("adentro");
             const exist = await GetAxios(
                `apartados/exist/${!isNaN(parseInt(localStorage.getItem(propierty))) ? parseInt(localStorage.getItem(propierty)) : 0}/${activeStep + 1 - (hoja > 14 ? 15 : 0)}`
             );
