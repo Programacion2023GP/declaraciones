@@ -22,7 +22,7 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
    const [idUnique, setIdUnique] = useState(1);
    const [loadings, setLoadings] = useState(false);
 
-   const [update, setUpdate] = useState(data.length > 0);
+   const [update, setUpdate] = useState(Array.isArray(data) && data.length > 0);
    const formik = useRef(null);
    //TipoInstrumento
    const [loadData, setLoadData] = useState(data);

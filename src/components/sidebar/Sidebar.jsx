@@ -47,6 +47,8 @@ const Sidebar = () => {
                path: "declaraciones/2/15",
                text: "Interes",
                legend: "crear nueva declaración de Interes",
+               permision: [2],
+
                active: false
             }
          ]
@@ -328,30 +330,37 @@ const RecursivoMenu = ({ array, i, handleSelect }) => {
       <>
          {array.map((child, j) => {
             return (
-               <li
-                  style={child.active ? {} : style}
-                  className="menu-item"
-                  key={`${child.path}-${j}`} // Usa una clave única adecuada
-                  onClick={() => handleSelect(i, j)}
-               >
-                  <Items
-                     message={child.legend ? child.legend : child.text.toLowerCase()}
-                     active={child.active}
-                     classprop="subactive"
-                     path={child.path}
-                     key={`${child.path}-${j}`}
-                     text={child.text}
-                     index={i}
-                     childrens={child.children != undefined ? (child.children.length > 0 ? true : false) : false}
-                     indexChild={j}
-                     handleClickContinue={handleSelect}
-                  />
-                  <div className={child.active && (child.children?.length ?? 0) > 0 ? "subitemactive" : "subitem"}>
-                     <ul className="menu-list">
-                        {child.children && Array.isArray(child.children) && <RecursivoMenu array={child.children} i={j} handleSelect={handleSelect} />}
-                     </ul>
-                  </div>
-               </li>
+               <>
+                  <Ngif condition={child.permision && !child.permision.includes(parseInt(localStorage.getItem("Id_Role")))}>
+                     <></>
+                  </Ngif>
+                  <Ngif condition={!child.permision}>
+                     <li
+                        style={child.active ? {} : style}
+                        className="menu-item"
+                        key={`${child.path}-${j}`} // Usa una clave única adecuada
+                        onClick={() => handleSelect(i, j)}
+                     >
+                        <Items
+                           message={child.legend ? child.legend : child.text.toLowerCase()}
+                           active={child.active}
+                           classprop="subactive"
+                           path={child.path}
+                           key={`${child.path}-${j}`}
+                           text={child.text}
+                           index={i}
+                           childrens={child.children != undefined ? (child.children.length > 0 ? true : false) : false}
+                           indexChild={j}
+                           handleClickContinue={handleSelect}
+                        />
+                        <div className={child.active && (child.children?.length ?? 0) > 0 ? "subitemactive" : "subitem"}>
+                           <ul className="menu-list">
+                              {child.children && Array.isArray(child.children) && <RecursivoMenu array={child.children} i={j} handleSelect={handleSelect} />}
+                           </ul>
+                        </div>
+                     </li>
+                  </Ngif>
+               </>
             );
          })}
       </>

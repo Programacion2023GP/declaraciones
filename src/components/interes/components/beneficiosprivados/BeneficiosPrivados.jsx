@@ -16,7 +16,7 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
    const [datas, setDatas] = useState([]);
    const [datasTable, setDatasTable] = useState([]);
    const [idUnique, setIdUnique] = useState(1);
-   const [update, setUpdate] = useState(data.length > 0);
+   const [update, setUpdate] = useState(Array.isArray(data) && data.length > 0);
    const [mexico, setMexico] = useState(true);
    const [loadData, setLoadData] = useState(data);
    const [loadings, setLoadings] = useState(false);
@@ -186,7 +186,7 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
-            {loadings && <Loading />}
+               {loadings && <Loading />}
 
                <DataTable
                   headers={["Nombre empresa o servicio", "Cliente Principal	", "Monto Mensual", "Sector Productivo	"]}

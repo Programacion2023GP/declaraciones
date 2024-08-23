@@ -18,7 +18,7 @@ export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) =>
    const [datasTable, setDatasTable] = useState([]);
    const [checked, setChecked] = useState(false);
    const [idUnique, setIdUnique] = useState(1);
-   const [update, setUpdate] = useState(data.length > 0);
+   const [update, setUpdate] = useState(Array.isArray(data) && data.length > 0);
    const [loadData, setLoadData] = useState(data);
    const [loadings, setLoadings] = useState(false);
 

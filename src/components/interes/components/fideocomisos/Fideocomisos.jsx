@@ -16,7 +16,7 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
    const [datas, setDatas] = useState([]);
    const [datasTable, setDatasTable] = useState([]);
    const [idUnique, setIdUnique] = useState(1);
-   const [update, setUpdate] = useState(data.length > 0);
+   const [update, setUpdate] = useState(Array.isArray(data) && data.length > 0);
    const [mexico, setMexico] = useState(true);
    const formik = useRef(null);
    const [loadData, setLoadData] = useState(data);

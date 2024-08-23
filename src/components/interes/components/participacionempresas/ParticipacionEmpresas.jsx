@@ -24,7 +24,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
    const [idUnique, setIdUnique] = useState(1);
    const [mexico, setMexico] = useState(true);
    const [renumeracion, setRenumeracion] = useState(true);
-   const [update, setUpdate] = useState(data.length > 0);
+   const [update, setUpdate] = useState(Array.isArray(data) && data.length > 0);
    const [loadData, setLoadData] = useState(data);
    const [loadings, setLoadings] = useState(false);
 

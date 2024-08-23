@@ -41,7 +41,6 @@ export const NotasAclaratorias = ({}) => {
       try {
          const sendApi = async () => {
             const response = await PostAxios("notasaclaratorias/create", values);
-            console.log(response);
             Success(response.data.message);
          };
          await sendApi();
@@ -56,6 +55,7 @@ export const NotasAclaratorias = ({}) => {
          // dispatch(clearData());
          // setDatasTable([]);
       }
+      init();
    };
    const handlePrintPDF = async (row) => {
       setData(row);
@@ -88,6 +88,7 @@ export const NotasAclaratorias = ({}) => {
       init();
    };
    const init = async () => {
+      console.log("init");
       setLoading(true);
 
       setDatas(
@@ -135,7 +136,7 @@ export const NotasAclaratorias = ({}) => {
                         // loading={loading && datas.length > 0}
                         deleteButton={[3, 4].includes(parseInt(localStorage.getItem("Id_Role"))) ? true : false}
                         handleDelete={handleDelete}
-                        dataHidden={["Id_SituacionPatrimonial","Id_nota", "AreaAdscripcion","Gender"]}
+                        dataHidden={["Id_SituacionPatrimonial", "Id_nota", "AreaAdscripcion", "Gender"]}
                         headers={["Folio", "Nombre", "Apellido Paterno", "Apellido Materno", "Fecha", "Asunto", "Descripcion", "Correo"]}
                         data={datas}
                         pagination={[10, 20, 30, 50, 100, 200, 500]}
