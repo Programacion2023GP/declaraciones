@@ -104,7 +104,7 @@ const MisDeclaraciones = ({}) => {
                      editButton={true}
                      deleteButton={true}
                      handleDelete={handleDelete}
-                     conditionExistEditButton={["Status !='Terminada'"]}
+                     conditionExistEditButton={["Status !='Terminada'", "Hoja !='15'"]}
                      speakRow
                      // conditionExistDeleteButton={["Status !='Terminada'"]}
                      handleEdit={handleEditDeclaracion}

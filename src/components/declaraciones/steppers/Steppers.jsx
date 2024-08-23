@@ -46,7 +46,7 @@ const Steppers = () => {
       const response = await GetAxios(`apartados/show/${parseInt(localStorage.getItem("Id_User"))}`);
       console.log(response);
       response.map((item) => {
-         if (item.Declaracion != "Interes" && item.Status == "En proceso") {
+         if (item.Declaracion != "Interes" && item.Status == "En proceso" && item.Hoja != 15) {
             console.log(item);
             next = false;
          }

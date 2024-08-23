@@ -64,9 +64,9 @@ export const DatosEmpleoCargo = ({ data = [], testada = false, nivelOrdenGobiern
    const test = () => {
       return "XXXXXXXXXX";
    };
-   const vacio = () => {
-      return "-----------------------";
-   };
+   // const vacio = () => {
+   //    return "-----------------------";
+   // };
 
    return (
       <>
