@@ -349,7 +349,6 @@ const ComponentDeclaraciones = () => {
          let propertyValue = parseInt(localStorage.getItem(propierty));
          // Restar 14 si propierty es 'Id_Intereses'
          if (propierty === "id_Intereses") {
-            console.log("here");
             // step -= 15;
          }
 
@@ -385,7 +384,6 @@ const ComponentDeclaraciones = () => {
          //? SI ESTAMOS EN LA PAGINA ACTUAL APAGA EL ACTUALIZAR Y CARGA LA INFO DE TU ANTERIOR DECLARACION
          // Verificar si la página después de la situación es el paso activo
          if (pageAfterSituacion === activeStep && propierty != "id_Intereses") {
-            console.log("adentro 1")
             console.log(parseInt(situacionPatrimonial[propiertyDb]) > 0, situacionPatrimonial);
             if (parseInt(situacionPatrimonial[propiertyDb]) > 0) {
                const response = await GetAxios(

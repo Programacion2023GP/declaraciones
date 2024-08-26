@@ -23,7 +23,7 @@ const Sidebar = () => {
          text: "Declaraciones",
          legend: "selección de apartado de declaración",
          active: false,
-         permision: [2, 3],
+         permision: [2, 3, 10],
          children: [
             {
                path: "misdeclaraciones",
@@ -47,7 +47,7 @@ const Sidebar = () => {
                path: "declaraciones/2/15",
                text: "Interes",
                legend: "crear nueva declaración de Interes",
-               permision: [2],
+               permision: [2, 10],
 
                active: false
             }
@@ -58,7 +58,7 @@ const Sidebar = () => {
          text: "Catalogos",
          legend: "catalogos generales",
          active: false,
-         permision: [1],
+         permision: [1, 10],
 
          children: [
             {
@@ -189,7 +189,7 @@ const Sidebar = () => {
          legend: "registro de usuarios",
 
          active: false,
-         permision: [1, 4]
+         permision: [1, 4, 10]
       },
 
       {
@@ -197,21 +197,21 @@ const Sidebar = () => {
          text: "Checador",
          legend: "checador",
          active: false,
-         permision: [1, 5]
+         permision: [1, 5, 10]
       },
       {
          path: "checadornotasalacaratorias",
          text: "Notas aclaratorias (checador)",
          legend: "Notas aclaratorias (checador)",
          active: false,
-         permision: [1]
+         permision: [1, 10]
       },
       {
          path: "",
          text: "Reportes",
          legend: "reportes del sistema",
          active: false,
-         permision: [1],
+         permision: [1, 10],
          children: [
             {
                path: "reportes/incumplimientos",

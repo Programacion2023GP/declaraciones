@@ -48,6 +48,7 @@ export const DatosEmpleo = ({ loading, data, next, previous, title }) => {
    const submit = async (values) => {
       const url = `datoscargoscomision/${id > 0 ? `update/${id}` : "create"}`;
       let data = { ...values };
+      // console.log("mydata",data)
       data.EsEnMexico = parseInt(data.EsEnMexico);
       if (data.NivelEmpleoCargoComision == 4) {
          data.NivelEmpleoCargoComision = data.NivelEmpleoCargoComisionText;

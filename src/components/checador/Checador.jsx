@@ -32,6 +32,7 @@ import { Acuse } from "./hojas/acuse/Acuse";
 import { CuentasValores } from "./hojas/CuentasValores";
 import { AdeudosPasivos } from "./hojas/AdeudosPasivos";
 import { PrestamoComodato } from "./hojas/PrestamoComodato";
+import DeclarationDocument from "./hojas/BajoProtesta";
 // import "react-datepicker/dist/react-datepicker.css";
 // import DatePicker from "react-datepicker";
 // import "./DateRangeSelector.css"; // Importa el archivo CSS para estilos adicionales
@@ -218,6 +219,8 @@ const Checador = ({}) => {
       handelPdf(row);
    };
    const handlePdfPrint = async (row) => {
+      setRow(row);
+
       setTexter(false);
       handelPdf(row);
    };
@@ -472,7 +475,7 @@ const Checador = ({}) => {
       setLoadingMessage(false);
    };
    const idRole = parseInt(localStorage.getItem("Id_Role"), 10);
-   const isRoleOne = idRole === 1;
+   const isRoleOne = idRole === 1 || idRole === 10;
 
    // Construcción condicional del array de botones
    const moreButtons = [
@@ -518,6 +521,15 @@ const Checador = ({}) => {
             }
          });
       }
+   };
+   const cleanFileName = (text) => {
+      if (text === undefined || text === null) return text;
+
+      return text
+         .normalize("NFD") // Normaliza los acentos
+         .replace(/[\u0300-\u036f]/g, "") // Remueve los acentos
+         .replace(/[^a-zA-Z0-9]/g, "") // Remueve caracteres especiales y espacios
+         .replace(/\s+/g, ""); // Remueve cualquier espacio extra por si queda alguno
    };
    return (
       <>
@@ -609,7 +621,14 @@ const Checador = ({}) => {
 
             {loadingMessage != null ? (
                !loadingMessage && peticionesLoading ? (
-                  <PdfDeclaracion title={"DECLARACION"} open={open} setOpen={setOpen} formTitle={"OFICIO DE VALES"} watermark={"Declaracion"}>
+                  <PdfDeclaracion
+                     fileName={cleanFileName(myRow?.Folio) + cleanFileName(myRow?.ApPaterno) + cleanFileName(myRow?.ApMaterno) + cleanFileName(myRow?.Nombre)}
+                     title={"DECLARACION"}
+                     open={open}
+                     setOpen={setOpen}
+                     formTitle={"OFICIO DE VALES"}
+                     watermark={"Declaracion"}
+                  >
                      <PagePdf title={"DATOS GENERALES"} data={datosGenerales}>
                         <DatosGenerales
                            data={datosGenerales}
@@ -884,6 +903,7 @@ const Checador = ({}) => {
                      </Ngif>
 
                      <AvisoPrivacidad />
+                     <DeclarationDocument row={myRow} />
                      {/* <For array={datosDependienteEconomicos} pdf>
                         {(item, index) => (
                         )}

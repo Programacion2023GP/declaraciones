@@ -15,7 +15,7 @@ export const testArrayField = (array, searchId, testeada, field = "id", textFiel
          return testField(item[textField], testeada);
       }
    }
-   return "";
+   return vacio();
 };
 
 // Función para obtener un campo en el array
@@ -26,6 +26,5 @@ export const arrayField = (array, searchId, id = "id", textField = "text") => {
          return field(item[textField]);
       }
    }
-   return "";
+   return vacio();
 };
-

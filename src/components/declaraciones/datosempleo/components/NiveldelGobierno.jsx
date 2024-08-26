@@ -14,16 +14,18 @@ export const NivelGobierno = ({ nivelOrdenGobierno, ambitoPublico, nombreEntePub
    const [empleos, setEmpleos] = useState([]);
    const dispatch = useDispatch();
    useEffect(() => {
-      if(aerea!=""){
-          handleGetValue("name", aerea);
+      console.log("NombreEntePublico", nombreEntePublico);
+      if (aerea != "") {
+         handleGetValue("name", aerea);
       }
    }, [adscripcionOrganismo]);
    const handleGetValue = async (name, value) => {
-      console.log(value);
       setOtroEntePublico(value == 5 ? true : false);
       dispatch(configValidationsEmpleo(value == 5 ? "OtroEntePublico" : "NoOtroEntePublico"));
       handleActive(value == 5 ? true : false);
-      setEmpleos(await GetAxios(`empleos/show/${adscripcionOrganismo.filter((item) => (item.text = value))[0].organismo}`));
+
+      const id = parseInt(nombreEntePublico.filter(it=>it.text == value)[0].organismo)
+      setEmpleos(await GetAxios(`empleos/show/${adscripcionOrganismo.filter((item) => (item.text = id))[0].organismo}`));
    };
    return (
       <Grid container spacing={1}>

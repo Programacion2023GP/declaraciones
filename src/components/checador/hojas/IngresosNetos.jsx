@@ -70,7 +70,7 @@ export const IngresosNetos = ({ data = [], testada = false, tipo_declaracion = 1
          <TextPdf title={"Nombre o razón social"} text={testField(AICE_NombreRazonSocial)} width={50} />
          <TextPdf title={"Tipo de negocio"} text={testField(AICE_TipoNegocio)} width={50} />
          <TextPdf text={testField(AF_RemuneracionTotal)} title={"II.2 Por actividad financiera (Rendimientos o ganancias)"} width={50} />
-         <TextPdf text={testArrayField(instrumentos,AF_Id_TipoInstrumento)} title={"Tipo de instrumento que generó el rendimiento o ganancia"} width={50} />
+         <TextPdf text={testArrayField(instrumentos, AF_Id_TipoInstrumento)} title={"Tipo de instrumento que generó el rendimiento o ganancia"} width={50} />
          <TextPdf
             text={testField(AF_Id_TipoInstrumento)}
             title={"II.3.- Por servicios profesionales, consejos,consultorías y / o asesorías (después de impuestos)"}
@@ -78,13 +78,11 @@ export const IngresosNetos = ({ data = [], testada = false, tipo_declaracion = 1
          />
          <TextPdf text={testField(SP_TipoServicioPrestado)} title={"Tipo de servicio prestado"} width={50} />
          <TextPdf text={testField(EB_RemuneracionTotal)} title={"II.4.- enajenacion de bienes"} width={50} />
-         <TextPdf text={testArrayField(bienenAjenacion,EB_Id_TipoBienEnajenado)} title={"Tipo de bien enajenado"} width={100} />
+         <TextPdf text={testArrayField(bienenAjenacion, EB_Id_TipoBienEnajenado)} title={"Tipo de bien enajenado"} width={100} />
          <TextPdf text={testField(OINC_RemuneracionTotal)} title={"II.5 Otros ingresos no considerados a los anteriores"} width={100} />
          <TextPdf
             text={testField(OINC_EspecificarTipoIngreso)}
-            title={`Especificar tipo de ingreso (arrendamiento,
-regalía, sorteos, concursos, donaciones,
-seguros de vida, etc.)`}
+            title={`Especificar tipo de ingreso (arrendamiento,regalía, sorteos, concursos, donaciones,seguros de vida, etc.)`}
             width={100}
          />
 

@@ -30,8 +30,7 @@ const initialState = {
 const validationSchema = {
    Id_NivelOrdenGobierno: Yup.number().min(1, "El nivel de orden y de gobierno es requerido").required("El nivel de orden y de gobierno es requerido"),
    Id_AmbitoPublico: Yup.number().min(1, "El ambito público es requerido").required("El ambito público es requerido"),
-   NombreEntePublico: Yup.number("El Nombre del ente público es requerido")
-      .min(1, "El Nombre del ente público es requerido")
+   NombreEntePublico: Yup.string("El Nombre del ente público es requerido")
       .required("El Nombre del ente público es requerido"),
    AreaAdscripcion: Yup.string("El Áerea de adscripción del ente público es requerido")
       .min(1, "El Áerea de adscripción del ente público es requerido")

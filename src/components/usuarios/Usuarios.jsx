@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { GetAxios } from "../../services/services";
 import { Error } from "../../toasts/toast";
 import { AutoComplete } from "../Reusables/autocomplete/autocomplete";
+import { CustomRadio } from "../Reusables/radiobutton/Radio";
+
 import { Ngif } from "../Reusables/conditionals/Ngif";
 import { Text } from "../Reusables/input/Input";
 import Loading from "../Reusables/loading/Loading";
@@ -19,6 +21,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       Email: Yup.string("El formato es texto").required("El correo es requerido"),
       Nomina: Yup.number("el formato es numerico").min(100000, "El numero de nomina requiere 6 numeros").required("El numero de nomina es requerido"),
       PaternalSurname: Yup.string("El formato es texto").required("El apellido paterno es requerido"),
+      // Gender: Yup.string("").required("El sexo es ob"),
       MaternalSurname: Yup.string("El formato es texto").required("El apellido materno es requerido"),
       DenominacionCargo: Yup.string("El formato es texto").required("La Denominación del cargo es requerida"),
       DenominacionPuesto: Yup.string("el formato es texto").required("La Denominación del puesto es requerida"),
@@ -32,6 +35,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       Name: "",
       PaternalSurname: "",
       MaternalSurname: "",
+      Gender: "",
       Email: "",
       AreaAdscripcion: 0,
       DenominacionCargo: "",
@@ -65,8 +69,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
    };
 
    const Form = () => {
-      useEffect(()=>{
-      },[])
+      useEffect(() => {}, []);
       return (
          <>
             <Ngif condition={roles.length > 0 && intengrantes.length > 0 && adscripcion.length > 0}>
@@ -74,8 +77,24 @@ const Usuarios = ({ formik, setId, peticiones }) => {
                <Text col={6} disabled={true} name={"Name"} label={"Nombre(s)"} />
                <Text col={6} disabled={true} name={"PaternalSurname"} label={"Apellido Paterno"} />
                <Text col={6} disabled={true} name={"MaternalSurname"} label={"Apellido Materno"} />
+               <CustomRadio
+                  col={12}
+                  title={"Sexo"}
+                  name={"Gender"}
+                  options={[
+                     { value: "Masculino", label: "Masculino" },
+                     { value: "Femenino", label: "Femenino" }
+
+                     // Agrega más opciones aquí según sea necesario
+                  ]}
+               />
                <Text type={"email"} col={12} name={"Email"} label={"Correo"} />
-               <AutoComplete col={12} name={"Id_Role"} label={"Rol del usuario en el sistema"} options={roles.filter(r => parseInt(localStorage.getItem('Id_Role')) == 4  ? [2, 3].includes(r.id) : true)} />
+               <AutoComplete
+                  col={12}
+                  name={"Id_Role"}
+                  label={"Rol del usuario en el sistema"}
+                  options={roles.filter((r) => (parseInt(localStorage.getItem("Id_Role")) == 4 ? [2, 3].includes(r.id) : true))}
+               />
                <AutoComplete col={12} name={"Id_TipoIntegrante"} label={"Tipo de integrante del sujeto obligado"} options={intengrantes} />
                <AutoComplete
                   col={12}
@@ -109,7 +128,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       formik.current.setFieldValue("AreaAdscripcion", parseInt(row.AreaAdscripcion));
    };
    const headersDatable = ["Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Rol", "Puesto"];
-   const dataHiddenDatable = ["Id_User", "Email", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion"];
+   const dataHiddenDatable = ["Id_User", "Email", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion","Gender"];
    return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key };
 };
 export default Usuarios;

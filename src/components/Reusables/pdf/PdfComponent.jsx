@@ -21,7 +21,7 @@
 
 // import logo from '../../assets/images/logo-gpd.png';
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
-import { Document, Font, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { Document, Font, Image, Page, StyleSheet, Text, View, PDFDownloadLink } from "@react-pdf/renderer";
 // import backgroundImage from "../assets/images/Oficio.jpg";
 // import firmademo from "../assets/images/FirmaDemo.png";
 // import sinFirma from "../assets/images/sinFirma.png";
@@ -47,6 +47,9 @@ import ProtestRiot from "../../../assets/fonts/ProtestRiot-Regular.ttf";
 import BarlowRegular from "../../../assets/fonts/Barlow-Regular.ttf";
 import BarlowMedium from "../../../assets/fonts/Barlow-Medium.ttf";
 import BarlowBold from "../../../assets/fonts/Barlow-Bold.ttf";
+import ReactPDF from "@react-pdf/renderer";
+import fs from "fs";
+import path from "path";
 
 //#region FUENTES
 Font.register({
@@ -366,7 +369,7 @@ const formDataInitial = {
 };
 
 // Componente que representa el documento OficioPDF
-export const DocumentPDF = ({ children, watermark = "", formData = { formDataInitial }, isOfficialDoc = true }) => {
+export const DocumentPDF = ({ fileName, children, watermark = "", formData = { formDataInitial }, isOfficialDoc = true }) => {
    return (
       <>
          <Page size="LETTER" style={{ ...stylesPDF.row }} wrap>
@@ -444,7 +447,7 @@ export const DocumentPDF = ({ children, watermark = "", formData = { formDataIni
 const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="down" ref={ref} {...props} />;
 });
-export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", watermark, formData, isOfficialDoc = false }) => {
+export const ModalPDF = ({ fileName, children, open, setOpen, formTitle = "titulo", watermark, formData, isOfficialDoc = false }) => {
    const mySwal = withReactContent(Swal);
    const [fullScreenDialog, setFullScreenDialog] = useState(false);
 
@@ -460,9 +463,9 @@ export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", waterm
    }, []);
    const handleRender = ({ success }) => {
       if (success) {
-         alert("render")
+         alert("render");
       }
-    };
+   };
    return (
       <div>
          <Dialog
@@ -507,8 +510,58 @@ export const ModalPDF = ({ children, open, setOpen, formTitle = "titulo", waterm
                </Toolbar>
             </DialogTitle>
             <DialogContent sx={{ pb: 0, height: "90vh" }}>
+               <PDFDownloadLink
+                  document={
+                     <Document watermark={watermark} formData={formData} isOfficialDoc={isOfficialDoc}>
+                        {children}
+                     </Document>
+                  }
+                  fileName={fileName ? fileName : "documento" + ".pdf"}
+                  style={{ textDecoration: "none", marginTop: "10px" }}
+               >
+                  {({ loading }) =>
+                     loading ? (
+                        <button
+                           disabled
+                           style={{
+                              backgroundColor: "#cccccc",
+                              color: "#666666",
+                              borderRadius: "8px",
+                              padding: "10px 20px",
+                              border: "none",
+                              cursor: "not-allowed",
+                              fontWeight: "bold",
+                              fontSize: "16px"
+                           }}
+                        >
+                           Cargando...
+                        </button>
+                     ) : (
+                        <button
+                           style={{
+                              backgroundColor: "#4CAF50",
+                              color: "white",
+                              borderRadius: "8px",
+                              padding: "10px 20px",
+                              border: "none",
+                              cursor: "pointer",
+                              fontWeight: "bold",
+                              fontSize: "16px",
+                              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                              transition: "background-color 0.3s ease",
+                              marginBottom: "1rem  ",
+                              marginTop: "1rem"
+                           }}
+                           onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#45a049")}
+                           onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#4CAF50")}
+                        >
+                           Descargar PDF
+                        </button>
+                     )
+                  }
+               </PDFDownloadLink>
                <PDFViewer width={"100%"} height={"99%"}>
-                  <Document  watermark={watermark} formData={formData} isOfficialDoc={isOfficialDoc}>
+                  <Document watermark={watermark} formData={formData} isOfficialDoc={isOfficialDoc}>
                      {children}
                   </Document>
                </PDFViewer>

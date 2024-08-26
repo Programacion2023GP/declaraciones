@@ -2,7 +2,7 @@ import { Page, Text, View, Document, Font, StyleSheet } from "@react-pdf/rendere
 import { Ngif } from "../../../Reusables/conditionals/Ngif";
 import { useState } from "react";
 
-export const AvisoPrivacidad = ({ testada = false }) => {
+export const AvisoPrivacidad = ({ testada = false, }) => {
    Font.register({
       family: "Open Sans",
       fonts: [{ src: "https://fonts.gstatic.com/s/opensans/v17/mem8YaGs126MiZpBA-UFW50bbck.woff2" }]

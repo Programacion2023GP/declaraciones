@@ -45,13 +45,16 @@ const styles = StyleSheet.create({
       paddingRight: 5 // Añadido para espacio derecho en las columnas
    },
    label: {
-      fontSize: 12,
+      fontSize: 10,
       fontWeight: "bold",
       color: "#000000",
-      textAlign: "center"
+      width:"100%",
+      textAlign: "center",
+      
+      marginBottom:10,
    },
    input: {
-      fontSize: 8,
+      fontSize: 12,
       color: "#000000",
       borderBottomWidth: 1,
       borderLeftWidth: 1, // Añadido para corregir error en propiedades
@@ -198,11 +201,11 @@ export const OptionsPdf = ({ title, width, options = [], value }) => {
       </View>
    );
 };
-export const PdfDeclaracion = ({ open, setOpen, title, watermark, datas, children, subtitule }) => {
+export const PdfDeclaracion = ({ fileName,open, setOpen, title, watermark, datas, children, subtitule }) => {
    // useEffect(()=>{},[])
    return (
       <>
-         <ModalPDF open={open} setOpen={setOpen} formTitle={title} watermark={watermark} formData={{}}>
+         <ModalPDF fileName={fileName} open={open} setOpen={setOpen} formTitle={title} watermark={watermark} formData={{}}>
             {children}
          </ModalPDF>
       </>
