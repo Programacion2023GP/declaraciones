@@ -45,6 +45,15 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       Id_Role: 0
    };
    const handleNomina = async (name, value) => {
+      if (value === "999999") {
+         formik.current.setFieldValue("Name", "Enlance");
+         formik.current.setFieldValue("PaternalSurname", "Enlance");
+         formik.current.setFieldValue("MaternalSurname", "Enlance");
+         formik.current.setFieldValue("DenominacionPuesto", "Enlance");
+         formik.current.setFieldValue("DenominacionCargo", "Enlance");
+         formik.current.setFieldValue("Id_Role", 4);
+         return;
+      }
       if (value.length >= 6) {
          const response = await GetAxios(`compaq/show/${value}`);
          if (response.length > 0) {
@@ -128,7 +137,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       formik.current.setFieldValue("AreaAdscripcion", parseInt(row.AreaAdscripcion));
    };
    const headersDatable = ["Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Rol", "Puesto"];
-   const dataHiddenDatable = ["Id_User", "Email", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion","Gender"];
+   const dataHiddenDatable = ["Id_User", "Email", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion", "Gender"];
    return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key };
 };
 export default Usuarios;
