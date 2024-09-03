@@ -11,7 +11,7 @@ import { DomicilioDeclarante } from "./components/DomicilioDeclarante";
 import { Sectores } from "./components/Sectores";
 import { addDatosDependiente, clearData, configValidationsDependiente, deleteDatosDependiente } from "../../../redux/DependientesEconomicos7/DependientesEconomicos";
 import { CustomRadio } from "../../Reusables/radiobutton/Radio";
-import { Axios, PostAxios } from "../../../services/services";
+import { Axios, GetAxios, PostAxios } from "../../../services/services";
 import { Success } from "../../../toasts/toast";
 import { Post } from "../funciones/post";
 import { FormikForm } from "../../Reusables/formik/FormikForm";
@@ -45,6 +45,15 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
       Success("se agrego a la tabla");
    };
    useEffect(() => {
+      const init = async () => {
+         const relacionData = await GetAxios("relacioncondeclarante/show");
+         setParentescos(relacionData);
+         // getParentescos(relacionData);
+      };
+      init();
+   }, []);
+   useEffect(() => {
+      console.log("data", parentescos);
       if (parentescos.length > 0) {
          if (typeof data !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
             let newDatasArray = [];
@@ -214,7 +223,7 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
                title={title}
                button={true}
             >
-               <InitialValuesFormik handleGetValue={handleGetValue} getParentescos={setParentescos} />
+               <InitialValuesFormik handleGetValue={handleGetValue} />
                <Ngif condition={domicilioDeclarante}>
                   <DomicilioDeclarante />
                </Ngif>

@@ -14,7 +14,6 @@ export const NivelGobierno = ({ nivelOrdenGobierno, ambitoPublico, nombreEntePub
    const [empleos, setEmpleos] = useState([]);
    const dispatch = useDispatch();
    useEffect(() => {
-      console.log("NombreEntePublico", nombreEntePublico);
       if (aerea != "") {
          handleGetValue("name", aerea);
       }
@@ -24,8 +23,10 @@ export const NivelGobierno = ({ nivelOrdenGobierno, ambitoPublico, nombreEntePub
       dispatch(configValidationsEmpleo(value == 5 ? "OtroEntePublico" : "NoOtroEntePublico"));
       handleActive(value == 5 ? true : false);
 
-      const id = parseInt(nombreEntePublico.filter(it=>it.text == value)[0].organismo)
+      const id = parseInt(nombreEntePublico.filter((it) => it.text.trim() == value.trim())[0].organismo);
+      console.log(id);
       setEmpleos(await GetAxios(`empleos/show/${adscripcionOrganismo.filter((item) => (item.text = id))[0].organismo}`));
+      console.log(`empleos/show/${adscripcionOrganismo.filter((item) => (item.text = id))[0].organismo}`);
    };
    return (
       <Grid container spacing={1}>

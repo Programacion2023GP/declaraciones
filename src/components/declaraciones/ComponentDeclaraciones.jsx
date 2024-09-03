@@ -355,8 +355,8 @@ const ComponentDeclaraciones = () => {
          // Construir la URL
          const peticion = `situacionpatrimonial/index/${userId}/${hoja > 14 ? 15 + step : step}/${!isNaN(propertyValue) ? propertyValue : 0}`;
          const situacionPatrimonial = await GetAxios(peticion);
-         console.log("propertyValue", situacionPatrimonial);
-         if (situacionPatrimonial == null && declaracion != 2 && hoja < 15) {
+         console.log("propertyValue", situacionPatrimonial, typeof(situacionPatrimonial));
+         if (situacionPatrimonial == null && situacionPatrimonial==0 && declaracion != 2 && hoja < 15) {
             Info("No se encontraro información a recuperar");
             setView(true);
             return;
@@ -380,7 +380,7 @@ const ComponentDeclaraciones = () => {
             "beneficiosprivados",
             "fideocomisos"
          ];
-       
+
          //? SI ESTAMOS EN LA PAGINA ACTUAL APAGA EL ACTUALIZAR Y CARGA LA INFO DE TU ANTERIOR DECLARACION
          // Verificar si la página después de la situación es el paso activo
          if (pageAfterSituacion === activeStep && propierty != "id_Intereses") {
@@ -404,7 +404,6 @@ const ComponentDeclaraciones = () => {
          }
          // Verificar si la situación patrimonial no es válida
          if (situacionPatrimonial == null || parseInt(situacionPatrimonial[propierty]) == 0 || isNaN(parseInt(situacionPatrimonial[propierty]))) {
-
             const exist = await GetAxios(
                `apartados/exist/${!isNaN(parseInt(localStorage.getItem(propierty))) ? parseInt(localStorage.getItem(propierty)) : 0}/${activeStep + 1 - (hoja > 14 ? 15 : 0)}`
             );
@@ -413,14 +412,14 @@ const ComponentDeclaraciones = () => {
                const response = await GetAxios(
                   `${url}/index/${hoja > 14 ? parseInt(localStorage.getItem("id_Intereses")) : parseInt(localStorage.getItem("id_SituacionPatrimonial"))}`
                );
-
                setDataPage(datasArrays.includes(url) ? response : response[0]);
                if (response.length == 0) {
+                  setView(true)
                   setupdate(false);
                }
             } else {
                setDataPage("VER PAGINA");
-
+               console.log("aca")
                setupdate(false);
             }
          }

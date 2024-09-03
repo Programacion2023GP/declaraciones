@@ -78,7 +78,7 @@ export const DatosEmpleo = ({ loading, data, next, previous, title }) => {
          label: "Nivel orden del gobierno",
          component: (
             <NivelGobierno
-               aerea={loadData && loadData.AreaAdscripcion}
+               aerea={loadData && loadData.NombreEntePublico}
                adscripcionOrganismo={adscripcionOrganismo}
                active={active}
                handleActive={setActive}
