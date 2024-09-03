@@ -15,19 +15,23 @@ export const NivelGobierno = ({ nivelOrdenGobierno, ambitoPublico, nombreEntePub
    const dispatch = useDispatch();
    useEffect(() => {
       if (aerea != "") {
+         console.log(aerea);
          handleGetValue("name", aerea);
       }
-   }, [adscripcionOrganismo]);
+   }, [adscripcionOrganismo, nombreEntePublico]);
    const handleGetValue = async (name, value) => {
       setOtroEntePublico(value == 5 ? true : false);
       dispatch(configValidationsEmpleo(value == 5 ? "OtroEntePublico" : "NoOtroEntePublico"));
       handleActive(value == 5 ? true : false);
 
+      console.log("cas", nombreEntePublico, value);
       const id = parseInt(nombreEntePublico.filter((it) => it.text.trim() == value.trim())[0].organismo);
-      console.log(id);
       setEmpleos(await GetAxios(`empleos/show/${adscripcionOrganismo.filter((item) => (item.text = id))[0].organismo}`));
-      console.log(`empleos/show/${adscripcionOrganismo.filter((item) => (item.text = id))[0].organismo}`);
+      console.log(await GetAxios(`empleos/show/${adscripcionOrganismo.filter((item) => (item.text = id))[0].organismo}`));
    };
+   useEffect(() => {
+      console.log("cccd", empleos);
+   }, [empleos]);
    return (
       <Grid container spacing={1}>
          <AutoComplete col={6} label="Nivel / orden de gobierno" name="Id_NivelOrdenGobierno" options={nivelOrdenGobierno} />
