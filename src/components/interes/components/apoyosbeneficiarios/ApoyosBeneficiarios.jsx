@@ -178,7 +178,7 @@ export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) =>
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
-            {loadings && <Loading />}
+               {loadings && <Loading />}
 
                <DataTable
                   headers={["Beneficiario", "Nombre de Programa	", "Nivel u Orden", "Tipo de Apoyo"]}
@@ -222,6 +222,9 @@ export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) =>
             </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>
+            <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
+               Regresar a la pagina anterior
+            </Button>
             <Button sx={{ marginLeft: "1rem" }} type="submit" variant="contained" color="primary" onClick={sendDatas}>
                {update ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>

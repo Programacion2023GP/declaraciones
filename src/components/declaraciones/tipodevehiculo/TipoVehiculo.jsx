@@ -230,6 +230,9 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
             </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>
+            <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
+               Regresar a la pagina anterior
+            </Button>
             <Button sx={{ marginLeft: "2rem" }} onClick={sendData} type="submit" variant="contained" color="primary">
                {loading ? "Actualizar y Continuar" : datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>

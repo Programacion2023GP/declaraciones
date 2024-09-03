@@ -197,6 +197,9 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
             </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>
+            <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
+               Regresar a la pagina anterior
+            </Button>
             <Button sx={{ ml: 2 }} type="button" variant="contained" onClick={sendData} color="primary">
                {loading ? "Actualizar y Continuar" : sendDatas.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>

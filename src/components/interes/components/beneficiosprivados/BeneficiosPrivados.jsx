@@ -243,6 +243,9 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
          </Ngif>
 
          <Ngif condition={!checked}>
+            <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
+               Regresar a la pagina anterior
+            </Button>
             <Button sx={{ marginLeft: "1rem" }} type="submit" variant="contained" color="primary" onClick={sendDatas}>
                {update ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>

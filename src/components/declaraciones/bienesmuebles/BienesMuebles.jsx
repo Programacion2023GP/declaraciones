@@ -61,30 +61,29 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
          if (typeof loadData !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
             let newDatasArray = [];
             let newDataTableArray = [];
-   
+
             loadData.forEach((values, index) => {
                delete values.Id_BienesMuebles;
                const modifiedData = addDataTableModified(values, index);
                newDatasArray.push(modifiedData.newSendData);
                newDataTableArray.push(modifiedData.newData);
             });
-   
-            setDatas(newDatasArray);       // Actualizamos con el array completo
+
+            setDatas(newDatasArray); // Actualizamos con el array completo
             setDataTable(newDataTableArray); // Actualizamos con el array completo
             setLoadings(false);
-
          }
       }
    }, [data, tiposbienesmuebles, titular]);
-   
+
    const addDataTableModified = (values, index) => {
       // Crear una copia del objeto values
       const valuesCopy = { ...values, identificador: index };
-   
+
       // Obtener los textos correspondientes
       const tipoBien = tiposbienesmuebles.find((item) => item.id === parseInt(values.Id_TipoBien))?.text;
       const titularBien = titular.find((item) => item.id === parseInt(values.Id_Titular))?.text;
-   
+
       // Crear el nuevo objeto de datos visuales
       const newData = {
          identificador: index,
@@ -97,7 +96,7 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
       // Retornar ambos objetos: uno para visualización y otro para el envío de datos
       return { newData, newSendData: valuesCopy };
    };
-   
+
    const sendData = async () => {
       if (datas.length > 0) {
          const newDatas = [...datas];
@@ -166,7 +165,7 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
-            {loadings && <Loading />}
+               {loadings && <Loading />}
 
                <DataTable
                   dataHidden={["identificador"]}
@@ -190,6 +189,9 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
             </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>
+            <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
+               Regresar a la pagina anterior
+            </Button>
             <Button sx={{ marginLeft: "2rem" }} onClick={sendData} type="submit" variant="contained" color="primary">
                {loading ? "Actualizar y Continuar" : datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
             </Button>
