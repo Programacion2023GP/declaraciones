@@ -21,7 +21,7 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
    const dataForm = useSelector((state) => state.Vehiculos.initialState);
    const validations = useSelector((state) => state.Vehiculos.validationSchema);
    const [datas, setDatas] = useState([]);
-   const [idUnique, setIdunique] = useState(0);
+   const [idUnique, setIdUnique] = useState(1);
    const [dataTable, setDataTable] = useState([]);
    const [validationSchema, setValidationSchema] = useState(() => Yup.object().shape(validations));
    const [otroVehiculo, setOtroVehiculo] = useState(true);
@@ -80,7 +80,6 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
             setDatas(newDatasArray); // Actualizamos con el array completo
             setDataTable(newDataTableArray); // Actualizamos con el array completo
             setLoadings(false);
-
          }
       }
    }, [data, vehiculos, adquisicion, pago]);
@@ -197,7 +196,7 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
       <>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
-            {loadings && <Loading />}
+               {loadings && <Loading />}
 
                <DataTable
                   // loading={loading && datas.length > 0}

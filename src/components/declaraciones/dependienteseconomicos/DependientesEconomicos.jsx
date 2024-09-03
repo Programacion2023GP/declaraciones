@@ -136,7 +136,6 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
             Empleo: values.EmpleoCargoComision
          }
       ];
-      console.log("newDatasVisuales", newDatasVisuales);
       setDatasTable(newDatasVisuales);
       setIdUnique(idUnique + 1);
       // setRenalize(reinilaize + 1);

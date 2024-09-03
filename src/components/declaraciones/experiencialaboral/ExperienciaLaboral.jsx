@@ -277,7 +277,6 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
                   <Grid container spacing={2}></Grid>
                </Typography>
                <FormGroup sx={{ width: "100%", display: "flex", alignItems: "center" }}>
-                  <Typography>el valor del chequed {checked}</Typography>
                   <FormControlLabel
                      control={
                         <Switch
