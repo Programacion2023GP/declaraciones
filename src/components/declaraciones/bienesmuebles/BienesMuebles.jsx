@@ -38,6 +38,8 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
    let { declaracion } = useParams();
    const { titular, tiposbienesmuebles, pago, adquisicion, monedas } = Request({ peticiones: ["titular", "tiposbienesmuebles", "pago", "adquisicion", "monedas"] });
    const submit = async (values) => {
+      setChecked(false);
+
       setPostStepper(!postStepper);
       values.identificador = idUnique;
       setDatas(datas.concat(values));

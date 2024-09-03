@@ -124,6 +124,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
       formikRef.current.initialValues = dataForm;
    };
    const submit = async (values, { resetForm }) => {
+      setChecked(false);
       if (save) {
          if (datas.length < 5) {
             values.FueEnMexico = parseInt(values.FueEnMexico);

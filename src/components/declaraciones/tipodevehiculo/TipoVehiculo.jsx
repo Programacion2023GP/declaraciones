@@ -43,6 +43,8 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
 
    const message = ` Todos los datos de Vehículos declarados a nombre de la pareja, dependientes económicos y/o terceros o que sean en copropiedad con el declarante no serán públicos. `;
    const submit = async (values) => {
+      setChecked(false);
+
       setPostStepper(!postStepper);
       values.identificador = idUnique;
       setDatas(datas.concat(values));

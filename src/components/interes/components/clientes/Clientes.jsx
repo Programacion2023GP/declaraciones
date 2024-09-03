@@ -110,6 +110,7 @@ export const Clientes = ({ loading, data, next, previous, title }) => {
    }, [data, tipoPersona, sectores, monedas, entidades, paises]);
    const submit = async (values, { resetForm }) => {
       formik.current.resetForm();
+      setChecked(false);
 
       Success("se agrego a la tabla");
       values.id = idUnique;

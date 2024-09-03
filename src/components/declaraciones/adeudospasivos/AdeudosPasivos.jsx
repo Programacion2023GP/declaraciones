@@ -88,6 +88,8 @@ export const AdeudosPasivos = ({ loading, data, title, next, previous, setSend }
       setChecked(event.target.checked);
    };
    const submit = async (values) => {
+      setChecked(false);
+
       values.identificador = idUnique;
       setDatas(datas.concat(values));
       setDatasTable(

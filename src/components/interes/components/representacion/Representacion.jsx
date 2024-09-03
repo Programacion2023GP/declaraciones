@@ -112,6 +112,7 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
    }, [data, tipoPersona, representacion, monedas, paises, entidades, sectores]);
    const submit = async (values, { resetForm }) => {
       formik.current.resetForm();
+      setChecked(false);
 
       Success("se agrego a la tabla");
       values.identificador = idUnique;

@@ -38,6 +38,8 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
 
    const submit = async (values, { resetForm }) => {
       formik.current.resetForm();
+      setChecked(false);
+
       values.id = idUnique;
       setDatas(datas.concat(values));
       // dispatch(addDatosDependiente(values));

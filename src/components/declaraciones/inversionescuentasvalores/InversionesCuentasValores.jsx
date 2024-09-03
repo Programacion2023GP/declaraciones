@@ -32,6 +32,8 @@ export const InversionesCuentasValores = ({ loading, data, next, previous, title
       setChecked(event.target.checked);
    };
    const submit = async (values, { resetForm }) => {
+      setChecked(false);
+
       values.indentificador = idUnique;
       setDatas(datas.concat(values));
       setDatasTable(

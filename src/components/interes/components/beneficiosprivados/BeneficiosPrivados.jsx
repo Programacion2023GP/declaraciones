@@ -99,6 +99,7 @@ export const BeneficiosPrivados = ({ loading, data, next, previous, title }) => 
 
    const submit = async (values, { resetForm }) => {
       formik.current.resetForm();
+      setChecked(false);
 
       Success("se agrego a la tabla");
       values.identificador = idUnique;

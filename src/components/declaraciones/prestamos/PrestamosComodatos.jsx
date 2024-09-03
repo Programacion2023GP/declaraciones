@@ -96,6 +96,8 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
       return { newSendData: valuesCopy, newData };
    };
    const submit = async (values) => {
+      setChecked(false);
+
       values.identificador = idUnique;
       setDatas(datas.concat(values));
       setDatasTable(

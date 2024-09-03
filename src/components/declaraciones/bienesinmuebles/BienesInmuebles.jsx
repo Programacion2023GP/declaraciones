@@ -83,6 +83,8 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
    };
 
    const submit = async (values) => {
+      setChecked(false);
+
       dispatch(validationBienesInmuebles({ tipo: "restart" }));
       setAnimateSend(true);
       values.identificador = idUnique;
