@@ -6,24 +6,23 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addValidacioneServidorPublico } from "../../../../redux/DatosGeneralesHoja1/DatosGenerales";
 import { Grid } from "@mui/material";
-import {  useFormikContext } from "formik";
+import { useFormikContext } from "formik";
 
 export const DatosExtras = ({ estadocivil, regimenes, nacionalidades, paises, validaciones, handleActive, active }) => {
    let { declaracion } = useParams();
    const dispatch = useDispatch();
    declaracion = parseInt(declaracion);
-   const formik = useFormikContext()
+   const formik = useFormikContext();
    const [activeRegimen, setActiveRegimen] = useState(active);
    const handleGetValue = (name, value) => {
       setActiveRegimen(value == 2 ? false : true);
       dispatch(addValidacioneServidorPublico({ validaciones, tipo: value == 2 ? "RegimenMatrimonial" : "QuitarRegimenMatrimonial" }));
       handleActive(value == 2 ? false : true);
    };
-   const nacionalidad=(name,value)=>{
-
-      formik.values.Id_Nacionalidad =nacionalidades.filter(item=>item.id=value)[0].id
+   const nacionalidad = (name, value) => {
+      formik.values.Id_Nacionalidad = nacionalidades.filter((item) => (item.id = value))[0].id;
       // console.log("aqui", formik.values.Id_Nacionalidad);
-   }
+   };
    return (
       <Grid container spacing={1}>
          <Text
@@ -34,14 +33,7 @@ export const DatosExtras = ({ estadocivil, regimenes, nacionalidades, paises, va
             type={"email"}
             placeholder={"En caso de no contar con correo institucional ingresar el correo personal."}
          />
-         <Text
-            textStyleCase={true}
-            col={12}
-            name="CorreoPersonal"
-            label="Correo electrónico Personal"
-            type={"email"}
-            placeholder={"En caso de no contar con correo institucional ingresar el correo personal."}
-         />
+         <Text textStyleCase={true} col={12} name="CorreoPersonal" label="Correo electrónico Personal" type={"email"} placeholder={"Ingresar el correo personal."} />
          <Text textStyleCase={true} col={6} name="TelefonoCasa" label="Ingresa el telefono de tu casa" mask="(999) 999-9999" />
          <Text textStyleCase={true} col={6} name="TelefonoCelularPersonal" label="Ingresa tu numero de telefono" mask="(999) 999-9999" />
          <AutoComplete col={6} label="Situación personal / Estado civil" name="Id_EstadoCivil" handleGetValue={handleGetValue} options={estadocivil} />
@@ -65,7 +57,6 @@ export const DatosExtras = ({ estadocivil, regimenes, nacionalidades, paises, va
                { value: 0, label: "No" }
             ]} // Opciones para los radio buttons
          />
-      
       </Grid>
    );
 };

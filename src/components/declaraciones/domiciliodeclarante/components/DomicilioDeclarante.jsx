@@ -48,7 +48,7 @@ export const DomicilioDeclaranteGeneral = memo(({ mex, estado, CodigoPostal }) =
             hidden={false}
             col={12}
             name="EsEnMexico"
-            title="¿Es de México el dependiente economicó?"
+            title="¿Es de México?"
             options={[
                { value: 1, label: "Si" },
                { value: 0, label: "No" }

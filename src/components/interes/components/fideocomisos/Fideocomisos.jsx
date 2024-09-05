@@ -119,7 +119,7 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
             // Ajustar el identificador único
             setIdUnique(data.length);
          }
-      }
+      }np
    }, [data, tipoParticipacion, sectores, tipoPersona, tipoFideocomisos]);
 
    const submit = async (values, { resetForm }) => {
