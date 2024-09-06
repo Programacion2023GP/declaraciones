@@ -159,7 +159,7 @@ export const AutoComplete = ({
    return (
       <Grid
          key={`Grid_Container_${name}`}
-         style={{ margin: ".5rem 0", padding: " 0 .05rem 0 .4rem" }}
+         style={{ margin: ".6rem 0", padding: " 0 .05rem 0 .4rem" }}
          item
          lg={col}
          xl={col}

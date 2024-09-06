@@ -355,8 +355,8 @@ const ComponentDeclaraciones = () => {
          // Construir la URL
          const peticion = `situacionpatrimonial/index/${userId}/${hoja > 14 ? 15 + step : step}/${!isNaN(propertyValue) ? propertyValue : 0}`;
          const situacionPatrimonial = await GetAxios(peticion);
-         console.log("propertyValue", situacionPatrimonial, typeof(situacionPatrimonial));
-         if (situacionPatrimonial == null && situacionPatrimonial==0 && declaracion != 2 && hoja < 15) {
+         console.log("propertyValue", situacionPatrimonial, typeof situacionPatrimonial);
+         if (situacionPatrimonial == null && situacionPatrimonial == 0 && declaracion != 2 && hoja < 15) {
             Info("No se encontraro información a recuperar");
             setView(true);
             return;
@@ -414,12 +414,12 @@ const ComponentDeclaraciones = () => {
                );
                setDataPage(datasArrays.includes(url) ? response : response[0]);
                if (response.length == 0) {
-                  setView(true)
+                  setView(true);
                   setupdate(false);
                }
             } else {
                setDataPage("VER PAGINA");
-               console.log("aca")
+               console.log("aca");
                setupdate(false);
             }
          }
@@ -457,19 +457,19 @@ const ComponentDeclaraciones = () => {
    };
    return (
       <Ngif condition={true}>
-         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "10px" }}>
+         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "10px", overflow: "hidden" }}>
             <>
                {/* Contenido del MobileStepper */}
                <div
                   style={{
                      width: "90%",
-                     overflowX: "hidden",
+                     overflow: "hidden",
                      border: "2px solid #007bff",
                      borderRadius: "10px",
                      padding: "20px 0",
                      boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
                      marginBottom: "20px",
-                     minHeight: "20rem"
+                     minHeight: "auto" // Ajustar o eliminar minHeight
                   }}
                >
                   {/* Título del paso con estilos mejorados */}
@@ -493,7 +493,7 @@ const ComponentDeclaraciones = () => {
                      {getStepSubtitule()}
                   </Typography>
 
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                      {filteredSteps.map((step, index) => {
                         return (
                            step.exist.includes(declaracion) && (

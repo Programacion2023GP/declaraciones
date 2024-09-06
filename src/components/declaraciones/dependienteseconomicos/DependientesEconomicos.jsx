@@ -214,6 +214,7 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
                button={false} */}
          <Ngif condition={checked}>
             <FormikForm
+            maxHeight={'350px'}
                ref={formik}
                previousButton
                handlePrevious={previous}

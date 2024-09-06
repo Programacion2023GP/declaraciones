@@ -74,7 +74,7 @@ const BaseLayout = () => {
                      <TemporaryDrawer />
                   </Grid>
                )}
-               <Grid sx={{ minHeight: "100vh" }} item xs={12} sm={12} md={open ? 8 : 12} lg={open ? 9 : 12} xl={open ? 10 : 12}>
+               <Grid sx={{ maxHeight: "100vh" }} item xs={12} sm={12} md={open ? 8 : 12} lg={open ? 9 : 12} xl={open ? 10 : 12}>
                   {shouldShowOutlet ? <Outlet /> : <SexSelection setReload={setReload} />}
                </Grid>
             </Grid>

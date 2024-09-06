@@ -23,7 +23,8 @@ export const FormikForm = forwardRef(
          handlePrevious,
          advertence,
          messageButton,
-         maxWidth
+         maxWidth,
+         maxHeight
       },
       ref
    ) => {
@@ -58,7 +59,7 @@ export const FormikForm = forwardRef(
                   </Alert>
                </Ngif>
                <br />
-               <Grid container spacing={1}>
+               <Grid container spacing={1} style={{ margin: "auto", maxHeight: maxHeight ? maxHeight : "500px", overflow: "auto", padding: "0rem 2rem" }}>
                   <Formik innerRef={ref} initialValues={initialValues} validationSchema={validationSchema} onSubmit={submit}>
                      {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues, submitForm }) => {
                         {

@@ -266,7 +266,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
          <br />
          <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}>
             <CardContent>
-               <Typography variant="h3" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
+               <Typography variant="h5" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
                   {title}
                </Typography>
                <Typography variant="h6" align="start" color="textPrimary" style={{ fontWeight: "500" }}>
@@ -297,7 +297,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
                         {
                         }
                         return (
-                           <Grid container spacing={1} component={"form"} onSubmit={handleSubmit}>
+                           <Grid container spacing={1} style={{maxHeight:"400px",overflow:"auto",padding:"0 2rem"}} component={"form"} onSubmit={handleSubmit}>
                               <Grid xs={12}>
                                  <Voice message={getErrorMessages(errors, touched)} title={title} info="Ayuda sobre el formulario" />
                               </Grid>

@@ -6,6 +6,11 @@ import { useFormikContext } from "formik";
 export const DatosGeneral = ({}) => {
    const formik = useFormikContext();
    useEffect(() => {
+      const init = async () => {
+         const errors = await formik.validationSchema;
+         console.log(errors);
+      };
+      init();
       formik.setFieldValue("Nombre", localStorage.getItem("Name"));
       formik.setFieldValue("PrimerApellido", localStorage.getItem("PaternalSurname"));
       formik.setFieldValue("SegundoApellido", localStorage.getItem("MaternalSurname"));
@@ -44,9 +49,9 @@ export const DatosGeneral = ({}) => {
                     `}
          />
 
-         <Text textStyleCase={true} col={12} name="Curp" label="Curp" />
-         <Text textStyleCase={true} col={12} name="Rfc" label="Rfc" />
-         <Text textStyleCase={true} col={12} name="Homoclave" label="Homoclave" />
+         <Text textStyleCase={true} col={4} name="Curp" label="Curp" />
+         <Text textStyleCase={true} col={4} name="Rfc" label="Rfc" />
+         <Text textStyleCase={true} col={4} name="Homoclave" label="Homoclave" />
       </Grid>
    );
 };

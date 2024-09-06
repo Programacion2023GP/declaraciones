@@ -45,7 +45,9 @@ export const Text = ({
          handleGetValue(name, value);
       }
    };
-   useEffect(() => {}, [name, formik.values[name]]);
+   useEffect(() => {
+   
+   }, [name, formik.values[name]]);
 
    const errors = formik.errors;
 
@@ -69,7 +71,7 @@ export const Text = ({
    return (
       <>
          <Grid
-            style={{ margin: marginBoton ? `${marginBoton} 0` : "0rem 0", paddingLeft: ".4rem", paddingTop: ".5rem" }}
+            style={{ margin: marginBoton ? `${marginBoton} 0` : ".3rem 0", paddingLeft: ".4rem", paddingTop: ".5rem" }}
             item
             lg={col}
             xl={col}

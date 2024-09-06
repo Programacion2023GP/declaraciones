@@ -183,10 +183,10 @@ export const DatosParejas = ({ loading, data, next, previous, title }) => {
       }
    };
    return (
-      <Grid container spacing={1}>
-         <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}>
+      <Grid container spacing={1} style={{marginTop:"1rem"}}>
+         <Card sx={{ maxWidth: "90%", margin: "auto", padding: "1rem" }}>
             <CardContent>
-               <Typography variant="h3" align="center" color="textPrimary" style={{ fontWeight: "500" }}>
+               <Typography variant="h5" align="center" color="textPrimary" style={{ fontWeight: "500",marginBottom:"2rem" }}>
                   {title}
                </Typography>
                <Typography variant="h6" align="start" color="textPrimary" style={{ fontWeight: "500" }}>
@@ -197,12 +197,12 @@ export const DatosParejas = ({ loading, data, next, previous, title }) => {
                <Typography variant="body2" color="text.secondary">
                   <Grid container spacing={2}></Grid>
                </Typography>
-               <Formik innerRef={formik} initialValues={dataForm} validationSchema={validationSchema} onSubmit={submit}>
+               <Formik  innerRef={formik} initialValues={dataForm} validationSchema={validationSchema} onSubmit={submit}>
                   {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues }) => {
                      {
                      }
                      return (
-                        <Grid container spacing={1} component={"form"} onSubmit={handleSubmit}>
+                        <Grid container spacing={1} component={"form"} onSubmit={handleSubmit} style={{maxHeight:"450px",overflow:"auto",padding:"0 2rem"}}>
                            <CustomRadio
                               col={12}
                               name="Pareja"
