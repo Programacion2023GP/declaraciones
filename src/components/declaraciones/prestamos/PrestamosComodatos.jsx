@@ -212,7 +212,7 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm ref={formik} initialValues={dataForm} validationSchema={validationSchema} submit={submit} title={title}>
+            <FormikForm maxHeight={"250px"} ref={formik} initialValues={dataForm} validationSchema={validationSchema} submit={submit} title={title}>
                <CustomRadio
                   col={12}
                   title={"Tipo de Bien"}
@@ -271,19 +271,52 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
                <Button onClick={previous} sx={{ marginTop: "1rem", marginRight: "1rem" }} type="button" variant="text" color="inherit">
                   Regresar a la pagina anterior
                </Button>
-               <Button sx={{ marginTop: "1rem" }} type="submit" variant="contained" color="primary">
-                  Agregar a la tabla
-               </Button>
+               <Box position={"relative"} width={"100%"} mb={"1rem"} padding={" 1.2rem"}>
+                  <Button
+                     sx={{
+                        ml: 2,
+                        marginLeft: "1rem",
+                        position: "absolute",
+
+                        top: -34,
+                        bottom: 38,
+                        right: 0,
+                        marginRight: "1rem"
+                     }}
+                     type="submit"
+                     variant="contained"
+                     color="primary"
+                  >
+                     Agregar a la tabla
+                  </Button>
+               </Box>
             </FormikForm>
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
                Regresar a la pagina anterior
             </Button>
-            <Button onClick={sendData} sx={{ marginTop: "1rem", marginLeft: "1rem" }} type="submit" variant="contained" color="primary">
-               {/* {datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"} */}
-               {loading ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
-            </Button>
+            <Box position={"relative"} width={"100%"} mb={"1rem"} padding={" 1.2rem"}>
+               <Button
+                  onClick={sendData}
+                  sx={{
+                     ml: 2,
+                     marginLeft: "1rem",
+                     position: "absolute",
+
+                     top: -34,
+                     bottom: 38,
+                     right: 0,
+                     marginRight: "1rem"
+                  }}
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+               >
+                  {/* {datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"} */}
+                  {loading ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
+               </Button>
+            </Box>
          </Ngif>
       </>
    );

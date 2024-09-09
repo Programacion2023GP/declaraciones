@@ -59,7 +59,7 @@ export const FormikForm = forwardRef(
                   </Alert>
                </Ngif>
                <br />
-               <Grid container spacing={1} style={{ margin: "auto", maxHeight: maxHeight ? maxHeight : "500px", overflow: "auto", padding: "0rem 2rem" }}>
+               <Grid container spacing={1} style={{ margin: "auto", maxHeight: maxHeight ? maxHeight : "400px", overflow: "auto", padding: "0rem 2rem" }}>
                   <Formik innerRef={ref} initialValues={initialValues} validationSchema={validationSchema} onSubmit={submit}>
                      {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues, submitForm }) => {
                         {
@@ -79,9 +79,23 @@ export const FormikForm = forwardRef(
                                     </Button>
                                  </Ngif>
                                  <Ngif condition={button}>
-                                    <Button sx={{ marginLeft: "1rem", marginTop: "1rem" }} type="submit" variant="contained" color="primary">
-                                       {messageButton ? messageButton : "Registrar y Continuar"}
-                                    </Button>
+                                    <Box position={"relative"} width={"100%"} mb={"1rem"} padding={" 1.2rem"}>
+                                       <Button
+                                          sx={{
+                                             marginLeft: "1rem",
+                                             position: "absolute",
+                                             
+                                             top: -34,
+                                             bottom: 38,
+                                             right: 0
+                                          }}
+                                          type="submit"
+                                          variant="contained"
+                                          color="primary"
+                                       >
+                                          {messageButton ? messageButton : "Registrar y Continuar"}
+                                       </Button>
+                                    </Box>
                                  </Ngif>
                               </Grid>
                            </>

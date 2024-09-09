@@ -15,7 +15,6 @@ export const NivelGobierno = ({ nivelOrdenGobierno, ambitoPublico, nombreEntePub
    const dispatch = useDispatch();
    useEffect(() => {
       if (aerea != "") {
-         console.log(aerea);
          handleGetValue("name", aerea);
       }
    }, [adscripcionOrganismo, nombreEntePublico]);
@@ -30,7 +29,6 @@ export const NivelGobierno = ({ nivelOrdenGobierno, ambitoPublico, nombreEntePub
       console.log(await GetAxios(`empleos/show/${adscripcionOrganismo.filter((item) => (item.text = id))[0].organismo}`));
    };
    useEffect(() => {
-      console.log("cccd", empleos);
    }, [empleos]);
    return (
       <Grid container spacing={1}>

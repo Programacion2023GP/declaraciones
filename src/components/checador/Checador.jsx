@@ -606,7 +606,7 @@ const Checador = ({}) => {
                      // por hacer  getUrl ={}
                      // refreshRequest ={}
                      //
-                     pagination={[8, 20, 40, 60, 100]}
+                     pagination={[5, 10, 25, 50, 100]}
                      //  conditionExistEditButton={["Status !='Terminada'"]}
                      speakRow
                      // conditionExistDeleteButton={["Status !='Terminada'"]}

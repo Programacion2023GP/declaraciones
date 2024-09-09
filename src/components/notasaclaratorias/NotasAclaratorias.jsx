@@ -103,7 +103,7 @@ export const NotasAclaratorias = ({}) => {
    }, []);
    return (
       <>
-         <Grid container spacing={4}>
+         <Grid container spacing={4} style={{ overflow: "hidden" }}>
             <Grid item xs={12} lg={12}>
                <Ngif condition={[3, 2].includes(parseInt(localStorage.getItem("Id_Role")))}>
                   <FormikForm
@@ -120,12 +120,13 @@ export const NotasAclaratorias = ({}) => {
                      <DatePickerComponentV2 name={"Date"} label={"Fecha de la Aclaración"} format={"DD/MM/YYYY"} />
                      <AutoComplete col={12} name={"Id_SituacionPatrimonial"} label={"Relacion a la Declaracion"} options={situaciones} />
                      <Text col={12} name={"Description"} label={"Nota aclaratoria"} rows={12} />
+                     <Box width={"100%"} padding={"1.5em"}></Box>
                   </FormikForm>
                </Ngif>
             </Grid>
             <Grid item xs={12} lg={12}>
                <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
-                  <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
+                  <Card sx={{ maxWidth: "90%", margin: "auto", padding: ".8rem" }}>
                      <DataTable
                         filter
                         speakRow

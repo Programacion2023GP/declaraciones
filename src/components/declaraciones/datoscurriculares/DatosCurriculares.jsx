@@ -38,6 +38,8 @@ export const DatosCurriculares = ({ loading, data, next, previous, title }) => {
    };
    return (
       <FormikForm
+      maxHeight={'400px'}
+
          ref={formik}
          messageButton={loading ? "Actualizar y continuar" : "Registrar y continuar"}
          // messageButton={data ? (Object.keys(data).length > 0 ? "Actualizar" : "Registrar") + " y continuar" : "Registrar y continuar"}

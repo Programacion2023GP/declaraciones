@@ -95,23 +95,31 @@ export const Segmento = ({ children, text, setError = false, messageButton }) =>
                   return <TabPanel value={index}>{child}</TabPanel>;
                })}
             </TabContext>
-            <Ngif condition={value != 0}>
-               <Button sx={{ marginRight: "2rem" }} onClick={handleBefore} type="button" variant="outlined" color="secondary">
-                  Regresar
-               </Button>
-            </Ngif>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+               {/* Botón "Regresar", visible si value != 0 */}
+               <Ngif condition={value !== 0}>
+                  <Button sx={{ marginRight: "2rem" }} onClick={handleBefore} type="button" variant="outlined" color="secondary">
+                     Regresar
+                  </Button>
+               </Ngif>
 
-            <Ngif condition={Children.count(children) - 1 > value}>
-               <Button onClick={handleNext} type="button" variant="contained" color="primary">
-                  Continuar
-               </Button>
-            </Ngif>
+               {/* Contenedor de los botones "Continuar" y "Finalizar" */}
+               <Box display="flex" justifyContent="flex-end" width="100%">
+                  {/* Botón "Continuar", visible si no es el último paso */}
+                  <Ngif condition={Children.count(children) - 1 > value}>
+                     <Button onClick={handleNext} type="button" variant="contained" color="primary">
+                        Continuar
+                     </Button>
+                  </Ngif>
 
-            <Ngif condition={Children.count(children) - 1 == value}>
-               <Button onClick={handleNext} type="submit" variant="contained" color="primary">
-                  {messageButton}
-               </Button>
-            </Ngif>
+                  {/* Botón final, visible si es el último paso */}
+                  <Ngif condition={Children.count(children) - 1 === value}>
+                     <Button onClick={handleNext} type="submit" variant="contained" color="primary">
+                        {messageButton}
+                     </Button>
+                  </Ngif>
+               </Box>
+            </Box>
          </Box>
       </>
    );

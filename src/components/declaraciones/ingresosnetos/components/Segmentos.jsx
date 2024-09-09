@@ -25,7 +25,7 @@ export const Segmento = ({ children, text, setError = false, messageButton }) =>
    const handleBefore = () => {
       setValue(value - 1);
    };
-  
+
    const errorColor = red[500];
    const formik = useFormikContext();
    const names = [
@@ -95,23 +95,61 @@ export const Segmento = ({ children, text, setError = false, messageButton }) =>
                   return <TabPanel value={index}>{child}</TabPanel>;
                })}
             </TabContext>
-            <Ngif condition={value != 0}>
-               <Button sx={{ marginRight: "2rem" }} onClick={handleBefore} type="button" variant="outlined" color="secondary">
-                  Regresar
-               </Button>
-            </Ngif>
+            <Box position="relative" width="100%" mb="1rem" padding="1.2rem">
+               {/* Botón "Regresar", visible si el valor no es 0 */}
+               <Ngif condition={value !== 0}>
+                  <Button
+                     sx={{
+                        marginRight: "1rem",
+                        position: "absolute",
+                        left: 0,
+                        bottom: 0
+                     }}
+                     onClick={handleBefore}
+                     type="button"
+                     variant="outlined"
+                     color="secondary"
+                  >
+                     Regresar
+                  </Button>
+               </Ngif>
 
-            <Ngif condition={Children.count(children) - 1 > value}>
-               <Button onClick={handleNext} type="button" variant="contained" color="primary">
-                  Continuar
-               </Button>
-            </Ngif>
+               {/* Botón "Continuar", visible si aún no es el último paso */}
+               <Ngif condition={Children.count(children) - 1 > value}>
+                  <Button
+                     sx={{
+                        marginLeft: "1rem",
+                        position: "absolute",
+                        right: 0,
+                        bottom: 0 // Alinea con la misma altura que el botón "Regresar"
+                     }}
+                     onClick={handleNext}
+                     type="button"
+                     variant="contained"
+                     color="primary"
+                  >
+                     Continuar
+                  </Button>
+               </Ngif>
 
-            <Ngif condition={Children.count(children) - 1 == value}>
-               <Button onClick={handleNext} type="submit" variant="contained" color="primary">
-                  {messageButton}
-               </Button>
-            </Ngif>
+               {/* Botón final, visible si es el último paso */}
+               <Ngif condition={Children.count(children) - 1 === value}>
+                  <Button
+                     sx={{
+                        marginLeft: "1rem",
+                        position: "absolute",
+                        right: 0,
+                        bottom: 0 // Alinea con la misma altura que los otros botones
+                     }}
+                     onClick={handleNext}
+                     type="submit"
+                     variant="contained"
+                     color="primary"
+                  >
+                     {messageButton}
+                  </Button>
+               </Ngif>
+            </Box>
          </Box>
       </>
    );

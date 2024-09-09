@@ -16,7 +16,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const color = pink[300];
 
-export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter, postStepper = 1,variantAfter }) => {
+export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter, postStepper = 1, variantAfter }) => {
    const formik = useFormikContext();
    const { errors, touched, values, isSubmitting } = formik;
    const componentRef = useRef(null);
@@ -51,11 +51,9 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
          });
       }
 
-         setErrorStepper(errorPages)
-      
-      // console.log("Páginas con errores:", errorPages);
+      setErrorStepper(errorPages);
 
-    
+      // console.log("Páginas con errores:", errorPages);
    }, [errors, touched, componentRef, activeStep]);
    useEffect(() => {
       setActiveStep(0);
@@ -107,7 +105,7 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
 
    return (
       <Box sx={{ minWidth: "100%" }}>
-         <Stepper activeStep={activeStep} sx={{overflow:"auto"}}>
+         <Stepper activeStep={activeStep} sx={{ overflow: "auto" }}>
             {steps.map((step, index) => {
                const labelProps = {};
                if (errorStepper.includes(index)) {
@@ -128,7 +126,7 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
                );
             })}
          </Stepper>
-         <Box >
+         <Box>
             <br />
             {steps[activeStep] && <ComponentRefStepper ref={componentRef} activeStep={activeStep} component={steps[activeStep].component} />}
          </Box>
@@ -139,41 +137,66 @@ export const ComponentStepper = ({ steps, endButton, buttonContinue, buttonAfter
                marginTop: 2
             }}
          >
-            <Button
-               style={{
-                  // backgroundColor: color,
-                  // color: "white",
-                  display: activeStep === 0 ? "none" : "inline-block" // Oculta el botón si activeStep es 0
-               }}
-               color="secondary"
-               
-               variant={variantAfter?variantAfter:'outlined'}
-               disabled={activeStep === 0}
-               onClick={handleBack}
-               sx={{ marginRight: 1 }}
-            >
-               {buttonAfter}
-            </Button>
+            <Box position={"relative"} width={"100%"} mb={"1rem"} padding={"1.2rem"}>
+               <Button
+                  style={{
+                     display: activeStep === 0 ? "none" : "inline-block"
+                  }}
+                  color="secondary"
+                  variant={variantAfter ? variantAfter : "outlined"}
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  sx={{
+                     marginRight: 1,
+                     position: "absolute",
 
-            <Box>
+                     top: 2,
+                     bottom: 0,
+                     left: 0
+                  }}
+               >
+                  {buttonAfter}
+               </Button>
+            </Box>
+
+            <Box width={"100%"}>
                <Ngif condition={activeStep === steps.length - 1}>
-                  <Button
-                     type="submit"
-                     color="primary" // Cambia el color del botón a primario (azul por defecto)
-                     variant="contained"
-                  >
-                     {endButton}
-                  </Button>
+                  <Box position={"relative"} width={"100%"} mb={"1rem"} padding={"1.2rem"}>
+                     <Button
+                        type="submit"
+                        color="primary"
+                        variant="contained"
+                        sx={{
+                           position: "absolute",
+
+                           top: 2,
+                           bottom: 0,
+                           right: 0 // Cambié left por right para que esté en la orilla derecha
+                        }}
+                     >
+                        {endButton}
+                     </Button>
+                  </Box>
                </Ngif>
+
                <Ngif condition={activeStep !== steps.length - 1}>
-                  <Button
-                     type={"button"}
-                     color="primary" // Cambia el color del botón a primario (azul por defecto)
-                     variant="contained"
-                     onClick={handleNext}
-                  >
-                     {buttonContinue}
-                  </Button>
+                  <Box position={"relative"} width={"100%"} mb={"1rem"} padding={"1.2rem"}>
+                     <Button
+                        sx={{
+                           position: "absolute",
+
+                           top: 2,
+                           bottom: 0,
+                           right: 0 // Cambié left por right para que esté en la orilla derecha
+                        }}
+                        type={"button"}
+                        color="primary"
+                        variant="contained"
+                        onClick={handleNext}
+                     >
+                        {buttonContinue}
+                     </Button>
+                  </Box>
                </Ngif>
             </Box>
          </Box>

@@ -92,12 +92,14 @@ export const DatosGenerales = ({ loading, data, next, previous, title, setSend }
    return (
       <>
          <FormikForm
+
             ref={formik}
             initialValues={dataForm}
             validationSchema={validationSchema}
             button={false}
             title={title}
             submit={submit}
+
             message={"Los datos que no serán públicos estarán resaltados de color verde"}
          >
             <ComponentStepper

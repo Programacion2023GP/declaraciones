@@ -43,6 +43,8 @@ export const DomicilioDeclarante = ({ loading, data, next, previous, title }) =>
       <>
          <FormikForm
             ref={formik}
+            maxHeight={'400px'}
+
             previousButton={true}
             handlePrevious={previous}
             initialValues={dataForm}

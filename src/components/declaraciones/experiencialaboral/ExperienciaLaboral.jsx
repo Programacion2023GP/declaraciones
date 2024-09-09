@@ -297,7 +297,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
                         {
                         }
                         return (
-                           <Grid container spacing={1} style={{maxHeight:"400px",overflow:"auto",padding:"0 2rem"}} component={"form"} onSubmit={handleSubmit}>
+                           <Grid container spacing={1} style={{ maxHeight: "400px", overflow: "auto", padding: "0 2rem" }} component={"form"} onSubmit={handleSubmit}>
                               <Grid xs={12}>
                                  <Voice message={getErrorMessages(errors, touched)} title={title} info="Ayuda sobre el formulario" />
                               </Grid>
@@ -391,9 +391,23 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
                               <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
                                  Regresar a la pagina anterior
                               </Button>
-                              <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="submit" variant="contained" color="primary">
-                                 Agregar a la tabla
-                              </Button>
+                              <Box position={"relative"} width={"100%"} mb={"1rem"} padding={" 1.2rem"}>
+                                 <Button
+                                    sx={{
+                                       marginLeft: "1rem",
+                                       position: "absolute",
+
+                                       top: -34,
+                                       bottom: 38,
+                                       right: 0
+                                    }}
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                 >
+                                    Agregar a la tabla
+                                 </Button>
+                              </Box>
                            </Grid>
                         );
                      }}
@@ -403,9 +417,24 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
                   <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
                      Regresar a la pagina anterior
                   </Button>
-                  <Button onClick={sendData} type="submit" variant="contained" color="primary">
-                     {loading ? "Actualizar y Continuar" : datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
-                  </Button>
+                  <Box position={"relative"} width={"100%"} mb={"1rem"} padding={" 1.2rem"}>
+                     <Button
+                        sx={{
+                           marginLeft: "1rem",
+                           position: "absolute",
+
+                           top: -34,
+                           bottom: 38,
+                           right: 0
+                        }}
+                        onClick={sendData}
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                     >
+                        {loading ? "Actualizar y Continuar" : datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
+                     </Button>
+                  </Box>
                </Ngif>
             </CardContent>
          </Card>

@@ -186,7 +186,15 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
             />
          </FormGroup>
          <Ngif condition={checked}>
-            <FormikForm previousButton={true} handlePrevious={previous} ref={formik} initialValues={dataForm} validationSchema={validationSchema} submit={submit}>
+            <FormikForm
+               maxHeight={"250px"}
+               previousButton={true}
+               handlePrevious={previous}
+               ref={formik}
+               initialValues={dataForm}
+               validationSchema={validationSchema}
+               submit={submit}
+            >
                <ComponentStepper postStepper={postStepper} steps={steps} buttonContinue={"Continuar"} endButton={"agregar a la tabla"} buttonAfter={"regresar"} />
             </FormikForm>
          </Ngif>
@@ -194,9 +202,26 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
             <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
                Regresar a la pagina anterior
             </Button>
-            <Button sx={{ marginLeft: "2rem" }} onClick={sendData} type="submit" variant="contained" color="primary">
-               {loading ? "Actualizar y Continuar" : datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
-            </Button>
+            <Box position={"relative"} width={"100%"} mb={"1rem"} padding={" 1.2rem"}>
+               <Button
+                  sx={{
+                     ml: 2,
+                     marginLeft: "1rem",
+                     position: "absolute",
+
+                     top: -34,
+                     bottom: 38,
+                     right: 0,
+                     marginRight: "1rem"
+                  }}
+                  onClick={sendData}
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+               >
+                  {loading ? "Actualizar y Continuar" : datas.length > 0 ? "Registrar y Continuar" : "Continuar"}
+               </Button>
+            </Box>
          </Ngif>
       </>
    );

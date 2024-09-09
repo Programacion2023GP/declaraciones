@@ -127,6 +127,7 @@ export const Catalogo = forwardRef(
                         <Ngif condition={loadForm}>
                           {children}
                         </Ngif>
+                        <Box width={'100%'} padding={'1.5em'}></Box>
                      </FormikForm>
                   </Box>
                </Grid>

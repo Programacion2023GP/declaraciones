@@ -214,7 +214,7 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
                button={false} */}
          <Ngif condition={checked}>
             <FormikForm
-            maxHeight={'350px'}
+               maxHeight={"250px"}
                ref={formik}
                previousButton
                handlePrevious={previous}
@@ -237,9 +237,25 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
             <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
                Regresar a la pagina anterior
             </Button>
-            <Button sx={{ marginLeft: "1rem" }} type="submit" variant="contained" color="primary" onClick={sendDatass}>
-               {loading ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
-            </Button>
+            <Box position={"relative"} width={"100%"} mb={"1rem"} padding={" 1.2rem"}>
+               <Button
+                  sx={{
+                     marginLeft: "1rem",
+                     position: "absolute",
+
+                     top: -34,
+                     bottom: 38,
+                     right: 0,
+                     marginRight: "1rem"
+                  }}
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  onClick={sendDatass}
+               >
+                  {loading ? "Actualizar y Continuar" : datasTable.length > 0 ? "Registrar y Continuar" : "Continuar"}
+               </Button>
+            </Box>
          </Ngif>
       </>
    );

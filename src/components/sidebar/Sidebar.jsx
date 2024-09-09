@@ -329,12 +329,14 @@ const RecursivoMenu = ({ array, i, handleSelect }) => {
    return (
       <>
          {array.map((child, j) => {
+         
             return (
                <>
+               
                   <Ngif condition={child.permision && !child.permision.includes(parseInt(localStorage.getItem("Id_Role")))}>
                      <></>
                   </Ngif>
-                  <Ngif condition={!child.permision}>
+                  <Ngif condition={!child.permision || child.permision.includes(parseInt(localStorage.getItem("Id_Role")))}>
                      <li
                         style={child.active ? {} : style}
                         className="menu-item"

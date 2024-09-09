@@ -183,10 +183,10 @@ export const DatosParejas = ({ loading, data, next, previous, title }) => {
       }
    };
    return (
-      <Grid container spacing={1} style={{marginTop:"1rem"}}>
+      <Grid container spacing={1} style={{ marginTop: "1rem" }}>
          <Card sx={{ maxWidth: "90%", margin: "auto", padding: "1rem" }}>
             <CardContent>
-               <Typography variant="h5" align="center" color="textPrimary" style={{ fontWeight: "500",marginBottom:"2rem" }}>
+               <Typography variant="h5" align="center" color="textPrimary" style={{ fontWeight: "500", marginBottom: "2rem" }}>
                   {title}
                </Typography>
                <Typography variant="h6" align="start" color="textPrimary" style={{ fontWeight: "500" }}>
@@ -197,12 +197,12 @@ export const DatosParejas = ({ loading, data, next, previous, title }) => {
                <Typography variant="body2" color="text.secondary">
                   <Grid container spacing={2}></Grid>
                </Typography>
-               <Formik  innerRef={formik} initialValues={dataForm} validationSchema={validationSchema} onSubmit={submit}>
+               <Formik innerRef={formik} initialValues={dataForm} validationSchema={validationSchema} onSubmit={submit}>
                   {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues }) => {
                      {
                      }
                      return (
-                        <Grid container spacing={1} component={"form"} onSubmit={handleSubmit} style={{maxHeight:"450px",overflow:"auto",padding:"0 2rem"}}>
+                        <Grid container spacing={1} component={"form"} onSubmit={handleSubmit} style={{ maxHeight: "400px", overflow: "auto", padding: "0 2rem" }}>
                            <CustomRadio
                               col={12}
                               name="Pareja"
@@ -432,9 +432,23 @@ export const DatosParejas = ({ loading, data, next, previous, title }) => {
                            <Button sx={{ marginRight: "1rem", marginTop: "2rem" }} type="button" onClick={previous} variant="text" color="inherit">
                               Regresar a la pagina anterior
                            </Button>
-                           <Button sx={{ marginTop: "2rem" }} type="submit" variant="contained" color="primary">
-                              {loading ? "Actualizar y continuar" : "Registrar y continuar"}
-                           </Button>
+                           <Box position={"relative"} width={"100%"} mb={"1rem"} padding={" 1.2rem"}>
+                              <Button
+                                 sx={{
+                                    marginLeft: "1rem",
+                                    position: "absolute",
+
+                                    top: -36,
+                                    bottom: 40,
+                                    right: 0
+                                 }}
+                                 type="submit"
+                                 variant="contained"
+                                 color="primary"
+                              >
+                                 {loading ? "Actualizar y continuar" : "Registrar y continuar"}
+                              </Button>
+                           </Box>
                         </Grid>
                      );
                   }}
