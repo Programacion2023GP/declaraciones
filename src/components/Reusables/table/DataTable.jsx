@@ -685,7 +685,6 @@ const DataTable = ({
 
                   <Ngif condition={captionButtons.length > 0}>
                      {captionButtons.map((item, index) => {
-                        console.log(item);
                         return (
                            <Button
                               key={index} // Añadir una key única

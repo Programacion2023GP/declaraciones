@@ -55,7 +55,6 @@ export const Auth = createSlice({
          } else {
             state.status = "logout";
          }
-         // console.log(window.location.hash.split("#")[1]);
          state.location = window.location.hash.split("#")[1];
       }
    }

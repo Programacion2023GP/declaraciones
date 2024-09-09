@@ -456,10 +456,8 @@ export const ModalPDF = ({ fileName, children, open, setOpen, formTitle = "titul
    };
 
    useEffect(() => {
-      // console.log("estoy en el modal", voucher);
    }, []);
    useLayoutEffect(() => {
-      // console.log("estoy en el useLayoutEffect", drivers);
    }, []);
    const handleRender = ({ success }) => {
       if (success) {

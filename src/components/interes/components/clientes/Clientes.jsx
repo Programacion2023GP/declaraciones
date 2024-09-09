@@ -165,10 +165,8 @@ export const Clientes = ({ loading, data, next, previous, title }) => {
             // next();
          } catch (error) {
             if (error.response?.data?.message) {
-               console.log("ee", error);
                Error(error.response.data.message);
             } else {
-               console.error("error", error);
                Error("Ocurrio un error");
             }
             // dispatch(clearData());
@@ -181,7 +179,6 @@ export const Clientes = ({ loading, data, next, previous, title }) => {
             setDatasTable([]);
             next();
          } catch (error) {
-            console.log("🚀 ~ sendDatas ~ error:", error);
 
             Error(error.response.data.message);
          }

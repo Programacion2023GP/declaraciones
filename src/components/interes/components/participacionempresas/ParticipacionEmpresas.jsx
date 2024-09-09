@@ -196,12 +196,10 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
                localStorage.setItem("id_Intereses", response.data.data.result);
             }
             next();
-            console.log("angel");
 
             Success("Continuemos llenando los formularios");
             setDatasTable([]);
          } catch (error) {
-            console.log("error", error);
             Error(error.response.data.message);
          }
       }
@@ -286,11 +284,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
                <Text col={12} rows={10} name={`Aclaraciones`} label={"Aclaraciones/Observaciones"} color={"green"} />
                <Box width={"100%"} height={"2.5em"}></Box>
             </FormikForm>
-            <button
-               onClick={() => {
-                  console.log(formik.current.errors);
-               }}
-            ></button>
+         
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">

@@ -63,7 +63,6 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
             // Actualizar el estado con los nuevos datos
             setDatas(newDatas);
             setDatasTable(newDatasTable);
-            console.log(newDatas);
             // Ajustar el identificador único
             setIdUnique(data.length);
          }
@@ -110,7 +109,6 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
    const deleteRow = (row) => {
       // dispatch(deleteDatosDependiente({ id: row.id }));
       setDatas(datas.filter((item) => item.identificador != row.id));
-      console.log(datas.filter((item) => item.identificador != row.id));
       const itemTable = datasTable.filter((item) => item.id != row.id);
       setDatasTable(itemTable);
       Success("se elimino de la tabla");
@@ -149,7 +147,6 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
    };
    const sendDatas = async () => {
       const newDatas = [...datas];
-      console.log("enviado", newDatas);
       const url = `tomadecisiones/${update ? `update/${localStorage.getItem("id_Intereses")}` : "create"}`;
       // console.log(newDatas,url);
       if (newDatas.length > 0) {

@@ -24,10 +24,8 @@ export const Text = ({
    const handleInputFormik = async (e, setFieldValue, input, toUpper = true) => {
       try {
          const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
-         // console.log(newText);
          setFieldValue(input, newText);
       } catch (error) {
-         console.log(error);
          Toast.Error(error);
       }
    };
@@ -144,7 +142,6 @@ export const Text = ({
                      handleInput(e);
                      handleValue(name, e.target.value);
                      textStyleCase = type == null ? handleInputFormik(e, formik.setFieldValue, name, true) : false;
-                     // console.log("textStyleCase",textStyleCase= type ==null?true:false);
                      // textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, name, textStyleCase) : null;
                   }}
                   disabled={loading || disabled}

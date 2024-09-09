@@ -96,7 +96,6 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
                values.identificador = index;
 
                // Crear datos para datasTable
-               console.log("Cargando ....", values);
                const newData = {
                   id: values.identificador,
                   "Tipo de Fideicomiso": tipoFideocomisos.find((item) => item.id === parseInt(values.Id_TipoFideicomiso))?.text,
@@ -179,10 +178,8 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
             // next();
          } catch (error) {
             if (error.response?.data?.message) {
-               console.log("ee", error);
                Error(error.response.data.message);
             } else {
-               console.error("error", error);
                Error("Ocurrio un error");
             }
             // dispatch(clearData());
@@ -195,7 +192,6 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
             setDatasTable([]);
             next();
          } catch (error) {
-            console.log("🚀 ~ sendDatas ~ error:", error);
 
             Error(error.response.data.message);
          }

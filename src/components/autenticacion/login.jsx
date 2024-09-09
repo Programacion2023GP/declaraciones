@@ -68,11 +68,9 @@ const Login = () => {
                            onSubmit={async (values, { setSubmitting }) => {
                               setSubmitting(false);
                               try {
-                                 console.log(values);
                                  setLoadingPost(true);
                                  const response = await Axios.post("usuarios/login", values);
                                  const user = response.data.data.result.user;
-                                 console.log("user", user);
                                  localStorage.setItem("Id_User", user.Id_User);
                                  localStorage.setItem("Id_Person", user.Id_Person);
                                  localStorage.setItem("Id_Role", user.Id_Role);
@@ -82,7 +80,6 @@ const Login = () => {
                                  localStorage.setItem("MaternalSurname", user.MaternalSurname);
                                  localStorage.setItem("Sexo", user.Sexo);
 
-                                 console.log("Updated", user.Id_Role);
 
                                  const checkLocalStorage = () => {
                                     return localStorage.getItem("Id_Role") !== null;

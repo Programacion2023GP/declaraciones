@@ -150,9 +150,7 @@ export const DependientesEconomicos7 = createSlice({
                
            switch (action.payload.tipo) {
                case "DomicilioDeclarante":
-                console.log('====================================');
-                console.log("inyectado");
-                console.log('====================================');
+              
                        Object.assign(state.validationSchema,validationsDomicilio)
                        Object.assign(state.validationSchema,mexico)
 

@@ -67,7 +67,6 @@ export const CustomRadio = ({
                         key={index}
                         value={option.value}
                         onClick={() => {
-                           //  console.log("hola", handleGetValue);
                            handleValue(name, option.value);
                         }}
                         

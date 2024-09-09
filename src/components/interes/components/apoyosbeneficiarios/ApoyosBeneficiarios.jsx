@@ -83,7 +83,6 @@ export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) =>
                values.identificador = index;
 
                // Crear datos para datasTable
-               console.log("Cargando ....", values);
                const newData = {
                   id: values.identificador,
                   beneficiario: relacion.find((item) => item.id === parseInt(values.Id_BeneficiarioPrograma))?.text,
@@ -102,7 +101,6 @@ export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) =>
             // Actualizar el estado con los nuevos datos
             setDatas(newDatas);
             setDatasTable(newDatasTable);
-            console.log(newDatas);
             // Ajustar el identificador único
             setIdUnique(data.length);
          }
@@ -163,7 +161,6 @@ export const ApoyosBeneficiarios = ({ loading, data, next, previous, title }) =>
             setDatasTable([]);
             next();
          } catch (error) {
-            console.log("error", error);
             Error(error.response.data.message);
          }
       }

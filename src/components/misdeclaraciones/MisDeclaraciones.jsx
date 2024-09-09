@@ -433,7 +433,6 @@ const MisDeclaraciones = ({}) => {
       alert("hola");
    };
    useEffect(() => {
-      console.log("loadingMessage", loadingMessage);
    }, [loadingMessage]);
    return (
       <>
@@ -785,7 +784,6 @@ const MisDeclaraciones = ({}) => {
 };
 const ModalComponent = ({ modal, setModal, message, pass, page }) => {
    useEffect(() => {
-      console.log('Modal Component',modal);
    }, [modal,message]);
    return (
       <Modal close={false} openModal={modal} setOpenModal={setModal}>

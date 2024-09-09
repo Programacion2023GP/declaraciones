@@ -46,10 +46,8 @@ export const NotasAclaratorias = ({}) => {
          await sendApi();
       } catch (error) {
          if (error.response?.data?.message) {
-            console.log("ee", error);
             Error(error.response.data.message);
          } else {
-            console.error("error", error);
             Error("Ocurrio un error");
          }
          // dispatch(clearData());
@@ -71,7 +69,6 @@ export const NotasAclaratorias = ({}) => {
       }
    ].filter(Boolean);
    const handleDelete = async (row) => {
-      console.log(row);
       setLoading(true);
 
       try {
@@ -88,7 +85,6 @@ export const NotasAclaratorias = ({}) => {
       init();
    };
    const init = async () => {
-      console.log("init");
       setLoading(true);
 
       setDatas(

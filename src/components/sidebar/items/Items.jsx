@@ -25,7 +25,6 @@ export const Items = ({ text, path = null, childrens, active, classprop, index =
    );
 };
 const CustomLink = ({ dest, content, setExit }) => {
-   console.log(dest);
    const navigate = useNavigate();
 
    const handleDelayedLinkClick = (to, delay) => (event) => {

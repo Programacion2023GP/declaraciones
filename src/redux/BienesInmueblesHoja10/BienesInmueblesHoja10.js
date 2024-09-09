@@ -108,7 +108,6 @@ export const BienesInmueblesHoja10 = createSlice({
          state.datas.push(action.payload);
       },
       // editBienesInmuebles: (state, action) => {
-      //     console.log(action.payload)
       //     state.initialState = { ...action.payload };
 
       //  },

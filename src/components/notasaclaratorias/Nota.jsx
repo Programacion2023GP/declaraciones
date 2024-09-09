@@ -4,7 +4,6 @@ import GomezLogo from "../../assets/icons/logo-gpd.png";
 
 export const Nota = ({ data }) => {
    useEffect(() => {
-      console.log(data);
    }, [data]);
    const styles = StyleSheet.create({
       signatureContainer: {

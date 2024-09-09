@@ -61,7 +61,6 @@ const SexSelection = ({setReload}) => {
       setLoading(true);
       try {
          const response = await PostAxios("usuarios/gender", { Id_Person: parseInt(localStorage.getItem("Id_Person")), Gender: selectedOption });
-         console.log(response);
          if (response.data.status_code === 200) {
             localStorage.setItem("Sexo", selectedOption);
             setReload(true);

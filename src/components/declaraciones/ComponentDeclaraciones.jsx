@@ -283,7 +283,6 @@ const ComponentDeclaraciones = () => {
       // setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
    }, [activeStep, declaracion]);
    React.useEffect(() => {
-      console.log("view", view);
       // console.log("view", view);
    }, [update, view]);
    React.useEffect(() => {
@@ -295,7 +294,6 @@ const ComponentDeclaraciones = () => {
          (typeof dataPage === "object" && dataPage !== null && Object.keys(dataPage).length > 0) || // Si es un objeto con propiedades
          (typeof dataPage === "string" && dataPage.trim() !== "") // Si es un string y no está vacío
       ) {
-         console.log("dataPage", dataPage);
          setView(true); // Solo cuando hay datos válidos
       }
    }, [dataPage]);
@@ -355,7 +353,6 @@ const ComponentDeclaraciones = () => {
          // Construir la URL
          const peticion = `situacionpatrimonial/index/${userId}/${hoja > 14 ? 15 + step : step}/${!isNaN(propertyValue) ? propertyValue : 0}`;
          const situacionPatrimonial = await GetAxios(peticion);
-         console.log("propertyValue", situacionPatrimonial, typeof situacionPatrimonial);
          if (situacionPatrimonial == null && situacionPatrimonial == 0 && declaracion != 2 && hoja < 15) {
             Info("No se encontraro información a recuperar");
             setView(true);
@@ -384,14 +381,12 @@ const ComponentDeclaraciones = () => {
          //? SI ESTAMOS EN LA PAGINA ACTUAL APAGA EL ACTUALIZAR Y CARGA LA INFO DE TU ANTERIOR DECLARACION
          // Verificar si la página después de la situación es el paso activo
          if (pageAfterSituacion === activeStep && propierty != "id_Intereses") {
-            console.log(parseInt(situacionPatrimonial[propiertyDb]) > 0, situacionPatrimonial);
             if (parseInt(situacionPatrimonial[propiertyDb]) > 0) {
                const response = await GetAxios(
                   `${url}/index/${activeStep < 15 ? parseInt(situacionPatrimonial[propiertyDb]) : parseInt(localStorage.getItem("id_Intereses"))}`
                );
 
                setupdate(false);
-               console.log("response: ", response);
                if (response.length > 0) {
                   Info("Cargando informacion de tu anterior declaración");
                   setDataPage(datasArrays.includes(url) ? response : response[0]);
@@ -419,7 +414,6 @@ const ComponentDeclaraciones = () => {
                }
             } else {
                setDataPage("VER PAGINA");
-               console.log("aca");
                setupdate(false);
             }
          }

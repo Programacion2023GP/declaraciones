@@ -23,10 +23,9 @@ export const NivelGobierno = ({ nivelOrdenGobierno, ambitoPublico, nombreEntePub
       dispatch(configValidationsEmpleo(value == 5 ? "OtroEntePublico" : "NoOtroEntePublico"));
       handleActive(value == 5 ? true : false);
 
-      console.log("cas", nombreEntePublico, value);
+    
       const id = parseInt(nombreEntePublico.filter((it) => it.text.trim() == value.trim())[0].organismo);
       setEmpleos(await GetAxios(`empleos/show/${adscripcionOrganismo.filter((item) => (item.text = id))[0].organismo}`));
-      console.log(await GetAxios(`empleos/show/${adscripcionOrganismo.filter((item) => (item.text = id))[0].organismo}`));
    };
    useEffect(() => {
    }, [empleos]);

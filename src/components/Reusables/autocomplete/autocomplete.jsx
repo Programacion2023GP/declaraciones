@@ -110,7 +110,6 @@ export const AutoComplete = ({
 
          if (handleChangeValueSuccess) handleChangeValueSuccess(value, setFieldValue); //en esta funcion
       } catch (error) {
-         console.log(error);
          // Toast.Error(error);
       }
    };
@@ -122,7 +121,6 @@ export const AutoComplete = ({
          setLoader(false);
          // Toast.Success("Actualizada");
       } catch (error) {
-         console.log(error);
          // Toast.Error(error);
       }
    };

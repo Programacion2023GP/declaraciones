@@ -2,7 +2,6 @@ import { PostAxios } from "../../../services/services";
 import { Error, Success } from "../../../toasts/toast";
 const asignarIdSituacionPatrimonial = (obj) => {
    const idSituacionPatrimonial = parseInt(localStorage.getItem("id_SituacionPatrimonial"));
-   console.log(idSituacionPatrimonial);
    // Verifica si el objeto ya tiene la propiedad 'Id_SituacionPatrimonial'
    if (obj.hasOwnProperty("Id_SituacionPatrimonial")) {
       // Si 'Id_SituacionPatrimonial' es nulo o diferente del valor en localStorage, actualiza el valor

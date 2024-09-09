@@ -19,9 +19,7 @@ export const ComponenteMexico = memo(({ activeState, idEntidad }) => {
       setLoadingMunicipios(false);
    };
    const updatedData = async () => {
-      console.log(idEntidad);
       isNumber(parseInt(idEntidad)) && setMunicipios(await GetAxios(`municipios/show/${idEntidad}`));
-      console.log(municipios);
 
    };
    useEffect(() => {

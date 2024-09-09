@@ -176,7 +176,6 @@ export const Formulario = ({
             });
             
             const es = validationSchema.concat(Yup.object().shape(fieldValidations));
-            console.log("Todos los esquemas de validación:", es);
             
             setValidationSchema(es);
             
@@ -192,7 +191,6 @@ export const Formulario = ({
                 const conditionString = condition.replace(name, value); // Sustituir el nombre del campo en la condición
             
                 if (eval(conditionString)) {
-                  console.log("pasas la condicion");
             
                   if (action === "required") {
                     newValidationSchema = newValidationSchema.shape({
@@ -202,7 +200,6 @@ export const Formulario = ({
                 }
               });
             
-              console.log("Nuevo esquema de validación:", newValidationSchema);
               setValidationSchema(newValidationSchema);
             }
             
