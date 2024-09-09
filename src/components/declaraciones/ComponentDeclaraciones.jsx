@@ -287,7 +287,6 @@ const ComponentDeclaraciones = () => {
    }, [update, view]);
    React.useEffect(() => {
       // Verificar si dataPage tiene datos válidos
-      console.log("dataPage", dataPage);
 
       if (
          Array.isArray(dataPage) || // Si es un array y tiene elementos

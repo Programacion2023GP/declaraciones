@@ -50,7 +50,7 @@ let validationSchema = {
       .required("El rfc es requerido")
       .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
       .length(10, "El rfc debe contar con 10 caracteres"),
-   Homoclave: Yup.string().required("La Homoclave es requerida").length(3, "La Homoclave debe tener exactamente 3 caracteres"),
+   // Homoclave: Yup.string().required("La Homoclave es requerida").length(3, "La Homoclave debe tener exactamente 3 caracteres"),
    Curp: Yup.string()
       .required("El CURP es requerido")
       .matches(
