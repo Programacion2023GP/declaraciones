@@ -18,14 +18,14 @@ const initialState = {
    OC_Rfc: "",
    EsEnMexico: 1,
    Aclaraciones: "",
-   EspecifiqueOtro:"",
-
+   EspecifiqueOtro: ""
 };
 const copropiedad = {
    T_Rfc: Yup.string()
-      .required("El rfc es requerido")
-      .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
-      .length(10, "El rfc debe contar con 10 caracteres"),
+      .required("El RFC es requerido")
+      .matches(/^[A-ZÑ&]{3,4}\d{6}[A-Z\d]{0,3}$/, "El RFC no cumple el formato")
+      .min(10, "El RFC debe tener al menos 10 caracteres")
+      .max(13, "El RFC no puede tener más de 13 caracteres"),
    T_NombreRazonSocial: Yup.string("El formato es texto").required("El nombre del tercero o terceros es requerido"),
    T_Id_TipoPersona: Yup.number("El formato es numerico").min(1, "El tipo de persona es requerida").required("El tipo de persona es requerida")
 };
@@ -37,15 +37,16 @@ const validationSchema = {
    Monto: Yup.number("El monto es requerido").required("El monto es requerido"),
    Id_SaldoInsolutoSituacionActual: Yup.number("El formato es numerico").min(1, "El tipo de moneda es requerida").required("El tipo de moneda es requerida"),
    OC_Rfc: Yup.string()
-      .required("El rfc es requerido")
-      .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
-      .length(10, "El rfc debe contar con 10 caracteres"),
+   .required("El RFC es requerido")
+   .matches(/^[A-ZÑ&]{3,4}\d{6}[A-Z\d]{0,3}$/, "El RFC no cumple el formato")
+   .min(10, "El RFC debe tener al menos 10 caracteres")
+   .max(13, "El RFC no puede tener más de 13 caracteres"),
    OC_NombreRazonSocial: Yup.string("El formato es texto").required("El nombre es requerido"),
    OC_Id_TipoPersona: Yup.number("El formato es numerico").min(1, "El tipo de persona es requerida").required("El tipo de persona es requerida")
 };
-const EspecifiqueOtro={
-   EspecifiqueOtro:Yup.string("el formato es texto").required("Especifique otro tipo de adeudo")
-}
+const EspecifiqueOtro = {
+   EspecifiqueOtro: Yup.string("el formato es texto").required("Especifique otro tipo de adeudo")
+};
 
 const data = {
    initialState,
@@ -67,15 +68,16 @@ export const AdeudosPasivosHoja14 = createSlice({
          delete state.validationSchema["T_Rfc"];
          delete state.validationSchema["T_NombreRazonSocial"];
          delete state.validationSchema["T_Id_TipoPersona"];
-      },addEpecifiqueOtroAdeudosPasivos:(state,action)=>{
-         Object.assign(state.validationSchema,EspecifiqueOtro)
       },
-      removeEpecifiqueOtroAdeudosPasivos:(state,action)=>{
+      addEpecifiqueOtroAdeudosPasivos: (state, action) => {
+         Object.assign(state.validationSchema, EspecifiqueOtro);
+      },
+      removeEpecifiqueOtroAdeudosPasivos: (state, action) => {
          delete state.validationSchema["EspecifiqueOtro"];
-
       }
    }
 });
-export const { addAdeudosPasivos, addCopropiedadAdeudos, removeCopropiedadAdeudos,addEpecifiqueOtroAdeudosPasivos,removeEpecifiqueOtroAdeudosPasivos } = AdeudosPasivosHoja14.actions;
+export const { addAdeudosPasivos, addCopropiedadAdeudos, removeCopropiedadAdeudos, addEpecifiqueOtroAdeudosPasivos, removeEpecifiqueOtroAdeudosPasivos } =
+   AdeudosPasivosHoja14.actions;
 export default AdeudosPasivosHoja14.reducer;
 615165;

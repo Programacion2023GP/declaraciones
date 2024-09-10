@@ -52,9 +52,10 @@ export const Clientes = ({ loading, data, next, previous, title }) => {
       Id_TipoPersona: Yup.number().min(1, "El tipo de persona es requerido").required("El tipo de persona es requerido"),
       NombreRazonSocial: Yup.string().required("El nombre de la empresa o servicio es requerido"),
       RfcCliente: Yup.string()
-         .required("El RFC del cliente es requerido")
-         .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
-         .length(10, "El rfc debe contar con 10 caracteres"),
+         .required("El RFC es requerido")
+         .matches(/^[A-ZÑ&]{3,4}\d{6}[A-Z\d]{0,3}$/, "El RFC no cumple el formato")
+         .min(10, "El RFC debe tener al menos 10 caracteres")
+         .max(13, "El RFC no puede tener más de 13 caracteres"),
       Id_Sector: Yup.number().min(1, "El sector es requerido").required("El sector es requerido"),
 
       MontoAproximadoGanancia: Yup.number().min(0, "El monto aproximado de ganancia es requerido").required("El monto aproximado de ganancia es requerido"),
@@ -179,7 +180,6 @@ export const Clientes = ({ loading, data, next, previous, title }) => {
             setDatasTable([]);
             next();
          } catch (error) {
-
             Error(error.response.data.message);
          }
       }

@@ -42,16 +42,18 @@ const initialState = {
 const TerceroAgregado = {
    T_NombreRazonSocial: Yup.string().required("La razon social es requerida"),
    T_Rfc: Yup.string()
-      .required("El rfc es requerido")
-      .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
-      .length(10, "El rfc debe contar con 10 caracteres")
+   .required("El RFC es requerido")
+   .matches(/^[A-ZÑ&]{3,4}\d{6}[A-Z\d]{0,3}$/, "El RFC no cumple el formato")
+   .min(10, "El RFC debe tener al menos 10 caracteres")
+   .max(13, "El RFC no puede tener más de 13 caracteres")
 };
 const validationSchema = {
    TR_NombreRazonSocial: Yup.string().required("La razon social es requerida"),
    TR_Rfc: Yup.string()
-      .required("El rfc es requerido")
-      .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
-      .length(10, "El rfc debe contar con 10 caracteres"),
+   .required("El RFC es requerido")
+   .matches(/^[A-ZÑ&]{3,4}\d{6}[A-Z\d]{0,3}$/, "El RFC no cumple el formato")
+   .min(10, "El RFC debe tener al menos 10 caracteres")
+   .max(13, "El RFC no puede tener más de 13 caracteres"),
 
    tercero: Yup.number("El formato es numerico").min(0, "Cuenta con tercero es requerido").required("Cuenta con tercero es requerido"),
    Id_TipoInmueble: Yup.number("El formato es numerico").min(1, "El tipo de inmueble es requerido").required("El tipo de inmueble es requerido"),

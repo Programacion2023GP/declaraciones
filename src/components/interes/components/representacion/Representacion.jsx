@@ -60,9 +60,10 @@ export const Representacion = ({ loading, data, next, previous, title }) => {
       Id_TipoPersona: Yup.number().min(1, "El tipo de persona es requerida").required("El tipo de persona es requerida"),
       NombreRazonSocial: Yup.string().required("El nombre o razón social es requerido"),
       Rfc: Yup.string()
-         .required("El RFC es requerido")
-         .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
-         .length(10, "El rfc debe contar con 10 caracteres"),
+      .required("El RFC es requerido")
+      .matches(/^[A-ZÑ&]{3,4}\d{6}[A-Z\d]{0,3}$/, "El RFC no cumple el formato")
+      .min(10, "El RFC debe tener al menos 10 caracteres")
+      .max(13, "El RFC no puede tener más de 13 caracteres"),
       Id_Sector: Yup.number().min(1, "El sector es requerido").required("El sector es requerido"),
       Id_PaisUbicacion: !mexico && Yup.number().min(1, "El país de ubicación es requerido").required("El país de ubicación es requerido"),
       Id_EntidadFederativa: mexico && Yup.number().min(1, "La entidad federativa es requerida").required("La entidad federativa es requerida")

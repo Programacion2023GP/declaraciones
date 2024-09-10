@@ -19,32 +19,32 @@ const initialState = {
    Id_MunicipioAlcaldia: 0,
    V_Id_Pais: 0,
    EstadoProvincia: "",
-   V_EsEnMexico:1,
-   Id_TipoDuenoTitular:1,
-   NombreTitular:"",
-   RfcTitular:"",
-   Id_Relacion:0,
-   Aclaraciones:"",
-   EsEnMexico:1,
-
+   V_EsEnMexico: 1,
+   Id_TipoDuenoTitular: 1,
+   NombreTitular: "",
+   RfcTitular: "",
+   Id_Relacion: 0,
+   Aclaraciones: "",
+   EsEnMexico: 1
 };
 const validationSchema = {
    TipoBien: Yup.number("El formato es numerico").required("El tipo de bien es requerido"),
 
-//agregandose vehiculo desde el inicio
+   //agregandose vehiculo desde el inicio
    Id_TipoVehiculo: Yup.string("El formato es texto").required("El tipo de vehiculo es requerido"),
    Marca: Yup.string("El formato es texto").required("La marca es requerida"),
    Modelo: Yup.string("El formato es texto").required("El modelo es requerido"),
-   Anio: Yup.number("El formato es numerico").min(1900,"El año es requerido").required("El año es requerido"),
+   Anio: Yup.number("El formato es numerico").min(1900, "El año es requerido").required("El año es requerido"),
    NumeroSerieRegistro: Yup.string("El formato es texto").required("El numero de serie de registro es requerido"),
-   Id_TipoDuenoTitular:Yup.number("El formato es numerico").required("El dueño o titular es requerido"),
+   Id_TipoDuenoTitular: Yup.number("El formato es numerico").required("El dueño o titular es requerido"),
 
-   NombreTitular:Yup.string("El formato es texto").required("El nombre del titular es requerido"),
+   NombreTitular: Yup.string("El formato es texto").required("El nombre del titular es requerido"),
    RfcTitular: Yup.string()
-   .required("El rfc es requerido")
-   .matches(/^[A-ZÑ&]{3,4}\d{6}?$/, "El rfc no cumple el formato")
-   .length(10, "El rfc debe contar con 10 caracteres"),
-   Id_Relacion:Yup.number("el formato es numerico").min(1,"La relacion es requerida").required("La relacion es requerida"),
+   .required("El RFC es requerido")
+   .matches(/^[A-ZÑ&]{3,4}\d{6}[A-Z\d]{0,3}$/, "El RFC no cumple el formato")
+   .min(10, "El RFC debe tener al menos 10 caracteres")
+   .max(13, "El RFC no puede tener más de 13 caracteres"),
+   Id_Relacion: Yup.number("el formato es numerico").min(1, "La relacion es requerida").required("La relacion es requerida")
 };
 const inmueble = {
    Id_TipoInmueble: Yup.string("El formato es texto").required("El tipo de Inmueble es requerido"),
@@ -54,24 +54,24 @@ const inmueble = {
    CodigoPostal: Yup.string()
       .matches(/^\d{5}$/, "El código postal debe tener exactamente 5 caracteres numéricos")
       .required("El código postal es requerido"),
-   CiudadLocalidad: Yup.string().required("La colonia localidad es requerida"),
+   CiudadLocalidad: Yup.string().required("La colonia localidad es requerida")
 };
 const vehiculo = {
    EsEnMexico: Yup.number("Debe ser numerico").required("Es requerido que selecione una opcion"),
    Id_TipoVehiculo: Yup.string("El formato es texto").required("El tipo de vehiculo es requerido"),
    Marca: Yup.string("El formato es texto").required("La marca es requerida"),
    Modelo: Yup.string("El formato es texto").required("El modelo es requerido"),
-   Anio: Yup.number("El formato es numerico").min(1900,"El año es requerido").required("El año es requerido"),
+   Anio: Yup.number("El formato es numerico").min(1900, "El año es requerido").required("El año es requerido"),
    NumeroSerieRegistro: Yup.string("El formato es texto").required("El numero de serie de registro es requerido"),
-   Id_TipoDuenoTitular:Yup.number("El formato es numerico").required("El dueño o titular es requerido"),
+   Id_TipoDuenoTitular: Yup.number("El formato es numerico").required("El dueño o titular es requerido"),
 
-   NombreTitular:Yup.string("El formato es texto").required("El nombre del titular es requerido"),
+   NombreTitular: Yup.string("El formato es texto").required("El nombre del titular es requerido"),
    RfcTitular: Yup.string()
-   .required("El rfc es requerido")
-   .matches(/^[A-ZÑ&]{3,4}\d{6}(?:[A-Z\d]{3})?$/, "El rfc no cumple el formato")
-   .length(13, "El rfc debe contar con 13 caracteres"),
-   Id_Relacion:Yup.number("el formato es numerico").min(1,"La relacion es requerida").required("La relacion es requerida"),
-
+   .required("El RFC es requerido")
+   .matches(/^[A-ZÑ&]{3,4}\d{6}[A-Z\d]{0,3}$/, "El RFC no cumple el formato")
+   .min(10, "El RFC debe tener al menos 10 caracteres")
+   .max(13, "El RFC no puede tener más de 13 caracteres"),
+   Id_Relacion: Yup.number("el formato es numerico").min(1, "La relacion es requerida").required("La relacion es requerida")
 };
 const otro = {
    EspecifiqueOtro: Yup.string("El formato es texto").required("El especificar es requerido")
@@ -97,69 +97,61 @@ export const PrestamoComodatoHoja15 = createSlice({
    initialState: data,
    reducers: {
       addPrestamos: (state, action) => {
-         state.datas.push(action.payload)
+         state.datas.push(action.payload);
          // Object.assign(state.initialState, action.payload);
          // state.initialState.Id_SituacionPatrimonial =parseInt(localStorage.getItem("id_SituacionPatrimonial"));
       },
-      addOtroPrestamo:(state,action)=>{
-        Object.assign(state.validationSchema, otro);
-
+      addOtroPrestamo: (state, action) => {
+         Object.assign(state.validationSchema, otro);
       },
-      eliminarOtroPrestamo:(state,action)=>{
-        delete state.validationSchema["EspecifiqueOtro"];
-
+      eliminarOtroPrestamo: (state, action) => {
+         delete state.validationSchema["EspecifiqueOtro"];
       },
       addVehiculosPrestamos: (state, action) => {
-        delete state.validationSchema["Id_TipoInmueble"];
-        delete state.validationSchema["V_EsEnMexico"];
-        delete state.validationSchema["NumeroExterior"];
-        delete state.validationSchema["Calle"];
-        delete state.validationSchema["CodigoPostal"];
-        delete state.validationSchema["CiudadLocalidad"];
-        delete state.validationSchema["V_Id_EntidadFederativa"];
-        delete state.validationSchema["Id_MunicipioAlcaldia"];
-        // inmuebles
-        delete state.validationSchema["V_Id_Pais"];
-        delete state.validationSchema["EstadoProvincia"];
-        // mexico
-        delete state.validationSchema["V_Id_EntidadFederativa"];
-        delete state.validationSchema["Id_MunicipioAlcaldia"];
-        // extranjero
+         delete state.validationSchema["Id_TipoInmueble"];
+         delete state.validationSchema["V_EsEnMexico"];
+         delete state.validationSchema["NumeroExterior"];
+         delete state.validationSchema["Calle"];
+         delete state.validationSchema["CodigoPostal"];
+         delete state.validationSchema["CiudadLocalidad"];
+         delete state.validationSchema["V_Id_EntidadFederativa"];
+         delete state.validationSchema["Id_MunicipioAlcaldia"];
+         // inmuebles
+         delete state.validationSchema["V_Id_Pais"];
+         delete state.validationSchema["EstadoProvincia"];
+         // mexico
+         delete state.validationSchema["V_Id_EntidadFederativa"];
+         delete state.validationSchema["Id_MunicipioAlcaldia"];
+         // extranjero
 
-
-        Object.assign(state.validationSchema, vehiculo);
-
+         Object.assign(state.validationSchema, vehiculo);
       },
       addInmueblesPrestamos: (state, action) => {
-        delete state.validationSchema["Id_TipoVehiculo"];
-        delete state.validationSchema["Marca"];
-        delete state.validationSchema["Modelo"];
-        delete state.validationSchema["Anio"];
-        delete state.validationSchema["NumeroSerieRegistro"];
-        delete state.validationSchema["NombreTitular"];
-        delete state.validationSchema["RfcTitular"];
-        delete state.validationSchema["Id_TipoDuenoTitular"];
-        delete state.validationSchema["Id_Relacion"];
+         delete state.validationSchema["Id_TipoVehiculo"];
+         delete state.validationSchema["Marca"];
+         delete state.validationSchema["Modelo"];
+         delete state.validationSchema["Anio"];
+         delete state.validationSchema["NumeroSerieRegistro"];
+         delete state.validationSchema["NombreTitular"];
+         delete state.validationSchema["RfcTitular"];
+         delete state.validationSchema["Id_TipoDuenoTitular"];
+         delete state.validationSchema["Id_Relacion"];
 
-        // vehiculos
+         // vehiculos
 
-        Object.assign(state.validationSchema, inmueble);
-        Object.assign(state.validationSchema, mexico);
-
+         Object.assign(state.validationSchema, inmueble);
+         Object.assign(state.validationSchema, mexico);
       },
       addMexicoPrestamo: (state, action) => {
-        delete state.validationSchema["V_Id_Pais"];
-        delete state.validationSchema["EstadoProvincia"];
-        Object.assign(state.validationSchema, mexico);
-
+         delete state.validationSchema["V_Id_Pais"];
+         delete state.validationSchema["EstadoProvincia"];
+         Object.assign(state.validationSchema, mexico);
       },
       addExtranjeroPrestamo: (state, action) => {
-        delete state.validationSchema["V_Id_EntidadFederativa"];
-        delete state.validationSchema["Id_MunicipioAlcaldia"];
-        Object.assign(state.validationSchema, extranjero);
-
-      },
-
+         delete state.validationSchema["V_Id_EntidadFederativa"];
+         delete state.validationSchema["Id_MunicipioAlcaldia"];
+         Object.assign(state.validationSchema, extranjero);
+      }
    }
 });
 const eliminarPropiedades = (objeto1, objeto2) => {
@@ -174,5 +166,6 @@ const eliminarPropiedades = (objeto1, objeto2) => {
    return objeto1;
 };
 
-export const { addPrestamos, addVehiculosPrestamos,addInmueblesPrestamos,addMexicoPrestamo,addExtranjeroPrestamo,addOtroPrestamo,eliminarOtroPrestamo } = PrestamoComodatoHoja15.actions;
+export const { addPrestamos, addVehiculosPrestamos, addInmueblesPrestamos, addMexicoPrestamo, addExtranjeroPrestamo, addOtroPrestamo, eliminarOtroPrestamo } =
+   PrestamoComodatoHoja15.actions;
 export default PrestamoComodatoHoja15.reducer;
