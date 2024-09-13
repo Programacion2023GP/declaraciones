@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import DataTable, { Modal } from "../Reusables/table/DataTable";
-import { Box, Card, Grid, Typography } from "@mui/material";
+import { Box, Card, Grid, Typography, Button, IconButton } from "@mui/material";
 import { Request } from "../Reusables/request/Request";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Axios, GetAxios } from "../../services/services";
@@ -33,6 +33,7 @@ import { CuentasValores } from "./hojas/CuentasValores";
 import { AdeudosPasivos } from "./hojas/AdeudosPasivos";
 import { PrestamoComodato } from "./hojas/PrestamoComodato";
 import DeclarationDocument from "./hojas/BajoProtesta";
+import { Document, PDFDownloadLink } from "@react-pdf/renderer";
 // import "react-datepicker/dist/react-datepicker.css";
 // import DatePicker from "react-datepicker";
 // import "./DateRangeSelector.css"; // Importa el archivo CSS para estilos adicionales
@@ -149,6 +150,8 @@ const Checador = ({}) => {
          setPeticionesLoading(true);
       }
    };
+   const [declaraciones, setDeclaraciones] = useState([]);
+   const [masive, setMasive] = useState(false);
 
    useEffect(() => {
       existPeticiones([
@@ -231,7 +234,26 @@ const Checador = ({}) => {
       setAcuse(true);
    };
 
+  
    const handelPdf = async (row) => {
+      const declaracion = {
+         datosGenerales: null,
+         domicilioDeclarante: null,
+         datosCurriculares: null,
+         datosEmpleos: null,
+         experienciaLaboral: null,
+         datosPareja: null,
+         datosDependienteEconomicos: null,
+         ingresosNetos: null,
+         servidorPublico: null,
+         bienesInmuebles: null,
+         tpVehiculos: null,
+         bienesMuebles: null,
+         cuentaValores: null,
+         adeudos: null,
+         prestamosComodatos: null
+      };
+      const declaraciones = [];
       setName(row.name);
       // console.log(row.Declaracion, row.Tipo_declaracion);
       const declaracionMapping = {
@@ -266,82 +288,129 @@ const Checador = ({}) => {
       try {
          setMessage("Datos generales");
          setPass(1);
-         setDatosGenerales(await GetAxios(`datosgenerales/index/${row.Folio}`));
+         const resDatosGenerales = await GetAxios(`datosgenerales/index/${row.Folio}`);
+         declaracion.datosGenerales = resDatosGenerales;
+         setDatosGenerales(resDatosGenerales);
+         // setDatosGenerales(await GetAxios(`datosgenerales/index/${row.Folio}`));
 
          await delay(500); // Esperar medio segundo (500 milisegundos)
          setPass(2);
+         const resDomicilioDeclarante = await GetAxios(`domiciliodeclarante/index/${row.Folio}`);
+         setDomiciliioDeclarante(resDomicilioDeclarante);
+         declaracion.domicilioDeclarante = resDatosGenerales;
 
          setMessage("Domicilio declarante");
-         setDomiciliioDeclarante(await GetAxios(`domiciliodeclarante/index/${row.Folio}`));
+         // setDomiciliioDeclarante(await GetAxios(`domiciliodeclarante/index/${row.Folio}`));
 
          await delay(500); // Esperar medio segundo nuevamente
          setPass(3);
 
          setMessage("Datos curriculares");
-         setDatosCurriculares(await GetAxios(`datoscurriculares/index/${row.Folio}`));
+         const resDatosCurriculares = await GetAxios(`datoscurriculares/index/${row.Folio}`);
+         setDomiciliioDeclarante(resDomicilioDeclarante);
+         declaracion.datosCurriculares = resDatosCurriculares;
+         // setDatosCurriculares(await GetAxios(`datoscurriculares/index/${row.Folio}`));
          await delay(500); // Esperar medio segundo nuevamente
          setPass(4);
 
          setMessage("Datos empleos cargo Comisión");
-         setDatosEmpleos(await GetAxios(`datoscargoscomision/index/${row.Folio}`));
+         const resDatosEmpleos = await GetAxios(`datoscargoscomision/index/${row.Folio}`);
+         setDatosEmpleos(resDatosEmpleos);
+         declaracion.datosEmpleos = resDatosEmpleos;
 
          setPass(5);
+
          setMessage("Experiencia Laboral");
-         setExperienciaLaboral(await GetAxios(`experiencialaboral/index/${row.Folio}`));
+         const resExperienciaLaboral = await GetAxios(`experiencialaboral/index/${row.Folio}`);
+         setExperienciaLaboral(resExperienciaLaboral);
+         declaracion.experienciaLaboral = resExperienciaLaboral;
+         // setExperienciaLaboral(await GetAxios(`experiencialaboral/index/${row.Folio}`));
          await delay(500); // Esperar medio segundo nuevamente
          if (page > 6) {
             setPass(6);
             setMessage("Datos de la pareja");
-            setDatosPareja(await GetAxios(`datospareja/index/${row.Folio}`));
+            const resDatosPareja = await GetAxios(`datospareja/index/${row.Folio}`);
+            setDatosPareja(resDatosPareja);
+            declaracion.datosPareja = resDatosPareja;
             await delay(500); // Esperar medio segundo nuevamente
 
             setPass(7);
+            const resDependientesEconomicos = await GetAxios(`dependienteseconomicos/index/${row.Folio}`);
+
             setMessage("Datos de los dependientes economicos");
-            setDatosDependienteEconomicos(await GetAxios(`dependienteseconomicos/index/${row.Folio}`));
+            setDatosDependienteEconomicos(resDependientesEconomicos);
+            declaracion.datosDependienteEconomicos = resDependientesEconomicos;
             await delay(500); // Esperar medio segundo nuevamente
          }
 
          setPass(page > 6 ? 8 : 6);
          setMessage("ingresos netos");
-         setIngresosNetos(await GetAxios(`ingresos/index/${row.Folio}`));
+         const resIngresos = await GetAxios(`ingresos/index/${row.Folio}`);
+
+         setIngresosNetos(resIngresos);
+         declaracion.ingresosNetos = resIngresos;
          await delay(500); // Esperar medio segundo nuevamente
 
          if (page == 15) {
             setPass(9);
             setMessage("servidor publico");
-            setServidorPublico(await GetAxios(`servidorpublico/index/${row.Folio}`));
+            const resServidorPublico = await GetAxios(`servidorpublico/index/${row.Folio}`);
+            setServidorPublico(resServidorPublico);
             await delay(500); // Esperar medio segundo nuevamente
          }
          if (page > 6) {
             setMessage("bienes inmuebles");
             setPass(page == 15 ? 10 : page > 6 ? 9 : 7);
-            setBienesInmuebles(await GetAxios(`bienesinmuebles/index/${row.Folio}`));
+            const resBienesInmuebles = await GetAxios(`bienesinmuebles/index/${row.Folio}`);
+            setBienesInmuebles(resBienesInmuebles);
+            declaracion.bienesInmuebles = resBienesInmuebles;
+            // setBienesInmuebles(await GetAxios(`bienesinmuebles/index/${row.Folio}`));
             await delay(500); // Esperar medio segundo nuevamente
 
             setPass(page == 15 ? 11 : page > 6 ? 10 : 8);
             setMessage("vehiculos");
-            setTpVehiculos(await GetAxios(`vehiculos/index/${row.Folio}`));
+            const resVehiculos = await GetAxios(`vehiculos/index/${row.Folio}`);
+            setTpVehiculos(resVehiculos);
+            declaracion.tpVehiculos = resVehiculos;
+            // setTpVehiculos(await GetAxios(`vehiculos/index/${row.Folio}`));
             await delay(500); // Esperar medio segundo nuevamente
 
             setPass(page == 15 ? 12 : page > 6 ? 11 : 9);
             setMessage("bienes muebles");
-            setBienesMuebles(await GetAxios(`bienesmuebles/index/${row.Folio}`));
+            const resBienesMuebles = await GetAxios(`bienesmuebles/index/${row.Folio}`);
+            setBienesMuebles(resBienesMuebles);
+            declaracion.bienesMuebles = resBienesMuebles;
+            // setBienesMuebles(await GetAxios(`bienesmuebles/index/${row.Folio}`));
             await delay(500);
 
             setPass(page == 15 ? 13 : page > 6 ? 12 : 10);
             setMessage("inversiones cuentas valores");
-            setCuentaValores(await GetAxios(`inversionescuentas/index/${row.Folio}`));
+            const resCuentasValores = await GetAxios(`inversionescuentas/index/${row.Folio}`);
+            setCuentaValores(resCuentasValores);
+            declaracion.cuentaValores = resCuentasValores;
+            // setCuentaValores(await GetAxios(`inversionescuentas/index/${row.Folio}`));
             await delay(500);
 
             setPass(page == 15 ? 14 : page > 6 ? 13 : 11);
             setMessage("adeudos");
-            setAdeudos(await GetAxios(`adeudospasivos/index/${row.Folio}`));
+            const resAdeudos = await GetAxios(`adeudospasivos/index/${row.Folio}`);
+            setAdeudos(resAdeudos);
+            declaracion.adeudos = resAdeudos;
+            // setAdeudos(await GetAxios(`adeudospasivos/index/${row.Folio}`));
             await delay(500);
 
             setPass(page == 15 ? 15 : page > 6 ? 14 : 12);
+            const resPrestamosComodatos = await GetAxios(`prestamoscomodatos/index/${row.Folio}`);
             setMessage("prestamos comodatos");
-            setPrestamosComodatos(await GetAxios(`prestamoscomodatos/index/${row.Folio}`));
+            setPrestamosComodatos(resPrestamosComodatos);
+            declaracion.prestamosComodatos = resPrestamosComodatos;
+            // setPrestamosComodatos(await GetAxios(`prestamoscomodatos/index/${row.Folio}`));
             await delay(500);
+            if (masive) {
+               declaraciones.push(declaracion);
+               setDeclaraciones(declaraciones);
+            }
+            // pushear a declaraciones
          }
       } catch (error) {
          console.error("Error al obtener datos:", error);
@@ -349,124 +418,124 @@ const Checador = ({}) => {
          OpenPdf();
       }
    };
-   const handelPdfDates = async (data) => {
-      // setName(row.name);
-      // console.log(row.Declaracion, row.Tipo_declaracion);
-      const declaracionMapping = {
-         Simplificada: {
-            Inicial: 4,
-            Modificación: 5,
-            Conclusión: 6
-         },
-         Completa: {
-            Inicial: 1,
-            Modificación: 2,
-            Conclusión: 3
-         }
-      };
+   // const handelPdfDates = async (data) => {
+   //    // setName(row.name);
+   //    // console.log(row.Declaracion, row.Tipo_declaracion);
+   //    const declaracionMapping = {
+   //       Simplificada: {
+   //          Inicial: 4,
+   //          Modificación: 5,
+   //          Conclusión: 6
+   //       },
+   //       Completa: {
+   //          Inicial: 1,
+   //          Modificación: 2,
+   //          Conclusión: 3
+   //       }
+   //    };
 
-      if (row.Declaracion in declaracionMapping) {
-         const tipoDeclaracion = row.Tipo_declaracion.trim(); // Trimming para eliminar espacios en blanco adicionales
+   //    if (row.Declaracion in declaracionMapping) {
+   //       const tipoDeclaracion = row.Tipo_declaracion.trim(); // Trimming para eliminar espacios en blanco adicionales
 
-         if (tipoDeclaracion in declaracionMapping[row.Declaracion]) {
-            setSelectedDeclaracion(declaracionMapping[row.Declaracion][tipoDeclaracion]);
-         }
-      }
-      const page = row.Declaracion == "Simplificada" ? 6 : row.Declaracion == "Completa" && row.Tipo_declaracion != "Modificación" ? 14 : 15;
-      setPages(page);
-      setOpen(true);
-      setModal(true);
-      setLoadingMessage(true);
+   //       if (tipoDeclaracion in declaracionMapping[row.Declaracion]) {
+   //          setSelectedDeclaracion(declaracionMapping[row.Declaracion][tipoDeclaracion]);
+   //       }
+   //    }
+   //    const page = row.Declaracion == "Simplificada" ? 6 : row.Declaracion == "Completa" && row.Tipo_declaracion != "Modificación" ? 14 : 15;
+   //    setPages(page);
+   //    setOpen(true);
+   //    setModal(true);
+   //    setLoadingMessage(true);
 
-      // Función auxiliar para simular una pausa de medio segundo
-      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+   //    // Función auxiliar para simular una pausa de medio segundo
+   //    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-      try {
-         setMessage("Datos generales");
-         setPass(1);
-         setDatosGenerales(await GetAxios(`datosgenerales/index/${row.Folio}`));
+   //    try {
+   //       setMessage("Datos generales");
+   //       setPass(1);
+   //       setDatosGenerales(await GetAxios(`datosgenerales/index/${row.Folio}`));
 
-         await delay(500); // Esperar medio segundo (500 milisegundos)
-         setPass(2);
+   //       await delay(500); // Esperar medio segundo (500 milisegundos)
+   //       setPass(2);
 
-         setMessage("Domicilio declarante");
-         setDomiciliioDeclarante(await GetAxios(`domiciliodeclarante/index/${row.Folio}`));
+   //       setMessage("Domicilio declarante");
+   //       setDomiciliioDeclarante(await GetAxios(`domiciliodeclarante/index/${row.Folio}`));
 
-         await delay(500); // Esperar medio segundo nuevamente
-         setPass(3);
+   //       await delay(500); // Esperar medio segundo nuevamente
+   //       setPass(3);
 
-         setMessage("Datos curriculares");
-         setDatosCurriculares(await GetAxios(`datoscurriculares/index/${row.Folio}`));
-         await delay(500); // Esperar medio segundo nuevamente
-         setPass(4);
+   //       setMessage("Datos curriculares");
+   //       setDatosCurriculares(await GetAxios(`datoscurriculares/index/${row.Folio}`));
+   //       await delay(500); // Esperar medio segundo nuevamente
+   //       setPass(4);
 
-         setMessage("Datos empleos cargo Comisión");
-         setDatosEmpleos(await GetAxios(`datoscargoscomision/index/${row.Folio}`));
+   //       setMessage("Datos empleos cargo Comisión");
+   //       setDatosEmpleos(await GetAxios(`datoscargoscomision/index/${row.Folio}`));
 
-         setPass(5);
-         setMessage("Experiencia Laboral");
-         setExperienciaLaboral(await GetAxios(`experiencialaboral/index/${row.Folio}`));
-         await delay(500); // Esperar medio segundo nuevamente
-         if (page > 6) {
-            setPass(6);
-            setMessage("Datos de la pareja");
-            setDatosPareja(await GetAxios(`datospareja/index/${row.Folio}`));
-            await delay(500); // Esperar medio segundo nuevamente
+   //       setPass(5);
+   //       setMessage("Experiencia Laboral");
+   //       setExperienciaLaboral(await GetAxios(`experiencialaboral/index/${row.Folio}`));
+   //       await delay(500); // Esperar medio segundo nuevamente
+   //       if (page > 6) {
+   //          setPass(6);
+   //          setMessage("Datos de la pareja");
+   //          setDatosPareja(await GetAxios(`datospareja/index/${row.Folio}`));
+   //          await delay(500); // Esperar medio segundo nuevamente
 
-            setPass(7);
-            setMessage("Datos de los dependientes economicos");
-            setDatosDependienteEconomicos(await GetAxios(`dependienteseconomicos/index/${row.Folio}`));
-            await delay(500); // Esperar medio segundo nuevamente
-         }
+   //          setPass(7);
+   //          setMessage("Datos de los dependientes economicos");
+   //          setDatosDependienteEconomicos(await GetAxios(`dependienteseconomicos/index/${row.Folio}`));
+   //          await delay(500); // Esperar medio segundo nuevamente
+   //       }
 
-         setPass(page > 6 ? 8 : 6);
-         setMessage("ingresos netos");
-         setIngresosNetos(await GetAxios(`ingresos/index/${row.Folio}`));
-         await delay(500); // Esperar medio segundo nuevamente
+   //       setPass(page > 6 ? 8 : 6);
+   //       setMessage("ingresos netos");
+   //       setIngresosNetos(await GetAxios(`ingresos/index/${row.Folio}`));
+   //       await delay(500); // Esperar medio segundo nuevamente
 
-         if (page == 15) {
-            setPass(9);
-            setMessage("servidor publico");
-            setServidorPublico(await GetAxios(`servidorpublico/index/${row.Folio}`));
-            await delay(500); // Esperar medio segundo nuevamente
-         }
-         if (page > 6) {
-            setMessage("bienes inmuebles");
-            setPass(page == 15 ? 10 : page > 6 ? 9 : 7);
-            setBienesInmuebles(await GetAxios(`bienesinmuebles/index/${row.Folio}`));
-            await delay(500); // Esperar medio segundo nuevamente
+   //       if (page == 15) {
+   //          setPass(9);
+   //          setMessage("servidor publico");
+   //          setServidorPublico(await GetAxios(`servidorpublico/index/${row.Folio}`));
+   //          await delay(500); // Esperar medio segundo nuevamente
+   //       }
+   //       if (page > 6) {
+   //          setMessage("bienes inmuebles");
+   //          setPass(page == 15 ? 10 : page > 6 ? 9 : 7);
+   //          setBienesInmuebles(await GetAxios(`bienesinmuebles/index/${row.Folio}`));
+   //          await delay(500); // Esperar medio segundo nuevamente
 
-            setPass(page == 15 ? 11 : page > 6 ? 10 : 8);
-            setMessage("vehiculos");
-            setTpVehiculos(await GetAxios(`vehiculos/index/${row.Folio}`));
-            await delay(500); // Esperar medio segundo nuevamente
+   //          setPass(page == 15 ? 11 : page > 6 ? 10 : 8);
+   //          setMessage("vehiculos");
+   //          setTpVehiculos(await GetAxios(`vehiculos/index/${row.Folio}`));
+   //          await delay(500); // Esperar medio segundo nuevamente
 
-            setPass(page == 15 ? 12 : page > 6 ? 11 : 9);
-            setMessage("bienes muebles");
-            setBienesMuebles(await GetAxios(`bienesmuebles/index/${row.Folio}`));
-            await delay(500);
+   //          setPass(page == 15 ? 12 : page > 6 ? 11 : 9);
+   //          setMessage("bienes muebles");
+   //          setBienesMuebles(await GetAxios(`bienesmuebles/index/${row.Folio}`));
+   //          await delay(500);
 
-            setPass(page == 15 ? 13 : page > 6 ? 12 : 10);
-            setMessage("inversiones cuentas valores");
-            setCuentaValores(await GetAxios(`inversionescuentas/index/${row.Folio}`));
-            await delay(500);
+   //          setPass(page == 15 ? 13 : page > 6 ? 12 : 10);
+   //          setMessage("inversiones cuentas valores");
+   //          setCuentaValores(await GetAxios(`inversionescuentas/index/${row.Folio}`));
+   //          await delay(500);
 
-            setPass(page == 15 ? 14 : page > 6 ? 13 : 11);
-            setMessage("adeudos");
-            setAdeudos(await GetAxios(`adeudospasivos/index/${row.Folio}`));
-            await delay(500);
+   //          setPass(page == 15 ? 14 : page > 6 ? 13 : 11);
+   //          setMessage("adeudos");
+   //          setAdeudos(await GetAxios(`adeudospasivos/index/${row.Folio}`));
+   //          await delay(500);
 
-            setPass(page == 15 ? 15 : page > 6 ? 14 : 12);
-            setMessage("prestamos comodatos");
-            setPrestamosComodatos(await GetAxios(`prestamoscomodatos/index/${row.Folio}`));
-            await delay(500);
-         }
-      } catch (error) {
-         console.error("Error al obtener datos:", error);
-      } finally {
-         // OpenPdf();
-      }
-   };
+   //          setPass(page == 15 ? 15 : page > 6 ? 14 : 12);
+   //          setMessage("prestamos comodatos");
+   //          setPrestamosComodatos(await GetAxios(`prestamoscomodatos/index/${row.Folio}`));
+   //          await delay(500);
+   //       }
+   //    } catch (error) {
+   //       console.error("Error al obtener datos:", error);
+   //    } finally {
+   //       // OpenPdf();
+   //    }
+   // };
    useEffect(() => {}, [selectedDeclaracion, name, prestamosComodatos, testerDates]);
    const OpenPdf = () => {
       setModal(false);
@@ -531,6 +600,22 @@ const Checador = ({}) => {
          .replace(/[^a-zA-Z0-9]/g, "") // Remueve caracteres especiales y espacios
          .replace(/\s+/g, ""); // Remueve cualquier espacio extra por si queda alguno
    };
+   const [selectedDate,setSelectedDate] = useState(null)
+   const [selectedDate2,setSelectedDate2] = useState(null)
+   const handleDateChange=(e)=>{
+      setSelectedDate(e.target.value);
+   }
+   const handleDateChange2=(e)=>{
+      setSelectedDate2(e.target.value);
+   }
+   const handleClickButtonMasive = async () => {
+      setMasive(true);
+      data.map((item)=>{
+      console.log(item);         
+      })
+      await handelPdf(data[0]);
+      // setMasive(false);
+   };
    return (
       <>
          <Box
@@ -549,6 +634,26 @@ const Checador = ({}) => {
          >
             <Card sx={{ maxWidth: "100%", margin: "auto" }}>
                <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
+                  {/* <select name="" id="">
+                     <option selected value="2024">2024</option>
+                  </select>
+                  <select name="" id="">
+                     <option selected value="Abril - Junio">Abril - Junio</option>
+                  </select> */}
+                  <div>
+                     <label htmlFor="dateInput">Selecciona una fecha:</label>
+                     <input type="date" id="dateInput" value={selectedDate} onChange={handleDateChange} />
+                     <p>Fecha seleccionada 1: {selectedDate}</p>
+                  </div>
+                  <div>
+                     <label htmlFor="dateInput">Selecciona una fecha:</label>
+                     <input type="date" id="dateInput" value={selectedDate2} onChange={handleDateChange2} />
+                     <p>Fecha seleccionada 2: {selectedDate2}</p>
+                  </div>
+                  <button style={{ background: "green" }} onClick={handleClickButtonMasive}>
+                     descarga masiva
+                  </button>
+
                   {/* <div className="date-range-selector">
                      <DatePicker
                         selected={dates[0]}
@@ -621,294 +726,607 @@ const Checador = ({}) => {
 
             {loadingMessage != null ? (
                !loadingMessage && peticionesLoading ? (
-                  <PdfDeclaracion
-                     fileName={cleanFileName(myRow?.Folio) + cleanFileName(myRow?.ApPaterno) + cleanFileName(myRow?.ApMaterno) + cleanFileName(myRow?.Nombre)}
-                     title={"DECLARACION"}
-                     open={open}
-                     setOpen={setOpen}
-                     formTitle={"OFICIO DE VALES"}
-                     watermark={"Declaracion"}
-                  >
-                     <PagePdf title={"DATOS GENERALES"} data={datosGenerales}>
-                        <DatosGenerales
-                           data={datosGenerales}
-                           estadocivil={estadocivil}
-                           regimenes={regimenes}
-                           paises={paises}
-                           nacionalidades={nacionalidades}
-                           testada={tester}
-                        />
-                        <Notas
-                           testada={tester}
-                           message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
-                        />
-                     </PagePdf>
-                     <PagePdf title={"DOMICILIO DEL DECLARANTE"}>
-                        <DomiDeclarante data={domiciliioDeclarante} municipios={municipios} entidades={entidades} paises={paises} testada={tester} />
-                        <Notas
-                           testada={tester}
-                           message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
-                        />
-                     </PagePdf>
-                     <PagePdf title={"DATOS CURRICULARES DEL DECLARANTE"}>
-                        <DatosCurriculares
-                           data={datosCurriculares}
-                           nivelEstudios={nivelEstudios}
-                           estatus={estatus}
-                           documentosObtenidos={documentosObtenidos}
-                           testada={tester}
-                        />
-                     </PagePdf>
-                     <PagePdf title={"DATOS DEL EMPLEO CARGO O COMISIÓN"}>
-                        <DatosEmpleoCargo
-                           testada={tester}
-                           data={datosEmpleos}
-                           nivelOrdenGobierno={nivelOrdenGobierno}
-                           ambitoPublico={ambitoPublico}
-                           municipios={municipios}
-                           entidades={entidades}
-                           paises={paises}
-                        />
-                     </PagePdf>
-                     <PagePdf title={"EXPERIENCIA LABORAL"}>
-                        <ExperienciaLaboral data={experienciaLaboral} ambitopublico={ambitoPublico} testada={tester} />
-                     </PagePdf>
-                     <Ngif condition={selectedDeclaracion < 4}>
-                        <PagePdf title={"DATOS DE LA PAREJA"}>
-                           <DatosPareja data={datosPareja} relacion={relacion} testada={tester} />
+                  !masive ? (
+                     <PdfDeclaracion
+                        fileName={cleanFileName(myRow?.Folio) + cleanFileName(myRow?.ApPaterno) + cleanFileName(myRow?.ApMaterno) + cleanFileName(myRow?.Nombre)}
+                        title={"DECLARACION"}
+                        open={open}
+                        setOpen={setOpen}
+                        formTitle={"OFICIO DE VALES"}
+                        watermark={"Declaracion"}
+                     >
+                        <PagePdf title={"DATOS GENERALES"} data={datosGenerales}>
+                           <DatosGenerales
+                              data={datosGenerales}
+                              estadocivil={estadocivil}
+                              regimenes={regimenes}
+                              paises={paises}
+                              nacionalidades={nacionalidades}
+                              testada={tester}
+                           />
                            <Notas
                               testada={tester}
                               message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
                            />
                         </PagePdf>
-                        <Ngif condition={datosDependienteEconomicos.length > 0}>
-                           {datosDependienteEconomicos.map((item, index) => (
-                              <PagePdf key={item.Id_DatosDependienteEconomico} title={"DATOS DEL DEPENDIENTE ECONOMICO"}>
-                                 <DependientesEconomicos data={[item]} relacion={relacion} testada={tester} />
-                                 <Notas
-                                    testada={tester}
-                                    message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
-                                 />
-                              </PagePdf>
-                           ))}
-                        </Ngif>
-                        <Ngif condition={datosDependienteEconomicos.length === 0}>
-                           <PagePdf title={"DATOS DEL DEPENDIENTE ECONOMICO       (NINGUNO)"}>
-                              <Notas
-                                 testada={tester}
-                                 message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
-                              />
-                           </PagePdf>
-                        </Ngif>
-                     </Ngif>
-
-                     <PagePdf title={"INGRESOS NETOS DEL DECLARANTE, PAREJA Y/O DEPENDIENTES ECONÓMICOS"}>
-                        <IngresosNetos
-                           data={ingresosNetos}
-                           tipo_declaracion={selectedDeclaracion}
-                           bienenAjenacion={bienenAjenacion}
-                           testada={tester}
-                           instrumentos={instrumentos}
-                        />
-                        <Notas
-                           testada={tester}
-                           message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
-                        />
-                     </PagePdf>
-                     <Ngif condition={selectedDeclaracion == 2}>
-                        <PagePdf title={"¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? NO"}>
-                           <ServidorPublico data={servidorPublico} instrumentos={instrumentos} bienenAjenacion={bienenAjenacion} testada={tester} />
+                        <PagePdf title={"DOMICILIO DEL DECLARANTE"}>
+                           <DomiDeclarante data={domiciliioDeclarante} municipios={municipios} entidades={entidades} paises={paises} testada={tester} />
+                           <Notas
+                              testada={tester}
+                              message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                           />
                         </PagePdf>
-                     </Ngif>
-                     <Ngif condition={selectedDeclaracion < 4}>
-                        <Ngif condition={bienesInmuebles.length > 0}>
-                           {bienesInmuebles.map((item, index) => (
-                              <PagePdf key={index} title={"BIENES INMUEBLES"}>
-                                 <BienesInmuebles
-                                    data={[item]}
-                                    inmuebles={inmuebles}
-                                    titular={titular}
-                                    testada={tester}
-                                    adquisicion={adquisicion}
-                                    pago={pago}
-                                    monedas={monedas}
-                                    relacion={relacion}
-                                    motivobaja={motivobaja}
-                                 />
-                                 <Notas
-                                    testada={tester}
-                                    message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
-                                 />
-                              </PagePdf>
-                           ))}
-                        </Ngif>
-                        <Ngif condition={bienesInmuebles.length === 0}>
-                           <PagePdf title={"BIENES INMUEBLES      (NINGUNO)"}>
+                        <PagePdf title={"DATOS CURRICULARES DEL DECLARANTE"}>
+                           <DatosCurriculares
+                              data={datosCurriculares}
+                              nivelEstudios={nivelEstudios}
+                              estatus={estatus}
+                              documentosObtenidos={documentosObtenidos}
+                              testada={tester}
+                           />
+                        </PagePdf>
+                        <PagePdf title={"DATOS DEL EMPLEO CARGO O COMISIÓN"}>
+                           <DatosEmpleoCargo
+                              testada={tester}
+                              data={datosEmpleos}
+                              nivelOrdenGobierno={nivelOrdenGobierno}
+                              ambitoPublico={ambitoPublico}
+                              municipios={municipios}
+                              entidades={entidades}
+                              paises={paises}
+                           />
+                        </PagePdf>
+                        <PagePdf title={"EXPERIENCIA LABORAL"}>
+                           <ExperienciaLaboral data={experienciaLaboral} ambitopublico={ambitoPublico} testada={tester} />
+                        </PagePdf>
+                        <Ngif condition={selectedDeclaracion < 4}>
+                           <PagePdf title={"DATOS DE LA PAREJA"}>
+                              <DatosPareja data={datosPareja} relacion={relacion} testada={tester} />
                               <Notas
                                  testada={tester}
                                  message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
                               />
                            </PagePdf>
-                        </Ngif>
-
-                        <Ngif condition={tpVehiculos.length > 0}>
-                           {tpVehiculos.map((item, index) => (
-                              <PagePdf key={index} title={"VEHÍCULOS"}>
-                                 <Vehiculos
-                                    data={[item]}
-                                    testada={tester}
-                                    relacion={relacion}
-                                    titular={titularVehiculos}
-                                    vehiculos={vehiculos}
-                                    adquisicion={adquisicion}
-                                    pago={pago}
-                                    monedas={monedas}
-                                 />
+                           <Ngif condition={datosDependienteEconomicos.length > 0}>
+                              {datosDependienteEconomicos.map((item, index) => (
+                                 <PagePdf key={item.Id_DatosDependienteEconomico} title={"DATOS DEL DEPENDIENTE ECONOMICO"}>
+                                    <DependientesEconomicos data={[item]} relacion={relacion} testada={tester} />
+                                    <Notas
+                                       testada={tester}
+                                       message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                    />
+                                 </PagePdf>
+                              ))}
+                           </Ngif>
+                           <Ngif condition={datosDependienteEconomicos.length === 0}>
+                              <PagePdf title={"DATOS DEL DEPENDIENTE ECONOMICO       (NINGUNO)"}>
                                  <Notas
                                     testada={tester}
                                     message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
                                  />
                               </PagePdf>
-                           ))}
-                        </Ngif>
-                        <Ngif condition={tpVehiculos.length === 0}>
-                           <PagePdf title={"VEHÍCULOS (NINGUNO)"}>
-                              <Notas
-                                 testada={tester}
-                                 message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
-                              />
-                           </PagePdf>
+                           </Ngif>
                         </Ngif>
 
-                        <Ngif condition={bienesMuebles.length > 0}>
-                           {bienesMuebles.map((item, index) => (
-                              <PagePdf key={index} title={"BIENES MUEBLES"}>
-                                 <BienesMuebles
-                                    name={name}
-                                    data={[item]}
-                                    testada={tester}
-                                    adquisicion={adquisicion}
-                                    bienes={tiposbienesmuebles}
-                                    monedas={monedas}
-                                    motivosBajas={motivobaja}
-                                    pago={pago}
-                                    relacion={relacion}
-                                    titular={titular}
-                                 />
+                        <PagePdf title={"INGRESOS NETOS DEL DECLARANTE, PAREJA Y/O DEPENDIENTES ECONÓMICOS"}>
+                           <IngresosNetos
+                              data={ingresosNetos}
+                              tipo_declaracion={selectedDeclaracion}
+                              bienenAjenacion={bienenAjenacion}
+                              testada={tester}
+                              instrumentos={instrumentos}
+                           />
+                           <Notas
+                              testada={tester}
+                              message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                           />
+                        </PagePdf>
+                        <Ngif condition={selectedDeclaracion == 2}>
+                           <PagePdf title={"¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? NO"}>
+                              <ServidorPublico data={servidorPublico} instrumentos={instrumentos} bienenAjenacion={bienenAjenacion} testada={tester} />
+                           </PagePdf>
+                        </Ngif>
+                        <Ngif condition={selectedDeclaracion < 4}>
+                           <Ngif condition={bienesInmuebles.length > 0}>
+                              {bienesInmuebles.map((item, index) => (
+                                 <PagePdf key={index} title={"BIENES INMUEBLES"}>
+                                    <BienesInmuebles
+                                       data={[item]}
+                                       inmuebles={inmuebles}
+                                       titular={titular}
+                                       testada={tester}
+                                       adquisicion={adquisicion}
+                                       pago={pago}
+                                       monedas={monedas}
+                                       relacion={relacion}
+                                       motivobaja={motivobaja}
+                                    />
+                                    <Notas
+                                       testada={tester}
+                                       message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                    />
+                                 </PagePdf>
+                              ))}
+                           </Ngif>
+                           <Ngif condition={bienesInmuebles.length === 0}>
+                              <PagePdf title={"BIENES INMUEBLES      (NINGUNO)"}>
                                  <Notas
                                     testada={tester}
                                     message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
                                  />
                               </PagePdf>
-                           ))}
-                        </Ngif>
-                        <Ngif condition={bienesMuebles.length === 0}>
-                           <PagePdf title={"BIENES MUEBLES (NINGUNO)"}>
-                              <Notas
-                                 testada={tester}
-                                 message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
-                              />
-                           </PagePdf>
-                        </Ngif>
+                           </Ngif>
 
-                        <Ngif condition={cuentaValores.length > 0}>
-                           {cuentaValores.map((item, index) => (
-                              <PagePdf key={index} title={"INVERSIONES, CUENTAS BANCARIAS Y OTRO TIPO DE VALORES / ACTIVOS"}>
-                                 <CuentasValores
-                                    data={[item]}
-                                    testada={tester}
-                                    inversiones={tipoinversion}
-                                    titular={titular}
-                                    monedas={monedas}
-                                    subInversiones={subInversiones}
-                                 />
+                           <Ngif condition={tpVehiculos.length > 0}>
+                              {tpVehiculos.map((item, index) => (
+                                 <PagePdf key={index} title={"VEHÍCULOS"}>
+                                    <Vehiculos
+                                       data={[item]}
+                                       testada={tester}
+                                       relacion={relacion}
+                                       titular={titularVehiculos}
+                                       vehiculos={vehiculos}
+                                       adquisicion={adquisicion}
+                                       pago={pago}
+                                       monedas={monedas}
+                                    />
+                                    <Notas
+                                       testada={tester}
+                                       message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                    />
+                                 </PagePdf>
+                              ))}
+                           </Ngif>
+                           <Ngif condition={tpVehiculos.length === 0}>
+                              <PagePdf title={"VEHÍCULOS (NINGUNO)"}>
                                  <Notas
                                     testada={tester}
                                     message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
                                  />
                               </PagePdf>
-                           ))}
-                        </Ngif>
-                        <Ngif condition={cuentaValores.length === 0}>
-                           <PagePdf title={"INVERSIONES, CUENTAS BANCARIAS Y OTRO TIPO DE VALORES / ACTIVOS (NINGUNO)"}>
-                              <Notas
-                                 testada={tester}
-                                 message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
-                              />
-                           </PagePdf>
-                        </Ngif>
+                           </Ngif>
 
-                        <Ngif condition={cuentaValores.length > 0}>
-                           {cuentaValores.map((item, index) => (
-                              <PagePdf key={index} title={"ADEUDOS PASIVOS"}>
-                                 <AdeudosPasivos
-                                    data={[item]}
-                                    titular={titular}
-                                    monedas={monedas}
-                                    adeudos={adeudos}
-                                    testada={tester}
-                                    // inversiones={tipoinversion}
-                                    // titular={titular}
-                                    // monedas={monedas}
-                                    // subInversiones={subInversiones}
-                                 />
+                           <Ngif condition={bienesMuebles.length > 0}>
+                              {bienesMuebles.map((item, index) => (
+                                 <PagePdf key={index} title={"BIENES MUEBLES"}>
+                                    <BienesMuebles
+                                       name={name}
+                                       data={[item]}
+                                       testada={tester}
+                                       adquisicion={adquisicion}
+                                       bienes={tiposbienesmuebles}
+                                       monedas={monedas}
+                                       motivosBajas={motivobaja}
+                                       pago={pago}
+                                       relacion={relacion}
+                                       titular={titular}
+                                    />
+                                    <Notas
+                                       testada={tester}
+                                       message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                    />
+                                 </PagePdf>
+                              ))}
+                           </Ngif>
+                           <Ngif condition={bienesMuebles.length === 0}>
+                              <PagePdf title={"BIENES MUEBLES (NINGUNO)"}>
                                  <Notas
                                     testada={tester}
                                     message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
                                  />
                               </PagePdf>
-                           ))}
-                        </Ngif>
-                        <Ngif condition={cuentaValores.length === 0}>
-                           <PagePdf title={"ADEUDOS PASIVOS (NINGUNO)"}>
-                              <Notas
-                                 testada={tester}
-                                 message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
-                              />
-                           </PagePdf>
-                        </Ngif>
+                           </Ngif>
 
-                        <Ngif condition={prestamosComodatos.length > 0}>
-                           {prestamosComodatos.map((item, index) => (
-                              <PagePdf key={index} title={"PRESTAMO O COMODATO POR TERCEROS"}>
-                                 <PrestamoComodato
-                                    data={[item]}
-                                    municipios={municipios}
-                                    entidades={entidades}
-                                    paises={paises}
-                                    relacion={relacion}
-                                    inmuebles={inmuebles}
-                                    vehiculos={vehiculos}
-                                    testada={false}
-                                    // inversiones={tipoinversion}
-                                    // titular={titular}
-                                    // monedas={monedas}
-                                    // subInversiones={subInversiones}
-                                 />
+                           <Ngif condition={cuentaValores.length > 0}>
+                              {cuentaValores.map((item, index) => (
+                                 <PagePdf key={index} title={"INVERSIONES, CUENTAS BANCARIAS Y OTRO TIPO DE VALORES / ACTIVOS"}>
+                                    <CuentasValores
+                                       data={[item]}
+                                       testada={tester}
+                                       inversiones={tipoinversion}
+                                       titular={titular}
+                                       monedas={monedas}
+                                       subInversiones={subInversiones}
+                                    />
+                                    <Notas
+                                       testada={tester}
+                                       message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                    />
+                                 </PagePdf>
+                              ))}
+                           </Ngif>
+                           <Ngif condition={cuentaValores.length === 0}>
+                              <PagePdf title={"INVERSIONES, CUENTAS BANCARIAS Y OTRO TIPO DE VALORES / ACTIVOS (NINGUNO)"}>
                                  <Notas
                                     testada={tester}
                                     message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
                                  />
                               </PagePdf>
-                           ))}
-                        </Ngif>
-                        <Ngif condition={prestamosComodatos.length === 0}>
-                           <PagePdf title={"PRESTAMO O COMODATO POR TERCEROS (NINGUNO)"}>
-                              <Notas
-                                 testada={tester}
-                                 message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
-                              />
-                           </PagePdf>
-                        </Ngif>
-                     </Ngif>
+                           </Ngif>
 
-                     <AvisoPrivacidad />
-                     <DeclarationDocument row={myRow} />
-                     {/* <For array={datosDependienteEconomicos} pdf>
-                        {(item, index) => (
-                        )}
-                     </For> */}
-                  </PdfDeclaracion>
+                           <Ngif condition={cuentaValores.length > 0}>
+                              {cuentaValores.map((item, index) => (
+                                 <PagePdf key={index} title={"ADEUDOS PASIVOS"}>
+                                    <AdeudosPasivos
+                                       data={[item]}
+                                       titular={titular}
+                                       monedas={monedas}
+                                       adeudos={adeudos}
+                                       testada={tester}
+                                       // inversiones={tipoinversion}
+                                       // titular={titular}
+                                       // monedas={monedas}
+                                       // subInversiones={subInversiones}
+                                    />
+                                    <Notas
+                                       testada={tester}
+                                       message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                    />
+                                 </PagePdf>
+                              ))}
+                           </Ngif>
+                           <Ngif condition={cuentaValores.length === 0}>
+                              <PagePdf title={"ADEUDOS PASIVOS (NINGUNO)"}>
+                                 <Notas
+                                    testada={tester}
+                                    message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                 />
+                              </PagePdf>
+                           </Ngif>
+
+                           <Ngif condition={prestamosComodatos.length > 0}>
+                              {prestamosComodatos.map((item, index) => (
+                                 <PagePdf key={index} title={"PRESTAMO O COMODATO POR TERCEROS"}>
+                                    <PrestamoComodato
+                                       data={[item]}
+                                       municipios={municipios}
+                                       entidades={entidades}
+                                       paises={paises}
+                                       relacion={relacion}
+                                       inmuebles={inmuebles}
+                                       vehiculos={vehiculos}
+                                       testada={false}
+                                       // inversiones={tipoinversion}
+                                       // titular={titular}
+                                       // monedas={monedas}
+                                       // subInversiones={subInversiones}
+                                    />
+                                    <Notas
+                                       testada={tester}
+                                       message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                    />
+                                 </PagePdf>
+                              ))}
+                           </Ngif>
+                           <Ngif condition={prestamosComodatos.length === 0}>
+                              <PagePdf title={"PRESTAMO O COMODATO POR TERCEROS (NINGUNO)"}>
+                                 <Notas
+                                    testada={tester}
+                                    message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                 />
+                              </PagePdf>
+                           </Ngif>
+                        </Ngif>
+
+                        <AvisoPrivacidad />
+                        <DeclarationDocument row={myRow} />
+                        {/* <For array={datosDependienteEconomicos} pdf>
+                    {(item, index) => (
+                    )}
+                 </For> */}
+                     </PdfDeclaracion>
+                  ) : (
+                     <>
+                        <Typography>algun texto</Typography>
+                        <IconButton color="inherit">
+                           <PDFDownloadLink
+                              document={
+                                 <Document>
+                                    <PagePdf title={"DATOS GENERALES"} data={datosGenerales}>
+                                       <DatosGenerales
+                                          data={datosGenerales}
+                                          estadocivil={estadocivil}
+                                          regimenes={regimenes}
+                                          paises={paises}
+                                          nacionalidades={nacionalidades}
+                                          testada={tester}
+                                       />
+                                       <Notas
+                                          testada={tester}
+                                          message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                       />
+                                    </PagePdf>
+                                    <PagePdf title={"DOMICILIO DEL DECLARANTE"}>
+                                       <DomiDeclarante data={domiciliioDeclarante} municipios={municipios} entidades={entidades} paises={paises} testada={tester} />
+                                       <Notas
+                                          testada={tester}
+                                          message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                       />
+                                    </PagePdf>
+                                    <PagePdf title={"DATOS CURRICULARES DEL DECLARANTE"}>
+                                       <DatosCurriculares
+                                          data={datosCurriculares}
+                                          nivelEstudios={nivelEstudios}
+                                          estatus={estatus}
+                                          documentosObtenidos={documentosObtenidos}
+                                          testada={tester}
+                                       />
+                                    </PagePdf>
+                                    <PagePdf title={"DATOS DEL EMPLEO CARGO O COMISIÓN"}>
+                                       <DatosEmpleoCargo
+                                          testada={tester}
+                                          data={datosEmpleos}
+                                          nivelOrdenGobierno={nivelOrdenGobierno}
+                                          ambitoPublico={ambitoPublico}
+                                          municipios={municipios}
+                                          entidades={entidades}
+                                          paises={paises}
+                                       />
+                                    </PagePdf>
+                                    <PagePdf title={"EXPERIENCIA LABORAL"}>
+                                       <ExperienciaLaboral data={experienciaLaboral} ambitopublico={ambitoPublico} testada={tester} />
+                                    </PagePdf>
+                                    <Ngif condition={selectedDeclaracion < 4}>
+                                       <PagePdf title={"DATOS DE LA PAREJA"}>
+                                          <DatosPareja data={datosPareja} relacion={relacion} testada={tester} />
+                                          <Notas
+                                             testada={tester}
+                                             message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                          />
+                                       </PagePdf>
+                                       <Ngif condition={datosDependienteEconomicos.length > 0}>
+                                          {datosDependienteEconomicos.map((item, index) => (
+                                             <PagePdf key={item.Id_DatosDependienteEconomico} title={"DATOS DEL DEPENDIENTE ECONOMICO"}>
+                                                <DependientesEconomicos data={[item]} relacion={relacion} testada={tester} />
+                                                <Notas
+                                                   testada={tester}
+                                                   message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                                />
+                                             </PagePdf>
+                                          ))}
+                                       </Ngif>
+                                       <Ngif condition={datosDependienteEconomicos.length === 0}>
+                                          <PagePdf title={"DATOS DEL DEPENDIENTE ECONOMICO       (NINGUNO)"}>
+                                             <Notas
+                                                testada={tester}
+                                                message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                             />
+                                          </PagePdf>
+                                       </Ngif>
+                                    </Ngif>
+
+                                    <PagePdf title={"INGRESOS NETOS DEL DECLARANTE, PAREJA Y/O DEPENDIENTES ECONÓMICOS"}>
+                                       <IngresosNetos
+                                          data={ingresosNetos}
+                                          tipo_declaracion={selectedDeclaracion}
+                                          bienenAjenacion={bienenAjenacion}
+                                          testada={tester}
+                                          instrumentos={instrumentos}
+                                       />
+                                       <Notas
+                                          testada={tester}
+                                          message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                       />
+                                    </PagePdf>
+                                    <Ngif condition={selectedDeclaracion == 2}>
+                                       <PagePdf title={"¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? NO"}>
+                                          <ServidorPublico data={servidorPublico} instrumentos={instrumentos} bienenAjenacion={bienenAjenacion} testada={tester} />
+                                       </PagePdf>
+                                    </Ngif>
+                                    <Ngif condition={selectedDeclaracion < 4}>
+                                       <Ngif condition={bienesInmuebles.length > 0}>
+                                          {bienesInmuebles.map((item, index) => (
+                                             <PagePdf key={index} title={"BIENES INMUEBLES"}>
+                                                <BienesInmuebles
+                                                   data={[item]}
+                                                   inmuebles={inmuebles}
+                                                   titular={titular}
+                                                   testada={tester}
+                                                   adquisicion={adquisicion}
+                                                   pago={pago}
+                                                   monedas={monedas}
+                                                   relacion={relacion}
+                                                   motivobaja={motivobaja}
+                                                />
+                                                <Notas
+                                                   testada={tester}
+                                                   message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                                />
+                                             </PagePdf>
+                                          ))}
+                                       </Ngif>
+                                       <Ngif condition={bienesInmuebles.length === 0}>
+                                          <PagePdf title={"BIENES INMUEBLES      (NINGUNO)"}>
+                                             <Notas
+                                                testada={tester}
+                                                message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                             />
+                                          </PagePdf>
+                                       </Ngif>
+
+                                       <Ngif condition={tpVehiculos.length > 0}>
+                                          {tpVehiculos.map((item, index) => (
+                                             <PagePdf key={index} title={"VEHÍCULOS"}>
+                                                <Vehiculos
+                                                   data={[item]}
+                                                   testada={tester}
+                                                   relacion={relacion}
+                                                   titular={titularVehiculos}
+                                                   vehiculos={vehiculos}
+                                                   adquisicion={adquisicion}
+                                                   pago={pago}
+                                                   monedas={monedas}
+                                                />
+                                                <Notas
+                                                   testada={tester}
+                                                   message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                                />
+                                             </PagePdf>
+                                          ))}
+                                       </Ngif>
+                                       <Ngif condition={tpVehiculos.length === 0}>
+                                          <PagePdf title={"VEHÍCULOS (NINGUNO)"}>
+                                             <Notas
+                                                testada={tester}
+                                                message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                             />
+                                          </PagePdf>
+                                       </Ngif>
+
+                                       <Ngif condition={bienesMuebles.length > 0}>
+                                          {bienesMuebles.map((item, index) => (
+                                             <PagePdf key={index} title={"BIENES MUEBLES"}>
+                                                <BienesMuebles
+                                                   name={name}
+                                                   data={[item]}
+                                                   testada={tester}
+                                                   adquisicion={adquisicion}
+                                                   bienes={tiposbienesmuebles}
+                                                   monedas={monedas}
+                                                   motivosBajas={motivobaja}
+                                                   pago={pago}
+                                                   relacion={relacion}
+                                                   titular={titular}
+                                                />
+                                                <Notas
+                                                   testada={tester}
+                                                   message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                                />
+                                             </PagePdf>
+                                          ))}
+                                       </Ngif>
+                                       <Ngif condition={bienesMuebles.length === 0}>
+                                          <PagePdf title={"BIENES MUEBLES (NINGUNO)"}>
+                                             <Notas
+                                                testada={tester}
+                                                message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                             />
+                                          </PagePdf>
+                                       </Ngif>
+
+                                       <Ngif condition={cuentaValores.length > 0}>
+                                          {cuentaValores.map((item, index) => (
+                                             <PagePdf key={index} title={"INVERSIONES, CUENTAS BANCARIAS Y OTRO TIPO DE VALORES / ACTIVOS"}>
+                                                <CuentasValores
+                                                   data={[item]}
+                                                   testada={tester}
+                                                   inversiones={tipoinversion}
+                                                   titular={titular}
+                                                   monedas={monedas}
+                                                   subInversiones={subInversiones}
+                                                />
+                                                <Notas
+                                                   testada={tester}
+                                                   message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                                />
+                                             </PagePdf>
+                                          ))}
+                                       </Ngif>
+                                       <Ngif condition={cuentaValores.length === 0}>
+                                          <PagePdf title={"INVERSIONES, CUENTAS BANCARIAS Y OTRO TIPO DE VALORES / ACTIVOS (NINGUNO)"}>
+                                             <Notas
+                                                testada={tester}
+                                                message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                             />
+                                          </PagePdf>
+                                       </Ngif>
+
+                                       <Ngif condition={cuentaValores.length > 0}>
+                                          {cuentaValores.map((item, index) => (
+                                             <PagePdf key={index} title={"ADEUDOS PASIVOS"}>
+                                                <AdeudosPasivos
+                                                   data={[item]}
+                                                   titular={titular}
+                                                   monedas={monedas}
+                                                   adeudos={adeudos}
+                                                   testada={tester}
+                                                   // inversiones={tipoinversion}
+                                                   // titular={titular}
+                                                   // monedas={monedas}
+                                                   // subInversiones={subInversiones}
+                                                />
+                                                <Notas
+                                                   testada={tester}
+                                                   message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                                />
+                                             </PagePdf>
+                                          ))}
+                                       </Ngif>
+                                       <Ngif condition={cuentaValores.length === 0}>
+                                          <PagePdf title={"ADEUDOS PASIVOS (NINGUNO)"}>
+                                             <Notas
+                                                testada={tester}
+                                                message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                             />
+                                          </PagePdf>
+                                       </Ngif>
+
+                                       <Ngif condition={prestamosComodatos.length > 0}>
+                                          {prestamosComodatos.map((item, index) => (
+                                             <PagePdf key={index} title={"PRESTAMO O COMODATO POR TERCEROS"}>
+                                                <PrestamoComodato
+                                                   data={[item]}
+                                                   municipios={municipios}
+                                                   entidades={entidades}
+                                                   paises={paises}
+                                                   relacion={relacion}
+                                                   inmuebles={inmuebles}
+                                                   vehiculos={vehiculos}
+                                                   testada={false}
+                                                   // inversiones={tipoinversion}
+                                                   // titular={titular}
+                                                   // monedas={monedas}
+                                                   // subInversiones={subInversiones}
+                                                />
+                                                <Notas
+                                                   testada={tester}
+                                                   message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                                />
+                                             </PagePdf>
+                                          ))}
+                                       </Ngif>
+                                       <Ngif condition={prestamosComodatos.length === 0}>
+                                          <PagePdf title={"PRESTAMO O COMODATO POR TERCEROS (NINGUNO)"}>
+                                             <Notas
+                                                testada={tester}
+                                                message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                                             />
+                                          </PagePdf>
+                                       </Ngif>
+                                    </Ngif>
+
+                                    <AvisoPrivacidad />
+                                    <DeclarationDocument row={myRow} />
+                                    {/* <For array={datosDependienteEconomicos} pdf>
+                    {(item, index) => (
+                    )}
+                 </For> */}
+                                 </Document>
+                              }
+                              fileName={"archivo.pdf"}
+                              style={{ textDecoration: "none", marginTop: "10px" }}
+                           >
+                              <Button
+                                 style={{
+                                    backgroundColor: "#efefefe",
+                                    color: "3e3e3e",
+                                    borderRadius: "8px",
+                                    paddingInline: 10,
+                                    border: "none",
+                                    cursor: "pointer",
+                                    fontWeight: "bolder",
+                                    fontSize: "12px",
+                                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                                    transition: "background-color 0.3s ease",
+                                    marginTop: -10
+                                 }}
+                              >
+                                 Descargar PDF
+                              </Button>
+                           </PDFDownloadLink>
+                        </IconButton>
+                     </>
+                  )
                ) : (
                   <ModalComponent message={message} modal={modal} setModal={setModal} pass={pass} page={pages}></ModalComponent>
                )
