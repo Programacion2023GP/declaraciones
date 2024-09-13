@@ -31,6 +31,7 @@ import { lightBlue } from "@mui/material/colors";
 import Alert from "@mui/material/Alert";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import Swal from "sweetalert2";
+import { isArray } from "highcharts";
 
 const SearchInput = ({ column, data, getData, previousData }) => {
    const [searchText, setSearchText] = useState("");
@@ -532,7 +533,7 @@ const DataTable = ({
    };
    const checkConditionsMoreButton = (item, conditions) => {
       // Si no hay condiciones, devolver true
-      if (conditions.length === 0) {
+      if (!Array.isArray(conditions) || conditions.length === 0) {
          return true;
       }
 

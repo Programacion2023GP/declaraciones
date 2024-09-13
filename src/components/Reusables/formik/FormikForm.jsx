@@ -1,11 +1,13 @@
 import { Alert, Box, Button, Card, CardContent, Grid, IconButton, Tooltip, Typography } from "@mui/material";
 import { Formik } from "formik";
 import { Ngif } from "../conditionals/Ngif";
-import { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import { red } from "@mui/material/colors";
 import PanToolAltIcon from "@mui/icons-material/PanToolAlt";
 import "./FormikForm.scss";
+import { VisibilityOff } from "@mui/icons-material";
+import zIndex from "@mui/material/styles/zIndex";
 
 export const FormikForm = forwardRef(
    (
@@ -24,7 +26,9 @@ export const FormikForm = forwardRef(
          advertence,
          messageButton,
          maxWidth,
-         maxHeight
+         maxHeight,
+         see,
+         setSee
       },
       ref
    ) => {
@@ -41,7 +45,7 @@ export const FormikForm = forwardRef(
 
          return errorMessages;
       };
-      useEffect(() => {}, []);
+      useEffect(() => {}, [see]);
       return (
          <Card className={className} sx={{ maxWidth: maxWidth ? maxWidth : "90%", margin: "auto", padding: ".8rem" }}>
             <CardContent>
@@ -59,34 +63,91 @@ export const FormikForm = forwardRef(
                   </Alert>
                </Ngif>
                <br />
-               <Grid container spacing={1} style={{ margin: "auto", maxHeight: maxHeight ? maxHeight : "400px", overflow: "auto", padding: "0rem 2rem" }}>
+               <Grid
+                  container
+                  spacing={1}
+                  style={{ margin: "auto", maxHeight: maxHeight ? maxHeight : "400px", overflow: "auto", padding: "0rem 2rem", position: "relative" }}
+               >
                   <Formik innerRef={ref} initialValues={initialValues} validationSchema={validationSchema} onSubmit={submit}>
                      {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues, submitForm }) => {
                         {
                         }
                         return (
                            <>
-                              <Grid container component={"form"} onSubmit={handleSubmit}>
-                                 <Grid xs={12}>
+                              {see && (
+                                 <Box
+                                    style={{
+                                       position: "absolute",
+                                       top: "20px", // Ajusta el espacio para que el mensaje se vea como un marcador de libro
+                                       left: "50%",
+                                       transform: "translateX(-50%)",
+                                       backgroundColor: "yellow",
+                                       padding: "8px 16px",
+                                       borderRadius: "4px",
+                                       boxShadow: "0px 2px 5px rgba(0,0,0,0.3)",
+                                       zIndex: 100,
+                                       display: "flex",
+                                       alignItems: "center"
+                                    }}
+                                 >
+                                    <Typography variant="caption" color="textSecondary">
+                                       Modo solo lectura.
+                                    </Typography>
+                                    <Tooltip title="Desactivar lectura" arrow>
+                                       <IconButton
+                                          onClick={() => {
+                                             setSee(!see);
+                                          }}
+                                          color="primary" // Ajusta el color según tu diseño
+                                          style={{ marginLeft: "8px" }}
+                                       >
+                                          <VisibilityOff />
+                                       </IconButton>
+                                    </Tooltip>
+                                 </Box>
+                              )}
+
+                              <Grid
+                                 container
+                                 component="form"
+                                 style={{
+                                    pointerEvents: see ? "none" : "auto",
+                                    opacity: see ? 0.6 : 1,
+                                    backgroundColor: see ? "#f5f5f5" : "white", // Fondo de lectura
+                                    border: `1px solid ${see ? "#d3d3d3" : "#ccc"}`, // Borde de solo lectura
+                                    padding: "1rem",
+                                    borderRadius: "4px",
+                                    boxShadow: see ? "0 2px 4px rgba(0, 0, 0, 0.1)" : "none", // Sombra sutil para solo lectura
+                                    marginTop: "1rem"
+                                 }}
+                                 onSubmit={handleSubmit}
+                              >
+                                 <Grid item xs={12}>
                                     <Voice message={getErrorMessages(errors, touched)} title={title} info="Ayuda sobre el formulario" totip="Leer errores" />
                                  </Grid>
 
-                                 {children}
+                                 {React.Children.map(children, (child) =>
+                                    React.cloneElement(child, {
+                                       InputProps: {
+                                          readOnly: see,
+                                          style: { backgroundColor: see ? "#e0e0e0" : "white" } // Fondo del campo
+                                       }
+                                    })
+                                 )}
 
-                                 <Ngif condition={previousButton && handlePrevious}>
-                                    <Button sx={{ marginTop: "1rem", marginRight: "1ren" }} type="button" onClick={handlePrevious} variant="text" color="inherit">
-                                       Regresar a la pagina anterior
+                                 {previousButton && handlePrevious && (
+                                    <Button sx={{ marginTop: "1rem", marginRight: "1rem" }} type="button" onClick={handlePrevious} variant="text" color="inherit">
+                                       Regresar a la página anterior
                                     </Button>
-                                 </Ngif>
-                                 <Ngif condition={button}>
-                                    <Box position={"relative"} width={"100%"} mb={"1rem"} padding={" 1.2rem"}>
+                                 )}
+
+                                 {button && (
+                                    <Box position="relative" width="100%" mb="1rem" padding="1.2rem">
                                        <Button
                                           sx={{
                                              marginLeft: "1rem",
                                              position: "absolute",
-                                             
                                              top: -34,
-                                             bottom: 38,
                                              right: 0
                                           }}
                                           type="submit"
@@ -96,7 +157,7 @@ export const FormikForm = forwardRef(
                                           {messageButton ? messageButton : "Registrar y Continuar"}
                                        </Button>
                                     </Box>
-                                 </Ngif>
+                                 )}
                               </Grid>
                            </>
                         );

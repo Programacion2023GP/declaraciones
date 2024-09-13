@@ -93,8 +93,7 @@ const styles = StyleSheet.create({
 
 export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) => {
    const [ads, setAds] = useState(null);
-   useEffect(() => {
-   }, [row, adscripcion]);
+   useEffect(() => {}, [row, adscripcion]);
 
    const {
       Nombre = "",
@@ -173,8 +172,8 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
                      <Text style={styles.tableCell}>{Curp}</Text>
                   </View>
                   <View style={styles.tableCol}>
-                     <Text style={styles.tableCell}>Apellido Paterno:</Text>
-                     <Text style={styles.tableCell}>{PrimerApellido}</Text>
+                     <Text style={styles.tableCell}>Genero</Text>
+                     <Text style={styles.tableCell}>{row?.Gender}</Text>
                   </View>
                </View>
                <View style={styles.tableRow}>
@@ -187,8 +186,8 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
                      <Text style={styles.tableCell}>{Nombre}</Text>
                   </View>
                   <View style={styles.tableCol}>
-                     <Text style={styles.tableCell}>Sexo</Text>
-                     <Text style={styles.tableCell}>{row?.Gender}</Text>
+                     <Text style={styles.tableCell}>Apellido Paterno:</Text>
+                     <Text style={styles.tableCell}>{PrimerApellido}</Text>
                   </View>
                </View>
             </View>
