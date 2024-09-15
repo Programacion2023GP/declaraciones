@@ -38,11 +38,11 @@ export const DatosDomicilio = ({ data = [], testada = false, municipios = [], en
          <TextPdf title={"Número Interior"} text={testField(NumeroInterior, testada)} />
          <TextPdf title={"Colonia/Localidad"} text={testField(ColoniaLocalidad, testada)} />
          <Ngif condition={parseInt(EsEnMexico) == 1}>
-            <TextPdf title={"Municipio/Alcaldia"} text={testField(municipio, testada)} />
-            <TextPdf title={"Entidad Federativa"} text={testField(entidad, testada)} />
+            <TextPdf title={"Municipio/Alcaldia"} text={testField(testArrayField(municipios, Id_MunicipioAlcaldia, testada), testada)} />
+            <TextPdf title={"Entidad Federativa"} text={testField(testArrayField(entidades, Id_EntidadFederativa, testada), testada)} />
          </Ngif>
          <Ngif condition={parseInt(EsEnMexico) == 0}>
-            <TextPdf title={"Pais"} text={pais} />
+            <TextPdf title={"Pais"} text={testArrayField(paises, Id_Pais, testada)} />
             <TextPdf title={"Estado Provincia"} text={testField(EstadoProvincia, testada)} />
          </Ngif>
 

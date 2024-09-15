@@ -31,11 +31,11 @@ export const DatosCurriculares = ({ data = [], testada = false, nivelEstudios = 
 
    return (
       <>
-         <TextPdf title={"Nivel escolar"} text={field(estudio)} width={50} />
+         <TextPdf title={"Nivel escolar"} text={field(nivelEstudios.filter((item) => item.id === parseInt(Id_Nivel))[0]?.text)} width={50} />
          <TextPdf title={"Institución educativa"} text={field(NombreInstitucionEducativa)} width={50} />
          <TextPdf title={"Carrera o área de conocimiento"} text={field(CarreraAreaConocimiento)} width={50} />
-         <TextPdf title={"Estatus"} text={field(estatu)} width={50} />
-         <TextPdf title={"Documento obtenido"} text={field(documento)} width={50} />
+         <TextPdf title={"Estatus"} text={field(estatus.filter((item) => item.id === parseInt(Id_Estatus))[0]?.text)} width={50} />
+         <TextPdf title={"Documento obtenido"} text={field(documentosObtenidos.filter((item) => item.id === parseInt(Id_DocumentoObtenido))[0]?.text)} width={50} />
          <TextPdf title={"Fecha de obtención del documento"} text={field(FechaObtencion)} width={50} />
          <TextPdf title={"Lugar donde se ubica la institución educativa"} text={parseInt(Id_UbicacionInstitucionEducativa) == 1 ? "En México" : "En el extranjero"} width={50} />
          <TextPdf title={"Aclaraciones/Observaciones"} text={field(Aclaraciones)} width={50} />
