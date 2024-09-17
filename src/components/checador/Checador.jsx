@@ -379,7 +379,7 @@ const Checador = ({}) => {
          // Asegúrate de esperar que el PDF se maneje
          setLoadingMessage(true);
          setModal(true);
-         setMessageExtra(`COMENZANDO EL PDF ${cont} /${dataFiltrados.length}`);
+         setMessageExtra(`DESCARGANDO EL PDF ${cont} /${dataFiltrados.length}`);
          await handelPdf(row, true);
 
          // Asegúrate de que el botón existe antes de continuar
