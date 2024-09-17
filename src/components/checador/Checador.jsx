@@ -769,13 +769,15 @@ const Checador = ({}) => {
       }
    };
    const cleanFileName = (text) => {
+      let mayusc = "";
       if (text === undefined || text === null) return text;
 
-      return text
+      mayusc = text
          .normalize("NFD") // Normaliza los acentos
          .replace(/[\u0300-\u036f]/g, "") // Remueve los acentos
          .replace(/[^a-zA-Z0-9]/g, "") // Remueve caracteres especiales y espacios
          .replace(/\s+/g, ""); // Remueve cualquier espacio extra por si queda alguno
+      return mayusc.toUpperCase();
    };
    const [selectedDate, setSelectedDate] = useState(null);
    const [selectedDate2, setSelectedDate2] = useState(null);

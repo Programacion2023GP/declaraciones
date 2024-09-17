@@ -9,9 +9,18 @@ const Trasparencia = ({}) => {
    const [ejercio, setEjercio] = useState(new Date().getFullYear());
    const [trimestre, setTrimestre] = useState("Enero - Marzo");
    const init = async (anio, trimestre) => {
-      setData([])
+      setData([]);
       setLoading(true);
-      setData(await GetAxios(`reportes/trasparencia${anio ? "/" + anio : ""}${trimestre ? "/" + trimestre : ""}`));
+      const data = await GetAxios(`reportes/trasparencia${anio ? "/" + anio : ""}${trimestre ? "/" + trimestre : ""}`);
+      let mayusc = [];
+      data.map((item) => {
+         let json = {};
+         json = { ...item };
+         json.Hipervinculo = "https://transparencia.gomezpalacio.gob.mx/wp-content/uploads/declaraciones/" + json.Hipervinculo.toUpperCase() + ".pdf";
+         mayusc.push(json);
+      });
+
+      setData(mayusc);
       setLoading(false);
    };
    useEffect(() => {
@@ -48,8 +57,7 @@ const Trasparencia = ({}) => {
       }
    };
    const Filters = ({ data = [], title = "", setFilter, filter }) => {
-      useEffect(() => {
-      }, [data, title]);
+      useEffect(() => {}, [data, title]);
 
       const handleChange = (event) => {
          setFilter(event.target.value);
@@ -120,12 +128,12 @@ const Trasparencia = ({}) => {
                   "Área(s) responsable(s) que genera(n), posee(n), publica(n) y actualizan la información",
                   "Nota"
                ]}
-               link ={[13]}
+               link={[13]}
                data={data}
                // por hacer  getUrl ={}
                // refreshRequest ={}
                //
-               pagination={[2,5, 10, 50, 75, 100]}
+               pagination={[2, 5, 10, 50, 75, 100]}
                //  conditionExistEditButton={["Status !='Terminada'"]}
                speakRow
                // conditionExistDeleteButton={["Status !='Terminada'"]}

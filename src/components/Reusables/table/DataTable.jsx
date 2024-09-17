@@ -853,7 +853,7 @@ const DataTable = ({
                                              }}
                                              cols={value}
                                           >
-                                             {link.includes(id) ? <a href={value}>{value}</a> : <>{value}</>}
+                                             {link.includes(id) ? <a target="_blank" href={value}>{value}</a> : <>{value}</>}
                                           </td>
                                        );
                                     }
