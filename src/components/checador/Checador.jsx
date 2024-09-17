@@ -281,8 +281,8 @@ const Checador = ({}) => {
       const dataFiltrados = data.filter((item) => {
          // console.log("item",item)
          // return
-         const fecha =item.FechaRegistroFormateada.split("/");
-         const fechaRegistro = dayjs(fecha[2] +"-" + fecha[1] + "-"+fecha[0]); // Asegurarse del formato correcto
+         const fecha = item.FechaRegistroFormateada.split("/");
+         const fechaRegistro = dayjs(fecha[2] + "-" + fecha[1] + "-" + fecha[0]); // Asegurarse del formato correcto
 
          // Crear el objeto Date con formato correcto (año, mes, día)
 
@@ -292,9 +292,21 @@ const Checador = ({}) => {
          // Crear el objeto Date con formato correcto (año, mes, día)
 
          // Sumar un día
+         if (!fechaInicio.isValid()) {
+            console.error("Fecha de inicio no es válida:", fechaInicio);
+            return false; // Salta este registro
+         }
+         if (!fechaFin.isValid()) {
+            console.error("Fecha de fin no es válida:", fechaFin);
+            return false; // Salta este registro
+         }
+         if (!fechaRegistro.isValid()) {
+            console.error("Fecha de registro no es válida:", fechaRegistro);
+            return false; // Salta este registro
+         }
          if (fechaRegistro.isBetween(fechaInicio, fechaFin, "day", "[]")) {
             // Comprobación de si está dentro del rango
-            console.log(fechaInicio,fechaFin, fechaRegistro);
+            console.log(fechaInicio, fechaFin, fechaRegistro);
 
             folios.push(item.Folio);
             return item; //true;
@@ -302,7 +314,6 @@ const Checador = ({}) => {
 
          // return false;
       });
-      console.log("��� ~ handleClickButtonMasive ~ dataFiltrados:", dataFiltrados);
       // console.log("",dataFiltrados);
       if (dataFiltrados.length == 0) {
          Warning("no hay datos; parece que no hay informacion en las fechas filtradas");
