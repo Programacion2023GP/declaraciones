@@ -138,7 +138,7 @@ const Checador = ({}) => {
    const [adscripcion, setAdscripcion] = useState([]);
    const [dates, setDates] = useState([null, null]);
    const [testerDates, setTesterDates] = useState(false);
-
+   const [messageExtra, setMessageExtra] = useState("");
    const existPeticiones = (peticiones) => {
       let count = 0;
       if (peticiones) {
@@ -272,10 +272,8 @@ const Checador = ({}) => {
       const folios = [];
 
       const fechaInicio = dayjs(selectedDate);
-      console.log("🚀 ~ handleClickButtonMasive ~ selectedDate:", selectedDate);
-      console.log("🚀 ~ handleClickButtonMasive ~ fechaInicio:", fechaInicio);
+
       const fechaFin = dayjs(selectedDate2);
-      console.log("🚀 ~ handleClickButtonMasive ~ fechaFin:", fechaFin);
       // VERIFICAR QUE ESTE EN FECHA DE SOLICITUDES
 
       const dataFiltrados = data.filter((item) => {
@@ -372,12 +370,16 @@ const Checador = ({}) => {
       DBLocal.dataPrestamosComodatos = resPrestamos.data.result;
 
       // console.log("🚀 ~ handleClickButtonMasive ~ DBLocal:", DBLocal);
-
+      let cont = 0;
       for (const row of dataFiltrados) {
          setRow(row);
+         cont++;
          // console.log("🚀 ~ Iterating dataFiltrados ~ row:", row);
 
          // Asegúrate de esperar que el PDF se maneje
+         setLoadingMessage(true);
+         setModal(true);
+         setMessageExtra(`COMENZANDO EL PDF ${cont} /${dataFiltrados.length}`);
          await handelPdf(row, true);
 
          // Asegúrate de que el botón existe antes de continuar
@@ -407,6 +409,7 @@ const Checador = ({}) => {
             btnDownloadRef.click();
          });
       }
+      setMessageExtra("")
    };
    const handelPdf = async (row, masive = false) => {
       setName(row.name);
@@ -789,12 +792,18 @@ const Checador = ({}) => {
       let mayusc = "";
       if (text === undefined || text === null) return text;
 
+      // Primero reemplazamos los acentos y normalizamos la cadena,
+      // pero evitamos afectar la 'ñ' y la 'Ñ'
       mayusc = text
-         .normalize("NFD") // Normaliza los acentos
-         .replace(/[\u0300-\u036f]/g, "") // Remueve los acentos
-         .replace(/[^a-zA-Z0-9Ññ]/g, "") // Remueve caracteres especiales y espacios, pero conserva Ñ y ñ
+         .replace(/[áäàâã]/gi, "a") // Reemplaza todas las variaciones de "a"
+         .replace(/[éëèê]/gi, "e") // Reemplaza todas las variaciones de "e"
+         .replace(/[íïìî]/gi, "i") // Reemplaza todas las variaciones de "i"
+         .replace(/[óöòôõ]/gi, "o") // Reemplaza todas las variaciones de "o"
+         .replace(/[úüùû]/gi, "u") // Reemplaza todas las variaciones de "u"
+         .replace(/[^a-zA-Z0-9Ññ]/g, "") // Remueve caracteres especiales y espacios
          .replace(/\s+/g, ""); // Remueve cualquier espacio extra
-      return mayusc.toUpperCase();
+
+      return mayusc.toUpperCase(); // Convierte todo a mayúsculas
    };
 
    const [selectedDate, setSelectedDate] = useState(null);
@@ -1221,7 +1230,14 @@ const Checador = ({}) => {
                      <></>
                   )
                ) : (
-                  <ModalComponent message={message} modal={modal} setModal={setModal} pass={pass} page={pages}></ModalComponent>
+                  <ModalComponent
+                     message={message}
+                     messageExtra={selectedDate && selectedDate2 && messageExtra}
+                     modal={modal}
+                     setModal={setModal}
+                     pass={pass}
+                     page={pages}
+                  ></ModalComponent>
                )
             ) : (
                ""
@@ -1528,11 +1544,14 @@ const Checador = ({}) => {
    );
 };
 
-const ModalComponent = ({ modal, setModal, message, pass, page }) => {
-   useEffect(() => {}, [message]);
+const ModalComponent = ({ modal, setModal, message, pass, page,messageExtra }) => {
+   useEffect(() => {}, [message, messageExtra]);
    return (
       <Modal close={false} openModal={modal} setOpenModal={setModal}>
          <Box p={2} textAlign="center">
+            <Typography variant="subtitle1" color="initial">
+               {messageExtra}
+            </Typography>
             <Typography mt={2} variant="h4" color="initial">
                Cargando información...
             </Typography>

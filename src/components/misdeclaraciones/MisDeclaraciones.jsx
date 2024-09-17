@@ -356,13 +356,20 @@ const MisDeclaraciones = ({}) => {
       let mayusc = "";
       if (text === undefined || text === null) return text;
 
+      // Primero reemplazamos los acentos y normalizamos la cadena,
+      // pero evitamos afectar la 'ñ' y la 'Ñ'
       mayusc = text
-         .normalize("NFD") // Normaliza los acentos
-         .replace(/[\u0300-\u036f]/g, "") // Remueve los acentos
-         .replace(/[^a-zA-Z0-9Ññ]/g, "") // Remueve caracteres especiales y espacios, pero conserva Ñ y ñ
+         .replace(/[áäàâã]/gi, "a") // Reemplaza todas las variaciones de "a"
+         .replace(/[éëèê]/gi, "e") // Reemplaza todas las variaciones de "e"
+         .replace(/[íïìî]/gi, "i") // Reemplaza todas las variaciones de "i"
+         .replace(/[óöòôõ]/gi, "o") // Reemplaza todas las variaciones de "o"
+         .replace(/[úüùû]/gi, "u") // Reemplaza todas las variaciones de "u"
+         .replace(/[^a-zA-Z0-9Ññ]/g, "") // Remueve caracteres especiales y espacios
          .replace(/\s+/g, ""); // Remueve cualquier espacio extra
-      return mayusc.toUpperCase();
+
+      return mayusc.toUpperCase(); // Convierte todo a mayúsculas
    };
+
    const moreButtons = [
       {
          tooltip: "Imprimir",
