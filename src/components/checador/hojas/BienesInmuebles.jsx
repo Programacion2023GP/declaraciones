@@ -159,7 +159,7 @@ conforme a escrituración o contrato`}
             width={100}
          />
          <TextPdf
-            text={ids.includes(parseInt(Id_Titular)) ? stArrayField(monedas, Id_ValorConformeA, testada) : arrayField(monedas, Id_ValorConformeA)}
+            text={ids.includes(parseInt(Id_Titular)) ? testArrayField(monedas, Id_ValorConformeA, testada) : arrayField(monedas, Id_ValorConformeA)}
             title={`El valor de adquisición del inmueble es conforme a`}
             width={50}
          />

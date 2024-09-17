@@ -139,6 +139,8 @@ const Checador = ({}) => {
    const [dates, setDates] = useState([null, null]);
    const [testerDates, setTesterDates] = useState(false);
    const [messageExtra, setMessageExtra] = useState("");
+   const [btnDownloadRef, setBtnDownloadRef] = useState(false);
+
    const existPeticiones = (peticiones) => {
       let count = 0;
       if (peticiones) {
@@ -157,7 +159,6 @@ const Checador = ({}) => {
    const [declaraciones, setDeclaraciones] = useState([]);
    const [masive, setMasive] = useState(false);
    // const btnDownloadRef = useRef(null);
-   const [btnDownloadRef, setBtnDownloadRef] = useState(false);
 
    const DBLocal = {
       dataDatosGenerales: [],
@@ -380,15 +381,17 @@ const Checador = ({}) => {
          setLoadingMessage(true);
          setModal(true);
          setMessageExtra(`DESCARGANDO EL PDF ${cont} /${dataFiltrados.length}`);
-         await handelPdf(row, true);
 
          // Asegúrate de que el botón existe antes de continuar
-         const btnDownloadRef = document.getElementById("btnDownloadRef");
+         let btnDownloadRef = document.getElementById("btnDownloadRef");
+         console.log("btnDownloadRef", btnDownloadRef);
+
          if (!btnDownloadRef) {
             console.error("Botón no encontrado");
             continue;
          }
 
+         await handelPdf(row, true);
          // console.log("🚀 ~ handleClickButtonMasive ~ btnDownloadRef:", btnDownloadRef);
 
          // Crear una promesa que resuelva cuando el click haya sido manejado
@@ -406,10 +409,17 @@ const Checador = ({}) => {
             });
 
             // Simula el click en el botón
-            btnDownloadRef.click();
+            const checkElement = setInterval(() => {
+               const btnDownloadRef = document.getElementById("btnDownloadRef");
+
+               if (btnDownloadRef) {
+                  btnDownloadRef.click();
+                  clearInterval(checkElement); // Detiene el intervalo una vez que el botón ha sido clicado
+               }
+            }, 100); // Revisa cada 100 milisegundos
          });
       }
-      setMessageExtra("")
+      setMessageExtra("");
    };
    const handelPdf = async (row, masive = false) => {
       setName(row.name);
@@ -1544,7 +1554,7 @@ const Checador = ({}) => {
    );
 };
 
-const ModalComponent = ({ modal, setModal, message, pass, page,messageExtra }) => {
+const ModalComponent = ({ modal, setModal, message, pass, page, messageExtra }) => {
    useEffect(() => {}, [message, messageExtra]);
    return (
       <Modal close={false} openModal={modal} setOpenModal={setModal}>

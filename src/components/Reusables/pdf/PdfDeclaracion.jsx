@@ -10,9 +10,9 @@ const styles = StyleSheet.create({
       // page-break-before: always
    },
    section: {
-     marginBottom: "12rem",
+   //   marginBottom: "124px",
      width:"100%",
-     paddingBottom: "12rem",
+   //   paddingBottom: "124px",
 
      // flexDirection: "row",
       // flexWrap: "wrap",
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
       fontWeight: "bold",
       padding: 20,
       lineHeight: 1,
-      marginBottom:"12rem",
+      // marginBottom:"124px",
       borderTopLeftRadius: 5,
       borderTopRightRadius: 5,
    
