@@ -14,7 +14,9 @@ import "primeicons/primeicons.css";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { Provider } from "react-redux";
 import store from "./redux/store";
-
+import isBetween from "dayjs/plugin/isBetween";
+import dayjs from "dayjs";
+dayjs.extend(isBetween);
 function App() {
    const { theme, toggleTheme } = useContext(ThemeContext);
 
@@ -29,9 +31,9 @@ function App() {
 
    return (
       <>
-        {/* <p style={{minHeight:"100vh"}}>dasd</p> */}
+         {/* <p style={{minHeight:"100vh"}}>dasd</p> */}
          <LocalizationProvider dateAdapter={AdapterDayjs}>
-               <RouterProvider   router={router}></RouterProvider>
+            <RouterProvider router={router}></RouterProvider>
          </LocalizationProvider>
          {/* <Router>
         <Routes>

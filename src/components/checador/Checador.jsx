@@ -34,6 +34,7 @@ import { AdeudosPasivos } from "./hojas/AdeudosPasivos";
 import { PrestamoComodato } from "./hojas/PrestamoComodato";
 import DeclarationDocument from "./hojas/BajoProtesta";
 import { Document, PDFDownloadLink } from "@react-pdf/renderer";
+import dayjs from "dayjs";
 // import "react-datepicker/dist/react-datepicker.css";
 // import DatePicker from "react-datepicker";
 // import "./DateRangeSelector.css"; // Importa el archivo CSS para estilos adicionales
@@ -269,28 +270,25 @@ const Checador = ({}) => {
       setMasive(true);
       setTexter(true);
       const folios = [];
-      const fechaInicio = new Date(selectedDate);
-      const fechaFin = new Date(selectedDate2);
-      console.log("🚀 ~ handleClickButtonMasive ~ fechaInicio:", fechaInicio);
-      console.log("🚀 ~ handleClickButtonMasive ~ fechaFin:", fechaFin);
 
-      // Sumar 1 día a cada fecha
-      fechaInicio.setDate(fechaInicio.getDate() + 1);
-      fechaFin.setDate(fechaFin.getDate() + 1);
-      console.warn("Fecha", fechaInicio, fechaFin);
+      const fechaInicio = dayjs(selectedDate);
+      const fechaFin = dayjs(selectedDate2);
+      // VERIFICAR QUE ESTE EN FECHA DE SOLICITUDES
 
       const dataFiltrados = data.filter((item) => {
-         // Suponiendo que item.FechaRegistroFormateada es del tipo "dd/mm/yyyy"
-         const [day, month, year] = item.FechaRegistroFormateada.split("/");
+         const fechaRegistro = dayjs(item.FechaRegistroFormateada, "DD/MM/YYYY"); // Asegurarse del formato correcto
 
          // Crear el objeto Date con formato correcto (año, mes, día)
-         const fechaRegistro = new Date(year, month - 1, day); // Restamos 1 al mes porque los meses en JavaScript son 0-indexed
 
          // Sumar un día
-         fechaRegistro.setDate(fechaRegistro.getDate() + 1);
+         // Suponiendo que item.FechaRegistroFormateada es del tipo "dd/mm/yyyy"
 
-         // Comprobación de si está dentro del rango
-         if (fechaInicio <= fechaRegistro && fechaFin >= fechaRegistro) {
+         // Crear el objeto Date con formato correcto (año, mes, día)
+
+         // Sumar un día
+         if (!fechaRegistro.isBetween(fechaInicio, fechaFin, "day", "[]")) {
+            // Comprobación de si está dentro del rango
+
             folios.push(item.Folio);
             return item; //true;
          }
