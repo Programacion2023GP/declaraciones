@@ -85,6 +85,7 @@ const Trasparencia = ({}) => {
       <Card sx={{ maxWidth: "95%", margin: "auto" }}>
          <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
             <DataTable
+               fileName={trimestre}
                options={["CHARTS", "EXCEL"]}
                captionFilters={
                   <>

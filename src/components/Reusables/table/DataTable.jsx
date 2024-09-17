@@ -355,7 +355,8 @@ const DataTable = ({
    Trbacground = [],
    link = [],
    buttonsMenu = false,
-   speakRow = false
+   speakRow = false,
+   fileName=null,
 }) => {
    const [reinitializedData, setReinitializedData] = useState(data);
    const [dataFilter, setDataFilter] = useState(data);
@@ -979,7 +980,7 @@ const DataTable = ({
             )} */}
          <Ngif condition={options}>
             <Modal openModal={openModal} setText={setTextModal} setOpenModal={setOpenModal}>
-               <Component option={textModal} titles={headers} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} colors={Trbacground} />
+               <Component option={textModal} titles={headers} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} colors={Trbacground}  fileName={fileName}/>
             </Modal>
          </Ngif>
       </>
@@ -1274,13 +1275,13 @@ const Charts = ({ titles, dataFilter, headers, dataHidden }) => {
       </Grid>
    );
 };
-const Component = ({ option, titles, dataFilter, headers, dataHidden, colors }) => {
+const Component = ({ option, titles, dataFilter, headers, dataHidden, colors,fileName }) => {
    switch (option) {
       case "grafica":
          return <Charts titles={titles} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} />;
          break;
       case "excel":
-         return <Excel titles={titles} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} />;
+         return <Excel titles={titles} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} fileName={fileName} />;
       case "colors":
          return <Colors colors={colors} />;
          break;
@@ -1324,11 +1325,11 @@ const Colors = ({ colors }) => {
    );
 };
 
-const Excel = ({ titles, dataFilter, dataHidden, headers }) => {
+const Excel = ({ titles, dataFilter, dataHidden, headers,fileName }) => {
    const [keys, setKeys] = useState([]);
    const [counts, setCounts] = useState([]);
    const [checkeds, setCheckeds] = useState(headers);
-
+   
    useEffect(() => {}, [keys, counts]);
    const [chart, setChart] = useState(null);
    const [name, setName] = useState(null);
@@ -1407,7 +1408,7 @@ const Excel = ({ titles, dataFilter, dataHidden, headers }) => {
          XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
          // Descargar el archivo
-         XLSX.writeFile(wb, "exportacion.xlsx");
+         XLSX.writeFile(wb, `${fileName? fileName:'exportacion'}.xlsx`);
       }
    };
 
