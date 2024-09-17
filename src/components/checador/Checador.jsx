@@ -266,50 +266,51 @@ const Checador = ({}) => {
    };
 
    const handleClickButtonMasive = async () => {
-   
-
       setMasive(true);
       setTexter(true);
       const folios = [];
       const fechaInicio = new Date(selectedDate);
       const fechaFin = new Date(selectedDate2);
+      console.log("🚀 ~ handleClickButtonMasive ~ fechaInicio:", fechaInicio);
+      console.log("🚀 ~ handleClickButtonMasive ~ fechaFin:", fechaFin);
 
       // Sumar 1 día a cada fecha
       fechaInicio.setDate(fechaInicio.getDate() + 1);
       fechaFin.setDate(fechaFin.getDate() + 1);
-console.warn("Fecha",fechaInicio,fechaFin);
+      console.warn("Fecha", fechaInicio, fechaFin);
 
-const dataFiltrados = data.filter((item) => {
-   // Suponiendo que item.FechaRegistroFormateada es del tipo "dd/mm/yyyy"
-   const [day, month, year] = item.FechaRegistroFormateada.split('/');
+      const dataFiltrados = data.filter((item) => {
+         // Suponiendo que item.FechaRegistroFormateada es del tipo "dd/mm/yyyy"
+         const [day, month, year] = item.FechaRegistroFormateada.split("/");
 
-   // Crear el objeto Date con formato correcto (año, mes, día)
-   const fechaRegistro = new Date(year, month - 1, day); // Restamos 1 al mes porque los meses en JavaScript son 0-indexed
+         // Crear el objeto Date con formato correcto (año, mes, día)
+         const fechaRegistro = new Date(year, month - 1, day); // Restamos 1 al mes porque los meses en JavaScript son 0-indexed
 
-   // Sumar un día
-   fechaRegistro.setDate(fechaRegistro.getDate() + 1);
+         // Sumar un día
+         fechaRegistro.setDate(fechaRegistro.getDate() + 1);
 
-   // Comprobación de si está dentro del rango
-   if (fechaInicio <= fechaRegistro && fechaFin >= fechaRegistro) {
-      folios.push(item.Folio); 
-      return true;
-   }
-
-   return false; 
-});
-      console.log("",dataFiltrados);
-      if (dataFiltrados.length == 0) {
-         Warning("no hay datos")
-         return    
+         // Comprobación de si está dentro del rango
+         if (fechaInicio <= fechaRegistro && fechaFin >= fechaRegistro) {
+            folios.push(item.Folio);
+            return item; //true;
          }
-         setLoadingMessage(true);
-         setMessage("preparando el entorno para las declaraciones");
-         setModal(true);
-      const foliosStirng = folios.join();
-      console.log("🚀 ~ handleClickButtonMasive ~ foliosStirng:", foliosStirng);
+
+         // return false;
+      });
+      // console.log("",dataFiltrados);
+      if (dataFiltrados.length == 0) {
+         Warning("no hay datos; parece que no hay informacion en las fechas filtradas");
+         return;
+      }
+      setLoadingMessage(true);
+      setMessage("preparando el entorno para las declaraciones");
+      setModal(true);
+      // const foliosStirng = folios.join();
+      // console.log("🚀 ~ handleClickButtonMasive ~ foliosStirng:", foliosStirng);
 
       // SOLICITAR DATA DE CADA TABLA
       const dataPost = { masiveIds: folios };
+      // console.log("🚀 ~ handleClickButtonMasive ~ dataPost:", dataPost);
       const resDatosGenerales = await PostAxios(`datosgenerales/index/masive`, dataPost);
       DBLocal.dataDatosGenerales = resDatosGenerales.data.result;
       const resDomicilioDeclarante = await PostAxios(`domiciliodeclarante/index/masive`, dataPost);
@@ -353,11 +354,11 @@ const dataFiltrados = data.filter((item) => {
       const resPrestamos = await PostAxios(`prestamoscomodatos/index/masive`, dataPost);
       DBLocal.dataPrestamosComodatos = resPrestamos.data.result;
 
-      console.log("🚀 ~ handleClickButtonMasive ~ DBLocal:", DBLocal);
+      // console.log("🚀 ~ handleClickButtonMasive ~ DBLocal:", DBLocal);
 
       for (const row of dataFiltrados) {
          setRow(row);
-         console.log("🚀 ~ Iterating dataFiltrados ~ row:", row);
+         // console.log("🚀 ~ Iterating dataFiltrados ~ row:", row);
 
          // Asegúrate de esperar que el PDF se maneje
          await handelPdf(row, true);
@@ -369,7 +370,7 @@ const dataFiltrados = data.filter((item) => {
             continue;
          }
 
-         console.log("🚀 ~ handleClickButtonMasive ~ btnDownloadRef:", btnDownloadRef);
+         // console.log("🚀 ~ handleClickButtonMasive ~ btnDownloadRef:", btnDownloadRef);
 
          // Crear una promesa que resuelva cuando el click haya sido manejado
          await new Promise((resolve) => {
@@ -391,24 +392,6 @@ const dataFiltrados = data.filter((item) => {
       }
    };
    const handelPdf = async (row, masive = false) => {
-      // const declaracion = {
-      //    datosGenerales: null,
-      //    domicilioDeclarante: null,
-      //    datosCurriculares: null,
-      //    datosEmpleos: null,
-      //    experienciaLaboral: null,
-      //    datosPareja: null,
-      //    datosDependienteEconomicos: null,
-      //    ingresosNetos: null,
-      //    servidorPublico: null,
-      //    bienesInmuebles: null,
-      //    tpVehiculos: null,
-      //    bienesMuebles: null,
-      //    cuentaValores: null,
-      //    adeudos: null,
-      //    prestamosComodatos: null
-      // };
-      // const declaraciones = [];
       setName(row.name);
       // console.log(row.Declaracion, row.Tipo_declaracion);
       const declaracionMapping = {
@@ -1507,7 +1490,7 @@ const dataFiltrados = data.filter((item) => {
                  </For> */}
                      </Document>
                   }
-                  fileName={cleanFileName(myRow?.Folio) + cleanFileName(myRow?.ApPaterno) + cleanFileName(myRow?.ApMaterno) + cleanFileName(myRow?.Nombre)}
+                  fileName={`${cleanFileName(myRow?.Folio) + cleanFileName(myRow?.ApPaterno) + cleanFileName(myRow?.ApMaterno) + cleanFileName(myRow?.Nombre)}`}
                   style={{ textDecoration: "none", marginTop: "10px" }}
                >
                   <a
@@ -1515,11 +1498,9 @@ const dataFiltrados = data.filter((item) => {
                      style={{
                         width: 0,
                         height: 0
-                       
                      }}
-                  >
-                     
-                  </a>
+                     hidden
+                  ></a>
                </PDFDownloadLink>
             </Ngif>
          </Box>
