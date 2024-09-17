@@ -792,10 +792,11 @@ const Checador = ({}) => {
       mayusc = text
          .normalize("NFD") // Normaliza los acentos
          .replace(/[\u0300-\u036f]/g, "") // Remueve los acentos
-         .replace(/[^a-zA-Z0-9]/g, "") // Remueve caracteres especiales y espacios
-         .replace(/\s+/g, ""); // Remueve cualquier espacio extra por si queda alguno
+         .replace(/[^a-zA-Z0-9Ññ]/g, "") // Remueve caracteres especiales y espacios, pero conserva Ñ y ñ
+         .replace(/\s+/g, ""); // Remueve cualquier espacio extra
       return mayusc.toUpperCase();
    };
+
    const [selectedDate, setSelectedDate] = useState(null);
    const [selectedDate2, setSelectedDate2] = useState(null);
    const handleDateChange = (e) => {

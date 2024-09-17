@@ -353,13 +353,15 @@ const MisDeclaraciones = ({}) => {
       handelPdf(row);
    };
    const cleanFileName = (text) => {
+      let mayusc = "";
       if (text === undefined || text === null) return text;
 
-      return text
+      mayusc = text
          .normalize("NFD") // Normaliza los acentos
          .replace(/[\u0300-\u036f]/g, "") // Remueve los acentos
-         .replace(/[^a-zA-Z0-9]/g, "") // Remueve caracteres especiales y espacios
-         .replace(/\s+/g, ""); // Remueve cualquier espacio extra por si queda alguno
+         .replace(/[^a-zA-Z0-9Ññ]/g, "") // Remueve caracteres especiales y espacios, pero conserva Ñ y ñ
+         .replace(/\s+/g, ""); // Remueve cualquier espacio extra
+      return mayusc.toUpperCase();
    };
    const moreButtons = [
       {
@@ -432,8 +434,7 @@ const MisDeclaraciones = ({}) => {
    const handleEyes = () => {
       alert("hola");
    };
-   useEffect(() => {
-   }, [loadingMessage]);
+   useEffect(() => {}, [loadingMessage]);
    return (
       <>
          <Box
@@ -783,8 +784,7 @@ const MisDeclaraciones = ({}) => {
    );
 };
 const ModalComponent = ({ modal, setModal, message, pass, page }) => {
-   useEffect(() => {
-   }, [modal,message]);
+   useEffect(() => {}, [modal, message]);
    return (
       <Modal close={false} openModal={modal} setOpenModal={setModal}>
          <Box p={2} textAlign="center">
