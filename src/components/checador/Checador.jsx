@@ -272,11 +272,17 @@ const Checador = ({}) => {
       const folios = [];
 
       const fechaInicio = dayjs(selectedDate);
+      console.log("🚀 ~ handleClickButtonMasive ~ selectedDate:", selectedDate);
+      console.log("🚀 ~ handleClickButtonMasive ~ fechaInicio:", fechaInicio);
       const fechaFin = dayjs(selectedDate2);
+      console.log("🚀 ~ handleClickButtonMasive ~ fechaFin:", fechaFin);
       // VERIFICAR QUE ESTE EN FECHA DE SOLICITUDES
 
       const dataFiltrados = data.filter((item) => {
-         const fechaRegistro = dayjs(item.FechaRegistroFormateada, "DD/MM/YYYY"); // Asegurarse del formato correcto
+         // console.log("item",item)
+         // return
+         const fecha =item.FechaRegistroFormateada.split("/");
+         const fechaRegistro = dayjs(fecha[2] +"-" + fecha[1] + "-"+fecha[0]); // Asegurarse del formato correcto
 
          // Crear el objeto Date con formato correcto (año, mes, día)
 
@@ -286,8 +292,9 @@ const Checador = ({}) => {
          // Crear el objeto Date con formato correcto (año, mes, día)
 
          // Sumar un día
-         if (!fechaRegistro.isBetween(fechaInicio, fechaFin, "day", "[]")) {
+         if (fechaRegistro.isBetween(fechaInicio, fechaFin, "day", "[]")) {
             // Comprobación de si está dentro del rango
+            console.log(fechaInicio,fechaFin, fechaRegistro);
 
             folios.push(item.Folio);
             return item; //true;
@@ -295,6 +302,7 @@ const Checador = ({}) => {
 
          // return false;
       });
+      console.log("��� ~ handleClickButtonMasive ~ dataFiltrados:", dataFiltrados);
       // console.log("",dataFiltrados);
       if (dataFiltrados.length == 0) {
          Warning("no hay datos; parece que no hay informacion en las fechas filtradas");
