@@ -109,6 +109,10 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
       // Manejar el caso cuando titles no tiene elementos
    }, [titles, titlesMap, headersMap, headers, editButton, deleteButton]);
    const truncateText = (value) => {
+      if (!value || typeof value !== "string") {
+         return ""; // Retorna una cadena vacía si no es válida
+      }
+
       return value.length > 20 ? value.substring(0, 20) + "..." : value;
    };
    return (
@@ -700,6 +704,9 @@ const DataTable = ({
       return result; // Devolvemos el resultado encontrado (o cadena vacía si no se encontró nada)
    };
    const truncateText = (value) => {
+      if (!value || typeof value !== "string") {
+         return ""; // Retorna una cadena vacía si no es válida
+      }
       return value.length > 40 ? value.substring(0, 40) + "..." : value;
    };
    return (
