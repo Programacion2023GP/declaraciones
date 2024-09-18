@@ -1,5 +1,5 @@
 import { Checkbox, FormControlLabel, FormGroup, Grid, IconButton, Paper, Tooltip, Typography } from "@mui/material";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
@@ -77,10 +77,27 @@ const SearchInput = ({ column, data, getData, previousData }) => {
    );
 };
 
-const Title = ({ headers, titles, data, filterData, previousData, filter, editButton, deleteButton, speakRow, moreButtons }) => {
+const Title = ({ headers, titles, data, filterData, previousData, filter, editButton, deleteButton, speakRow, moreButtons, setResponsive }) => {
    const [titlesMap, setTitlesMap] = useState([]);
    const [headersMap, setHeadersMap] = useState([]);
+   const thead = useRef(null);
    useEffect(() => {
+      // const anchoPantalla = window.innerWidth;
+      // const altoPantalla = window.innerHeight;
+      // const thElements = thead.current.querySelectorAll("th");
+      // // Calculamos los anchos
+      // const anchos = Array.from(thElements).map((th) => th.getBoundingClientRect().width);
+      // let total = 0;
+      // for (let index = 0; index < anchos.length; index++) {
+      //    let item = anchos[index];
+      //    if (anchoPantalla > total + item) {
+      //       total += item;
+      //    } else {
+      //       setResponsive(index);
+      //       break; // Rompe el ciclo
+      //    }
+      // }
+
       let initialHeaders = null;
       if (titles && titles.length > 0) {
          const initialTitles = titles[0].titles || [];
@@ -91,9 +108,12 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
       setHeadersMap(headers ? headers : initialHeaders);
       // Manejar el caso cuando titles no tiene elementos
    }, [titles, titlesMap, headersMap, headers, editButton, deleteButton]);
+   const truncateText = (value) => {
+      return value.length > 20 ? value.substring(0, 20) + "..." : value;
+   };
    return (
       <>
-         <thead>
+         <thead ref={thead}>
             <tr style={{ background: "black", color: "white", width: "100%" }}>
                <Ngif condition={speakRow}>
                   <th key={uuidv4()} style={{ padding: "1rem 1rem", textAlign: "center", fontSize: "14px" }}>
@@ -102,9 +122,11 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
                </Ngif>
                {headersMap.map((title) => {
                   return (
-                     <th key={"headers" + title} style={{ padding: "1rem 1rem", textAlign: "center", fontSize: "14px" }}>
-                        {title.charAt(0).toUpperCase() + title.slice(1)}
-                     </th>
+                     <Tooltip title={title.charAt(0).toUpperCase() + title.slice(1)} placement="top">
+                        <th key={"headers" + title} style={{ padding: "1rem 1rem", textAlign: "center", fontSize: "14px" }}>
+                           {truncateText(title.charAt(0).toUpperCase() + title.slice(1))}
+                        </th>
+                     </Tooltip>
                   );
                })}
                {headersMap.length > 0 && (editButton || deleteButton || moreButtons) && (
@@ -356,7 +378,7 @@ const DataTable = ({
    link = [],
    buttonsMenu = false,
    speakRow = false,
-   fileName=null,
+   fileName = null
 }) => {
    const [reinitializedData, setReinitializedData] = useState(data);
    const [dataFilter, setDataFilter] = useState(data);
@@ -368,7 +390,7 @@ const DataTable = ({
    const [objectValues, setObjectValues] = useState({});
    const [tdRead, setTdRead] = useState(null);
    const [line, setLine] = useState(null);
-
+   const [responsive, setResponsive] = useState(10000);
    const handleSeparateData = async (option) => {
       modifiedData(dataFilter);
       setSelectRow(option);
@@ -627,7 +649,7 @@ const DataTable = ({
       init();
       setNumberShowPage(1);
    }, [selectRow, pagination, headers, objectValues, dataFilter]);
-   useEffect(() => {}, [loading, Trbacground]);
+   useEffect(() => {}, [loading, Trbacground, responsive]);
    useEffect(() => {
       setDataFilter(data);
       const init = () => {
@@ -677,7 +699,9 @@ const DataTable = ({
 
       return result; // Devolvemos el resultado encontrado (o cadena vacía si no se encontró nada)
    };
-
+   const truncateText = (value) => {
+      return value.length > 40 ? value.substring(0, 40) + "..." : value;
+   };
    return (
       <>
          <table width={"100%"} style={{ borderCollapse: "collapse" }}>
@@ -768,6 +792,7 @@ const DataTable = ({
 
             {titles.length > 0 || headers.length > 0 ? (
                <Title
+                  setResponsive={setResponsive}
                   speakRow={speakRow}
                   editButton={editButton}
                   deleteButton={deleteButton}
@@ -841,6 +866,36 @@ const DataTable = ({
                                  if (dataHidden) {
                                     if (!dataHidden.includes(key)) {
                                        return (
+                                          <Ngif condition={responsive >= id}>
+                                             <td
+                                                style={{
+                                                   textAlign: "center",
+                                                   border: "1px solid #BDBDBD",
+                                                   fontSize: tdRead === id && line == index ? "16px" : "13px",
+                                                   paddingLeft: "5px",
+                                                   paddingRight: "5px",
+                                                   margin: 0,
+                                                   color: tdRead === id && line == index && lightBlue[600],
+                                                   fontWeight: tdRead === id && line == index && "bold"
+                                                }}
+                                                cols={value}
+                                             >
+                                                {link.includes(id) ? (
+                                                   <a target="_blank" href={value}>
+                                                      {value}
+                                                   </a>
+                                                ) : (
+                                                   <Tooltip title={value} placement="top">
+                                                      {truncateText(value)}
+                                                   </Tooltip>
+                                                )}
+                                             </td>
+                                          </Ngif>
+                                       );
+                                    }
+                                 } else {
+                                    return (
+                                       <Ngif condition={responsive >= id}>
                                           <td
                                              style={{
                                                 textAlign: "center",
@@ -854,27 +909,15 @@ const DataTable = ({
                                              }}
                                              cols={value}
                                           >
-                                             {link.includes(id) ? <a target="_blank" href={value}>{value}</a> : <>{value}</>}
+                                             {link.includes(id) ? (
+                                                <a href={value}>{value}</a>
+                                             ) : (
+                                                <Tooltip title={value} placement="top">
+                                                   {truncateText(value)}
+                                                </Tooltip>
+                                             )}
                                           </td>
-                                       );
-                                    }
-                                 } else {
-                                    return (
-                                       <td
-                                          style={{
-                                             textAlign: "center",
-                                             border: "1px solid #BDBDBD",
-                                             fontSize: tdRead === id && line == index ? "16px" : "13px",
-                                             paddingLeft: "5px",
-                                             paddingRight: "5px",
-                                             margin: 0,
-                                             color: tdRead === id && line == index && lightBlue[600],
-                                             fontWeight: tdRead === id && line == index && "bold"
-                                          }}
-                                          cols={value}
-                                       >
-                                          {link.includes(id) ? <a href={value}>{value}</a> : <>{value}</>}
-                                       </td>
+                                       </Ngif>
                                     );
                                  }
                               })}
@@ -980,7 +1023,15 @@ const DataTable = ({
             )} */}
          <Ngif condition={options}>
             <Modal openModal={openModal} setText={setTextModal} setOpenModal={setOpenModal}>
-               <Component option={textModal} titles={headers} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} colors={Trbacground}  fileName={fileName}/>
+               <Component
+                  option={textModal}
+                  titles={headers}
+                  dataFilter={dataFilter}
+                  dataHidden={dataHidden}
+                  headers={headers}
+                  colors={Trbacground}
+                  fileName={fileName}
+               />
             </Modal>
          </Ngif>
       </>
@@ -1275,7 +1326,7 @@ const Charts = ({ titles, dataFilter, headers, dataHidden }) => {
       </Grid>
    );
 };
-const Component = ({ option, titles, dataFilter, headers, dataHidden, colors,fileName }) => {
+const Component = ({ option, titles, dataFilter, headers, dataHidden, colors, fileName }) => {
    switch (option) {
       case "grafica":
          return <Charts titles={titles} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} />;
@@ -1325,11 +1376,11 @@ const Colors = ({ colors }) => {
    );
 };
 
-const Excel = ({ titles, dataFilter, dataHidden, headers,fileName }) => {
+const Excel = ({ titles, dataFilter, dataHidden, headers, fileName }) => {
    const [keys, setKeys] = useState([]);
    const [counts, setCounts] = useState([]);
    const [checkeds, setCheckeds] = useState(headers);
-   
+
    useEffect(() => {}, [keys, counts]);
    const [chart, setChart] = useState(null);
    const [name, setName] = useState(null);
@@ -1408,7 +1459,7 @@ const Excel = ({ titles, dataFilter, dataHidden, headers,fileName }) => {
          XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
          // Descargar el archivo
-         XLSX.writeFile(wb, `${fileName? fileName:'exportacion'}.xlsx`);
+         XLSX.writeFile(wb, `${fileName ? fileName : "exportacion"}.xlsx`);
       }
    };
 

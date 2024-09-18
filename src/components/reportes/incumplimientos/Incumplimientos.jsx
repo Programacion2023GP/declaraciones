@@ -119,6 +119,7 @@ const Incumplimiento = ({}) => {
                      "Dias Transcurridos"
                   ]}
                   dataHidden={["Incumplimiento", "DenominacionPuesto"]}
+                  fileName={plazo}
                   //  data={data}
                   // por hacer  getUrl ={}
                   // refreshRequest ={}

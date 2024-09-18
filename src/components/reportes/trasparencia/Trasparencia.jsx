@@ -82,8 +82,8 @@ const Trasparencia = ({}) => {
       );
    };
    return (
-      <Card sx={{ maxWidth: "95%", margin: "auto" }}>
-         <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
+      <Card sx={{ maxWidth: "90%", overflowX: "auto", maxHeight: "80vh", margin: "0 auto", boxShadow: 3, padding: 2 }}>
+         <Box sx={{ minWidth: "50%", display: "flex", flexDirection: "column", gap: 2 }}>
             <DataTable
                fileName={trimestre}
                options={["CHARTS", "EXCEL"]}
@@ -115,8 +115,7 @@ const Trasparencia = ({}) => {
                   "Ejercicio",
                   "Fecha de inicio del periodo que se informa",
                   "Fecha de término del periodo que se informa",
-                  "ESTE CRITERIO APLICA PARA EJERCICIOS ANTERIORES AL 01/07/2023 -> Tipo de integrante del sujeto obligado (catálogo)",
-                  "ESTE CRITERIO APLICA A PARTIR DEL 01/07/2023 -> Tipo de integrante del sujeto obligado (catálogo)",
+                  "ESTE CRITERIO APLICA A PARTIR DEL 01/04/2023 -> Tipo de integrante del sujeto obligado (catálogo)",
                   "Clave o nivel del puesto",
                   "Denominación del puesto (Redactados con perspectiva de género)",
                   "Denominación del cargo",
@@ -124,9 +123,11 @@ const Trasparencia = ({}) => {
                   "Nombre(s) del(la) servidor(a) público(a)",
                   "Primer apellido del(la) servidor(a) público(a)",
                   "Segundo apellido del(la) servidor(a) público(a)",
+                  "ESTE CRITERIO APLICA A PARTIR DEL 01/04/2023 -> Sexo (catálogo)",
                   "Modalidad de la Declaración Patrimonial (catálogo)",
                   "Hipervínculo a la versión pública Declaración de Situación Patrimonial",
                   "Área(s) responsable(s) que genera(n), posee(n), publica(n) y actualizan la información",
+                  "Fecha de actualización",
                   "Nota"
                ]}
                link={[13]}
@@ -134,7 +135,7 @@ const Trasparencia = ({}) => {
                // por hacer  getUrl ={}
                // refreshRequest ={}
                //
-               pagination={[2, 5, 10, 50, 75, 100]}
+               pagination={[ 5, 10, 50, 75, 100]}
                //  conditionExistEditButton={["Status !='Terminada'"]}
                speakRow
                // conditionExistDeleteButton={["Status !='Terminada'"]}
