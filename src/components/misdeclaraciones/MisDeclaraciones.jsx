@@ -458,7 +458,7 @@ const MisDeclaraciones = ({}) => {
                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)"
             }}
          >
-            <Card sx={{ maxWidth: "100%", margin: "auto" }}>
+            <Card ref={parent} sx={{ maxWidth: "100%", margin: "auto" }}>
                <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
                   <DataTable
                      moreButtons={moreButtons}

@@ -16,6 +16,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
    const table = true;
    const title = "Registro de usuarios";
    const urlData = "usuarios";
+   const parameter =parseInt(localStorage.getItem("Id_Person"));
    const validator = {
       Name: Yup.string("El formato es texto").required("El nombre es requerido"),
       Email: Yup.string("El formato es texto").required("El correo es requerido"),
@@ -138,6 +139,6 @@ const Usuarios = ({ formik, setId, peticiones }) => {
    };
    const headersDatable = ["Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Rol", "Puesto"];
    const dataHiddenDatable = ["Id_User", "Email", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion", "Gender"];
-   return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key };
+   return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key,parameter };
 };
 export default Usuarios;

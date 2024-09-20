@@ -22,7 +22,8 @@ export const Catalogo = forwardRef(
          id,
          setId,
          table = true,
-         idTable
+         idTable,
+         param = null,
       },
       ref
    ) => {
@@ -63,7 +64,7 @@ export const Catalogo = forwardRef(
       const [data, setData] = useState([]);
       const init = async () => {
          setLoading(true);
-         setData(await GetAxios(`${urlData}/index`));
+         setData(await GetAxios(`${urlData}/index${param? '/' + param:''}`));
          setLoading(false);
 
       };

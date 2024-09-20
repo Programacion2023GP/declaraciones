@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, FormGroup, Grid, IconButton, Paper, Tooltip, Typography } from "@mui/material";
+import { Checkbox, FormControlLabel, FormGroup, Grid, IconButton, ListItem, ListItemText, Paper, Tooltip, Typography } from "@mui/material";
 import { forwardRef, useEffect, useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
@@ -25,14 +25,16 @@ import DehazeIcon from "@mui/icons-material/Dehaze";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import BasicMenu from "../basicmenu/BasicMenu";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
-import * as XLSX from "xlsx";
 import { Voice } from "../formik/FormikForm";
 import { lightBlue } from "@mui/material/colors";
 import Alert from "@mui/material/Alert";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import Swal from "sweetalert2";
 import { isArray } from "highcharts";
-
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import MinimizeIcon from "@mui/icons-material/Minimize";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 const SearchInput = ({ column, data, getData, previousData }) => {
    const [searchText, setSearchText] = useState("");
    const [previousDataFilter, setPreviousDataFilter] = useState(data);
@@ -77,27 +79,12 @@ const SearchInput = ({ column, data, getData, previousData }) => {
    );
 };
 
-const Title = ({ headers, titles, data, filterData, previousData, filter, editButton, deleteButton, speakRow, moreButtons, setResponsive }) => {
+const Title = ({ headers, titles, data, filterData, previousData, filter, editButton, deleteButton, speakRow, moreButtons, responsive, setResponsive, parent }) => {
    const [titlesMap, setTitlesMap] = useState([]);
    const [headersMap, setHeadersMap] = useState([]);
    const thead = useRef(null);
-   useEffect(() => {
-      // const anchoPantalla = window.innerWidth;
-      // const altoPantalla = window.innerHeight;
-      // const thElements = thead.current.querySelectorAll("th");
-      // // Calculamos los anchos
-      // const anchos = Array.from(thElements).map((th) => th.getBoundingClientRect().width);
-      // let total = 0;
-      // for (let index = 0; index < anchos.length; index++) {
-      //    let item = anchos[index];
-      //    if (anchoPantalla > total + item) {
-      //       total += item;
-      //    } else {
-      //       setResponsive(index);
-      //       break; // Rompe el ciclo
-      //    }
-      // }
 
+   useEffect(() => {
       let initialHeaders = null;
       if (titles && titles.length > 0) {
          const initialTitles = titles[0].titles || [];
@@ -106,69 +93,67 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
          setTitlesMap(initialTitles);
       }
       setHeadersMap(headers ? headers : initialHeaders);
-      // Manejar el caso cuando titles no tiene elementos
-   }, [titles, titlesMap, headersMap, headers, editButton, deleteButton]);
+   }, [titles, headers]);
+
+   // Función para truncar texto
    const truncateText = (value) => {
       if (!value || typeof value !== "string") {
          return ""; // Retorna una cadena vacía si no es válida
       }
-
       return value.length > 20 ? value.substring(0, 20) + "..." : value;
    };
+
    return (
       <>
-         <thead ref={thead}>
-            <tr style={{ background: "black", color: "white", width: "100%" }}>
-               <Ngif condition={speakRow}>
+         <thead>
+            <tr ref={thead} style={{ background: "black", color: "white", width: "100%" }}>
+               {speakRow && (
                   <th key={uuidv4()} style={{ padding: "1rem 1rem", textAlign: "center", fontSize: "14px" }}>
                      Leer
                   </th>
-               </Ngif>
-               {headersMap.map((title) => {
+               )}
+               {responsive < 1000 && <th style={{ padding: "1rem 1rem", textAlign: "center", fontSize: "14px" }}></th>}
+               {headersMap.map((title, id) => {
                   return (
-                     <Tooltip title={title.charAt(0).toUpperCase() + title.slice(1)} placement="top">
-                        <th key={"headers" + title} style={{ padding: "1rem 1rem", textAlign: "center", fontSize: "14px" }}>
-                           {truncateText(title.charAt(0).toUpperCase() + title.slice(1))}
-                        </th>
-                     </Tooltip>
+                     <>
+                        {responsive >= id + (editButton || deleteButton || moreButtons ? 3 : 2) && (
+                           <Tooltip title={title.charAt(0).toUpperCase() + title.slice(1)} placement="top">
+                              <th key={"headers" + title} style={{ padding: "1rem 1rem", textAlign: "center", fontSize: "14px" }}>
+                                 {truncateText(title.charAt(0).toUpperCase() + title.slice(1))}
+                              </th>
+                           </Tooltip>
+                        )}
+                     </>
                   );
                })}
-               {headersMap.length > 0 && (editButton || deleteButton || moreButtons) && (
+               {headersMap.length > 0 && (editButton || deleteButton || moreButtons) && responsive > 1000 && (
                   <th key={"headersMap" + uuidv4()} style={{ padding: "1rem 1rem", textAlign: "center", fontSize: "14px" }}>
                      Acciones
                   </th>
                )}
             </tr>
             <tr>
-               <Ngif condition={speakRow}>
-                  <th
-                     key={"titlesMap" + uuidv4()}
-                     style={{
-                        border: "1px solid #BDBDBD",
-                        height: "fit-content"
-                     }}
-                  ></th>
-               </Ngif>
+               {speakRow && <th key={"titlesMap" + uuidv4()} style={{ border: "1px solid #BDBDBD", height: "fit-content" }}></th>}
+               {responsive && <th key={"titlesMap" + uuidv4()} style={{ border: "1px solid #BDBDBD", height: "fit-content" }}></th>}
                {filter &&
-                  titlesMap.map((title) => {
-                     return (
-                        <th
-                           key={"titlesMap" + title}
-                           style={{
-                              marginLeft: "15rem",
-                              marginRight: "15rem",
-                              // paddingLeft: ".3rem",
-                              // paddingRight: ".3rem",
-
-                              border: "1px solid #BDBDBD",
-                              height: "fit-content"
-                           }}
-                        >
-                           <SearchInput previousData={previousData} column={title} data={data} getData={filterData} />
-                        </th>
-                     );
-                  })}
-               {filter && (editButton || deleteButton || moreButtons) && (
+                  titlesMap.map((title, id) => (
+                     <>
+                        {responsive >= id + (editButton || deleteButton || moreButtons ? 3 : 2) && (
+                           <th
+                              key={"titlesMap" + title}
+                              style={{
+                                 marginLeft: "15rem",
+                                 marginRight: "15rem",
+                                 border: "1px solid #BDBDBD",
+                                 height: "fit-content"
+                              }}
+                           >
+                              <SearchInput previousData={previousData} column={title} data={data} getData={filterData} />
+                           </th>
+                        )}
+                     </>
+                  ))}
+               {filter && (editButton || deleteButton || moreButtons) && responsive > 1000 && (
                   <th key={uuidv4()} style={{ border: "1px solid #BDBDBD", padding: "1rem 1rem", textAlign: "center" }}></th>
                )}
             </tr>
@@ -176,6 +161,7 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
       </>
    );
 };
+
 const neon = {
    color: "#00e6e6",
    border: "1px solid #00e6e6",
@@ -200,7 +186,7 @@ const neonText = {
    // }
 };
 
-const Paginator = ({ pagination, handleChange, page, pages, previous, next, dataFilter, selectRow }) => {
+const Paginator = ({ pagination, handleChange, page, pages, previous, next, dataFilter, selectRow, setMoreItems }) => {
    useEffect(() => {}, [pagination]);
    const pagesOfItems = (option) => {
       handleChange(option);
@@ -209,6 +195,7 @@ const Paginator = ({ pagination, handleChange, page, pages, previous, next, data
       previous();
    };
    const nextPage = () => {
+      setMoreItems([]);
       next();
    };
 
@@ -361,6 +348,8 @@ const FilterGlobal = ({ data = [], setFilteredData, dataHidden = [] }) => {
 };
 
 const DataTable = ({
+   excelLayoutDownRowsStart=0,
+   excelLayout=[],
    data = [],
    dataHidden = [],
    headers = [],
@@ -382,7 +371,8 @@ const DataTable = ({
    link = [],
    buttonsMenu = false,
    speakRow = false,
-   fileName = null
+   fileName = null,
+   parent = null
 }) => {
    const [reinitializedData, setReinitializedData] = useState(data);
    const [dataFilter, setDataFilter] = useState(data);
@@ -612,6 +602,20 @@ const DataTable = ({
       // Evaluar todas las condiciones con operadores lógicos AND y OR
       return conditions.every((condition) => evaluateCondition(condition));
    };
+   const [expanded, setExpanded] = useState([]);
+
+   const moreViewItems = (id) => {
+      console.log(id);
+      setExpanded((prev) => {
+         if (prev.includes(id)) {
+            // Si el id ya existe, lo eliminamos
+            return prev.filter((item) => item !== id);
+         } else {
+            // Si el id no existe, lo agregamos
+            return [...prev, id];
+         }
+      });
+   };
 
    const checkConditionsDelete = (item) => {
       return conditionExistDeleteButton.every((condition) => {
@@ -688,6 +692,51 @@ const DataTable = ({
 
       return intercalado;
    };
+   const size = useRef(null);
+   useEffect(() => {
+      if (!parent) return;
+      if (!size.current || !parent.current) return; // Asegurarse de que existan las referencias
+
+      // Obtener todos los elementos `th` dentro del `size`
+      const thElements = size.current.querySelectorAll("th");
+
+      // Obtener el ancho del contenedor padre de la tabla
+      const parentWidth = parent.current.offsetWidth;
+
+      // Obtener los anchos de cada `th`
+      const anchos = Array.from(thElements).map((th) => th.getBoundingClientRect().width);
+
+      console.log(parentWidth);
+      console.log("Número de columnas:", anchos.length);
+      console.log("Anchos:", anchos);
+
+      let total = 0;
+      let responsiveIndex = -1;
+
+      // Recorrer los anchos de las columnas y acumular el ancho total
+      for (let index = 0; index < anchos.length; index++) {
+         let item = anchos[index];
+
+         // Sumar el ancho de cada columna
+
+         if (total + item > parentWidth) {
+            responsiveIndex = index;
+            break; // Detener el ciclo una vez que se ha excedido el ancho
+         }
+         total += item;
+         // Verificar si el ancho acumulado supera el ancho del contenedor padre
+      }
+
+      // Si se detecta que las columnas no caben, aplicar la lógica responsive
+      if (responsiveIndex !== -1) {
+         console.log("Se debe aplicar el modo responsive a partir del índice:", responsiveIndex);
+
+         // Actualizar el estado `responsive` con el índice calculado
+         setResponsive(responsiveIndex);
+      } else {
+         console.log("No se necesita modo responsive. Todas las columnas caben en el contenedor.");
+      }
+   }, [parent, size, setResponsive, titles]);
 
    const bacgroundColor = (item) => {
       let result = ""; // Inicializamos una variable para almacenar el resultado
@@ -711,7 +760,7 @@ const DataTable = ({
    };
    return (
       <>
-         <table width={"100%"} style={{ borderCollapse: "collapse" }}>
+         <table ref={size} width={"100%"} style={{ borderCollapse: "collapse", paddingRight: "2rem" }}>
             <caption>
                <div style={{ marginLeft: "2rem", marginTop: ".5rem", display: "flex", justifyContent: "flex-start" }}>
                   <Ngif condition={captionFilters}> {captionFilters}</Ngif>
@@ -799,7 +848,9 @@ const DataTable = ({
 
             {titles.length > 0 || headers.length > 0 ? (
                <Title
+                  parent={parent}
                   setResponsive={setResponsive}
+                  responsive={responsive}
                   speakRow={speakRow}
                   editButton={editButton}
                   deleteButton={deleteButton}
@@ -873,7 +924,89 @@ const DataTable = ({
                                  if (dataHidden) {
                                     if (!dataHidden.includes(key)) {
                                        return (
-                                          <Ngif condition={responsive >= id}>
+                                          <>
+                                             <Ngif condition={responsive < 1000 && id == 0}>
+                                                <td
+                                                   style={{
+                                                      textAlign: "center",
+                                                      border: "1px solid #BDBDBD",
+                                                      fontSize: tdRead === id && line == index ? "16px" : "13px",
+                                                      paddingLeft: "5px",
+                                                      paddingRight: "5px",
+                                                      margin: 0,
+                                                      color: tdRead === id && line == index && lightBlue[600],
+                                                      fontWeight: tdRead === id && line == index && "bold"
+                                                   }}
+                                                >
+                                                   <IconButton
+                                                      onClick={() => {
+                                                         moreViewItems(index);
+                                                      }}
+                                                      color="primary"
+                                                      size="small"
+                                                      variant="text"
+                                                   >
+                                                      {expanded.includes(index) ? <MinimizeIcon /> : <AddCircleIcon />}
+                                                   </IconButton>
+                                                </td>
+                                             </Ngif>
+                                             <Ngif condition={responsive >= id + 2}>
+                                                <td
+                                                   style={{
+                                                      textAlign: "center",
+                                                      border: "1px solid #BDBDBD",
+                                                      fontSize: tdRead === id && line == index ? "16px" : "13px",
+                                                      paddingLeft: "5px",
+                                                      paddingRight: "5px",
+                                                      margin: 0,
+                                                      color: tdRead === id && line == index && lightBlue[600],
+                                                      fontWeight: tdRead === id && line == index && "bold"
+                                                   }}
+                                                   cols={value}
+                                                >
+                                                   {link.includes(id) ? (
+                                                      <a target="_blank" href={value}>
+                                                         {value}
+                                                      </a>
+                                                   ) : (
+                                                      <Tooltip title={value} placement="top">
+                                                         {truncateText(value)}
+                                                      </Tooltip>
+                                                   )}
+                                                </td>
+                                             </Ngif>
+                                          </>
+                                       );
+                                    }
+                                 } else {
+                                    return (
+                                       <>
+                                          <Ngif condition={responsive < 1000 && id == 0}>
+                                             <td
+                                                style={{
+                                                   textAlign: "center",
+                                                   border: "1px solid #BDBDBD",
+                                                   fontSize: tdRead === id && line == index ? "16px" : "13px",
+                                                   paddingLeft: "5px",
+                                                   paddingRight: "5px",
+                                                   margin: 0,
+                                                   color: tdRead === id && line == index && lightBlue[600],
+                                                   fontWeight: tdRead === id && line == index && "bold"
+                                                }}
+                                             >
+                                                <IconButton
+                                                   onClick={() => {
+                                                      moreViewItems(index);
+                                                   }}
+                                                   color="primary"
+                                                   size="small"
+                                                   variant="text"
+                                                >
+                                                   {expanded.includes(index) ? <MinimizeIcon /> : <AddCircleIcon />}
+                                                </IconButton>
+                                             </td>
+                                          </Ngif>
+                                          <Ngif condition={responsive >= Object.keys(item).length + 2}>
                                              <td
                                                 style={{
                                                    textAlign: "center",
@@ -888,9 +1021,7 @@ const DataTable = ({
                                                 cols={value}
                                              >
                                                 {link.includes(id) ? (
-                                                   <a target="_blank" href={value}>
-                                                      {value}
-                                                   </a>
+                                                   <a href={value}>{value}</a>
                                                 ) : (
                                                    <Tooltip title={value} placement="top">
                                                       {truncateText(value)}
@@ -898,85 +1029,107 @@ const DataTable = ({
                                                 )}
                                              </td>
                                           </Ngif>
-                                       );
-                                    }
-                                 } else {
-                                    return (
-                                       <Ngif condition={responsive >= id}>
-                                          <td
-                                             style={{
-                                                textAlign: "center",
-                                                border: "1px solid #BDBDBD",
-                                                fontSize: tdRead === id && line == index ? "16px" : "13px",
-                                                paddingLeft: "5px",
-                                                paddingRight: "5px",
-                                                margin: 0,
-                                                color: tdRead === id && line == index && lightBlue[600],
-                                                fontWeight: tdRead === id && line == index && "bold"
-                                             }}
-                                             cols={value}
-                                          >
-                                             {link.includes(id) ? (
-                                                <a href={value}>{value}</a>
-                                             ) : (
-                                                <Tooltip title={value} placement="top">
-                                                   {truncateText(value)}
-                                                </Tooltip>
-                                             )}
-                                          </td>
-                                       </Ngif>
+                                       </>
                                     );
                                  }
                               })}
                               {(editButton || deleteButton || moreButtons) && (
-                                 <td style={{ textAlign: "center", border: "1px solid #BDBDBD", padding: 0, margin: 0 }}>
-                                    <Ngif condition={buttonsMenu}>
-                                       <BasicMenu>
+                                 <Ngif condition={responsive >= Object.keys(item).length + 2}>
+                                    <td style={{ textAlign: "center", border: "1px solid #BDBDBD", padding: 0, margin: 0 }}>
+                                       <Ngif condition={buttonsMenu}>
+                                          <BasicMenu>
+                                             <Ngif condition={editButton && checkConditions(item)}>
+                                                <MenuItem
+                                                   onClick={() => {
+                                                      handleEdit(item);
+                                                   }}
+                                                >
+                                                   <EditButton handleEdit={handleEdit} item={item} />
+                                                </MenuItem>
+                                             </Ngif>
+                                             <Ngif condition={deleteButton && checkConditionsDelete(item)}>
+                                                <MenuItem
+                                                   onClick={() => {
+                                                      handleDeleteSecurity(item);
+                                                   }}
+                                                >
+                                                   <DeleteButton handleDelete={handleDelete} item={item} />
+                                                </MenuItem>
+                                                <MoreButtons
+                                                   item={item}
+                                                   moreButtons={moreButtons}
+                                                   checkConditionsMoreButton={checkConditionsMoreButton}
+                                                   buttonsMenu={buttonsMenu}
+                                                />
+                                             </Ngif>
+                                          </BasicMenu>
+                                       </Ngif>
+                                       <Ngif condition={!buttonsMenu}>
                                           <Ngif condition={editButton && checkConditions(item)}>
-                                             <MenuItem
-                                                onClick={() => {
-                                                   handleEdit(item);
-                                                }}
-                                             >
-                                                <EditButton handleEdit={handleEdit} item={item} />
-                                             </MenuItem>
+                                             <EditButton handleEdit={handleEdit} item={item} />
                                           </Ngif>
                                           <Ngif condition={deleteButton && checkConditionsDelete(item)}>
-                                             <MenuItem
-                                                onClick={() => {
-                                                   handleDeleteSecurity(item);
-                                                }}
-                                             >
-                                                <DeleteButton handleDelete={handleDelete} item={item} />
-                                             </MenuItem>
-                                             <MoreButtons
-                                                item={item}
-                                                moreButtons={moreButtons}
-                                                checkConditionsMoreButton={checkConditionsMoreButton}
-                                                buttonsMenu={buttonsMenu}
-                                             />
+                                             <DeleteButton handleDelete={handleDeleteSecurity} item={item} />
                                           </Ngif>
-                                       </BasicMenu>
-                                    </Ngif>
-                                    <Ngif condition={!buttonsMenu}>
-                                       <Ngif condition={editButton && checkConditions(item)}>
-                                          <EditButton handleEdit={handleEdit} item={item} />
-                                       </Ngif>
-                                       <Ngif condition={deleteButton && checkConditionsDelete(item)}>
-                                          <DeleteButton handleDelete={handleDeleteSecurity} item={item} />
-                                       </Ngif>
 
-                                       <Ngif condition={moreButtons.length > 0}>
-                                          <MoreButtons item={item} moreButtons={moreButtons} checkConditionsMoreButton={checkConditionsMoreButton} />
+                                          <Ngif condition={moreButtons.length > 0}>
+                                             <MoreButtons item={item} moreButtons={moreButtons} checkConditionsMoreButton={checkConditionsMoreButton} />
+                                          </Ngif>
                                        </Ngif>
-                                    </Ngif>
-                                 </td>
+                                    </td>
+                                 </Ngif>
                               )}
                               <Ngif condition={loading && index === Math.floor(dataTable.length / 2)}>
                                  <Box sx={{ position: "absolute", left: 0, right: 0, bottom: -10, top: 0 }}>
                                     <Loading />
                                  </Box>
                               </Ngif>
+                           </tr>
+                           <tr>
+                              {expanded.includes(index) && (
+                                 <td colSpan={responsive}>
+                                    <ul>
+                                       {Object.entries(item).map(([key, value], id) => (
+                                          // Siempre mostramos la condición, ya que 'true' es innecesaria
+
+                                          <Ngif condition={id + 1 >= responsive && dataHidden && !dataHidden.includes(key)}>
+                                             <ListItem
+                                                key={id}
+                                                sx={{
+                                                   margin: "5px 0",
+                                                   padding: "5px",
+                                                   borderRadius: "8px",
+                                                   backgroundColor: "#fff",
+                                                   boxShadow: 2, // equivalente a `0 4px 8px rgba(0, 0, 0, 0.1)`
+                                                   display: "flex",
+                                                   alignItems: "center",
+                                                   justifyContent: "space-between"
+                                                }}
+                                             >
+                                                <ListItemText
+                                                   primary={
+                                                      <Typography variant="subtitle1" sx={{ fontWeight: "bold", color: "#333" }}>
+                                                         {titles[0]?.headers[0][id]}
+                                                      </Typography>
+                                                   }
+                                                   secondary={
+                                                      <Typography variant="body2" sx={{ color: "#666" }}>
+                                                         {link.includes(id) ? (
+                                                            <a target="_blank" href={value}>
+                                                               {value}
+                                                            </a>
+                                                         ) : (
+                                                            value
+                                                         )}
+                                                      </Typography>
+                                                   }
+                                                />
+                                             </ListItem>
+                                          </Ngif>
+                                       ))}
+                                    </ul>
+                                 </td>
+                              )}
                            </tr>
                         </>
                      );
@@ -991,6 +1144,7 @@ const DataTable = ({
                         style={{ border: "1px solid #BDBDBD", padding: "0.5rem", textAlign: "center", background: "black" }}
                      >
                         <Paginator
+                           setMoreItems={setExpanded}
                            selectRow={selectRow}
                            dataFilter={dataFilter.length}
                            pagination={pagination}
@@ -1031,6 +1185,8 @@ const DataTable = ({
          <Ngif condition={options}>
             <Modal openModal={openModal} setText={setTextModal} setOpenModal={setOpenModal}>
                <Component
+               excelLayoutDownRowsStart={excelLayoutDownRowsStart}
+               excelLayout={excelLayout}
                   option={textModal}
                   titles={headers}
                   dataFilter={dataFilter}
@@ -1333,13 +1489,13 @@ const Charts = ({ titles, dataFilter, headers, dataHidden }) => {
       </Grid>
    );
 };
-const Component = ({ option, titles, dataFilter, headers, dataHidden, colors, fileName }) => {
+const Component = ({ option, titles, dataFilter, headers, dataHidden, colors, fileName,excelLayout=[],excelLayoutDownRowsStart=0 }) => {
    switch (option) {
       case "grafica":
          return <Charts titles={titles} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} />;
          break;
       case "excel":
-         return <Excel titles={titles} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} fileName={fileName} />;
+         return <Excel titles={titles} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} fileName={fileName} excelLayout={excelLayout} excelLayoutDownRowsStart={excelLayoutDownRowsStart} />;
       case "colors":
          return <Colors colors={colors} />;
          break;
@@ -1383,7 +1539,7 @@ const Colors = ({ colors }) => {
    );
 };
 
-const Excel = ({ titles, dataFilter, dataHidden, headers, fileName }) => {
+const Excel = ({ titles, dataFilter, dataHidden, headers, fileName,excelLayout,excelLayoutDownRowsStart }) => {
    const [keys, setKeys] = useState([]);
    const [counts, setCounts] = useState([]);
    const [checkeds, setCheckeds] = useState(headers);
@@ -1433,7 +1589,7 @@ const Excel = ({ titles, dataFilter, dataHidden, headers, fileName }) => {
          return newObj;
       });
 
-      exportToExcel(filteredDataWithCheckedKeys);
+      exportToExcel(filteredDataWithCheckedKeys, fileName, excelLayoutDownRowsStart, excelLayout);
    };
 
    const filterData = (dataFilter, dataHidden) => {
@@ -1445,29 +1601,114 @@ const Excel = ({ titles, dataFilter, dataHidden, headers, fileName }) => {
          return newItem;
       });
    };
-   const exportToExcel = (data) => {
-      if (Object.keys(data[0]).length === 0) {
-      } else if (Object.keys(data[0]).length > 0) {
-         const wb = XLSX.utils.book_new();
-         const ws = XLSX.utils.json_to_sheet(data);
 
-         // Establecer estilos para la tabla
-         const range = XLSX.utils.decode_range(ws["!ref"]);
-         for (let C = range.s.c; C <= range.e.c; ++C) {
-            const header = XLSX.utils.encode_col(C) + "1"; // Encabezado de la columna
-            ws[header].s = { font: { bold: true }, alignment: { horizontal: "center" }, fill: { bgColor: { indexed: 22 }, fgColor: { rgb: "FFCCFFCC" } } }; // Estilo del encabezado
-            for (let R = range.s.r + 1; R <= range.e.r; ++R) {
-               const cell = XLSX.utils.encode_col(C) + R; // Celda
-               ws[cell].s = { alignment: { horizontal: "center" }, fill: { bgColor: { indexed: 18 }, fgColor: { rgb: "FFFFCCFF" } } }; // Estilo del cuerpo
+   const exportToExcel = async (data, fileName, emptyRows = 0, rowStyles = []) => {
+      if (data.length === 0 || Object.keys(data[0]).length === 0) {
+         return;
+      }
+
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Sheet1");
+
+      // Crear filas vacías antes de los encabezados
+      for (let i = 0; i < emptyRows; i++) {
+         worksheet.addRow([]); // Añadir filas vacías
+      }
+
+      // Obtener los encabezados
+      const headers = Object.keys(data[0]);
+      worksheet.addRow(headers); // Añadir los encabezados
+
+      // Añadir los datos
+      data.forEach((row) => {
+         worksheet.addRow(Object.values(row));
+      });
+
+      // Ajustar el ancho de las columnas basado en el contenido
+      headers.forEach((key, index) => {
+         const maxLength = Math.max(...data.map((row) => (row[key] ? row[key].toString().length : 0)), key.length);
+         worksheet.getColumn(index + 1).width = maxLength + 2; // Ajustar con un pequeño margen
+      });
+      // Aplicar estilos personalizados a las filas
+      rowStyles.forEach((style) => {
+         const { row, color, finish, textColor, write, height } = style;
+         const worksheetRow = worksheet.getRow(row);
+
+         if (height) {
+            
+            worksheetRow.height = height;
+         }
+         if (finish) {
+            const endColIndex = finish.charCodeAt(0) - 65; // Convertir la letra a índice (A=0, B=1, ...)
+
+            // Aplicar estilo a la fila
+            for (let C = 0; C <= endColIndex; ++C) {
+               const cell = worksheet.getRow(row).getCell(C + 1); // Ajustar fila
+               cell.fill = {
+                  type: "pattern",
+                  pattern: "solid",
+                  fgColor: { argb: color.replace("#", "") }
+               };
+               cell.font = {
+                  bold: true,
+                  color: { argb: textColor ? textColor.replace("#", "") : "" }
+               };
+               cell.alignment = { horizontal: "center" };
             }
          }
 
-         // Agregar la hoja de cálculo al libro de trabajo
-         XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+         // Escribir texto específico en las celdas
+         if (write) {
+            write.forEach(({ letter, write: cellWrite, spacing }) => {
+               if (letter) {
+                  const cellIndex = letter.charCodeAt(0) - 65; // Convertir la letra a índice
+                  const writeCell = worksheet.getRow(row).getCell(cellIndex + 1);
+                  writeCell.value = cellWrite;
 
-         // Descargar el archivo
-         XLSX.writeFile(wb, `${fileName ? fileName : "exportacion"}.xlsx`);
-      }
+                  // Combinar celdas si hay spacing
+                  if (spacing) {
+                     const startCellIndex = letter.charCodeAt(0) - 65;
+                     const endCellIndex = spacing.map((l) => l.charCodeAt(0) - 65).reduce((a, b) => Math.max(a, b), startCellIndex);
+                     worksheet.mergeCells(row, startCellIndex + 1, row, endCellIndex + 1); // Combinar celdas
+                     writeCell.alignment = { horizontal: "center" }; // Centrar el texto en la celda combinada
+                  }
+               }
+            });
+         }
+      });
+
+      // Estilo para el encabezado
+      const headerRow = worksheet.getRow(emptyRows + 1);
+      headerRow.eachCell((cell) => {
+         cell.font = { bold: true };
+         cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "E1E1E1" }
+         };
+         cell.alignment = { horizontal: "center" };
+      });
+
+      // Aplicar autofiltro a los encabezados
+      worksheet.autoFilter = {
+         from: {
+            row: emptyRows + 1,
+            column: 1
+         },
+         to: {
+            row: emptyRows + 1,
+            column: headers.length
+         }
+      };
+
+      // Generar el archivo Excel y guardarlo
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      saveAs(blob, `${fileName ? fileName : "exportacion"}.xlsx`);
+   };
+
+   const handleExport = () => {
+      exportToExcel(data, "mi_exportacion", 2);
    };
 
    const handleChange = (item) => {

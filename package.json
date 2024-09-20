@@ -27,6 +27,7 @@
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.10",
     "days": "^1.1.1",
+    "exceljs": "^4.4.0",
     "face-api.js": "^0.22.2",
     "file-saver": "^2.0.5",
     "formik": "^2.4.5",
@@ -57,6 +58,8 @@
     "sweetalert2": "^11.6.13",
     "sweetalert2-react-content": "^5.0.7",
     "xlsx": "^0.18.5",
+    "xlsx-color": "^0.14.30",
+    "xlsx-style": "^0.8.13",
     "yup": "^1.4.0"
   },
   "devDependencies": {

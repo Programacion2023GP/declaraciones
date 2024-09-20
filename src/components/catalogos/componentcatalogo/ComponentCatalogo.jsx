@@ -19,7 +19,7 @@ const ComponentCatalogo = ({ pagina }) => {
    //    adscripcion: adscripcion
    // };
 
-   const { dataForm, handleDelete, handleEdit, validationSchema, action, Form, title, headersDatable, urlData, dataHiddenDatable, id, setId, table, key } = Create({
+   const { dataForm, handleDelete, handleEdit, validationSchema, action, Form, title, headersDatable, urlData, dataHiddenDatable, id, setId, table, key,param } = Create({
       catalogo: pagina ? pagina : catalogo,
       formik,
       peticiones: {
@@ -49,6 +49,7 @@ const ComponentCatalogo = ({ pagina }) => {
 
    return (
       <Catalogo
+         param={param}
          key={change}
          idTable={key == undefined ? "id" : key}
          id={id}

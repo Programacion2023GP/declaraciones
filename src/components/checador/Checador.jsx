@@ -749,7 +749,7 @@ const Checador = ({}) => {
                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)"
             }}
          >
-            <Card sx={{ maxWidth: "100%", margin: "auto" }}>
+            <Card  sx={{ maxWidth: "100%", margin: "auto" }}>
                <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
                   {/* <select name="" id="">
                      <option selected value="2024">2024</option>
@@ -784,6 +784,7 @@ const Checador = ({}) => {
                      />
                   </div> */}
                   <DataTable
+                     parent={parent}
                      captionFilters={
                         <>
                            <Filters data={obtenerAnios()} title="Ejercicio" setFilter={setEjercio} filter={ejercio} />
@@ -831,7 +832,7 @@ const Checador = ({}) => {
                      //
                      pagination={[5, 10, 25, 50, 100]}
                      //  conditionExistEditButton={["Status !='Terminada'"]}
-                     speakRow
+                     // speakRow
                      // conditionExistDeleteButton={["Status !='Terminada'"]}
                      // options={true}
                   />
