@@ -134,7 +134,7 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
             </tr>
             <tr>
                {speakRow && <th key={"titlesMap" + uuidv4()} style={{ border: "1px solid #BDBDBD", height: "fit-content" }}></th>}
-               {responsive && <th key={"titlesMap" + uuidv4()} style={{ border: "1px solid #BDBDBD", height: "fit-content" }}></th>}
+               {responsive<1000 && <th key={"titlesMap" + uuidv4()} style={{ border: "1px solid #BDBDBD", height: "fit-content" }}></th>}
                {filter &&
                   titlesMap.map((title, id) => (
                      <>

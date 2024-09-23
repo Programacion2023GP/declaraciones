@@ -271,6 +271,13 @@ const ComponentDeclaraciones = () => {
       const filtered = steps.filter((step) => step.exist.includes(declaracion));
       return hoja > 14 && declaracion == 2 ? declaracionIntereses : filtered;
    });
+
+React.useEffect(()=>{
+   const filtered = steps.filter((step) => step.exist.includes(declaracion));
+
+   setFiltersStepers( hoja > 14 && declaracion == 2 ? declaracionIntereses : filtered);
+},[hoja])
+
    const [view, setView] = React.useState(false);
 
    const [update, setupdate] = React.useState(false);
@@ -283,7 +290,6 @@ const ComponentDeclaraciones = () => {
       // setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
    }, [activeStep, declaracion]);
    React.useEffect(() => {
-      // console.log("view", view);
    }, [update, view]);
    React.useEffect(() => {
       // Verificar si dataPage tiene datos válidos
