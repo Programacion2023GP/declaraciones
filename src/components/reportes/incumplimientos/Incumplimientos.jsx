@@ -12,6 +12,8 @@ const Incumplimiento = ({}) => {
    const [data, setData] = useState([]);
    const [loading, setLoading] = useState(false);
    const [fecha, setFecha] = useState("");
+   const [fechaFin, setFechaFin] = useState("");
+
    const [plazo, setPlazo] = useState("Inicial");
    const handleChange = (newValue) => {
       setValue(newValue);
@@ -21,7 +23,7 @@ const Incumplimiento = ({}) => {
    const init = async (plazo, fecha) => {
       setData([]);
       setLoading(true);
-      setData(await GetAxios(`reportes/incumplimientos${plazo ? "/" + plazo : ""}${fecha ? "/" + fecha : ""}`));
+      setData(await GetAxios(`reportes/incumplimientos${plazo ? "/" + plazo : ""}${fecha ? "/" + fecha : ""} ${fechaFin ? "/" + fechaFin : ""}`));
       setLoading(false);
    };
    useEffect(() => {
@@ -82,11 +84,21 @@ const Incumplimiento = ({}) => {
                         <Ngif condition={plazo != "Inicial"}>
                            <FormControl sx={{ m: 1, minWidth: 300 }} size="small">
                               <DatePicker
-                                 label={"Selecciona una fecha"}
+                                 label={"Selecciona la fecha inicio"}
                                  format={"DD/MM/YYYY"}
                                  // fullWidth
                                  value={dayjs(fecha) || null}
                                  onChange={(date) => setFecha(dayjs(date).format("YYYY-MM-DD"))}
+                                 // error={!!errors[name] && touched[name]}
+                              />
+                           </FormControl>
+                           <FormControl sx={{ m: 1, minWidth: 300 }} size="small">
+                              <DatePicker
+                                 label={"Selecciona la fecha fin"}
+                                 format={"DD/MM/YYYY"}
+                                 // fullWidth
+                                 value={dayjs(fechaFin) || null}
+                                 onChange={(date) => setFechaFin(dayjs(date).format("YYYY-MM-DD"))}
                                  // error={!!errors[name] && touched[name]}
                               />
                            </FormControl>
@@ -124,11 +136,7 @@ const Incumplimiento = ({}) => {
                   // por hacer  getUrl ={}
                   // refreshRequest ={}
                   //
-                  pagination={[2, 5, 10, 50, 75, 100]}  
-                  
-                  
-
-                  
+                  pagination={[2, 5, 10, 50, 75, 100]}
                   //  conditionExistEditButton={["Status !='Terminada'"]}
                   speakRow
                   // conditionExistDeleteButton={["Status !='Terminada'"]}
