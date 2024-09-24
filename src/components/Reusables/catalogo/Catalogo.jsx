@@ -24,17 +24,18 @@ export const Catalogo = forwardRef(
          table = true,
          idTable,
          param = null,
+         filter = false
       },
       ref
    ) => {
-      const [loadForm,setLoadForm] = useState(false)
-      const [loading,setLoading] = useState(false)
+      const [loadForm, setLoadForm] = useState(false);
+      const [loading, setLoading] = useState(false);
       const submit = async (values, { resetForm }) => {
          ref.current, resetForm();
          try {
             let response;
             if (id > 0) {
-               response = await Axios.put(`${urlData}/update/${idTable=="id"?id:values[idTable]}`, values);
+               response = await Axios.put(`${urlData}/update/${idTable == "id" ? id : values[idTable]}`, values);
             } else {
                response = await Axios.post(`${urlData}/create`, values);
             }
@@ -44,19 +45,15 @@ export const Catalogo = forwardRef(
 
             return response.data;
          } catch (error) {
-            
             setId(0);
-            if(error.response.data.data.message){
-
+            if (error.response.data.data.message) {
                Error(error.response.data.data.message);
-            }
-            else if (error.message == "Network Error") {
+            } else if (error.message == "Network Error") {
                Error("Comunicate al aerea de sistemas");
             } else if (error.message == "Request failed with status code 400") {
                Error("Ocurrio un error");
             } else {
                Error("Ocurrio un error");
-
             }
          }
          // resetForm()
@@ -64,18 +61,15 @@ export const Catalogo = forwardRef(
       const [data, setData] = useState([]);
       const init = async () => {
          setLoading(true);
-         setData(await GetAxios(`${urlData}/index${param? '/' + param:''}`));
+         setData(await GetAxios(`${urlData}/index${param ? "/" + param : ""}`));
          setLoading(false);
-
       };
       useEffect(() => {
          init();
-         setLoadForm(true)
+         setLoadForm(true);
       }, []);
 
-      useEffect(() => {
-
-      }, [children]);
+      useEffect(() => {}, [children]);
 
       const handleDelete = async (row) => {
          try {
@@ -95,15 +89,14 @@ export const Catalogo = forwardRef(
          }
       };
       const ChildWrapper = () => {
-
          // Determinar si el id es mayor o menor que 0
          const isPositive = id < 1;
 
          // Clonar el children y pasarle la prop adicional
-         return cloneElement(children, { action:isPositive });
+         return cloneElement(children, { action: isPositive });
       };
       return (
-         <Paper  key={catalogo} elevation={12} sx={{ padding: "2rem", marginRight: "3rem", marginBottom: "3rem" }}>
+         <Paper key={catalogo} elevation={12} sx={{ padding: "2rem", marginRight: "3rem", marginBottom: "3rem" }}>
             <Grid container spacing={4}>
                <Grid item xs={12} xl={table ? 6 : 12}>
                   <Box
@@ -125,10 +118,8 @@ export const Catalogo = forwardRef(
                         submit={submit}
                         messageButton={messageButton}
                      >
-                        <Ngif condition={loadForm}>
-                          {children}
-                        </Ngif>
-                        <Box width={'100%'} padding={'1.5em'}></Box>
+                        <Ngif condition={loadForm}>{children}</Ngif>
+                        <Box width={"100%"} padding={"1.5em"}></Box>
                      </FormikForm>
                   </Box>
                </Grid>
@@ -148,7 +139,7 @@ export const Catalogo = forwardRef(
                      >
                         <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
                            <DataTable
-                              // filter={true}
+                              filter={filter}
                               // speakRow
                               loading={loading}
                               handleEdit={handleEdit}

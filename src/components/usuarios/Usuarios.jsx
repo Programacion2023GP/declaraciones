@@ -14,6 +14,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
    const { roles, intengrantes, adscripcion } = peticiones;
    const key = "Id_User";
    const table = true;
+   const filterColumns = true;
    const title = "Registro de usuarios";
    const urlData = "usuarios";
    const parameter =parseInt(localStorage.getItem("Id_Person"));
@@ -139,6 +140,6 @@ const Usuarios = ({ formik, setId, peticiones }) => {
    };
    const headersDatable = ["Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Rol", "Puesto"];
    const dataHiddenDatable = ["Id_User", "Email", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion", "Gender"];
-   return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key,parameter };
+   return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key,parameter,filterColumns };
 };
 export default Usuarios;
