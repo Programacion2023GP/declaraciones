@@ -410,6 +410,7 @@ const DataTable = ({
    };
 
    const applyFilters = (page = null) => {
+      
       const filters = data.filter((item) => {
          return Object.entries(objectValues).every(([col, val]) => {
             if (dataHidden.includes(col)) {
@@ -420,6 +421,8 @@ const DataTable = ({
             return itemValue.includes(filterValue);
          });
       });
+
+         // console.log(filters)
       if (page > 0) {
          modifiedData(filters, page);
       } else {
@@ -647,16 +650,23 @@ const DataTable = ({
       // if (dataFilter.length == 0) {
       //    setDataFilter(data);
       // }
-      const init = () => {
-         if (Object.keys(objectValues).length !== 0) {
-            applyFilters(objectValues);
-         } else {
-            modifiedData(dataFilter);
-         }
-      };
-      init();
+      
       setNumberShowPage(1);
    }, [selectRow, pagination, headers, objectValues, dataFilter]);
+
+   useEffect(()=>{
+      modifiedData(dataFilter);
+
+
+   },[dataFilter])
+
+   useEffect(()=>{
+
+      if (Object.keys(objectValues).length !== 0) {
+         applyFilters(objectValues);
+      }
+
+   },[objectValues])
    useEffect(() => {}, [loading, Trbacground, responsive]);
    useEffect(() => {
       setDataFilter(data);
