@@ -84,7 +84,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       return (
          <>
             <Ngif condition={roles.length > 0 && intengrantes.length > 0 && adscripcion.length > 0}>
-               <Text col={6} name={"Nomina"} label={"N° de Nomina"} handleGetValue={handleNomina} />
+               <Text  type={'number'} col={6} name={"Nomina"} label={"N° de Nomina"} handleGetValue={handleNomina} />
                <Text col={6} disabled={true} name={"Name"} label={"Nombre(s)"} />
                <Text col={6} disabled={true} name={"PaternalSurname"} label={"Apellido Paterno"} />
                <Text col={6} disabled={true} name={"MaternalSurname"} label={"Apellido Materno"} />
@@ -129,8 +129,10 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       );
    };
    const handleEdit = (row) => {
+      console.log(row)
       formik.current.resetForm();
       formik.current.setValues(row);
+      
       setId(row.Id_User);
 
       formik.current.setFieldValue("Id_Role", parseInt(row.Id_Role));

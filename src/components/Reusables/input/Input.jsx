@@ -44,7 +44,7 @@ export const Text = ({
       }
    };
    useEffect(() => {
-   
+      console.log(name, formik.values[name]);
    }, [name, formik.values[name]]);
 
    const errors = formik.errors;
@@ -83,13 +83,14 @@ export const Text = ({
                      <InputMask
                         mask={mask}
                         value={
-                           formik.values && formik.values[name] !== undefined
-                              ? type === "number" && formik.values[name] !== null
-                                 ? formik.values[name].toString().replace(/^0+(?=\d)/, "")
-                                 : formik.values[name]
-                              : type === "number" && !isNaN(parseInt(formik.values[name]))
-                                ? parseInt(formik.values[name])
-                                : ""
+                           formik.values && formik.values[name] !== undefined && formik.values[name] !== null
+                           ? type === "number" && formik.values[name] !== null
+                             ? formik.values[name].toString().replace(/^0+(?=\d)/, "")
+                             : formik.values[name]
+                           : type === "number" && !isNaN(parseInt(formik.values[name]))
+                             ? parseInt(formik.values[name])
+                             : "" // Mostrar vacío si el valor es null o undefined
+                         
                         }
                         onInput={(e) => {
                            textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, name, textStyleCase) : null;
@@ -125,13 +126,13 @@ export const Text = ({
                   type={type == null ? "text" : type}
                   variant="outlined"
                   value={
-                     formik.values && formik.values[name] !== undefined
+                     formik.values && formik.values[name] !== undefined && formik.values[name] !== null
                         ? type === "number" && formik.values[name] !== null
                            ? formik.values[name].toString().replace(/^0+(?=\d)/, "")
                            : formik.values[name]
                         : type === "number" && !isNaN(parseInt(formik.values[name]))
                           ? parseInt(formik.values[name])
-                          : ""
+                          : "" // Mostrar vacío si el valor es null o undefined
                   }
                   // type === "number" && !isNaN(parseInt(formik.values[name])) && parseInt(formik.values[name]) === 0 ?0
                   onChange={formik.handleChange}
