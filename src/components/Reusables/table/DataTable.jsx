@@ -423,11 +423,13 @@ const DataTable = ({
       });
 
          // console.log(filters)
-      if (page > 0) {
-         modifiedData(filters, page);
-      } else {
-         modifiedData(filters);
-      }
+               setDataFilter(filters);
+
+      // if (page > 0) {
+      //    modifiedData(filters, page);
+      // } else {
+      //    modifiedData(filters);
+      // }
    };
    const applyfilterGlobal = (data, page = null) => {
       setDataFilter(data);

@@ -365,7 +365,8 @@ const MisDeclaraciones = ({}) => {
          .replace(/[óöòôõ]/gi, "o") // Reemplaza todas las variaciones de "o"
          .replace(/[úüùû]/gi, "u") // Reemplaza todas las variaciones de "u"
          .replace(/[^a-zA-Z0-9Ññ]/g, "") // Remueve caracteres especiales y espacios
-         .replace(/\s+/g, ""); // Remueve cualquier espacio extra
+         .replace(/\s+/g, "") // Remueve cualquier espacio extra
+         .replace(/\./g, ""); // Remueve todos los puntos
 
       return mayusc.toUpperCase(); // Convierte todo a mayúsculas
    };

@@ -1,6 +1,6 @@
 import { Box, Button, Card, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import DataTable from "../../Reusables/table/DataTable";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GetAxios } from "../../../services/services";
 // import { MenuItem } from "react-pro-sidebar";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -13,6 +13,7 @@ const Incumplimiento = ({}) => {
    const [loading, setLoading] = useState(false);
    const [fecha, setFecha] = useState("");
    const [fechaFin, setFechaFin] = useState("");
+   const parent = useRef(null);
 
    const [plazo, setPlazo] = useState("Inicial");
    const handleChange = (newValue) => {
@@ -70,8 +71,9 @@ const Incumplimiento = ({}) => {
    return (
       <>
          <Card sx={{ maxWidth: "95%", margin: "auto" }}>
-            <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
+            <Box sx={{ minWidth: "100%", overflow: "auto" }}>
                <DataTable
+                  parent={parent}
                   options={["CHARTS", "EXCEL"]}
                   // , "PDF",
                   //  moreButtons={moreButtons}
@@ -138,7 +140,7 @@ const Incumplimiento = ({}) => {
                   //
                   pagination={[2, 5, 10, 50, 75, 100]}
                   //  conditionExistEditButton={["Status !='Terminada'"]}
-                  speakRow
+                  // speakRow
                   // conditionExistDeleteButton={["Status !='Terminada'"]}
                   // options={true}
                />

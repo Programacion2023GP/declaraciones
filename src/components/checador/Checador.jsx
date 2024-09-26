@@ -1,6 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import DataTable, { Modal } from "../Reusables/table/DataTable";
-import { Box, Card, Grid, Typography, Button, IconButton, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import {
+   Box,
+   Card,
+   Grid,
+   Typography,
+   Button,
+   IconButton,
+   FormControl,
+   InputLabel,
+   Select,
+   MenuItem,
+   Alert,
+   Dialog,
+   DialogActions,
+   DialogContent
+} from "@mui/material";
 import { Request } from "../Reusables/request/Request";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Axios, GetAxios, PostAxios } from "../../services/services";
@@ -142,6 +157,7 @@ const Checador = ({}) => {
    const [btnDownloadRef, setBtnDownloadRef] = useState(false);
    const [ejercio, setEjercio] = useState(new Date().getFullYear());
    const [trimestre, setTrimestre] = useState("Enero - Marzo");
+   const [openDialog, setOpenDialog] = useState(false);
    const existPeticiones = (peticiones) => {
       let count = 0;
       if (peticiones) {
@@ -719,7 +735,8 @@ const Checador = ({}) => {
          .replace(/[óöòôõ]/gi, "o") // Reemplaza todas las variaciones de "o"
          .replace(/[úüùû]/gi, "u") // Reemplaza todas las variaciones de "u"
          .replace(/[^a-zA-Z0-9Ññ]/g, "") // Remueve caracteres especiales y espacios
-         .replace(/\s+/g, ""); // Remueve cualquier espacio extra
+         .replace(/\s+/g, "") // Remueve cualquier espacio extra
+         .replace(/\./g, ""); // Remueve todos los puntos
 
       return mayusc.toUpperCase(); // Convierte todo a mayúsculas
    };
@@ -749,7 +766,7 @@ const Checador = ({}) => {
                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)"
             }}
          >
-            <Card  sx={{ maxWidth: "100%", margin: "auto" }}>
+            <Card sx={{ maxWidth: "100%", margin: "auto" }}>
                <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
                   {/* <select name="" id="">
                      <option selected value="2024">2024</option>
@@ -783,19 +800,49 @@ const Checador = ({}) => {
                         locale={es} // Configura el locale en español
                      />
                   </div> */}
+                   <Dialog
+                              open={openDialog}
+                              onClose={() => {
+                                 setOpenDialog(false);
+                              }}
+                           >
+                              <DialogContent>
+                                 
+
+                                 <Filters data={obtenerAnios()} title="Ejercicio" setFilter={setEjercio} filter={ejercio} />
+                                 <Filters
+                                    data={["Enero - Marzo", "Abril - Junio", "Julio - Septiembre", "Octubre - Diciembre"]}
+                                    title="Trimestre"
+                                    setFilter={setTrimestre}
+                                    filter={trimestre}
+                                 />
+                              </DialogContent>
+                              <DialogActions>
+                                 <Button onClick={handleClickButtonMasive}>Descargar</Button>
+                                 <Button
+                                    onClick={() => {
+                                       setOpenDialog(false);
+                                    }}
+                                    autoFocus
+                                 >
+                                    Salir
+                                 </Button>
+                              </DialogActions>
+                           </Dialog>
                   <DataTable
                      parent={parent}
                      captionFilters={
                         <>
-                           <Filters data={obtenerAnios()} title="Ejercicio" setFilter={setEjercio} filter={ejercio} />
-                           <Filters
-                              data={["Enero - Marzo", "Abril - Junio", "Julio - Septiembre", "Octubre - Diciembre"]}
-                              title="Trimestre"
-                              setFilter={setTrimestre}
-                              filter={trimestre}
-                           />
-                           <Button size="small" variant="outlined" color="primary" onClick={handleClickButtonMasive}>
-                              Descarga masiva de testadas
+                          
+                           <Button
+                              size="small"
+                              variant="outlined"
+                              color="primary"
+                              onClick={() => {
+                                 setOpenDialog(true);
+                              }}
+                           >
+                              Descarga masiva
                            </Button>
                         </>
                      }
