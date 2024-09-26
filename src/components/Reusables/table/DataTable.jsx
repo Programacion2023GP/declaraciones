@@ -386,7 +386,8 @@ const DataTable = ({
    const [line, setLine] = useState(null);
    const [responsive, setResponsive] = useState(10000);
    const handleSeparateData = async (option) => {
-      modifiedData(dataFilter);
+      // modifiedData(dataFilter);
+      console.log(option);
       setSelectRow(option);
    };
    const handleDeleteSecurity = (item) => {
@@ -660,7 +661,7 @@ const DataTable = ({
       modifiedData(dataFilter);
 
 
-   },[dataFilter])
+   },[dataFilter,selectRow])
 
    useEffect(()=>{
 
