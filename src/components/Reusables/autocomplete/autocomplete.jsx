@@ -130,7 +130,8 @@ export const AutoComplete = ({
    // }, [options, formik.values[name]]);
    const [dataOptions, setDataOptions] = useState([]);
    useEffect(() => {
-      isNaN(name, formik.values[name]) && setLabelValue("Selecciona una opción...");
+      console.log(name, formik.values[name])
+      isNaN( formik.values[name]) && setLabelValue("Selecciona una opción...");
       Number(formik.values[name]) == 0 && setLabelValue("Selecciona una opción...");
       if (Array.isArray(options) && options.length > 0) {
          setDataOptions([{ id: 0, [fielValue]: "Selecciona una opción..." }, ...options]);

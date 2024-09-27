@@ -17,7 +17,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
    const filterColumns = true;
    const title = "Registro de usuarios";
    const urlData = "usuarios";
-   const parameter =parseInt(localStorage.getItem("Id_Person"));
+   const parameter = parseInt(localStorage.getItem("Id_Person"));
    const validator = {
       Name: Yup.string("El formato es texto").required("El nombre es requerido"),
       Email: Yup.string("El formato es texto").required("El correo es requerido"),
@@ -30,7 +30,8 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       Id_TipoIntegrante: Yup.number("el valor es numerico").min(1, "El tipo de integrante es requerido").required("El tipo de integrante es requerido"),
       ClaseNivelPuesto: Yup.string("el formato es texto").required("El Clase o nivel del puesto es requerido"),
       Id_Role: Yup.number("el formato es numerico").min(1, "El tipo de rol es requerido").required("El tipo de rol es requerido"),
-      AreaAdscripcion: Yup.number("el formato es numerico").min(1, "El tipo de adscripcion es requerido").required("El tipo de adscripcion es requerido")
+      AreaAdscripcion: Yup.number("el formato es numerico").min(1, "El tipo de adscripcion es requerido").required("El tipo de adscripcion es requerido"),
+      organismo: Yup.string("El formato es texto").required("El organismo es requerido")
    };
    const initialState = {
       Nomina: 0,
@@ -44,7 +45,8 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       DenominacionPuesto: "",
       Id_TipoIntegrante: 0,
       ClaseNivelPuesto: "",
-      Id_Role: 0
+      Id_Role: 0,
+      organismo: ""
    };
    const handleNomina = async (name, value) => {
       if (value === "999999") {
@@ -84,7 +86,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       return (
          <>
             <Ngif condition={roles.length > 0 && intengrantes.length > 0 && adscripcion.length > 0}>
-               <Text  type={'number'} col={6} name={"Nomina"} label={"N° de Nomina"} handleGetValue={handleNomina} />
+               <Text type={"number"} col={6} name={"Nomina"} label={"N° de Nomina"} handleGetValue={handleNomina} />
                <Text col={6} disabled={true} name={"Name"} label={"Nombre(s)"} />
                <Text col={6} disabled={true} name={"PaternalSurname"} label={"Apellido Paterno"} />
                <Text col={6} disabled={true} name={"MaternalSurname"} label={"Apellido Materno"} />
@@ -109,6 +111,16 @@ const Usuarios = ({ formik, setId, peticiones }) => {
                <AutoComplete col={12} name={"Id_TipoIntegrante"} label={"Tipo de integrante del sujeto obligado"} options={intengrantes} />
                <AutoComplete
                   col={12}
+                  name={"organismo"}
+                  label={"Organismo"}
+                  options={[
+                     { id: "PR", text: "PR" },
+                     { id: "DIF", text: "DIF" },
+                     { id: "EXPOFERIA", text: "EXPOFERIA" }
+                  ]}
+               />
+               <AutoComplete
+                  col={12}
                   name={"ClaseNivelPuesto"}
                   label={"Clase o nivel del puesto"}
                   options={[
@@ -129,10 +141,10 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       );
    };
    const handleEdit = (row) => {
-      console.log(row)
+      console.log(row);
       formik.current.resetForm();
       formik.current.setValues(row);
-      
+
       setId(row.Id_User);
 
       formik.current.setFieldValue("Id_Role", parseInt(row.Id_Role));
@@ -141,7 +153,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       formik.current.setFieldValue("AreaAdscripcion", parseInt(row.AreaAdscripcion));
    };
    const headersDatable = ["Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Rol", "Puesto"];
-   const dataHiddenDatable = ["Id_User", "Email", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion", "Gender"];
-   return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key,parameter,filterColumns };
+   const dataHiddenDatable = ["Id_User", "Email", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion", "Gender",'organismo'];
+   return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key, parameter, filterColumns };
 };
 export default Usuarios;
