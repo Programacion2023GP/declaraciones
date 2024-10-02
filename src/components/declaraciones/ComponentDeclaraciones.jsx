@@ -272,11 +272,11 @@ const ComponentDeclaraciones = () => {
       return hoja > 14 && declaracion == 2 ? declaracionIntereses : filtered;
    });
 
-React.useEffect(()=>{
-   const filtered = steps.filter((step) => step.exist.includes(declaracion));
+   React.useEffect(() => {
+      const filtered = steps.filter((step) => step.exist.includes(declaracion));
 
-   setFiltersStepers( hoja > 14 && declaracion == 2 ? declaracionIntereses : filtered);
-},[hoja])
+      setFiltersStepers(hoja > 14 && declaracion == 2 ? declaracionIntereses : filtered);
+   }, [hoja]);
 
    const [view, setView] = React.useState(false);
 
@@ -289,8 +289,7 @@ React.useEffect(()=>{
       searchHoja();
       // setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
    }, [activeStep, declaracion]);
-   React.useEffect(() => {
-   }, [update, view]);
+   React.useEffect(() => {}, [update, view]);
    React.useEffect(() => {
       // Verificar si dataPage tiene datos válidos
 
@@ -386,7 +385,7 @@ React.useEffect(()=>{
          //? SI ESTAMOS EN LA PAGINA ACTUAL APAGA EL ACTUALIZAR Y CARGA LA INFO DE TU ANTERIOR DECLARACION
          // Verificar si la página después de la situación es el paso activo
          if (pageAfterSituacion === activeStep && propierty != "id_Intereses") {
-            if (parseInt(situacionPatrimonial[propiertyDb]) > 0) {
+            if (situacionPatrimonial?.propiertyDb && parseInt(situacionPatrimonial[propiertyDb].Id_SituacionPatrimonial) > 0) {
                const response = await GetAxios(
                   `${url}/index/${activeStep < 15 ? parseInt(situacionPatrimonial[propiertyDb]) : parseInt(localStorage.getItem("id_Intereses"))}`
                );

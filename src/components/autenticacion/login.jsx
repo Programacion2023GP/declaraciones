@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { Card, CardContent, CardMedia, Typography, Button, Box, Grid } from "@mui/material";
-import { Axios } from "../../services/services";
+import { Axios, GetAxios, PostAxios } from "../../services/services";
 
 import { Success, Error } from "../../toasts/toast";
 import { Email } from "../Reusables/email/Email";
@@ -13,12 +13,18 @@ import { Ngif } from "../Reusables/conditionals/Ngif";
 import Gomez from "../../assets/icons/logo-gpd.png";
 import Loading from "../Reusables/loading/Loading";
 import { Opacity } from "@mui/icons-material";
+import { Modal } from "../Reusables/table/DataTable";
+import { FormikForm } from "../Reusables/formik/FormikForm";
+import { Text } from "../Reusables/input/Input";
 // import { Card, CardContent, Typography, CardMedia, Button, Box } from '@mui/material';
 
 const Login = () => {
    const [messages, setMessages] = useState(false);
    const [loading, setLoading] = useState(false);
    const [loadingPost, setLoadingPost] = useState(false);
+   const [openModal, setOpenModal] = useState(false);
+   const [usuarios, setUsuarios] = useState([]);
+   const formik = useRef(null);
    const styles = {
       media: {
          margin: "auto",
@@ -33,10 +39,50 @@ const Login = () => {
       Email: Yup.string().email("Formato de correo electrónico inválido").required("El correo electrónico es obligatorio"),
       Password: Yup.string().min(6, "Debe contener al menos 6 caracteres la contraseña").required("La contraseña es obligatoria")
    });
+   const initialValues = {
+      Nomina: "",
+      Email: "",
+      Password: "",
+      Id_User: ""
+   };
+   const validationPassword = Yup.object().shape({
+      Nomina: Yup.string().required("El numero de nomina es requerido"),
+      Email: Yup.string().email("Formato de correo electrónico inválido").required("El correo electrónico es obligatorio"),
+      Password: Yup.string().min(6, "Debe contener al menos 6 caracteres la contraseña").required("La contraseña es obligatoria"),
+      Id_User: Yup.number().required("El numero de nomina es requerido")
+   });
+   const sumbitPassword = async (values) => {
+      try {
+         await Axios.post("usuarios/updatePassword", values);
+         Success("Contraseña actualizada correctamente");
+         setOpen(false);
+      } catch (error) {
+         console.error(error);
+         Error("Hubo un error al actualizar la contraseña");
+      }
+   };
+   const handleNomina = async (name, value) => {
+      if (value.length >= 6) {
+         const response = usuarios.filter((item) => item.Nomina == parseInt(value))[0];
+         const { Email, Id_User } = response || {};
+         formik.current.setFieldValue("Email", Email);
+         formik.current.setFieldValue("Id_User", Id_User);
+
+         if (!Email) {
+            Error("El numero de nomina no existe");
+         }
+      }
+   };
    useEffect(() => {
       // dispatch(locationAuth());
       dispatch(loginAuth());
-
+      const init = async () => {
+         const response = await GetAxios(`usuarios/index`);
+         if (response.length > 0) {
+            setUsuarios(response);
+         }
+      };
+      init();
       setLoading(true);
    }, []);
    return (
@@ -79,7 +125,6 @@ const Login = () => {
                                  localStorage.setItem("PaternalSurname", user.PaternalSurname);
                                  localStorage.setItem("MaternalSurname", user.MaternalSurname);
                                  localStorage.setItem("Sexo", user.Sexo);
-
 
                                  const checkLocalStorage = () => {
                                     return localStorage.getItem("Id_Role") !== null;
@@ -151,9 +196,32 @@ const Login = () => {
                                  <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
                                     Iniciar sesión
                                  </Button>
+                                 <a href="#" style={{ cursor: "pointer" }} onClick={() => setOpenModal(true)}>
+                                    ¿olvidaste tu contraseña?
+                                 </a>
                               </form>
                            )}
                         </Formik>
+                        <Modal
+                           openModal={openModal}
+                           setOpenModal={() => {
+                              setOpenModal(false);
+                           }}
+                        >
+                           <FormikForm
+                              ref={formik}
+                              messageButton={"Actualizar mi contraseña"}
+                              button
+                              initialValues={initialValues}
+                              validationSchema={validationPassword}
+                              submit={sumbitPassword}
+                           >
+                              <Text col={12} name={"Nomina"} label={"Numero de nomina"} handleGetValue={handleNomina} />
+                              <Text col={12} disabled={true} name={"Email"} type={"email"} label={"Correo electrónico"} />
+                              <Text col={12} name={"Password"} label={"Nueva contraseña"} type={"password"} />
+                              <Box style={{ margin: "2rem" }}></Box>
+                           </FormikForm>
+                        </Modal>
                      </CardContent>
                   </Card>
                </Box>

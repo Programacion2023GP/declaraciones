@@ -22,18 +22,26 @@ export const NivelGobierno = ({ nivelOrdenGobierno, ambitoPublico, nombreEntePub
       setOtroEntePublico(value == 5 ? true : false);
       dispatch(configValidationsEmpleo(value == 5 ? "OtroEntePublico" : "NoOtroEntePublico"));
       handleActive(value == 5 ? true : false);
-
-    
-      const id = parseInt(nombreEntePublico.filter((it) => it.text.trim() == value.trim())[0].organismo);
-      setEmpleos(await GetAxios(`empleos/show/${adscripcionOrganismo.filter((item) => (item.text = id))[0].organismo}`));
+      console.log(value)
+      // const id = parseInt(nombreEntePublico.filter((it) => it.text.trim() == value.trim())[0].organismo);
+      setEmpleos(await GetAxios(`empleos/show/${value}`));
    };
-   useEffect(() => {
-   }, [empleos]);
+   useEffect(() => {}, [empleos]);
    return (
       <Grid container spacing={1}>
          <AutoComplete col={6} label="Nivel / orden de gobierno" name="Id_NivelOrdenGobierno" options={nivelOrdenGobierno} />
          <AutoComplete col={6} label="Ámbito público" name="Id_AmbitoPublico" options={ambitoPublico} />
-         <AutoComplete col={12} label="Nombre del ente público" name="NombreEntePublico" options={nombreEntePublico} handleGetValue={handleGetValue} />
+         <AutoComplete
+            col={12}
+            label="Nombre del ente público"
+            name="NombreEntePublico"
+            options={[
+               { id: "PR", text: "PR" },
+               { id: "DIF", text: "DIF" },
+               { id: "EXPOFERIA", text: "EXPOFERIA" }
+            ]}
+            handleGetValue={handleGetValue}
+         />
          <Ngif condition={otroEntePublico}>
             <Text textStyleCase={true} col={12} name="OtroEntePublico" label="Especifica el ente público" placeholder={"Especifica el ente público"} />
          </Ngif>

@@ -4,7 +4,7 @@ import { AutoComplete } from "../../Reusables/autocomplete/autocomplete";
 import Loading from "../../Reusables/loading/Loading";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 const Empleos = ({ formik, setId, peticiones }) => {
-   const { organismo } = peticiones;
+   const { empleos } = peticiones;
    const table = true;
 
    const title = "Formulario de Empleos";
@@ -21,7 +21,7 @@ const Empleos = ({ formik, setId, peticiones }) => {
    };
 
    const handleEdit = (row) => {
-      formik.current.setFieldValue("organismo", row["organismo"]);
+      formik.current.setFieldValue("organismo", row?.organismo);
 
       formik.current.setFieldValue("valor", row["text"]);
       setId(row.id);
@@ -30,13 +30,22 @@ const Empleos = ({ formik, setId, peticiones }) => {
    const Form = () => {
       return (
          <>
-            <Ngif condition={organismo.length > 0}>
-               <AutoComplete col={12} name={"organismo"} label={"Área de adscripción"} options={organismo} />
+            <Ngif condition={empleos.length > 0}>
+               <AutoComplete
+                  col={12}
+                  name={"organismo"}
+                  label={"Organismo"}
+                  options={[
+                     { id: "PR", text: "PR" },
+                     { id: "DIF", text: "DIF" },
+                     { id: "EXPOFERIA", text: "EXPOFERIA" }
+                  ]}
+               />
 
                <Text col={12} name={"valor"} label={"Escribe la Empleos"} />
             </Ngif>
 
-            <Ngif condition={organismo.length < 1}>
+            <Ngif condition={empleos.length < 1}>
                <Loading />
             </Ngif>
          </>
