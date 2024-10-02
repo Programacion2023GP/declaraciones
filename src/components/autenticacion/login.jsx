@@ -55,7 +55,8 @@ const Login = () => {
       try {
          await Axios.post("usuarios/updatePassword", values);
          Success("Contraseña actualizada correctamente");
-         setOpen(false);
+         formik.current.resetForm();
+         setOpenModal(false);
       } catch (error) {
          console.error(error);
          Error("Hubo un error al actualizar la contraseña");

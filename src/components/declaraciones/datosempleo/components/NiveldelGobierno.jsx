@@ -45,7 +45,7 @@ export const NivelGobierno = ({ nivelOrdenGobierno, ambitoPublico, nombreEntePub
          <Ngif condition={otroEntePublico}>
             <Text textStyleCase={true} col={12} name="OtroEntePublico" label="Especifica el ente público" placeholder={"Especifica el ente público"} />
          </Ngif>
-         <AutoComplete col={12} label="Área de adscripción" name="AreaAdscripcion" options={adscripcion} handleGetValue={handleGetValue} />
+         <AutoComplete col={12} label="Área de adscripción" name="AreaAdscripcion" options={adscripcion} />
 
          {/* <Text
             textStyleCase={true}

@@ -39,6 +39,7 @@ import { Representacion } from "../interes/components/representacion/Representac
 import { Clientes } from "../interes/components/clientes/Clientes";
 import { BeneficiosPrivados } from "../interes/components/beneficiosprivados/BeneficiosPrivados";
 import { Fideocomisos } from "../interes/components/fideocomisos/Fideocomisos";
+import Swal from 'sweetalert2';
 
 // Importa aquí los componentes correspondientes a cada paso
 
@@ -72,10 +73,27 @@ const ComponentDeclaraciones = () => {
    };
 
    const exit = () => {
-      dispatch(locationAuth());
-      localStorage.removeItem("id_Intereses");
-      localStorage.removeItem("id_SituacionPatrimonial");
-      window.location.hash = "/dashboard/misdeclaraciones";
+      // Mostrar alerta de confirmación
+      Swal.fire({
+         title: "¿Estás seguro?",
+         text: "Has finalizado tu declaración. ¿Estás seguro de que deseas salir?",
+         icon: "warning",
+         showCancelButton: true,
+         confirmButtonColor: "#3085d6",
+         cancelButtonColor: "#d33",
+         confirmButtonText: "Sí, salir",
+         cancelButtonText: "Cancelar"
+      }).then((result) => {
+         if (result.isConfirmed) {
+            // Si el usuario confirma, ejecutar el código de salida
+            dispatch(locationAuth());
+            localStorage.removeItem("id_Intereses");
+            localStorage.removeItem("id_SituacionPatrimonial");
+            window.location.hash = "/dashboard/misdeclaraciones";
+
+            Swal.fire("¡Saliste!", "Has finalizado tu declaración.", "success");
+         }
+      });
    };
    // const comparationData = (step) => {};
    // Método para manejar el paso anterior
@@ -385,7 +403,8 @@ const ComponentDeclaraciones = () => {
          //? SI ESTAMOS EN LA PAGINA ACTUAL APAGA EL ACTUALIZAR Y CARGA LA INFO DE TU ANTERIOR DECLARACION
          // Verificar si la página después de la situación es el paso activo
          if (pageAfterSituacion === activeStep && propierty != "id_Intereses") {
-            if (situacionPatrimonial?.propiertyDb && parseInt(situacionPatrimonial[propiertyDb].Id_SituacionPatrimonial) > 0) {
+            if (situacionPatrimonial && parseInt(situacionPatrimonial?.Id_SituacionPatrimonial) > 0) {
+               console.log("adentro");
                const response = await GetAxios(
                   `${url}/index/${activeStep < 15 ? parseInt(situacionPatrimonial[propiertyDb]) : parseInt(localStorage.getItem("id_Intereses"))}`
                );
