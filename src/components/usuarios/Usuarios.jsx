@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { GetAxios } from "../../services/services";
 import { Error } from "../../toasts/toast";
 import { AutoComplete } from "../Reusables/autocomplete/autocomplete";
@@ -11,7 +11,7 @@ import { Request } from "../Reusables/request/Request";
 import * as Yup from "yup";
 
 const Usuarios = ({ formik, setId, peticiones }) => {
-   const { roles, intengrantes, adscripcion } = peticiones;
+   const { roles, intengrantes, adscripcion, empleos } = peticiones;
    const key = "Id_User";
    const table = true;
    const filterColumns = true;
@@ -80,9 +80,30 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       formik.current.setFieldValue("MaternalSurname", "");
       formik.current.setFieldValue("DenominacionPuesto", "");
    };
+   const CargoPuesto = (name, value) => {
+      formik.current.setFieldValue("DenominacionCargo", value);
+   };
+   const handleEdit = (row) => {
+      // formik.current.setFieldValue("DenominacionCargo", "");
+      formik.current.resetForm();
+      formik.current.setValues(row);
+      setId(row.Id_User);
+      formik.current.setFieldValue("Id_Role", parseInt(row.Id_Role));
+      formik.current.setFieldValue("Id_TipoIntegrante", parseInt(row.Id_TipoIntegrante));
+      formik.current.setFieldValue("ClaseNivelPuesto", parseInt(row.ClaseNivelPuesto));
+      formik.current.setFieldValue("AreaAdscripcion", parseInt(row.AreaAdscripcion));
+      formik.current.setFieldValue("DenominacionCargo", parseInt(row?.AreaAdscripcion));
+      formik.current.setFieldValue("DenominacionPuesto", parseInt(row?.DenominacionPuesto));
 
+   };
    const Form = () => {
+   
       useEffect(() => {}, []);
+      const [dataEmpleos, setDataEmpleos] = useState(empleos);
+      const handleEmpleos = (name, value) => {
+          setDataEmpleos(empleos.filter(item => item.organismo ==value))
+      };
+   
       return (
          <>
             <Ngif condition={roles.length > 0 && intengrantes.length > 0 && adscripcion.length > 0}>
@@ -118,6 +139,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
                      { id: "DIF", text: "DIF" },
                      { id: "EXPOFERIA", text: "EXPOFERIA" }
                   ]}
+                  handleGetValue={handleEmpleos}
                />
                <AutoComplete
                   col={12}
@@ -129,10 +151,10 @@ const Usuarios = ({ formik, setId, peticiones }) => {
                      { id: 3, text: "3 Operativos(secretaría,auxiliares,limpieza,administrativos,veladores,chofer,intendencia,fajineros, etc.)." }
                   ]}
                />
-               <AutoComplete col={12} name={"AreaAdscripcion"} label={"Área de adscripción"} options={adscripcion} />
+               <AutoComplete col={12} name={"AreaAdscripcion"} label={"Área de adscripción"} options={adscripcion} handleGetValue={CargoPuesto} />
 
-               <Text col={12} label={"Denominación del cargo"} name={"DenominacionCargo"} />
-               <Text col={12} label={"Denominación del puesto"} name={"DenominacionPuesto"} />
+               <AutoComplete col={12} label={"Denominación del cargo"} name={"DenominacionCargo"} disabled={true} options={adscripcion} />
+               <AutoComplete col={12} label={"Denominación del puesto"} name={"DenominacionPuesto"}  disabled={dataEmpleos.length ==0}  options={dataEmpleos}/>
             </Ngif>
             <Ngif condition={roles.length < 1 || intengrantes.length < 1 || adscripcion.length < 1}>
                <Loading />
@@ -140,20 +162,9 @@ const Usuarios = ({ formik, setId, peticiones }) => {
          </>
       );
    };
-   const handleEdit = (row) => {
-      console.log(row);
-      formik.current.resetForm();
-      formik.current.setValues(row);
-
-      setId(row.Id_User);
-
-      formik.current.setFieldValue("Id_Role", parseInt(row.Id_Role));
-      formik.current.setFieldValue("Id_TipoIntegrante", parseInt(row.Id_TipoIntegrante));
-      formik.current.setFieldValue("ClaseNivelPuesto", parseInt(row.ClaseNivelPuesto));
-      formik.current.setFieldValue("AreaAdscripcion", parseInt(row.AreaAdscripcion));
-   };
-   const headersDatable = ["Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Rol", "Puesto"];
-   const dataHiddenDatable = ["Id_User", "Email", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion", "Gender",'organismo'];
+   
+   const headersDatable = ["Nomina", "Nombre", "Apellido Paterno", "Nombre Completo", "Apellido Materno", "Rol"];
+   const dataHiddenDatable = ["Id_User", "Email", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion", "Gender", "organismo","DenominacionPuesto"];
    return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key, parameter, filterColumns };
 };
 export default Usuarios;

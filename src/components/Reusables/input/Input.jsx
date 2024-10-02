@@ -44,7 +44,6 @@ export const Text = ({
       }
    };
    useEffect(() => {
-      console.log(name, formik.values[name]);
    }, [name, formik.values[name]]);
 
    const errors = formik.errors;

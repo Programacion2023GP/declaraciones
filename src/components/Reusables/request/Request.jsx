@@ -45,7 +45,7 @@ export const Request = ({ peticiones = [] }) => {
    const [tipoBeneficios, setTipoBeneficios] = useState([]);
    const [tipoFideocomisos, setTipoFideocomisos] = useState([]);
    const [organismo, setOrganismo] = useState([]);
-
+    const [empleos,setEmpleos] = useState([]);
    // usuarios form
    const [intengrantes, setIntengrantes] = useState([]);
    const [roles, setRoles] = useState([]);
@@ -55,6 +55,7 @@ export const Request = ({ peticiones = [] }) => {
    useEffect(() => {
       const responses = async () => {
          peticiones.includes("adscripcionOrganismo") && setAdscripcionOrganismo(await GetAxios("adscripcion/index"));
+         peticiones.includes("empleos") && setEmpleos(await GetAxios("empleos/index"));
 
          peticiones.includes("sectores") && setSectores(await GetAxios("sector/show"));
          peticiones.includes("instituciones") && setInstituciones(await GetAxios("tipoinstituciones/show"));
@@ -152,6 +153,7 @@ export const Request = ({ peticiones = [] }) => {
       tipoBeneficios,
       tipoFideocomisos,
       organismo,
-      adscripcionOrganismo
+      adscripcionOrganismo,
+      empleos
    };
 };

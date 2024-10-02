@@ -27,7 +27,8 @@ import TipoAdeudo from "../components/TipoAdeudo";
 import Empleos from "../components/Empleos";
 export const Create = ({ catalogo, formik, peticiones }) => {
    const [id, setId] = useState(0);
-   useEffect(() => {}, [formik.current == undefined]);
+   useEffect(() => {
+   }, [formik.current == undefined]);
    const methods = [
       { key: "usuarios", instance: Usuarios },
       { key: "estadocivil", instance: EstadoCivil },
