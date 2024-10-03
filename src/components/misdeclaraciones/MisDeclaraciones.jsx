@@ -502,7 +502,16 @@ const MisDeclaraciones = ({}) => {
                   formTitle={"OFICIO DE VALES"}
                   watermark={"Declaracion"}
                >
-                  <PagePdf title={"DATOS GENERALES"} data={datosGenerales}>
+                  <PagePdf
+                     title={`I. DATOS GENERALES  ${
+                        selectedDeclaracion == 1 || selectedDeclaracion == 3
+                           ? "INICIAL"
+                           : selectedDeclaracion == 2 || selectedDeclaracion == 4
+                             ? "MODIFICACION"
+                             : "CONCLUSION"
+                     }`}
+                     data={datosGenerales}
+                  >
                      <DatosGenerales
                         data={datosGenerales}
                         estadocivil={estadocivil}
@@ -516,14 +525,14 @@ const MisDeclaraciones = ({}) => {
                         message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
                      />
                   </PagePdf>
-                  <PagePdf title={"DOMICILIO DEL DECLARANTE"}>
+                  <PagePdf title={"II. DOMICILIO DEL DECLARANTE"}>
                      <DomiDeclarante data={domiciliioDeclarante} municipios={municipios} entidades={entidades} paises={paises} testada={tester} />
                      <Notas
                         testada={tester}
                         message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
                      />
                   </PagePdf>
-                  <PagePdf title={"DATOS CURRICULARES DEL DECLARANTE"}>
+                  <PagePdf title={"III. DATOS CURRICULARES DEL DECLARANTE"}>
                      <DatosCurriculares
                         data={datosCurriculares}
                         nivelEstudios={nivelEstudios}
@@ -532,7 +541,7 @@ const MisDeclaraciones = ({}) => {
                         testada={tester}
                      />
                   </PagePdf>
-                  <PagePdf title={"DATOS DEL EMPLEO CARGO O COMISIÓN"}>
+                  <PagePdf title={"IV. DATOS DEL EMPLEO CARGO O COMISIÓN"}>
                      <DatosEmpleoCargo
                         testada={tester}
                         data={datosEmpleos}
@@ -543,11 +552,11 @@ const MisDeclaraciones = ({}) => {
                         paises={paises}
                      />
                   </PagePdf>
-                  <PagePdf title={"EXPERIENCIA LABORAL"}>
+                  <PagePdf title={"V. EXPERIENCIA LABORAL"}>
                      <ExperienciaLaboral data={experienciaLaboral} ambitopublico={ambitoPublico} testada={tester} />
                   </PagePdf>
                   <Ngif condition={selectedDeclaracion < 4}>
-                     <PagePdf title={"DATOS DE LA PAREJA"}>
+                     <PagePdf title={"VI. DATOS DE LA PAREJA"}>
                         <DatosPareja data={datosPareja} relacion={relacion} testada={tester} />
                         <Notas
                            testada={tester}
@@ -556,7 +565,7 @@ const MisDeclaraciones = ({}) => {
                      </PagePdf>
                      <Ngif condition={datosDependienteEconomicos.length > 0}>
                         {datosDependienteEconomicos.map((item, index) => (
-                           <PagePdf key={item.Id_DatosDependienteEconomico} title={"DATOS DEL DEPENDIENTE ECONOMICO"}>
+                           <PagePdf key={item.Id_DatosDependienteEconomico} title={"VII. DATOS DEL DEPENDIENTE ECONOMICO"}>
                               <DependientesEconomicos data={[item]} relacion={relacion} testada={tester} />
                               <Notas
                                  testada={tester}
@@ -566,7 +575,7 @@ const MisDeclaraciones = ({}) => {
                         ))}
                      </Ngif>
                      <Ngif condition={datosDependienteEconomicos.length === 0}>
-                        <PagePdf title={"DATOS DEL DEPENDIENTE ECONOMICO       (NINGUNO)"}>
+                        <PagePdf title={"VII. DATOS DEL DEPENDIENTE ECONOMICO       (NINGUNO)"}>
                            <Notas
                               testada={tester}
                               message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
@@ -575,7 +584,7 @@ const MisDeclaraciones = ({}) => {
                      </Ngif>
                   </Ngif>
 
-                  <PagePdf title={"INGRESOS NETOS DEL DECLARANTE, PAREJA Y/O DEPENDIENTES ECONÓMICOS"}>
+                  <PagePdf title={`${selectedDeclaracion > 3 ? "VI" : "VIII"}. INGRESOS NETOS DEL DECLARANTE, PAREJA Y/O DEPENDIENTES ECONÓMICOS`}>
                      <IngresosNetos
                         data={ingresosNetos}
                         tipo_declaracion={selectedDeclaracion}
@@ -589,14 +598,14 @@ const MisDeclaraciones = ({}) => {
                      />
                   </PagePdf>
                   <Ngif condition={selectedDeclaracion == 2}>
-                     <PagePdf title={"¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? NO"}>
+                     <PagePdf title={"IX. ¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? NO"}>
                         <ServidorPublico data={servidorPublico} instrumentos={instrumentos} bienenAjenacion={bienenAjenacion} testada={tester} />
                      </PagePdf>
                   </Ngif>
                   <Ngif condition={selectedDeclaracion < 4}>
                      <Ngif condition={bienesInmuebles.length > 0}>
                         {bienesInmuebles.map((item, index) => (
-                           <PagePdf key={index} title={"BIENES INMUEBLES"}>
+                           <PagePdf key={index} title={`${selectedDeclaracion != 2 ? "IX" : "X"}. BIENES INMUEBLES`}>
                               <BienesInmuebles
                                  data={[item]}
                                  inmuebles={inmuebles}
@@ -616,7 +625,7 @@ const MisDeclaraciones = ({}) => {
                         ))}
                      </Ngif>
                      <Ngif condition={bienesInmuebles.length === 0}>
-                        <PagePdf title={"BIENES INMUEBLES      (NINGUNO)"}>
+                        <PagePdf title={`${selectedDeclaracion != 2 ? "IX" : "X"}. BIENES INMUEBLES      (NINGUNO)`}>
                            <Notas
                               testada={tester}
                               message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
@@ -626,7 +635,7 @@ const MisDeclaraciones = ({}) => {
 
                      <Ngif condition={tpVehiculos.length > 0}>
                         {tpVehiculos.map((item, index) => (
-                           <PagePdf key={index} title={"VEHÍCULOS"}>
+                           <PagePdf key={index} title={`${selectedDeclaracion != 2 ? "X" : "XI"}. VEHÍCULOS`}>
                               <Vehiculos
                                  data={[item]}
                                  testada={tester}
@@ -645,7 +654,7 @@ const MisDeclaraciones = ({}) => {
                         ))}
                      </Ngif>
                      <Ngif condition={tpVehiculos.length === 0}>
-                        <PagePdf title={"VEHÍCULOS (NINGUNO)"}>
+                        <PagePdf title={`${selectedDeclaracion != 2 ? "X" : "XI"}. VEHÍCULOS (NINGUNO)`}>
                            <Notas
                               testada={tester}
                               message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
@@ -655,7 +664,7 @@ const MisDeclaraciones = ({}) => {
 
                      <Ngif condition={bienesMuebles.length > 0}>
                         {bienesMuebles.map((item, index) => (
-                           <PagePdf key={index} title={"BIENES MUEBLES"}>
+                           <PagePdf key={index} title={`${selectedDeclaracion != 2 ? "XI" : "XII"}. BIENES MUEBLES`}>
                               <BienesMuebles
                                  name={name}
                                  data={[item]}
@@ -676,7 +685,7 @@ const MisDeclaraciones = ({}) => {
                         ))}
                      </Ngif>
                      <Ngif condition={bienesMuebles.length === 0}>
-                        <PagePdf title={"BIENES MUEBLES (NINGUNO)"}>
+                        <PagePdf title={`${selectedDeclaracion != 2 ? "XI" : "XII"}. BIENES MUEBLES (NINGUNO)`}>
                            <Notas
                               testada={tester}
                               message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
@@ -686,7 +695,7 @@ const MisDeclaraciones = ({}) => {
 
                      <Ngif condition={cuentaValores.length > 0}>
                         {cuentaValores.map((item, index) => (
-                           <PagePdf key={index} title={"INVERSIONES, CUENTAS BANCARIAS Y OTRO TIPO DE VALORES / ACTIVOS"}>
+                           <PagePdf key={index} title={`${selectedDeclaracion != 2 ? "XI" : "XII"}. INVERSIONES, CUENTAS BANCARIAS Y OTRO TIPO DE VALORES / ACTIVOS`}>
                               <CuentasValores
                                  data={[item]}
                                  testada={tester}
@@ -703,7 +712,7 @@ const MisDeclaraciones = ({}) => {
                         ))}
                      </Ngif>
                      <Ngif condition={cuentaValores.length === 0}>
-                        <PagePdf title={"INVERSIONES, CUENTAS BANCARIAS Y OTRO TIPO DE VALORES / ACTIVOS (NINGUNO)"}>
+                        <PagePdf title={`${selectedDeclaracion != 2 ? "XII" : "XIII"}. INVERSIONES, CUENTAS BANCARIAS Y OTRO TIPO DE VALORES / ACTIVOS (NINGUNO)`}>
                            <Notas
                               testada={tester}
                               message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
@@ -713,7 +722,7 @@ const MisDeclaraciones = ({}) => {
 
                      <Ngif condition={cuentaValores.length > 0}>
                         {cuentaValores.map((item, index) => (
-                           <PagePdf key={index} title={"ADEUDOS PASIVOS"}>
+                           <PagePdf key={index} title={`${selectedDeclaracion != 2 ? "XIII" : "XIV"}. ADEUDOS PASIVOS`}>
                               <AdeudosPasivos
                                  data={[item]}
                                  titular={titular}
@@ -733,7 +742,7 @@ const MisDeclaraciones = ({}) => {
                         ))}
                      </Ngif>
                      <Ngif condition={cuentaValores.length === 0}>
-                        <PagePdf title={"ADEUDOS PASIVOS (NINGUNO)"}>
+                        <PagePdf title={`${selectedDeclaracion != 2 ? "XIII" : "XIV"}. ADEUDOS PASIVOS (NINGUNO)`}>
                            <Notas
                               testada={tester}
                               message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
@@ -743,7 +752,7 @@ const MisDeclaraciones = ({}) => {
 
                      <Ngif condition={prestamosComodatos.length > 0}>
                         {prestamosComodatos.map((item, index) => (
-                           <PagePdf key={index} title={"PRESTAMO O COMODATO POR TERCEROS"}>
+                           <PagePdf key={index} title={`${selectedDeclaracion != 2 ? "XIV" : "XV"}. PRESTAMO O COMODATO POR TERCEROS`}>
                               <PrestamoComodato
                                  data={[item]}
                                  municipios={municipios}
@@ -766,7 +775,7 @@ const MisDeclaraciones = ({}) => {
                         ))}
                      </Ngif>
                      <Ngif condition={prestamosComodatos.length === 0}>
-                        <PagePdf title={"PRESTAMO O COMODATO POR TERCEROS (NINGUNO)"}>
+                        <PagePdf title={`${selectedDeclaracion != 2 ? "XIV" : "XV"}. PRESTAMO O COMODATO POR TERCEROS (NINGUNO)`}>
                            <Notas
                               testada={tester}
                               message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
@@ -776,7 +785,16 @@ const MisDeclaraciones = ({}) => {
                   </Ngif>
 
                   <AvisoPrivacidad />
-                  <DeclarationDocument row={myRow} />
+                  <DeclarationDocument
+                     row={myRow}
+                     message={
+                        selectedDeclaracion == 1 || selectedDeclaracion == 3
+                           ? "INICIAL"
+                           : selectedDeclaracion == 2 || selectedDeclaracion == 4
+                             ? "MODIFICACION"
+                             : "CONCLUSION"
+                     }
+                  />
                   {/* <For array={datosDependienteEconomicos} pdf>
                         {(item, index) => (
                         )}

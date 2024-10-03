@@ -800,40 +800,37 @@ const Checador = ({}) => {
                         locale={es} // Configura el locale en español
                      />
                   </div> */}
-                   <Dialog
-                              open={openDialog}
-                              onClose={() => {
-                                 setOpenDialog(false);
-                              }}
-                           >
-                              <DialogContent>
-                                 
-
-                                 <Filters data={obtenerAnios()} title="Ejercicio" setFilter={setEjercio} filter={ejercio} />
-                                 <Filters
-                                    data={["Enero - Marzo", "Abril - Junio", "Julio - Septiembre", "Octubre - Diciembre"]}
-                                    title="Trimestre"
-                                    setFilter={setTrimestre}
-                                    filter={trimestre}
-                                 />
-                              </DialogContent>
-                              <DialogActions>
-                                 <Button onClick={handleClickButtonMasive}>Descargar</Button>
-                                 <Button
-                                    onClick={() => {
-                                       setOpenDialog(false);
-                                    }}
-                                    autoFocus
-                                 >
-                                    Salir
-                                 </Button>
-                              </DialogActions>
-                           </Dialog>
+                  <Dialog
+                     open={openDialog}
+                     onClose={() => {
+                        setOpenDialog(false);
+                     }}
+                  >
+                     <DialogContent>
+                        <Filters data={obtenerAnios()} title="Ejercicio" setFilter={setEjercio} filter={ejercio} />
+                        <Filters
+                           data={["Enero - Marzo", "Abril - Junio", "Julio - Septiembre", "Octubre - Diciembre"]}
+                           title="Trimestre"
+                           setFilter={setTrimestre}
+                           filter={trimestre}
+                        />
+                     </DialogContent>
+                     <DialogActions>
+                        <Button onClick={handleClickButtonMasive}>Descargar</Button>
+                        <Button
+                           onClick={() => {
+                              setOpenDialog(false);
+                           }}
+                           autoFocus
+                        >
+                           Salir
+                        </Button>
+                     </DialogActions>
+                  </Dialog>
                   <DataTable
                      parent={parent}
                      captionFilters={
                         <>
-                          
                            <Button
                               size="small"
                               variant="outlined"
@@ -901,7 +898,16 @@ const Checador = ({}) => {
                         formTitle={"OFICIO DE VALES"}
                         watermark={"Declaracion"}
                      >
-                        <PagePdf title={"I. DATOS GENERALES"} data={datosGenerales}>
+                        <PagePdf
+                           title={`I. DATOS GENERALES  ${
+                              selectedDeclaracion == 1 || selectedDeclaracion == 3
+                                 ? "INICIAL"
+                                 : selectedDeclaracion == 2 || selectedDeclaracion == 4
+                                   ? "MODIFICACION"
+                                   : "CONCLUSION"
+                           }`}
+                           data={datosGenerales}
+                        >
                            <DatosGenerales
                               data={datosGenerales}
                               estadocivil={estadocivil}
@@ -1215,7 +1221,16 @@ const Checador = ({}) => {
                <PDFDownloadLink
                   document={
                      <Document>
-                        <PagePdf title={"I. DATOS GENERALES"} data={datosGenerales}>
+                        <PagePdf
+                           title={`I. DATOS GENERALES  ${
+                              selectedDeclaracion == 1 || selectedDeclaracion == 3
+                                 ? "INICIAL"
+                                 : selectedDeclaracion == 2 || selectedDeclaracion == 4
+                                   ? "MODIFICACION"
+                                   : "CONCLUSION"
+                           }`}
+                           data={datosGenerales}
+                        >
                            <DatosGenerales
                               data={datosGenerales}
                               estadocivil={estadocivil}
