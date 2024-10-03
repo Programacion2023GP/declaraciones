@@ -176,11 +176,12 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
                      <Text style={styles.tableCell}>{row?.Gender}</Text>
                   </View>
                </View>
-               <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>Apellido Paterno:</Text>
-                  <Text style={styles.tableCell}>{PrimerApellido}</Text>
-               </View>
+
                <View style={styles.tableRow}>
+                  <View style={styles.tableCol}>
+                     <Text style={styles.tableCell}>Apellido Paterno:</Text>
+                     <Text style={styles.tableCell}>{PrimerApellido}</Text>
+                  </View>
                   <View style={styles.tableCol}>
                      <Text style={styles.tableCell}>Apellido Materno:</Text>
                      <Text style={styles.tableCell}>{SegundoApellido}</Text>
