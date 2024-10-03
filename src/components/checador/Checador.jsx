@@ -846,7 +846,7 @@ const Checador = ({}) => {
                      options={["CHARTS", "EXCEL", "COLORS"]}
                      // , "PDF",
                      moreButtons={moreButtons}
-                     dataHidden={["Gender", "FechaRegistroTerminada"]}
+                     dataHidden={["Gender","EmpleadoFechaAlta", "FechaRegistroTerminada"]}
                      // captionButtons={[
                      //    {text:"mas",handleButton:()=>{alert("dd")},icon:VisibilityIcon}
                      // ]}

@@ -117,7 +117,7 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
       Id_SituacionPatrimonial = ""
    } = data[0] || {};
 
-   const formatFecha = (fecha) => {
+   const formatFecha = (fecha,time=false) => {
       const date = moment.tz(fecha, "America/Monterrey"); // Asegúrate de que fecha tenga la zona horaria correcta
       const year = date.format("YYYY");
       const month = date.format("MM");
@@ -126,11 +126,13 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
       const minutes = date.format("mm");
       const seconds = date.format("ss");
       const ampm = date.format("a"); // 'a' para indicar am/pm
-      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`;
+      const dateHour = time? `${year}-${month}-${day} ${hours}:${minutes}:${seconds} ${ampm}`: `${year}-${month}-${day}`
+      return dateHour;
    };
 
-   const hoy = formatFecha(moment()); // Usando moment() para obtener la fecha y hora actual
-   const fechaRegistro = formatFecha(FechaRegistro);
+   const hoy = formatFecha(moment(),true); // Usando moment() para obtener la fecha y hora actual
+   const fechaRegistro = formatFecha(FechaRegistro,true);
+   const EmpleadoFechaAlta = formatFecha(row?.EmpleadoFechaAlta);
 
    return (
       <Page style={styles.page}>
@@ -139,9 +141,13 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
                <Image src={GomezLogo} style={styles.logo} />
                <View style={styles.folioTextContainer}>
                   <Text style={styles.folioText}>Fecha de impresión</Text>
-                  <Text style={styles.folioText}>
-                     {Id_SituacionPatrimonial} - {hoy}
-                  </Text>
+                  <Text style={styles.folioText}>{hoy}</Text>
+               
+                  <Text style={styles.folioText}>Folio de impresión</Text>
+                  <Text style={styles.folioText}>{Id_SituacionPatrimonial}</Text>
+              
+                  <Text style={styles.folioText}>Fecha de alta del empleado</Text>
+                  <Text style={styles.folioText}>{EmpleadoFechaAlta}</Text>
                </View>
             </View>
          </View>
