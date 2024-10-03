@@ -138,7 +138,7 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
             <View style={styles.headerRow}>
                <Image src={GomezLogo} style={styles.logo} />
                <View style={styles.folioTextContainer}>
-                  <Text style={styles.folioText}>FOLIO DE RECEPCIÓN DE INTERNET</Text>
+                  <Text style={styles.folioText}>Fecha de impresión</Text>
                   <Text style={styles.folioText}>
                      {Id_SituacionPatrimonial} - {hoy}
                   </Text>
@@ -151,7 +151,7 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
          </View>
          {/* Id_SituacionPatrimonial */}
          <View style={styles.section}>
-            <Text style={styles.subtitle}>Gómez Palacio, Dgo., 2024-7-1</Text>
+            <Text style={styles.subtitle}>Gómez Palacio, Dgo., {hoy}</Text>
             <Text style={styles.subtitle}>Fecha de presentación {fechaRegistro}</Text>
             <Text style={styles.subtitle}>
                DECLARACIÓN: SITUACIÓN PATRIMONIAL - {declaracion} - {row?.Declaracion}
