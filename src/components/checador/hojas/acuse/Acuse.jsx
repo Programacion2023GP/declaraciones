@@ -156,7 +156,7 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
             <Text style={styles.subtitle}>
                DECLARACIÓN: SITUACIÓN PATRIMONIAL - {declaracion} - {row?.Declaracion}
             </Text>
-            <Text style={styles.subtitle}>AÑO DECLARADO: {new Date(FechaRegistro).getFullYear()}</Text>
+            <Text style={styles.subtitle}>AÑO DECLARADO: {new Date(FechaRegistro).getFullYear() - 1}</Text>
          </View>
 
          <View style={styles.section}>
@@ -176,6 +176,10 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
                      <Text style={styles.tableCell}>{row?.Gender}</Text>
                   </View>
                </View>
+               <View style={styles.tableCol}>
+                  <Text style={styles.tableCell}>Apellido Paterno:</Text>
+                  <Text style={styles.tableCell}>{PrimerApellido}</Text>
+               </View>
                <View style={styles.tableRow}>
                   <View style={styles.tableCol}>
                      <Text style={styles.tableCell}>Apellido Materno:</Text>
@@ -184,10 +188,6 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
                   <View style={styles.tableCol}>
                      <Text style={styles.tableCell}>Nombre(s):</Text>
                      <Text style={styles.tableCell}>{Nombre}</Text>
-                  </View>
-                  <View style={styles.tableCol}>
-                     <Text style={styles.tableCell}>Apellido Paterno:</Text>
-                     <Text style={styles.tableCell}>{PrimerApellido}</Text>
                   </View>
                </View>
             </View>
