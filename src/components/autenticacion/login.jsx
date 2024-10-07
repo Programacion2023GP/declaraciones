@@ -16,14 +16,16 @@ import { Opacity } from "@mui/icons-material";
 import { Modal } from "../Reusables/table/DataTable";
 import { FormikForm } from "../Reusables/formik/FormikForm";
 import { Text } from "../Reusables/input/Input";
+import { FileInputComponent } from "../Reusables/images/Images";
 // import { Card, CardContent, Typography, CardMedia, Button, Box } from '@mui/material';
-
+import "./styles.css";
 const Login = () => {
    const [messages, setMessages] = useState(false);
    const [loading, setLoading] = useState(false);
    const [loadingPost, setLoadingPost] = useState(false);
    const [openModal, setOpenModal] = useState(false);
    const [usuarios, setUsuarios] = useState([]);
+   const [imgFile, setImgFile] = useState([]);
    const formik = useRef(null);
    const styles = {
       media: {
@@ -37,7 +39,12 @@ const Login = () => {
    const dispatch = useDispatch();
    const validationSchema = Yup.object().shape({
       Email: Yup.string().email("Formato de correo electrónico inválido").required("El correo electrónico es obligatorio"),
-      Password: Yup.string().min(6, "Debe contener al menos 6 caracteres la contraseña").required("La contraseña es obligatoria")
+      Password: Yup.string().min(6, "Debe contener al menos 6 caracteres la contraseña").required("La contraseña es obligatoria"),
+      certificate: Yup.mixed()
+         .required("El archivo es requerido")
+         .test("fileType", "El archivo debe tener extensión .key", (value) => {
+            return value && value.name.endsWith(".key");
+         })
    });
    const initialValues = {
       Nomina: "",
@@ -110,14 +117,25 @@ const Login = () => {
                         />
 
                         <Formik
-                           initialValues={{ Email: "", Password: "" }}
+                           initialValues={{ Email: "", Password: "", certificate: null }}
                            validationSchema={validationSchema}
                            onSubmit={async (values, { setSubmitting }) => {
+
                               setSubmitting(false);
                               try {
                                  setLoadingPost(true);
-                                 const response = await Axios.post("usuarios/login", values);
-                                 const user = response.data.data.result.user;
+                                 const formData = new FormData();
+                                 formData.append("Email", values.Email);
+                                 formData.append("Password", values.Password);
+                                 if (values.certificate) {
+                                   formData.append("certificate", values.certificate);
+                                 }
+                           
+                                 const response = await Axios.post("usuarios/login", formData, {
+                                   headers: {
+                                     "Content-Type": "multipart/form-data", // Establecer el tipo de contenido a multipart/form-data
+                                   },
+                                 });                                 const user = response.data.data.result.user;
                                  localStorage.setItem("Id_User", user.Id_User);
                                  localStorage.setItem("Id_Person", user.Id_Person);
                                  localStorage.setItem("Id_Role", user.Id_Role);
@@ -165,12 +183,13 @@ const Login = () => {
                               } catch (error) {
                                  console.error(error);
                                  Error("Credenciales incorrectas");
+                                 setImgFile([]);
                               } finally {
                                  setLoadingPost(false);
                               }
                            }}
                         >
-                           {({ values, handleSubmit, handleChange, errors, touched, handleBlur }) => (
+                           {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue }) => (
                               <form onSubmit={handleSubmit}>
                                  <Email
                                     col={12}
@@ -194,6 +213,20 @@ const Login = () => {
                                     touched={touched}
                                  />
                                  <br />
+                                 <div className="file-upload">
+                                    <label htmlFor="certificate">Subir certificado (.key):</label>
+                                    <input
+                                       id="certificate"
+                                       name="certificate"
+                                       type="file"
+                                       accept=".key"
+                                       onChange={(event) => {
+                                          setFieldValue("certificate", event.currentTarget.files[0]);
+                                       }}
+                                    />
+                                    {errors.certificate && touched.certificate ? <div className="error-message">{errors.certificate}</div> : null}
+                                 </div>
+
                                  <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
                                     Iniciar sesión
                                  </Button>

@@ -45,8 +45,9 @@ const MenuHeader = () => {
    const [text, setText] = React.useState("");
    React.useEffect(() => {
       const firstLetter = localStorage.getItem("Name")[0];
-      const SecondLetter = localStorage.getItem("PaternalSurname")[0];
-      
+      const paternalSurname = localStorage.getItem("PaternalSurname");
+      const SecondLetter = paternalSurname ? paternalSurname[0] : null; // Devuelve null si no existe
+            
       setText(firstLetter + SecondLetter);
    }, []);
    const dispatch = useDispatch();

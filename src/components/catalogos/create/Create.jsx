@@ -58,11 +58,12 @@ export const Create = ({ catalogo, formik, peticiones }) => {
    ];
    const foundMethod = methods.find((element) => element.key === catalogo);
    const { instance } = foundMethod;
-   const { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key, parameter,filterColumns } = instance({ formik, setId, peticiones });
+   const { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key, parameter,filterColumns,link } = instance({ formik, setId, peticiones });
    const dataForm = initialState;
    const validationSchema = Yup.object().shape(validator);
    const param = !isNaN(parameter) ? parameter : null;
    const filter = filterColumns?true:false;
+   const links = !isNaN(link) ? link : null;
    return {
       id,
       dataForm,
@@ -80,6 +81,7 @@ export const Create = ({ catalogo, formik, peticiones }) => {
       table,
       key,
       param,
-      filter
+      filter,
+      links
    };
 };

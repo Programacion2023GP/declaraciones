@@ -24,7 +24,8 @@ export const Catalogo = forwardRef(
          table = true,
          idTable,
          param = null,
-         filter = false
+         filter = false,
+         links=[],
       },
       ref
    ) => {
@@ -140,6 +141,7 @@ export const Catalogo = forwardRef(
                         <Box sx={{ minWidth: "100%", overflowX: "auto" }}>
                            <DataTable
                               filter={filter}
+                              link={[links]}
                               // speakRow
                               loading={loading}
                               handleEdit={handleEdit}

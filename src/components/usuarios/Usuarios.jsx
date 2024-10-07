@@ -18,6 +18,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
    const title = "Registro de usuarios";
    const urlData = "usuarios";
    const parameter = parseInt(localStorage.getItem("Id_Person"));
+   const link = 0;
    const validator = {
       Name: Yup.string("El formato es texto").required("El nombre es requerido"),
       Email: Yup.string("El formato es texto").required("El correo es requerido"),
@@ -94,16 +95,14 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       formik.current.setFieldValue("AreaAdscripcion", parseInt(row.AreaAdscripcion));
       formik.current.setFieldValue("DenominacionCargo", parseInt(row?.AreaAdscripcion));
       formik.current.setFieldValue("DenominacionPuesto", parseInt(row?.DenominacionPuesto));
-
    };
    const Form = () => {
-   
       useEffect(() => {}, []);
       const [dataEmpleos, setDataEmpleos] = useState(empleos);
       const handleEmpleos = (name, value) => {
-          setDataEmpleos(empleos.filter(item => item.organismo ==value))
+         setDataEmpleos(empleos.filter((item) => item.organismo == value));
       };
-   
+
       return (
          <>
             <Ngif condition={roles.length > 0 && intengrantes.length > 0 && adscripcion.length > 0}>
@@ -154,7 +153,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
                <AutoComplete col={12} name={"AreaAdscripcion"} label={"Área de adscripción"} options={adscripcion} handleGetValue={CargoPuesto} />
 
                <AutoComplete col={12} label={"Denominación del cargo"} name={"DenominacionCargo"} disabled={true} options={adscripcion} />
-               <AutoComplete col={12} label={"Denominación del puesto"} name={"DenominacionPuesto"}  disabled={dataEmpleos.length ==0}  options={dataEmpleos}/>
+               <AutoComplete col={12} label={"Denominación del puesto"} name={"DenominacionPuesto"} disabled={dataEmpleos.length == 0} options={dataEmpleos} />
             </Ngif>
             <Ngif condition={roles.length < 1 || intengrantes.length < 1 || adscripcion.length < 1}>
                <Loading />
@@ -162,9 +161,38 @@ const Usuarios = ({ formik, setId, peticiones }) => {
          </>
       );
    };
-   
-   const headersDatable = ["Nomina", "Nombre", "Apellido Paterno", "Nombre Completo", "Apellido Materno", "Rol"];
-   const dataHiddenDatable = ["Id_User", "Email", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion", "Gender", "organismo","DenominacionPuesto"];
-   return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key, parameter, filterColumns };
+
+   const headersDatable =
+      parseInt(localStorage.getItem("Id_Role")) == 10
+         ? ["llave", "Nomina", "Nombre", "Apellido Paterno", "Nombre Completo", "Apellido Materno", "Rol"]
+         : ["Nomina", "Nombre", "Apellido Paterno", "Nombre Completo", "Apellido Materno", "Rol"];
+   const dataHiddenDatable =
+      parseInt(localStorage.getItem("Id_Role")) == 10
+         ? [
+              "Id_User",
+              "Email",
+              "DenominacionCargo",
+              "Id_Role",
+              "Id_TipoIntegrante",
+              "ClaseNivelPuesto",
+              "AreaAdscripcion",
+              "Gender",
+              "organismo",
+              "DenominacionPuesto",
+            ]
+            : [
+            "storedCertificatePath",
+              "Id_User",
+              "Email",
+              "DenominacionCargo",
+              "Id_Role",
+              "Id_TipoIntegrante",
+              "ClaseNivelPuesto",
+              "AreaAdscripcion",
+              "Gender",
+              "organismo",
+              "DenominacionPuesto"
+           ];
+   return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key, parameter, filterColumns, link };
 };
 export default Usuarios;

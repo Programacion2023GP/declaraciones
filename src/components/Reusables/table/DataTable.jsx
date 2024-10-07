@@ -134,7 +134,7 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
             </tr>
             <tr>
                {speakRow && <th key={"titlesMap" + uuidv4()} style={{ border: "1px solid #BDBDBD", height: "fit-content" }}></th>}
-               {responsive<1000 && <th key={"titlesMap" + uuidv4()} style={{ border: "1px solid #BDBDBD", height: "fit-content" }}></th>}
+               {responsive < 1000 && <th key={"titlesMap" + uuidv4()} style={{ border: "1px solid #BDBDBD", height: "fit-content" }}></th>}
                {filter &&
                   titlesMap.map((title, id) => (
                      <>
@@ -348,8 +348,8 @@ const FilterGlobal = ({ data = [], setFilteredData, dataHidden = [] }) => {
 };
 
 const DataTable = ({
-   excelLayoutDownRowsStart=0,
-   excelLayout=[],
+   excelLayoutDownRowsStart = 0,
+   excelLayout = [],
    data = [],
    dataHidden = [],
    headers = [],
@@ -411,7 +411,6 @@ const DataTable = ({
    };
 
    const applyFilters = (page = null) => {
-      
       const filters = data.filter((item) => {
          return Object.entries(objectValues).every(([col, val]) => {
             if (dataHidden.includes(col)) {
@@ -423,8 +422,8 @@ const DataTable = ({
          });
       });
 
-         // console.log(filters)
-               setDataFilter(filters);
+      // console.log(filters)
+      setDataFilter(filters);
 
       // if (page > 0) {
       //    modifiedData(filters, page);
@@ -653,23 +652,19 @@ const DataTable = ({
       // if (dataFilter.length == 0) {
       //    setDataFilter(data);
       // }
-      
+
       setNumberShowPage(1);
    }, [selectRow, pagination, headers, objectValues, dataFilter]);
 
-   useEffect(()=>{
+   useEffect(() => {
       modifiedData(dataFilter);
+   }, [dataFilter, selectRow]);
 
-
-   },[dataFilter,selectRow])
-
-   useEffect(()=>{
-
+   useEffect(() => {
       if (Object.keys(objectValues).length !== 0) {
          applyFilters(objectValues);
       }
-
-   },[objectValues])
+   }, [objectValues]);
    useEffect(() => {}, [loading, Trbacground, responsive]);
    useEffect(() => {
       setDataFilter(data);
@@ -977,10 +972,9 @@ const DataTable = ({
                                                    }}
                                                    cols={value}
                                                 >
+                                                   {console.log("color",link.includes(id),id,link)}
                                                    {link.includes(id) ? (
-                                                      <a target="_blank" href={value}>
-                                                         {value}
-                                                      </a>
+                                                      <a href={value}>{value}</a>
                                                    ) : (
                                                       <Tooltip title={value} placement="top">
                                                          {truncateText(value)}
@@ -1198,8 +1192,8 @@ const DataTable = ({
          <Ngif condition={options}>
             <Modal openModal={openModal} setText={setTextModal} setOpenModal={setOpenModal}>
                <Component
-               excelLayoutDownRowsStart={excelLayoutDownRowsStart}
-               excelLayout={excelLayout}
+                  excelLayoutDownRowsStart={excelLayoutDownRowsStart}
+                  excelLayout={excelLayout}
                   option={textModal}
                   titles={headers}
                   dataFilter={dataFilter}
@@ -1502,13 +1496,23 @@ const Charts = ({ titles, dataFilter, headers, dataHidden }) => {
       </Grid>
    );
 };
-const Component = ({ option, titles, dataFilter, headers, dataHidden, colors, fileName,excelLayout=[],excelLayoutDownRowsStart=0 }) => {
+const Component = ({ option, titles, dataFilter, headers, dataHidden, colors, fileName, excelLayout = [], excelLayoutDownRowsStart = 0 }) => {
    switch (option) {
       case "grafica":
          return <Charts titles={titles} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} />;
          break;
       case "excel":
-         return <Excel titles={titles} dataFilter={dataFilter} dataHidden={dataHidden} headers={headers} fileName={fileName} excelLayout={excelLayout} excelLayoutDownRowsStart={excelLayoutDownRowsStart} />;
+         return (
+            <Excel
+               titles={titles}
+               dataFilter={dataFilter}
+               dataHidden={dataHidden}
+               headers={headers}
+               fileName={fileName}
+               excelLayout={excelLayout}
+               excelLayoutDownRowsStart={excelLayoutDownRowsStart}
+            />
+         );
       case "colors":
          return <Colors colors={colors} />;
          break;
@@ -1552,7 +1556,7 @@ const Colors = ({ colors }) => {
    );
 };
 
-const Excel = ({ titles, dataFilter, dataHidden, headers, fileName,excelLayout,excelLayoutDownRowsStart }) => {
+const Excel = ({ titles, dataFilter, dataHidden, headers, fileName, excelLayout, excelLayoutDownRowsStart }) => {
    const [keys, setKeys] = useState([]);
    const [counts, setCounts] = useState([]);
    const [checkeds, setCheckeds] = useState(headers);
@@ -1648,7 +1652,6 @@ const Excel = ({ titles, dataFilter, dataHidden, headers, fileName,excelLayout,e
          const worksheetRow = worksheet.getRow(row);
 
          if (height) {
-            
             worksheetRow.height = height;
          }
          if (finish) {
