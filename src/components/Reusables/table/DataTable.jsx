@@ -972,9 +972,8 @@ const DataTable = ({
                                                    }}
                                                    cols={value}
                                                 >
-                                                   {console.log("color",link.includes(id),id,link)}
                                                    {link.includes(id) ? (
-                                                      <a href={value}>{value}</a>
+                                                      <a href={value} download>{value}</a>
                                                    ) : (
                                                       <Tooltip title={value} placement="top">
                                                          {truncateText(value)}
@@ -1028,8 +1027,8 @@ const DataTable = ({
                                                 cols={value}
                                              >
                                                 {link.includes(id) ? (
-                                                   <a href={value}>{value}</a>
-                                                ) : (
+                                                      <a href={value} download>{value}</a>
+                                                   ) : (
                                                    <Tooltip title={value} placement="top">
                                                       {truncateText(value)}
                                                    </Tooltip>
@@ -1122,6 +1121,7 @@ const DataTable = ({
                                                    secondary={
                                                       <Typography variant="body2" sx={{ color: "#666" }}>
                                                          {link.includes(id) ? (
+                                                            
                                                             <a target="_blank" href={value}>
                                                                {value}
                                                             </a>
