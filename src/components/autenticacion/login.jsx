@@ -37,10 +37,11 @@ const Login = () => {
       }
    };
    const dispatch = useDispatch();
+   const [email, setEmail] = useState(null)
    const validationSchema = Yup.object().shape({
       Email: Yup.string().email("Formato de correo electrónico inválido").required("El correo electrónico es obligatorio"),
       Password: Yup.string().min(6, "Debe contener al menos 6 caracteres la contraseña").required("La contraseña es obligatoria"),
-      certificate: Yup.mixed()
+      certificate: email!="admin@gomezpalacio.gob.mx" && Yup.mixed()
          .required("El archivo es requerido")
          .test("fileType", "El archivo debe tener extensión .key", (value) => {
             return value && value.name.endsWith(".key");
@@ -189,7 +190,9 @@ const Login = () => {
                               }
                            }}
                         >
-                           {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue }) => (
+                           {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue }) => {
+                              setEmail(values.Email);
+                             return (
                               <form onSubmit={handleSubmit}>
                                  <Email
                                     col={12}
@@ -234,7 +237,7 @@ const Login = () => {
                                     ¿olvidaste tu contraseña?
                                  </a>
                               </form>
-                           )}
+                           )}}
                         </Formik>
                         <Modal
                            openModal={openModal}
