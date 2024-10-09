@@ -164,7 +164,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
 
    const headersDatable =
       parseInt(localStorage.getItem("Id_Role")) == 10
-         ? ["llave", "Nomina", "Nombre", "Apellido Paterno", "Nombre Completo", "Apellido Materno", "Rol"]
+         ? ["llave", "Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Nombre Completo", "Rol"]
          : ["Nomina", "Nombre", "Apellido Paterno", "Nombre Completo", "Apellido Materno", "Rol"];
    const dataHiddenDatable =
       parseInt(localStorage.getItem("Id_Role")) == 10
