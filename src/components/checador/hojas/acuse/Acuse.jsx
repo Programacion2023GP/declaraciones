@@ -168,7 +168,7 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
             <Text style={styles.subtitle}>
                DECLARACIÓN: SITUACIÓN PATRIMONIAL - {declaracion} - {row?.Declaracion}
             </Text>
-            <Text style={styles.subtitle}>AÑO DECLARADO: {new Date(FechaRegistro).getFullYear() - 1}</Text>
+            <Text style={styles.subtitle}>AÑO DECLARADO: {new Date(FechaRegistro).getFullYear()}</Text>
          </View>
 
          <View style={styles.section}>
