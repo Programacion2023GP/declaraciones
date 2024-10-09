@@ -25,7 +25,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       Nomina: Yup.number("el formato es numerico").min(100000, "El numero de nomina requiere 6 numeros").required("El numero de nomina es requerido"),
       PaternalSurname: Yup.string("El formato es texto").required("El apellido paterno es requerido"),
       // Gender: Yup.string("").required("El sexo es ob"),
-      MaternalSurname: Yup.string("El formato es texto").required("El apellido materno es requerido"),
+      // MaternalSurname: Yup.string("El formato es texto").required("El apellido materno es requerido"),
       DenominacionCargo: Yup.number("El formato es texto").required("La Denominación del cargo es requerida"),
       DenominacionPuesto: Yup.number("el formato es numerico").required("La Denominación del puesto es requerida"),
       Id_TipoIntegrante: Yup.number("el valor es numerico").min(1, "El tipo de integrante es requerido").required("El tipo de integrante es requerido"),
