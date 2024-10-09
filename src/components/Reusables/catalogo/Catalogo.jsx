@@ -25,18 +25,32 @@ export const Catalogo = forwardRef(
          idTable,
          param = null,
          filter = false,
-         links=[],
+         links = []
       },
       ref
    ) => {
       const [loadForm, setLoadForm] = useState(false);
       const [loading, setLoading] = useState(false);
       const submit = async (values, { resetForm }) => {
-         ref.current, resetForm();
+         if (id == 0) {
+            ref.current, resetForm();
+         }
          try {
             let response;
             if (id > 0) {
-               response = await Axios.put(`${urlData}/update/${idTable == "id" ? id : values[idTable]}`, values);
+               try {
+                  // Verifica que el id sea mayor que 0
+                  // Realiza la solicitud PUT a la API
+                  //   const response = await Axios.put(`${urlData}/update/${idTable === "id" ? id : values[idTable]}`, values);
+                  const response = await Axios.put(`${urlData}/update/${idTable == "id" ? id : values[idTable]}`, values);
+
+                  // Si la solicitud es exitosa, muestra la respuesta en consola
+                  //   console.log("Actualización exitosa:", response.data);
+                  ref.current, resetForm();
+               } catch (error) {
+                  // Si ocurre un error durante la solicitud, muestra el error en consola
+                  // console.error("Error al actualizar:", error);
+               }
             } else {
                response = await Axios.post(`${urlData}/create`, values);
             }
