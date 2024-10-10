@@ -36,7 +36,7 @@ export const NivelGobierno = ({ nivelOrdenGobierno, ambitoPublico, nombreEntePub
             label="Nombre del ente público"
             name="NombreEntePublico"
             options={[
-               { id: "PR", text: "PR" },
+               { id: "PR", text: "PRESIDENCIA" },
                { id: "DIF", text: "DIF" },
                { id: "EXPOFERIA", text: "EXPOFERIA" }
             ]}

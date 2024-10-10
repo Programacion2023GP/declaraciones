@@ -302,9 +302,10 @@ const ComponentDeclaraciones = () => {
    // Método para manejar el siguiente paso
    const [hojaFilter, setHojaFilter] = React.useState(null);
    React.useEffect(() => {
-      dataAfterSituacionPatrimonial();
       // init();
-      searchHoja();
+      setView(true);
+      // dataAfterSituacionPatrimonial();
+      // searchHoja();
       // setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
    }, [activeStep, declaracion]);
    React.useEffect(() => {}, [update, view]);
@@ -444,6 +445,7 @@ const ComponentDeclaraciones = () => {
          console.error("Error en la inicialización:", error);
          // Manejar errores si es necesario
       } finally {
+
       }
    };
 

@@ -502,16 +502,7 @@ const MisDeclaraciones = ({}) => {
                   formTitle={"OFICIO DE VALES"}
                   watermark={"Declaracion"}
                >
-                  <PagePdf
-                     title={`I. DATOS GENERALES  ${
-                        selectedDeclaracion == 1 || selectedDeclaracion == 3
-                           ? "INICIAL"
-                           : selectedDeclaracion == 2 || selectedDeclaracion == 4
-                             ? "MODIFICACION"
-                             : "CONCLUSION"
-                     }`}
-                     data={datosGenerales}
-                  >
+                  <PagePdf title={`I. DATOS GENERALES  ${myRow?.Tipo_declaracion?.toUpperCase()}`} data={datosGenerales}>
                      <DatosGenerales
                         data={datosGenerales}
                         estadocivil={estadocivil}

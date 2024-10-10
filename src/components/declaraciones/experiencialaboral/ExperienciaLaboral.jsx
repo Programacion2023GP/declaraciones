@@ -106,7 +106,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
       EmpleoCargoComision: !activeAmbitoPublico ? Yup.string().required("El empleo, cargo o comisión es requerido") : null,
       FuncionPrincipal: !activeAmbitoPublico ? Yup.string().required("La función principal es requerida") : null,
       SectorEspecificado: activeSector ? Yup.string().required("El sector es requerido") : null,
-      Rfc: activeAmbitoPublico && Yup.string().length(10, "Debe contar con 10 caracteres").trim().required("El RFC de la empresa es requerido"),
+      Rfc: activeAmbitoPublico && Yup.string().length(3, "Debe contar con 3 caracteres").trim().required("El RFC de la empresa es requerido"),
       Puesto: activeAmbitoPublico && Yup.string().required("El puesto de la empresa es requerido"),
       Id_Sector: activeAmbitoPublico && Yup.number().required("El sector es requerido"),
       FechaIngreso: Yup.date().typeError("El formato de fecha es inválido").required("La fecha de ingreso es requerida"),
@@ -359,7 +359,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
                      <Ngif condition={activeAmbitoPublico}>
                         <Text textStyleCase={true} col={12} name="NombreEntePublico" label="Nombre de la empresa" />
                         <Text textStyleCase={true} col={12} name="Rfc" label="Rfc de la empresa" />
-                        <Text textStyleCase={true} col={12} name="AreaAdscripcion" label="Aerea" />
+                        <Text textStyleCase={true} col={12} name="AreaAdscripcion" label="Area" />
                         <Text textStyleCase={true} col={12} name="Puesto" label="Puesto" />
                         <CustomRadio
                            handleGetValue={handleGetValue}

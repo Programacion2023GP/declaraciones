@@ -261,6 +261,7 @@ const Checador = ({}) => {
    useEffect(() => {}, [adscripcion, datosGenerales]);
    const handlePdfTester = async (row) => {
       setRow(row);
+      console.log("here",row)
 
       setLoadingMessage(null);
       setMasive(false);
@@ -268,6 +269,7 @@ const Checador = ({}) => {
       handelPdf(row);
    };
    const handlePdfPrint = async (row) => {
+
       setLoadingMessage(null);
 
       setMasive(false);
@@ -899,13 +901,8 @@ const Checador = ({}) => {
                         watermark={"Declaracion"}
                      >
                         <PagePdf
-                           title={`I. DATOS GENERALES  ${
-                              selectedDeclaracion == 1 || selectedDeclaracion == 3
-                                 ? "INICIAL"
-                                 : selectedDeclaracion == 2 || selectedDeclaracion == 4
-                                   ? "MODIFICACION"
-                                   : "CONCLUSION"
-                           }`}
+                          title={`I. DATOS GENERALES  ${myRow?.Tipo_declaracion?.toUpperCase()}`}
+
                            data={datosGenerales}
                         >
                            <DatosGenerales
@@ -1222,13 +1219,8 @@ const Checador = ({}) => {
                   document={
                      <Document>
                         <PagePdf
-                           title={`I. DATOS GENERALES  ${
-                              selectedDeclaracion == 1 || selectedDeclaracion == 3
-                                 ? "INICIAL"
-                                 : selectedDeclaracion == 2 || selectedDeclaracion == 4
-                                   ? "MODIFICACION"
-                                   : "CONCLUSION"
-                           }`}
+                          title={`I. DATOS GENERALES  ${myRow?.Tipo_declaracion?.toUpperCase()}`}
+
                            data={datosGenerales}
                         >
                            <DatosGenerales

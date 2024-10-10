@@ -299,11 +299,18 @@ const FilterGlobal = ({ data = [], setFilteredData, dataHidden = [] }) => {
          return;
       }
       setSearchText(newValue);
-
+      const normalizeString = (str) => {
+         return str
+           .normalize("NFD")                      // Normaliza acentos
+           .replace(/[\u0300-\u036f]/g, "")        // Remueve diacríticos (acentos)
+           .trim()                                 // Elimina espacios adicionales
+           .replace(/\s+/g, " ")                   // Reemplaza múltiples espacios por uno
+           .toLowerCase();                         // Convierte a minúsculas
+       };
       // Filtrar los datos basados en el texto de búsqueda
       const newFilteredData = data.filter((item) => {
          for (const key in item) {
-            if (item.hasOwnProperty(key) && !dataHidden.includes(key) && String(item[key]).toLowerCase().includes(newValue.toLowerCase())) {
+            if (item.hasOwnProperty(key) && !dataHidden.includes(key) && normalizeString(String(item[key])).includes(newValue)) {
                return true;
             }
          }
