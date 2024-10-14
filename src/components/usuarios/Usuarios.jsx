@@ -22,7 +22,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
    const validator = {
       Name: Yup.string("El formato es texto").required("El nombre es requerido"),
       Email: Yup.string("El formato es texto").required("El correo es requerido"),
-      Nomina: Yup.number("el formato es numerico").min(100000, "El numero de nomina requiere 6 numeros").required("El numero de nomina es requerido"),
+      Nomina: Yup.number("el formato es numerico").min(1000, "El numero de nomina requiere 4 numeros").required("El numero de nomina es requerido"),
       PaternalSurname: Yup.string("El formato es texto").required("El apellido paterno es requerido"),
       // Gender: Yup.string("").required("El sexo es ob"),
       // MaternalSurname: Yup.string("El formato es texto").required("El apellido materno es requerido"),
@@ -59,7 +59,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
          formik.current.setFieldValue("Id_Role", 4);
          return;
       }
-      if (value.length >= 6) {
+      if (value.length >= 4) {
          const response = await GetAxios(`compaq/show/${value}`);
          if (response.length > 0) {
             const { nombreE, apellidoP, apellidoM, puesto } = response[0];
@@ -164,26 +164,14 @@ const Usuarios = ({ formik, setId, peticiones }) => {
 
    const headersDatable =
       parseInt(localStorage.getItem("Id_Role")) == 10
-         ? ["llave", "Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Nombre Completo", "Rol"]
-         : ["Nomina", "Nombre", "Apellido Paterno", "Nombre Completo", "Apellido Materno", "Rol"];
+         ? ["llave", "Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Nombre Completo", "Rol", "Correo"]
+         : ["Nomina", "Nombre", "Apellido Paterno", "Nombre Completo", "Apellido Materno", "Rol", "Correo"];
    const dataHiddenDatable =
       parseInt(localStorage.getItem("Id_Role")) == 10
-         ? [
+         ? ["Id_User", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion", "Gender", "organismo", "DenominacionPuesto"]
+         : [
+              "storedCertificatePath",
               "Id_User",
-              "Email",
-              "DenominacionCargo",
-              "Id_Role",
-              "Id_TipoIntegrante",
-              "ClaseNivelPuesto",
-              "AreaAdscripcion",
-              "Gender",
-              "organismo",
-              "DenominacionPuesto",
-            ]
-            : [
-            "storedCertificatePath",
-              "Id_User",
-              "Email",
               "DenominacionCargo",
               "Id_Role",
               "Id_TipoIntegrante",
