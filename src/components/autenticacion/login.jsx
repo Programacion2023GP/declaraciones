@@ -41,11 +41,11 @@ const Login = () => {
    const validationSchema = Yup.object().shape({
       Email: Yup.string().email("Formato de correo electrónico inválido").required("El correo electrónico es obligatorio"),
       Password: Yup.string().min(6, "Debe contener al menos 6 caracteres la contraseña").required("La contraseña es obligatoria"),
-      certificate: email!="admin@gomezpalacio.gob.mx" && Yup.mixed()
-         .required("El archivo es requerido")
-         .test("fileType", "El archivo debe tener extensión .key", (value) => {
-            return value && value.name.endsWith(".key");
-         })
+      // certificate: email!="admin@gomezpalacio.gob.mx" && Yup.mixed()
+      //    .required("El archivo es requerido")
+      //    .test("fileType", "El archivo debe tener extensión .key", (value) => {
+      //       return value && value.name.endsWith(".key");
+      //    })
    });
    const initialValues = {
       Nomina: "",
@@ -118,7 +118,7 @@ const Login = () => {
                         />
 
                         <Formik
-                           initialValues={{ Email: "", Password: "", certificate: null }}
+                           initialValues={{ Email: "", Password: "" }}
                            validationSchema={validationSchema}
                            onSubmit={async (values, { setSubmitting }) => {
 
@@ -128,9 +128,9 @@ const Login = () => {
                                  const formData = new FormData();
                                  formData.append("Email", values.Email);
                                  formData.append("Password", values.Password);
-                                 if (values.certificate) {
-                                   formData.append("certificate", values.certificate);
-                                 }
+                                 // if (values.certificate) {
+                                 //   formData.append("certificate", values.certificate);
+                                 // }
                            
                                  const response = await Axios.post("usuarios/login", formData, {
                                    headers: {
@@ -216,7 +216,7 @@ const Login = () => {
                                     touched={touched}
                                  />
                                  <br />
-                                 <div className="file-upload">
+                                 {/* <div className="file-upload">
                                     <label htmlFor="certificate">Subir certificado (.key):</label>
                                     <input
                                        id="certificate"
@@ -228,7 +228,7 @@ const Login = () => {
                                        }}
                                     />
                                     {errors.certificate && touched.certificate ? <div className="error-message">{errors.certificate}</div> : null}
-                                 </div>
+                                 </div> */}
 
                                  <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
                                     Iniciar sesión
