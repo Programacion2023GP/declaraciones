@@ -11,7 +11,7 @@ import { Request } from "../Reusables/request/Request";
 import * as Yup from "yup";
 
 const Usuarios = ({ formik, setId, peticiones }) => {
-   const { roles, intengrantes, adscripcion, empleos } = peticiones;
+   const { roles, intengrantes, adscripcion, empleos, adscripcionOrganismo } = peticiones;
    const key = "Id_User";
    const table = true;
    const filterColumns = true;
@@ -60,15 +60,23 @@ const Usuarios = ({ formik, setId, peticiones }) => {
          return;
       }
       if (value.length >= 4) {
-         const response = await GetAxios(`compaq/show/${value}`);
-         if (response.length > 0) {
-            const { nombreE, apellidoP, apellidoM, puesto } = response[0];
-            formik.current.setFieldValue("Name", nombreE);
-            formik.current.setFieldValue("PaternalSurname", apellidoP);
-            formik.current.setFieldValue("MaternalSurname", apellidoM);
-            formik.current.setFieldValue("DenominacionPuesto", puesto);
-         } else {
-            Error("No existe el numero de nomina");
+         try {
+            const response = await GetAxios(`compaq/show/${value}`);
+
+            if (response.length > 0) {
+               const { nombreE, apellidoP, apellidoM, puesto } = response[0];
+
+               formik.current.setFieldValue("Name", nombreE || "");
+               formik.current.setFieldValue("PaternalSurname", apellidoP || "");
+               formik.current.setFieldValue("MaternalSurname", apellidoM || "");
+               formik.current.setFieldValue("DenominacionPuesto", puesto || "");
+            } else {
+               Error("No existe el número de nómina");
+               clearFields();
+            }
+         } catch (err) {
+            Error("Error en la solicitud, intenta nuevamente.");
+            console.error(err);
             clearFields();
          }
       } else {
@@ -89,6 +97,8 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       formik.current.resetForm();
       formik.current.setValues(row);
       setId(row.Id_User);
+      formik.current.setFieldValue("organismo", row.organismo === "PR" ? "Presidencia" : row.organismo);
+
       formik.current.setFieldValue("Id_Role", parseInt(row.Id_Role));
       formik.current.setFieldValue("Id_TipoIntegrante", parseInt(row.Id_TipoIntegrante));
       formik.current.setFieldValue("ClaseNivelPuesto", parseInt(row.ClaseNivelPuesto));
@@ -99,13 +109,22 @@ const Usuarios = ({ formik, setId, peticiones }) => {
    const Form = () => {
       useEffect(() => {}, []);
       const [dataEmpleos, setDataEmpleos] = useState(empleos);
+      const [aereas, setAereas] = useState(adscripcionOrganismo);
       const handleEmpleos = (name, value) => {
-         setDataEmpleos(empleos.filter((item) => item.organismo == value));
+         formik.current.setFieldValue("AreaAdscripcion", "");
+         formik.current.setFieldValue("DenominacionPuesto", "");
+         formik.current.setFieldValue("DenominacionCargo", "");
+
+         setAereas([]);
+         setDataEmpleos([]);
+
+         setAereas(adscripcionOrganismo.filter((item) => item.organismo == value));
+         setDataEmpleos(empleos.filter((item) => item.organismo == (value === "Presidencia" ? "PR" : value)));
       };
 
       return (
          <>
-            <Ngif condition={roles.length > 0 && intengrantes.length > 0 && adscripcion.length > 0}>
+            <Ngif condition={roles.length > 0 && intengrantes.length > 0 && adscripcionOrganismo.length > 0}>
                <Text type={"number"} col={6} name={"Nomina"} label={"N° de Nomina"} handleGetValue={handleNomina} />
                <Text col={6} disabled={true} name={"Name"} label={"Nombre(s)"} />
                <Text col={6} disabled={true} name={"PaternalSurname"} label={"Apellido Paterno"} />
@@ -134,7 +153,9 @@ const Usuarios = ({ formik, setId, peticiones }) => {
                   name={"organismo"}
                   label={"Organismo"}
                   options={[
-                     { id: "PR", text: "PR" },
+                     { id: "Presidencia", text: "Presidencia" },
+                     { id: "SIDEAPAAR", text: "SIDEAPAAR" },
+
                      { id: "DIF", text: "DIF" },
                      { id: "EXPOFERIA", text: "EXPOFERIA" }
                   ]}
@@ -150,7 +171,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
                      { id: 3, text: "3 Operativos(secretaría,auxiliares,limpieza,administrativos,veladores,chofer,intendencia,fajineros, etc.)." }
                   ]}
                />
-               <AutoComplete col={12} name={"AreaAdscripcion"} label={"Área de adscripción"} options={adscripcion} handleGetValue={CargoPuesto} />
+               <AutoComplete col={12} name={"AreaAdscripcion"} label={"Área de adscripción"} options={aereas} handleGetValue={CargoPuesto} />
 
                <AutoComplete col={12} label={"Denominación del cargo"} name={"DenominacionCargo"} disabled={true} options={adscripcion} />
                <AutoComplete col={12} label={"Denominación del puesto"} name={"DenominacionPuesto"} disabled={dataEmpleos.length == 0} options={dataEmpleos} />

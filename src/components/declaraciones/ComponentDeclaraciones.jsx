@@ -303,9 +303,14 @@ const ComponentDeclaraciones = () => {
    const [hojaFilter, setHojaFilter] = React.useState(null);
    React.useEffect(() => {
       // init();
-      setView(true);
-      // dataAfterSituacionPatrimonial();
-      // searchHoja();
+      // setView(true);
+     
+      dataAfterSituacionPatrimonial();
+      searchHoja();
+
+
+
+
       // setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
    }, [activeStep, declaracion]);
    React.useEffect(() => {}, [update, view]);

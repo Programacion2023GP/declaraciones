@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 import { Create } from "../create/Create";
 import { Request } from "../../Reusables/request/Request";
 const ComponentCatalogo = ({ pagina }) => {
-   let { tipoinversion, roles, intengrantes, adscripcion, organismo, empleos } = Request({
-      peticiones: ["tipoinversion", "roles", "intengrantes", "adscripcion", "organismo", "empleos"]
+   let { tipoinversion, roles, intengrantes, adscripcion, organismo, empleos,adscripcionOrganismo } = Request({
+      peticiones: ["tipoinversion", "roles", "intengrantes", "adscripcion", "organismo", "empleos","adscripcionOrganismo"]
    });
    const [children, setChildren] = useState(<></>);
    const { catalogo } = useParams();
@@ -46,6 +46,7 @@ const ComponentCatalogo = ({ pagina }) => {
          roles: roles,
          intengrantes: intengrantes,
          adscripcion: adscripcion,
+         adscripcionOrganismo:adscripcionOrganismo,
          empleos: empleos
       }
    });

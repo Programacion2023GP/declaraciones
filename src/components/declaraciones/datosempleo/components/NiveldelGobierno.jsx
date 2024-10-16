@@ -10,7 +10,11 @@ import { GetAxios } from "../../../../services/services";
 import { useFormikContext } from "formik";
 
 export const NivelGobierno = ({ nivelOrdenGobierno, ambitoPublico, nombreEntePublico, adscripcion, adscripcionOrganismo, handleActive, active, aerea }) => {
+   // const formik = useFormikContext();
+
    const [otroEntePublico, setOtroEntePublico] = useState(active);
+   const [aereas, setAereas] = useState([]);
+
    const [empleos, setEmpleos] = useState([]);
    const dispatch = useDispatch();
    useEffect(() => {
@@ -19,12 +23,18 @@ export const NivelGobierno = ({ nivelOrdenGobierno, ambitoPublico, nombreEntePub
       }
    }, [adscripcionOrganismo, nombreEntePublico]);
    const handleGetValue = async (name, value) => {
+      // console.log(formik)
+      // formik.setFieldValue("AreaAdscripcion", "");
+      // formik.setFieldValue("EmpleoCargoComision", "");
+
       setOtroEntePublico(value == 5 ? true : false);
       dispatch(configValidationsEmpleo(value == 5 ? "OtroEntePublico" : "NoOtroEntePublico"));
       handleActive(value == 5 ? true : false);
-      console.log(value)
       // const id = parseInt(nombreEntePublico.filter((it) => it.text.trim() == value.trim())[0].organismo);
-      setEmpleos(await GetAxios(`empleos/show/${value}`));
+      const responseAereas = await GetAxios(`adscripcion/index`)
+      setAereas(responseAereas.filter((item) => item.organismo == value));
+      setEmpleos(await GetAxios(`empleos/show/${(value === "Presidencia" ? "PR" : value)}`))
+  
    };
    useEffect(() => {}, [empleos]);
    return (
@@ -36,7 +46,9 @@ export const NivelGobierno = ({ nivelOrdenGobierno, ambitoPublico, nombreEntePub
             label="Nombre del ente público"
             name="NombreEntePublico"
             options={[
-               { id: "PR", text: "PRESIDENCIA" },
+               { id: "Presidencia", text: "PRESIDENCIA" },
+               { id: "SIDEAPAAR", text: "SIDEAPAAR" },
+
                { id: "DIF", text: "DIF" },
                { id: "EXPOFERIA", text: "EXPOFERIA" }
             ]}
@@ -45,7 +57,7 @@ export const NivelGobierno = ({ nivelOrdenGobierno, ambitoPublico, nombreEntePub
          <Ngif condition={otroEntePublico}>
             <Text textStyleCase={true} col={12} name="OtroEntePublico" label="Especifica el ente público" placeholder={"Especifica el ente público"} />
          </Ngif>
-         <AutoComplete col={12} label="Área de adscripción" name="AreaAdscripcion" options={adscripcion} />
+         <AutoComplete col={12} label="Área de adscripción" name="AreaAdscripcion"  options={aereas} />
 
          {/* <Text
             textStyleCase={true}
