@@ -305,17 +305,23 @@ const FilterGlobal = ({ data = [], setFilteredData, dataHidden = [] }) => {
            .replace(/[\u0300-\u036f]/g, "")        // Remueve diacríticos (acentos)
            .trim()                                 // Elimina espacios adicionales
            .replace(/\s+/g, " ")                   // Reemplaza múltiples espacios por uno
-           .toLowerCase();                         // Convierte a minúsculas
-       };
-      // Filtrar los datos basados en el texto de búsqueda
-      const newFilteredData = data.filter((item) => {
+           .toLowerCase();                         // Convierte a minúsculas para búsqueda insensible a mayúsculas
+     };
+     
+     // Filtrar los datos basados en el texto de búsqueda
+     const newFilteredData = data.filter((item) => {
+         const normalizedSearchValue = normalizeString(newValue); // Normalizar una vez el valor de búsqueda
          for (const key in item) {
-            if (item.hasOwnProperty(key) && !dataHidden.includes(key) && normalizeString(String(item[key])).includes(newValue)) {
-               return true;
-            }
+             if (item.hasOwnProperty(key) && !dataHidden.includes(key)) {
+                 const normalizedItemValue = normalizeString(String(item[key])); // Normalizar solo una vez el valor del item
+                 if (normalizedItemValue.includes(normalizedSearchValue)) {
+                     return true;  // Si el valor del item normalizado contiene el valor de búsqueda normalizado
+                 }
+             }
          }
          return false;
-      });
+     });
+     
 
       setFilteredData(newFilteredData);
    };

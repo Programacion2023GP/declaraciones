@@ -160,6 +160,7 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
 
             next();
          } catch (error) {
+            console.log("error",error);
             Error(error.response.data.data.message);
          }
       }

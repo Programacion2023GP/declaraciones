@@ -155,6 +155,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
                   options={[
                      { id: "Presidencia", text: "Presidencia" },
                      { id: "SIDEAPAAR", text: "SIDEAPAAR" },
+                     { id: "SIDEAPA", text: "SIDEAPA" },
 
                      { id: "DIF", text: "DIF" },
                      { id: "EXPOFERIA", text: "EXPOFERIA" }

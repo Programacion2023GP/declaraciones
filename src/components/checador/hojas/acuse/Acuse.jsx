@@ -93,7 +93,9 @@ const styles = StyleSheet.create({
 
 export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) => {
    const [ads, setAds] = useState(null);
-   useEffect(() => {}, [row, adscripcion]);
+   useEffect(() => {
+      console.log(row)
+   }, [row, adscripcion]);
 
    const {
       Nombre = "",

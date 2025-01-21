@@ -22,7 +22,7 @@
 // import logo from '../../assets/images/logo-gpd.png';
 import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import { Document, Font, Image, Page, StyleSheet, Text, View, PDFDownloadLink } from "@react-pdf/renderer";
-// import backgroundImage from "../assets/images/Oficio.jpg";
+// import backgrou ndImage from "../assets/images/Oficio.jpg";
 // import firmademo from "../assets/images/FirmaDemo.png";
 // import sinFirma from "../assets/images/sinFirma.png";
 import CloseIcon from "@mui/icons-material/Close";
