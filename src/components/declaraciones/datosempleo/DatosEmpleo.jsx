@@ -92,7 +92,7 @@ export const DatosEmpleo = ({ loading, data, next, previous, title }) => {
       { label: "Datos empleo", component: <InformacionEmpleo /> },
       {
          label: "Domicilio",
-         component: <DomicilioDeclarante mex={mexico} activeState={activeState} idEntidad={idEntidad} CodigoPostal={loadData && loadData.CodigoPostal} />
+         component: <DomicilioDeclarante mex={mexico} activeState={activeState} idEntidad={idEntidad} CodigoPostal={loadData && loadData.CodigoPostal}  setLoadData={setLoadData}/>
       }
    ];
    return (

@@ -1,6 +1,6 @@
 export const labelRenumeracion = (declaracion) => {
     return `
-      Renumeración ${
+      Remuneración ${
         declaracion === 1 || declaracion === 4
           ? `
           mensual neta del declarante por su cargo público (por concepto de sueldos, honorarios, compensaciones, bonos y otras prestaciones) (cantidades netas después de impuestos)

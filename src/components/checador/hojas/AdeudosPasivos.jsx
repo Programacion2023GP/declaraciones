@@ -3,14 +3,7 @@ import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../Reusables/pdf/PdfDeclaracion";
 import { testField, field, testArrayField, arrayField, vacio } from "../funciones/Funciones";
 export const AdeudosPasivos = ({ data = [], testada = false, adeudos = [], titular, monedas = [] }) => {
-   useEffect(() => {
-      // console.log("====================================");
-      // console.log(monedas, Id_SaldoInsolutoSituacionActual);
-      // console.log("====================================");
-      // console.log("====================================");
-      // console.log(adeudos, Id_TipoAdeudo);
-      // console.log("====================================");
-   }, []);
+
    const {
       Id_AdeudosPasivos = vacio(),
       Id_SituacionPatrimonial = vacio(),
@@ -36,7 +29,9 @@ export const AdeudosPasivos = ({ data = [], testada = false, adeudos = [], titul
       EspecifiqueOtro = vacio()
    } = data[0] || {};
    const ids = [2, 5, 6];
+   useEffect(() => {
 
+   }, []);
    return (
       <>
          <TextPdf
@@ -102,13 +97,14 @@ export const AdeudosPasivos = ({ data = [], testada = false, adeudos = [], titul
          />
          <TextPdf title={`RFC`} text={ids.includes(parseInt(Id_Titular)) || parseInt(OC_Id_TipoPersona) == 1 ? testField(OC_Rfc, testada) : field(OC_Rfc)} />
          <TextPdf
-            title={`¿Dónde se localiza el adeudo?`}
+            title="¿Dónde se localiza el adeudo?"
             text={
                ids.includes(parseInt(Id_Titular))
-                  ? testField(parseInt(EsEnMexico) == 1 ? "México" : "En el extranjero", testada)
-                  : field(parseInt(EsEnMexico) == 1 ? "México" : "En el extranjero")
+                  ? testField(parseInt(EsEnMexico) == 1 ? "México" : "en el extranjero", testada)
+                  : field(parseInt(EsEnMexico) == 1 ? "México" : "en el extranjero")
             }
          />
+
          <TextPdf
             title={`País`}
             text={

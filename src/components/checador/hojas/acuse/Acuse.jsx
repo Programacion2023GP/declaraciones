@@ -194,15 +194,15 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
                <View style={styles.tableRow}>
                   <View style={styles.tableCol}>
                      <Text style={styles.tableCell}>Apellido Paterno:</Text>
-                     <Text style={styles.tableCell}>{PrimerApellido}</Text>
+                     <Text style={styles.tableCell}>{row?.ApPaterno}</Text>
                   </View>
                   <View style={styles.tableCol}>
                      <Text style={styles.tableCell}>Apellido Materno:</Text>
-                     <Text style={styles.tableCell}>{SegundoApellido}</Text>
+                     <Text style={styles.tableCell}>{row?.ApMaterno}</Text>
                   </View>
                   <View style={styles.tableCol}>
                      <Text style={styles.tableCell}>Nombre(s):</Text>
-                     <Text style={styles.tableCell}>{Nombre}</Text>
+                     <Text style={styles.tableCell}>{row?.Nombre}</Text>
                   </View>
                </View>
             </View>
@@ -217,7 +217,7 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
 
          <View style={styles.footer}>
             <Text>
-               ESTE DOCUMENTO VALIDA EL ENVÍO DE INFORMACIÓN A TRAVÉS DE INTERNET CONTINE UN IDENTIFICADOR ÚNICO PARA VALIDAR SU DECLARACIÓN EN CASO DE ACLARACIONES
+               ESTE DOCUMENTO VALIDA EL ENVÍO DE INFORMACIÓN A TRAVÉS DE INTERNET CONTIENE UN IDENTIFICADOR ÚNICO PARA VALIDAR SU DECLARACIÓN EN CASO DE ACLARACIONES
             </Text>
             <Text>La fecha y hora de recepción efectiva de su declaración es la fecha y hora del servidor.</Text>
          </View>

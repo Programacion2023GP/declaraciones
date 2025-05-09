@@ -194,7 +194,9 @@ const Checador = ({}) => {
       dataAdeudos: [],
       dataPrestamosComodatos: []
    };
-
+   useEffect(()=>{
+      console.log("server",servidorPublico)
+   },[servidorPublico])
    useEffect(() => {
       existPeticiones([
          estadocivil,
@@ -936,6 +938,7 @@ const Checador = ({}) => {
                         </PagePdf>
                         <PagePdf title={"IV. DATOS DEL EMPLEO CARGO O COMISIÓN"}>
                            <DatosEmpleoCargo
+                            adscripcion={adscripcion}
                               testada={tester}
                               data={datosEmpleos}
                               nivelOrdenGobierno={nivelOrdenGobierno}
@@ -945,17 +948,21 @@ const Checador = ({}) => {
                               paises={paises}
                            />
                         </PagePdf>
-                        <PagePdf title={"V. EXPERIENCIA LABORAL"}>
-                           <ExperienciaLaboral data={experienciaLaboral} ambitopublico={ambitoPublico} testada={tester} />
-                        </PagePdf>
+                        <PagePdf title={`V. EXPERIENCIA LABORAL ${!experienciaLaboral?.Id_SituacionPatrimonial ? "  NINGUNO" : ""}`}>
+                     {experienciaLaboral?.Id_SituacionPatrimonial ? (
+                        <ExperienciaLaboral data={experienciaLaboral} ambitopublico={ambitoPublico} testada={tester} />
+                     ) : (
+                        <></>
+                     )}
+                  </PagePdf>
                         <Ngif condition={selectedDeclaracion < 4}>
-                           <PagePdf title={"VI. DATOS DE LA PAREJA"}>
-                              <DatosPareja data={datosPareja} relacion={relacion} testada={tester} />
-                              <Notas
-                                 testada={tester}
-                                 message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
-                              />
-                           </PagePdf>
+                        <PagePdf title={`VI. DATOS DE LA PAREJA ${!experienciaLaboral?.Id_SituacionPatrimonial ? "  NINGUNO" : ""}`}>
+                        {datosPareja?.Id_SituacionPatrimonial ? <DatosPareja data={datosPareja} relacion={relacion} testada={tester} /> : <></>}
+                        <Notas
+                           testada={tester}
+                           message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                        />
+                     </PagePdf>
                            <Ngif condition={datosDependienteEconomicos.length > 0}>
                               {datosDependienteEconomicos.map((item, index) => (
                                  <PagePdf key={item.Id_DatosDependienteEconomico} title={"VII. DATOS DEL DEPENDIENTE ECONOMICO"}>
@@ -991,8 +998,11 @@ const Checador = ({}) => {
                            />
                         </PagePdf>
                         <Ngif condition={selectedDeclaracion == 2}>
-                           <PagePdf title={"IX. ¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? NO"}>
+                        <PagePdf title={`IX. ¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? ${servidorPublico.length==0 ? 'NO':''} `}>
+                           {servidorPublico.length>0  && (
+
                               <ServidorPublico data={servidorPublico} instrumentos={instrumentos} bienenAjenacion={bienenAjenacion} testada={tester} />
+                           )}
                            </PagePdf>
                         </Ngif>
                         <Ngif condition={selectedDeclaracion < 4}>
@@ -1118,8 +1128,8 @@ const Checador = ({}) => {
                               </PagePdf>
                            </Ngif>
 
-                           <Ngif condition={cuentaValores.length > 0}>
-                              {cuentaValores.map((item, index) => (
+                           <Ngif condition={adeudos.length > 0}>
+                              {adeudos.map((item, index) => (
                                  <PagePdf key={index} title={`${selectedDeclaracion != 2 ? "XIII" : "XIV"}. ADEUDOS PASIVOS`}>
                                     <AdeudosPasivos
                                        data={[item]}
@@ -1254,6 +1264,7 @@ const Checador = ({}) => {
                         </PagePdf>
                         <PagePdf title={"IV. DATOS DEL EMPLEO CARGO O COMISIÓN"}>
                            <DatosEmpleoCargo
+                            adscripcion={adscripcion}
                               testada={tester}
                               data={datosEmpleos}
                               nivelOrdenGobierno={nivelOrdenGobierno}
@@ -1309,8 +1320,12 @@ const Checador = ({}) => {
                            />
                         </PagePdf>
                         <Ngif condition={selectedDeclaracion == 2}>
-                           <PagePdf title={"IX. ¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? NO"}>
+                        <PagePdf title={`IX. ¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? ${servidorPublico.length==0 ? 'NO':''} `}>
+
+                           {servidorPublico.length>0  && (
+
                               <ServidorPublico data={servidorPublico} instrumentos={instrumentos} bienenAjenacion={bienenAjenacion} testada={tester} />
+                           )}
                            </PagePdf>
                         </Ngif>
                         <Ngif condition={selectedDeclaracion < 4}>
@@ -1436,8 +1451,8 @@ const Checador = ({}) => {
                               </PagePdf>
                            </Ngif>
 
-                           <Ngif condition={cuentaValores.length > 0}>
-                              {cuentaValores.map((item, index) => (
+                           <Ngif condition={adeudos.length > 0}>
+                              {adeudos.map((item, index) => (
                                  <PagePdf key={index} title={`${selectedDeclaracion != 2 ? "XIII" : "XIV"}. ADEUDOS PASIVOS`}>
                                     <AdeudosPasivos
                                        data={[item]}

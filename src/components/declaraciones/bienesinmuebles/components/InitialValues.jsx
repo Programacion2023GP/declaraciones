@@ -20,6 +20,7 @@ export const InitialValues = ({ titular, inmuebles, relacion, adquisicion, pago,
    const [motivo,setMotivo] = useState(false)
    const [openMunicio,setOpenMunicipio] = useState(true)
    const [estado,setEstado]= useState(true)
+   const [codigo,setCodigo]= useState(null)
    const [checked, setChecked] = useState(true);
 
    const formik = useFormikContext()
@@ -38,7 +39,7 @@ export const InitialValues = ({ titular, inmuebles, relacion, adquisicion, pago,
       },
       {
          label: "Domicilio",
-         component: <DomicilioDeclarante key={'DomicilioDeclarante'} openMunicipio={openMunicio}  setOpenMunicipio={setOpenMunicipio} setEstado={setEstado} estado={estado}/>
+         component: <DomicilioDeclarante key={'DomicilioDeclarante'} openMunicipio={openMunicio}  setOpenMunicipio={setOpenMunicipio} setEstado={setEstado} estado={estado} cp={codigo} setCp={setCodigo}/>
       },
      
    ];

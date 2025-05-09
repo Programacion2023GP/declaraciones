@@ -186,11 +186,11 @@ const Usuarios = ({ formik, setId, peticiones }) => {
 
    const headersDatable =
       parseInt(localStorage.getItem("Id_Role")) == 10
-         ? ["llave", "Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Nombre Completo", "Rol", "Correo"]
+         ? [ "Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Nombre Completo", "Rol", "Correo"]
          : ["Nomina", "Nombre", "Apellido Paterno", "Nombre Completo", "Apellido Materno", "Rol", "Correo"];
    const dataHiddenDatable =
       parseInt(localStorage.getItem("Id_Role")) == 10
-         ? ["Id_User", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion", "Gender", "organismo", "DenominacionPuesto"]
+         ? ["storedCertificatePath","Id_User", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion", "Gender", "organismo", "DenominacionPuesto"]
          : [
               "storedCertificatePath",
               "Id_User",

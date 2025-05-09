@@ -39,20 +39,28 @@ const styles = StyleSheet.create({
    }
 });
 
-const DeclarationDocument = ({row,message}) => (
-   <Page style={styles.page}>
-      <View style={styles.container}>
-         <Text style={styles.title}>BAJO PROTESTA</Text>
-         <Text style={styles.paragraph}>
-            BAJO PROTESTA DE DECIR VERDAD, PRESENTO MI DECLARACION DE SITUACION PATRIMONIAL DE "{message}", DE CONFORMIDAD CON LOS ARTICULOS 32 Y 33 CONFORME A LO
-            DISPUESTO EN LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, LA LEY GENERAL DEL SISTEMA NACIONAL ANTICORRUPCION Y LA NORMATIVIDAD APLICABLE.
-         </Text>
-         <View style={styles.signatureContainer}>
-            <View style={styles.line} />
-            <Text style={styles.name}>{row?.Nombre + " " + row?.ApPaterno + " " + row?.ApMaterno}</Text>
+const DeclarationDocument = ({row,interes,message=""}) => {
+   console.log("nombre de info",row)
+   return (
+      <Page style={styles.page}>
+         <View style={styles.container}>
+            <Text style={styles.title}>BAJO PROTESTA</Text>
+            <Text style={styles.paragraph}>
+               BAJO PROTESTA DE DECIR VERDAD, PRESENTO MI DECLARACION DE 
+               {interes ? " INTERES ":" SITUACION PATRIMONIAL DE "}
+               
+                {message}, DE CONFORMIDAD CON LOS ARTICULOS 32 Y 33 CONFORME A LO
+               DISPUESTO EN LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, LA LEY GENERAL DEL SISTEMA NACIONAL ANTICORRUPCION Y LA NORMATIVIDAD APLICABLE.
+            </Text>
+            <View style={styles.signatureContainer}>
+               <View style={styles.line} />
+               <Text style={styles.name}>
+  {`${row?.Nombre || ''} ${row?.ApPaterno || row?.PrimerApellido || ''} ${row?.ApMaterno || row?.SegundoApellido || ''}`.trim()}
+</Text>
+            </View>
          </View>
-      </View>
-   </Page>
-);
+      </Page>
+   )
+};
 
 export default DeclarationDocument;

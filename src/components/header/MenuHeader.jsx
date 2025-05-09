@@ -1,170 +1,272 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import SpeedDial from "@mui/material/SpeedDial";
-import SpeedDialIcon from "@mui/material/SpeedDialIcon";
-import SpeedDialAction from "@mui/material/SpeedDialAction";
-import FileCopyIcon from "@mui/icons-material/FileCopyOutlined";
-import SaveIcon from "@mui/icons-material/Save";
-import PrintIcon from "@mui/icons-material/Print";
-import ShareIcon from "@mui/icons-material/Share";
-import { Button, Drawer, Tooltip } from "@mui/material";
-import { AccountCircle } from "@mui/icons-material";
-import LogoutIcon from "@mui/icons-material/Logout";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-// import { unstable_HistoryRouter } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { logoutAuth } from "../../user/auth/auth";
-import Avatar from "@mui/material/Avatar";
-import { IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { useTheme } from "@mui/material/styles";
+import {
+   Box,
+   SpeedDial,
+   SpeedDialAction,
+   Tooltip,
+   Drawer,
+   IconButton,
+   Avatar,
+   Typography,
+   Stack,
+   TextField,
+   Button,
+   InputAdornment,
+   Card,
+   CardContent
+} from "@mui/material";
+import { Logout as LogoutIcon, ManageAccounts as ManageAccountsIcon, Close as CloseIcon, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { FormikForm } from "../Reusables/formik/FormikForm";
-import { Text } from "../Reusables/input/Input";
-import { PasswordCompnent } from "../Reusables/componentpassword/ComponentPassword";
-import { m } from "framer-motion";
-import { Axios } from "../../services/services";
-import { Error, Success } from "../../toasts/toast";
+import { logoutAuth } from "../../user/auth/auth";
+import axios from "axios";
+import { Axios, PostAxios } from "../../services/services";
+import { Success } from "../../toasts/toast";
 
-// import { logoutAuth } from "../../user/auth/auth";
-// const StyledSpeedDial = styled(SpeedDial)(({ theme }) => ({
-//    position: "absolute",
-//    "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
-//       bottom: theme.spacing(2),
-//       right: theme.spacing(2)
-//    },
-//    "&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight": {
-//       top: theme.spacing(2),
-//       left: theme.spacing(2)
-//    }
-// }));
-const actions = [
-   { icon: <LogoutIcon />, name: "Cerrar sesión", path: "logout" },
-   { icon: <ManageAccountsIcon />, name: "Cambiar contraseña", path: "settings" }
-];
 const MenuHeader = () => {
-   const [text, setText] = React.useState("");
-   React.useEffect(() => {
-      const firstLetter = localStorage.getItem("Name")[0];
-      const paternalSurname = localStorage.getItem("PaternalSurname");
-      const SecondLetter = paternalSurname ? paternalSurname[0] : null; // Devuelve null si no existe
-            
-      setText(firstLetter + SecondLetter);
-   }, []);
+   const theme = useTheme();
    const dispatch = useDispatch();
-   const [open, setOpen] = React.useState(false);
-   const [PasswordChecked, setPasswordChecked] = React.useState(true);
-   const [newPasswordChecked, setNewPasswordChecked] = React.useState(true);
+   // const [drawerOpen, setDrawerOpen] = useState(parseInt(localStorage.getItem("ConfirmationDateTime")) == 0  && parseInt(localStorage.getItem('Id_Role'))!=10 ? true : false);
+   const [drawerOpen, setDrawerOpen] = useState(false);
 
-   const toggleDrawer = (open) => (event) => {
-      if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
-         return;
-      }
-   };
-   const navigate = (path) => {
-      switch (path) {
-         case "logout":
-            dispatch(logoutAuth());
-            // localStorage.clear()
-            break;
-         case "settings":
-            setOpen(true);
+   const [userInitials, setUserInitials] = useState("");
 
-            break;
-      }
-   };
-   const formik = React.useRef(null);
-   const initialValues = {
-      id_User: parseInt(localStorage.getItem("Id_User")),
-      password: "",
-      newPassword: ""
-   };
-   const validationSchema = Yup.object().shape({
-      id_User: Yup.number().min(1, "Debes estar logeado").required("Debes estar logeado"),
-      password: Yup.string().min(6, "Contraseña debe tener al menos 6 caracteres").required("Contraseña es requerida"),
-      newPassword: Yup.string()
-         .min(8, "La contraseña debe tener al menos 8 caracteres")
-         .matches(/[a-z]/, "La contraseña debe tener al menos una letra minúscula")
-         .matches(/[A-Z]/, "La contraseña debe tener al menos una letra mayúscula")
-         .matches(/[0-9]/, "La contraseña debe tener al menos un número")
-         .required("La contraseña es requerida")
-   });
-   const submit = async (values) => {
+   // Obtener datos del usuario
+   useEffect(() => {
+      const name = localStorage.getItem("Name") || "";
+      const lastName = localStorage.getItem("PaternalSurname") || "";
+      setUserInitials(`${name[0] || ""}${lastName[0] || ""}`.toUpperCase());
+   }, []);
 
-      try {
-         await Axios.post("usuarios/pasupdate", values);
-         Success("Contraseña actualizada correctamente");
-         setOpen(false);
-      } catch (error) {
-         console.error(error);
-         Error("Hubo un error al actualizar la contraseña");
+   const fullName = `${localStorage.getItem("Name")} ${localStorage.getItem("PaternalSurname")}`;
+
+   const actions = [
+      {
+         icon: <ManageAccountsIcon color="primary" />,
+         name: "Cambiar contraseña",
+         action: () => setDrawerOpen(true)
+      },
+      {
+         icon: <LogoutIcon color="error" />,
+         name: "Cerrar sesión",
+         action: () => dispatch(logoutAuth())
       }
-   };
+   ];
+
    return (
       <>
-         <Tooltip title={`${localStorage.getItem("Name")}  ${localStorage.getItem("PaternalSurname")}`} placement="left-start">
+         {/* Menú de usuario flotante */}
+         <Tooltip title={fullName} placement="left-start" arrow>
             <SpeedDial
-               ariaLabel="SpeedDial basic example"
-               sx={{ position: "absolute", top: 4, right: 16, color: "green" }}
-               icon={<Avatar sx={{ background: "#1976D2" }}>{text}</Avatar>}
+               ariaLabel="User menu"
+               sx={{
+                  position: "fixed",
+                  top: 16,
+                  right: 16,
+                  "& .MuiSpeedDial-fab": {
+                     backgroundColor: theme.palette.primary.main,
+                     "&:hover": {
+                        backgroundColor: theme.palette.primary.dark
+                     }
+                  }
+               }}
+               icon={
+                  <Avatar
+                     sx={{
+                        bgcolor: theme.palette.background.paper,
+                        color: theme.palette.primary.main,
+                        fontWeight: "bold"
+                     }}
+                  >
+                     {userInitials}
+                  </Avatar>
+               }
                direction="down"
-               ButtonProps={{ color: "i   nherit" }} // Quita el color azul del botón
             >
                {actions.map((action) => (
                   <SpeedDialAction
                      key={action.name}
-                     onClick={() => navigate(action.path)}
                      icon={action.icon}
                      tooltipTitle={action.name}
-                     ButtonProps={{ color: "inherit" }} // Quita el color azul del botón en cada acción
+                     tooltipOpen
+                     onClick={action.action}
+                     FabProps={{
+                        sx: {
+                           margin: 2,
+                           backgroundColor: theme.palette.background.paper,
+                           "&:hover": {
+                              backgroundColor: theme.palette.action.hover
+                           }
+                        }
+                     }}
                   />
                ))}
             </SpeedDial>
          </Tooltip>
-         <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
-            <Box sx={{ width: 300 }} position={"relative"} role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
-               <Box position={"absolute"} right={0} top={0}>
-                  <IconButton
-                     onClick={() => {
-                        setOpen(false);
-                     }}
-                     aria-label="close"
-                  >
-                     <CloseIcon />
-                  </IconButton>
 
-                  <FormikForm
-                     title="Cambiar contraseña"
-                     button
-                     messageButton="Actualizar contraseña"
-                     card={false}
-                     ref={formik}
-                     initialValues={initialValues}
-                     validationSchema={validationSchema}
-                     submit={submit}
-                  >
-                     {/* Contraseña */}
-
-                     <PasswordCompnent
-                        label={"Contraseña actual"}
-                        col={12}
-                        name={"password"}
-                        newPasswordChecked={PasswordChecked}
-                        setNewPasswordChecked={setPasswordChecked}
-                     />
-                     <PasswordCompnent
-                        label={"Contraseña nueva"}
-                        col={12}
-                        name={"newPassword"}
-                        newPasswordChecked={newPasswordChecked}
-                        setNewPasswordChecked={setNewPasswordChecked}
-                        // checkedShowSwitchPassword={checkedShowSwitchPassword}
-                     />
-                  </FormikForm>
-               </Box>
-               {/* Aquí puedes añadir contenido si lo deseas */}
-            </Box>
+         {/* Drawer para cambiar contraseña */}
+         <Drawer
+            anchor="right"
+            open={drawerOpen}
+            onClose={(event, reason) => {
+               if (reason === "backdropClick" || reason === "escapeKeyDown") return;
+               setDrawerOpen(false);
+            }}
+            PaperProps={{
+               sx: {
+                  width: { xs: "100%", sm: 450 },
+                  p: 3,
+                  display: "flex",
+                  flexDirection: "column"
+               }
+            }}
+         >
+            <PasswordChangeForm onClose={() => setDrawerOpen(false)} />
          </Drawer>
       </>
    );
 };
+
+// Componente del formulario de cambio de contraseña
+const PasswordChangeForm = ({ onClose }) => {
+   const [showPassword, setShowPassword] = useState({
+      current: false,
+      new: false
+   });
+
+   const initialValues = {
+      id_User: parseInt(localStorage.getItem("Id_User")) || 0,
+      password: parseInt(localStorage.getItem("ConfirmationDateTime")) == 0 && parseInt(localStorage.getItem('Id_Role'))!=10  ? "123456" : "",
+      newPassword: ""
+   };
+
+   const validationSchema = Yup.object().shape({
+      password: Yup.string().min(6, "Mínimo 6 caracteres").required("Requerido"),
+      newPassword: Yup.string()
+         .min(8, "Mínimo 8 caracteres")
+         .matches(/[a-z]/, "Requiere minúscula")
+         .matches(/[A-Z]/, "Requiere mayúscula")
+         .matches(/[0-9]/, "Requiere número")
+         .notOneOf([Yup.ref("password")], "Debe ser diferente")
+         .required("Requerido")
+   });
+
+   const handleSubmit = async (values, { setSubmitting }) => {
+      try {
+         await Axios.post("usuarios/pasupdate", values);
+         Success("Contraseña actualizada correctamente");
+         onClose();
+      } catch (error) {
+         console.error("Error:", error);
+         Error("Error al actualizar contraseña");
+      } finally {
+         setSubmitting(false);
+      }
+   };
+
+   return (
+      <Card elevation={3}>
+         <CardContent>
+            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
+               <Typography variant="h5">
+                {parseInt(localStorage.getItem("ConfirmationDateTime")) ==0? "Cambia tu contraseña para continuar": "Cambiar Contraseña"}
+                </Typography>
+               {parseInt(localStorage.getItem("ConfirmationDateTime")) == 1 && parseInt(localStorage.getItem('Id_Role'))!=10 && (
+                  <IconButton onClick={onClose}>
+                     <CloseIcon />
+                  </IconButton>
+               )}
+            </Box>
+
+            <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
+               {({ isSubmitting, errors, touched }) => (
+                  <Form>
+                     <Stack spacing={3}>
+                        {/* Campo de contraseña actual */}
+                        {/* {parseInt(localStorage.getItem("ConfirmationDateTime")) ==1 && parseInt(localStorage.getItem('Id_Role'))!=10  && ( */}
+
+                        <Field name="password">
+                           {({ field }) => (
+                              <TextField
+                                 {...field}
+                                 fullWidth
+                                 label="Contraseña actual"
+                                 type={showPassword.current ? "text" : "password"}
+                                 error={touched.password && Boolean(errors.password)}
+                                 helperText={touched.password && errors.password}
+                                 InputProps={{
+                                    endAdornment: (
+                                       <InputAdornment position="end">
+                                          <IconButton
+                                             onClick={() =>
+                                                setShowPassword({
+                                                   ...showPassword,
+                                                   current: !showPassword.current
+                                                })
+                                             }
+                                             edge="end"
+                                          >
+                                             {showPassword.current ? <VisibilityOff /> : <Visibility />}
+                                          </IconButton>
+                                       </InputAdornment>
+                                    )
+                                 }}
+                              />
+                           )}
+                        </Field>
+                       
+
+                        {/* Campo de nueva contraseña */}
+                        <Field name="newPassword">
+                           {({ field }) => (
+                              <TextField
+                                 {...field}
+                                 fullWidth
+                                 label="Nueva contraseña"
+                                 type={showPassword.new ? "text" : "password"}
+                                 error={touched.newPassword && Boolean(errors.newPassword)}
+                                 helperText={touched.newPassword && errors.newPassword}
+                                 InputProps={{
+                                    endAdornment: (
+                                       <InputAdornment position="end">
+                                          <IconButton
+                                             onClick={() =>
+                                                setShowPassword({
+                                                   ...showPassword,
+                                                   new: !showPassword.new
+                                                })
+                                             }
+                                             edge="end"
+                                          >
+                                             {showPassword.new ? <VisibilityOff /> : <Visibility />}
+                                          </IconButton>
+                                       </InputAdornment>
+                                    )
+                                 }}
+                              />
+                           )}
+                        </Field>
+
+                        {/* Botones de acción */}
+                        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+                           {/* {parseInt(localStorage.getItem("ConfirmationDateTime")) == 1 && ( */}
+                              <Button variant="outlined" onClick={onClose}>
+                                 Cancelar
+                              </Button>
+                           {/* )} */}
+                           <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
+                              {isSubmitting ? "Guardando..." : "Aceptar"}
+                           </Button>
+                        </Box>
+                     </Stack>
+                  </Form>
+               )}
+            </Formik>
+         </CardContent>
+      </Card>
+   );
+};
+
 export default MenuHeader;

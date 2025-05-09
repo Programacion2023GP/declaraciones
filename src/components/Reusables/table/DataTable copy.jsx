@@ -163,97 +163,28 @@ const Title = ({ headers, titles, data, filterData, previousData, filter, editBu
 };
 
 const neon = {
-   color: "#00f0ff", // Color más brillante
-   border: "1px solid rgba(0, 240, 255, 0.5)",
-   textShadow: `
-     0 0 5px #00f0ff,
-     0 0 10px rgba(0, 240, 255, 0.5),
-     0 0 20px rgba(0, 240, 255, 0.3)
-   `,
-   transition: "all 0.3s cubic-bezier(0.25, 1, 0.5, 1)",
-   position: "relative",
-   overflow: "hidden",
+   color: "#00e6e6",
+   border: "1px solid #00e6e6",
+   textShadow: "0 0 5px #00e6e6",
+   transition: "all 0.3s ease",
    "&:hover": {
-     color: "#fff",
-     backgroundColor: "rgba(0, 240, 255, 0.15)",
-     boxShadow: `
-       0 0 10px #00f0ff,
-       0 0 20px rgba(0, 240, 255, 0.5),
-       0 0 30px rgba(0, 240, 255, 0.3)
-     `,
-     transform: "translateY(-1px)",
-     "&::before": {
-       content: '""',
-       position: "absolute",
-       top: "-50%",
-       left: "-50%",
-       width: "200%",
-       height: "200%",
-       background: `
-         linear-gradient(
-           45deg,
-           transparent 25%,
-           rgba(0, 240, 255, 0.1) 25%,
-           rgba(0, 240, 255, 0.1) 50%,
-           transparent 50%,
-           transparent 75%,
-           rgba(0, 240, 255, 0.1) 75%,
-           rgba(0, 240, 255, 0.1)
-         )
-       `,
-       backgroundSize: "4px 4px",
-       animation: "neonShine 2s linear infinite",
-       zIndex: "-1"
-     }
-   },
-   "@keyframes neonShine": {
-     "0%": {
-       transform: "rotate(0deg)"
-     },
-     "100%": {
-       transform: "rotate(360deg)"
-     }
+      color: "#fff",
+      backgroundColor: "#00e6e6",
+      boxShadow: "0 0 10px #00e6e6, 0 0 20px #00e6e6, 0 0 30px #00e6e6"
    }
- };
- 
- const neonText = {
-   color: "#00f0ff",
-   textShadow: `
-     0 0 5px #00f0ff,
-     0 0 15px rgba(0, 240, 255, 0.7),
-     0 0 25px rgba(0, 240, 255, 0.3)
-   `,
-   transition: "all 0.4s ease-out",
-   position: "relative",
-   display: "inline-block",
-   padding: "0.5rem 1rem",
-   "&:hover": {
-     textShadow: `
-       0 0 10px #00f0ff,
-       0 0 20px rgba(0, 240, 255, 0.8),
-       0 0 30px rgba(0, 240, 255, 0.4)
-     `,
-     transform: "scale(1.02)",
-     "&::after": {
-       content: '""',
-       position: "absolute",
-       bottom: "0",
-       left: "0",
-       width: "100%",
-       height: "2px",
-       background: "linear-gradient(90deg, transparent, #00f0ff, transparent)",
-       animation: "neonLine 1.5s ease-in-out infinite"
-     }
-   },
-   "@keyframes neonLine": {
-     "0%": {
-       transform: "translateX(-100%)"
-     },
-     "100%": {
-       transform: "translateX(100%)"
-     }
-   }
- };
+};
+const neonText = {
+   color: "#00e6e6",
+   // border: "1px solid #00e6e6",
+   textShadow: "0 0 30px #00e6e6",
+   transition: "all 0.3s ease",
+   padding: ".5rem"
+   // "&:hover": {
+   //    color: "#fff",
+   //    backgroundColor: "#00e6e6",
+   //    boxShadow: "0 0 10px #00e6e6, 0 0 20px #00e6e6, 0 0 30px #00e6e6"
+   // }
+};
 
 const Paginator = ({ pagination, handleChange, page, pages, previous, next, dataFilter, selectRow, setMoreItems }) => {
    useEffect(() => {}, [pagination]);
@@ -370,26 +301,27 @@ const FilterGlobal = ({ data = [], setFilteredData, dataHidden = [] }) => {
       setSearchText(newValue);
       const normalizeString = (str) => {
          return str
-            .normalize("NFD") // Normaliza acentos
-            .replace(/[\u0300-\u036f]/g, "") // Remueve diacríticos (acentos)
-            .trim() // Elimina espacios adicionales
-            .replace(/\s+/g, " ") // Reemplaza múltiples espacios por uno
-            .toLowerCase(); // Convierte a minúsculas para búsqueda insensible a mayúsculas
-      };
-
-      // Filtrar los datos basados en el texto de búsqueda
-      const newFilteredData = data.filter((item) => {
+           .normalize("NFD")                      // Normaliza acentos
+           .replace(/[\u0300-\u036f]/g, "")        // Remueve diacríticos (acentos)
+           .trim()                                 // Elimina espacios adicionales
+           .replace(/\s+/g, " ")                   // Reemplaza múltiples espacios por uno
+           .toLowerCase();                         // Convierte a minúsculas para búsqueda insensible a mayúsculas
+     };
+     
+     // Filtrar los datos basados en el texto de búsqueda
+     const newFilteredData = data.filter((item) => {
          const normalizedSearchValue = normalizeString(newValue); // Normalizar una vez el valor de búsqueda
          for (const key in item) {
-            if (item.hasOwnProperty(key) && !dataHidden.includes(key)) {
-               const normalizedItemValue = normalizeString(String(item[key])); // Normalizar solo una vez el valor del item
-               if (normalizedItemValue.includes(normalizedSearchValue)) {
-                  return true; // Si el valor del item normalizado contiene el valor de búsqueda normalizado
-               }
-            }
+             if (item.hasOwnProperty(key) && !dataHidden.includes(key)) {
+                 const normalizedItemValue = normalizeString(String(item[key])); // Normalizar solo una vez el valor del item
+                 if (normalizedItemValue.includes(normalizedSearchValue)) {
+                     return true;  // Si el valor del item normalizado contiene el valor de búsqueda normalizado
+                 }
+             }
          }
          return false;
-      });
+     });
+     
 
       setFilteredData(newFilteredData);
    };
@@ -1018,37 +950,24 @@ const DataTable = ({
                                                 <td
                                                    style={{
                                                       textAlign: "center",
-                                                      border: "1px solid #e0e0e0",
-                                                      fontSize: tdRead === id && line == index ? "16px" : "14px",
-                                                      padding: "8px 12px",
+                                                      border: "1px solid #BDBDBD",
+                                                      fontSize: tdRead === id && line == index ? "16px" : "13px",
+                                                      paddingLeft: "5px",
+                                                      paddingRight: "5px",
                                                       margin: 0,
-                                                      color: tdRead === id && line == index ? lightBlue[600] : "#424242",
-                                                      fontWeight: tdRead === id && line == index ? "bold" : "normal",
-                                                      backgroundColor: expanded.includes(index) ? "#f5f5f5" : "white",
-                                                      transition: "all 0.2s ease",
-                                                      cursor: "pointer",
-                                                      position: "relative",
-                                                      ":hover": {
-                                                         backgroundColor: "#fafafa"
-                                                      }
+                                                      color: tdRead === id && line == index && lightBlue[600],
+                                                      fontWeight: tdRead === id && line == index && "bold"
                                                    }}
                                                 >
                                                    <IconButton
-                                                      onClick={(e) => {
-                                                         e.stopPropagation();
+                                                      onClick={() => {
                                                          moreViewItems(index);
                                                       }}
-                                                      color={expanded.includes(index) ? "primary" : "default"}
+                                                      color="primary"
                                                       size="small"
-                                                      sx={{
-                                                         transition: "transform 0.2s ease",
-                                                         transform: expanded.includes(index) ? "rotate(180deg)" : "rotate(0deg)",
-                                                         "&:hover": {
-                                                            backgroundColor: "rgba(0, 0, 0, 0.04)"
-                                                         }
-                                                      }}
+                                                      variant="text"
                                                    >
-                                                      {expanded.includes(index) ? <MinimizeIcon fontSize="small" /> : <AddCircleIcon fontSize="small" />}
+                                                      {expanded.includes(index) ? <MinimizeIcon /> : <AddCircleIcon />}
                                                    </IconButton>
                                                 </td>
                                              </Ngif>
@@ -1067,9 +986,7 @@ const DataTable = ({
                                                    cols={value}
                                                 >
                                                    {link.includes(id) ? (
-                                                      <a href={value} download>
-                                                         {value}
-                                                      </a>
+                                                      <a href={value} download>{value}</a>
                                                    ) : (
                                                       <Tooltip title={value} placement="top">
                                                          {truncateText(value)}
@@ -1123,10 +1040,8 @@ const DataTable = ({
                                                 cols={value}
                                              >
                                                 {link.includes(id) ? (
-                                                   <a href={value} download>
-                                                      {value}
-                                                   </a>
-                                                ) : (
+                                                      <a href={value} download>{value}</a>
+                                                   ) : (
                                                    <Tooltip title={value} placement="top">
                                                       {truncateText(value)}
                                                    </Tooltip>
@@ -1219,6 +1134,7 @@ const DataTable = ({
                                                    secondary={
                                                       <Typography variant="body2" sx={{ color: "#666" }}>
                                                          {link.includes(id) ? (
+                                                            
                                                             <a target="_blank" href={value}>
                                                                {value}
                                                             </a>

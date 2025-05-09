@@ -3,6 +3,7 @@ import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../Reusables/pdf/PdfDecl
 import { testField, field, testArrayField, arrayField, vacio } from "../funciones/Funciones";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 export const ExperienciaLaboral = ({ data = [], ambitopublico }) => {
+
    const {
       Aclaraciones = vacio(),
       Area = vacio(),
@@ -26,8 +27,11 @@ export const ExperienciaLaboral = ({ data = [], ambitopublico }) => {
       RFC = vacio(),
       SectorEspecificado = vacio()
    } = data[0] || {};
+  
+   useEffect(() => {
 
-   useEffect(() => {}, []);
+
+   }, []);
    return (
       <>
          <TextPdf title={"Ámbito/Sector en el que laboraste"} text={field(parseInt(Id_AmbitoSector) == 1 ? "PÚBLICO" : "PRIVADO")} width={50} />
@@ -57,7 +61,7 @@ export const ExperienciaLaboral = ({ data = [], ambitopublico }) => {
          </Ngif>
          <TextPdf title={"Fecha de ingreso"} text={field(FechaIngreso)} width={50} />
          <TextPdf title={"Fecha de egreso "} text={field(FechaEngreso)} width={50} />
-         <TextPdf title={"Lugar donde se ubica"} text={field(parseInt(FueEnMexico) == 1 ? "México" : "En el extranjero")} width={50} />
+         <TextPdf title={"Lugar donde se ubica"} text={field(FueEnMexico == 1 ? "México" : "En el extranjero")} width={50} />
          <TextPdf title={"Aclaraciones"} text={field(Aclaraciones)} width={100} />
       </>
    );

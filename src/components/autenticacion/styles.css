@@ -1,32 +1,180 @@
-/* Contenedor del input */
+/* Estilos generales */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Animaciones personalizadas */
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: rgba(255, 255, 255, 0.8) }
+}
+
+/* Estilos para el componente de carga de archivos */
 .file-upload {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  padding: 14px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.file-upload:hover {
+  background-color: #f1f5f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.file-upload label {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #3a4a59;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.file-input-container {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  overflow: hidden;
+}
+
+.file-upload input[type="file"] {
+  position: absolute;
+  font-size: 100px;
+  opacity: 0;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.file-input-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  color: #5c828c;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.file-input-button:hover {
+  background-color: #f1f5f9;
+  border-color: #5c828c;
+}
+
+.file-name {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: #3a4a59;
+  background: rgba(92, 130, 140, 0.1);
+  padding: 6px 10px;
+  border-radius: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-icon {
+  display: inline-block;
+  width: 16px;
+  height: 20px;
+  background-color: #5c828c;
+  position: relative;
+  margin-right: 8px;
+  border-radius: 2px;
+}
+
+.file-icon:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px;
+  border-color: white #5c828c white white;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  color: #e53e3e;
+  font-size: 0.8rem;
+  margin-top: 6px;
+  padding-left: 4px;
+}
+
+/* Estilos para los input de Material UI personalizados */
+.MuiInputBase-root {
+  border-radius: 8px !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border-color: #e2e8f0 !important;
+}
+
+.MuiInputBase-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #cbd5e0 !important;
+}
+
+.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #5c828c !important;
+  border-width: 2px !important;
+}
+
+.MuiInputLabel-root.Mui-focused {
+  color: #3a4a59 !important;
+}
+
+/* Estilos para modal */
+.modal-container {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Estilos responsivos */
+@media (max-width: 960px) {
+  .file-upload {
+    padding: 12px;
   }
-  
-  /* Estilo del label */
-  .file-upload label {
-    font-weight: bold;
-    margin-bottom: 8px;
-  }
-  
-  /* Estilo del input de archivo */
-  .file-upload input[type="file"] {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    transition: border-color 0.2s;
-  }
-  
-  /* Efecto al pasar el ratón por encima del input */
-  .file-upload input[type="file"]:hover {
-    border-color: #888;
-  }
-  
-  /* Mensaje de error */
-  .error-message {
-    color: red;
-    margin-top: 4px;
-  }
-  
+}

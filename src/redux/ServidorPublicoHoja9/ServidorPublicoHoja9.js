@@ -26,7 +26,7 @@ const initialState = {
     OINC_RemuneracionTotal:0,//numericos
     OINC_Id_RemuneracionTotal:0,//numericos
     OINC_EspecificarTipoIngreso:"",
-    IngresoNetoParejaDependiente:"",
+    IngresoNetoParejaDependiente:0,
     IngresoMensualConclusionNeto:0,
     TotalIngresosNetos:0,
     Aclaraciones:"",

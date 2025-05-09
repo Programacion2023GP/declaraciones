@@ -269,9 +269,9 @@ const Sidebar = () => {
             <div className="sidebar-brand">
                <img src={Gomez} alt="" style={{ height: 100, objectFit: "contain" }} />
             </div>
-            <button className="sidebar-close-btn" onClick={closeSidebar}>
+            {/* <button className="sidebar-close-btn" onClick={closeSidebar}>
                <MdOutlineClose size={24} />
-            </button>
+            </button> */}
          </div>
          <div className="sidebar-body">
             <div className="sidebar-menu">
@@ -321,9 +321,9 @@ const Sidebar = () => {
 
 const RecursivoMenu = ({ array, i, handleSelect }) => {
    const style = {
-      height: "100%",
-      background: "linear-gradient(to bottom right, rgba(255, 255, 255, 0.3) 49%, rgba(71, 91, 232, 0.2) 50%)",
-      backdropFilter: "blur(3px)"
+      // height: "100%",
+      // background: "linear-gradient(to bottom right, rgba(255, 255, 255, 0.3) 49%, rgba(71, 91, 232, 0.2) 50%)",
+      // backdropFilter: "blur(3px)"
       // padding:".1rem "
    };
    return (

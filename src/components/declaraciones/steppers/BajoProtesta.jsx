@@ -10,7 +10,7 @@ import { Inpcheckbox } from "../../Reusables/Checkbox/Inpcheckbox";
 import { useState } from "react";
 import { useStepperContext } from "../../../context/StepperContext";
 
-export const BajoProtesta = () => {
+export const BajoProtesta = ({interes = false}) => {
   const { checkedProtesta, setCheckedProtesta } = useStepperContext();
   const handleChecked = (value) => {
     setCheckedProtesta(value);
@@ -28,7 +28,7 @@ export const BajoProtesta = () => {
             </Typography>
             <Typography variant="body2" color="text.secondary">
               <Inpcheckbox
-                text="Bajo protesta de decir verdad, presento mi declaración de situación patrimonial y de intereses, conforme a lo dispuesto en la ley general de responsabilidades administrativas, la ley general del sistema nacional anticorrupción y la normatividad aplicable."
+                text={`Bajo protesta de decir verdad, presento mi declaración de situación patrimonial y de intereses, conforme a lo dispuesto en la ley general de responsabilidades administrativas, la ley general del sistema nacional anticorrupción y la normatividad aplicable.`}
                 checked={checkedProtesta}
                 handleCheckbox={handleChecked}
               />

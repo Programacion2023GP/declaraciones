@@ -1,51 +1,45 @@
-import { Button } from "@mui/material";
-import "./Header.scss";
-import { Link } from "react-router-dom"; // Importa Link si estás utilizando React Router
-import { MenuContext } from "react-pro-sidebar";
+import { IconButton, Tooltip } from "@mui/material";
+import { Link } from "react-router-dom";
 import { useMenuContext } from "../../context/MenuContext";
 import MenuHeader from "./MenuHeader";
+import MenuIcon from "@mui/icons-material/Menu";
+import "./Header.scss";
 
 export const Header = () => {
   const { open, setOpen } = useMenuContext();
-  const handleChangeSiderbar = () => {
-    setOpen(!open);
+  
+  const toggleSidebar = () => {
+    setOpen(prev => !prev);
   };
-  return (
-    <nav className="navbar">
-      <div className="navbar-container">
-        <div className="navbar-left">
-          <Button
-            to="/"
-            onClick={() => handleChangeSiderbar()}
-            className="navbar-logo"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="30"
-              height="30"
-              fill="currentColor"
-              className="bi bi-list"
-              viewBox="0 0 16 16"
-            >
-              <path
-                fillRule="evenodd"
-                d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
-              />
-            </svg>
-          </Button>
-        </div>
-        <div className="navbar-right">
-          <ul className="navbar-menu">
-            <li className="navbar-item">
-              <MenuHeader/>
 
-              {/* <Link to="/contact" className="navbar-link">
-                as
-              </Link> */}
+  return (
+    <header className="header">
+      <div className="header-container">
+        {/* Parte izquierda con botón de menú */}
+        <div className="header-left">
+          <Tooltip title={open ? "Ocultar menú" : "Mostrar menú"}>
+            <IconButton
+              aria-label={open ? "Ocultar menú" : "Mostrar menú"}
+              onClick={toggleSidebar}
+              className="menu-button"
+              size="large"
+            >
+              <MenuIcon fontSize="large" />
+            </IconButton>
+          </Tooltip>
+          
+         
+        </div>
+
+        {/* Parte derecha con menú de usuario */}
+        <nav className="header-right" aria-label="Menú principal">
+          <ul className="nav-menu">
+            <li className="nav-item">
+              <MenuHeader />
             </li>
           </ul>
-        </div>
+        </nav>
       </div>
-    </nav>
+    </header>
   );
 };

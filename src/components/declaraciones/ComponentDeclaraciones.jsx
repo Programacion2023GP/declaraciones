@@ -39,7 +39,7 @@ import { Representacion } from "../interes/components/representacion/Representac
 import { Clientes } from "../interes/components/clientes/Clientes";
 import { BeneficiosPrivados } from "../interes/components/beneficiosprivados/BeneficiosPrivados";
 import { Fideocomisos } from "../interes/components/fideocomisos/Fideocomisos";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 // Importa aquí los componentes correspondientes a cada paso
 
@@ -304,12 +304,9 @@ const ComponentDeclaraciones = () => {
    React.useEffect(() => {
       // init();
       // setView(true);
-     
+
       dataAfterSituacionPatrimonial();
       searchHoja();
-
-
-
 
       // setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
    }, [activeStep, declaracion]);
@@ -337,7 +334,9 @@ const ComponentDeclaraciones = () => {
 
          setupdate(false);
          const response = await GetAxios(
-            `apartados/hoja/${activeStep < 15 ? parseInt(localStorage.getItem("id_SituacionPatrimonial")) : parseInt(localStorage.getItem("id_Intereses"))}`
+            `apartados/hoja/${
+               activeStep < 15 ? parseInt(localStorage.getItem("id_SituacionPatrimonial") ?? "0") || 0 : parseInt(localStorage.getItem("id_Intereses") ?? "0") || 0
+            }`
          );
          let foundHoja = parseInt(response[0].Hoja);
          if (activeStep > 14) {
@@ -450,7 +449,6 @@ const ComponentDeclaraciones = () => {
          console.error("Error en la inicialización:", error);
          // Manejar errores si es necesario
       } finally {
-
       }
    };
 

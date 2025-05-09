@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { CustomRadio } from "../../../Reusables/radiobutton/Radio";
 import { Ngif } from "../../../Reusables/conditionals/Ngif";
 import { Text } from "../../../Reusables/input/Input";
@@ -9,7 +9,7 @@ import { Grid } from "@mui/material";
 import { useFormikContext } from "formik";
 import { AutoComplete } from "../../../Reusables/autocomplete/autocomplete";
 import { GetPostales } from "../../../../services/services";
-export const DomicilioDeclarante = ({ openMunicipio, setOpenMunicipio, estado, setEstado }) => {
+export const DomicilioDeclarante = ({ openMunicipio, setOpenMunicipio, estado, setEstado,cp,setCp }) => {
    const [mexico, setMexico] = useState(true);
    const dispatch = useDispatch();
    const [datas, setDatas] = useState([]);
@@ -19,14 +19,18 @@ export const DomicilioDeclarante = ({ openMunicipio, setOpenMunicipio, estado, s
       setMexico(value == 1 ? true : false);
       // dispatch(configValidationsDependiente({ tipo: (value == 1 ? "DomicilioDeclaranteNULL" : "DomicilioDeclarante") }));
    };
+   useEffect(()=>{
+      cp && codigo("",cp,false)
+   },[cp])
    const codigo = async (name, value, nullable = true) => {
+
       nullable && formik.setFieldValue("ColoniaLocalidad", null);
       if (value.length == 5) {
          setLoading(true);
          const response = await GetPostales(value);
          const newDatas = response.map((item) => ({ id: item.Colonia, text: item.Colonia }));
          setLoading(false);
-
+         setCp(value)
          setDatas(newDatas);
       } else {
          setDatas([]);

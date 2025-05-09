@@ -11,7 +11,7 @@ import { Grid } from "@mui/material";
 import { AutoComplete } from "../../../Reusables/autocomplete/autocomplete";
 import { useFormikContext } from "formik";
 import { GetPostales } from "../../../../services/services";
-export const DomicilioDeclarante = memo(({ mex, activeState, idEntidad, CodigoPostal }) => {
+export const DomicilioDeclarante = memo(({ mex, activeState, idEntidad, CodigoPostal,setLoadData }) => {
    const [mexico, setMexico] = useState(mex);
    const [datas, setDatas] = useState([]);
    const [loading, setLoading] = useState(false);
@@ -20,6 +20,7 @@ export const DomicilioDeclarante = memo(({ mex, activeState, idEntidad, CodigoPo
       dispatch(configValidationsEmpleo({ tipo: mex == true ? "Mexico" : "NoesMexico" }));
    }, [mexico]);
    useEffect(() => {
+      console.log('info',CodigoPostal)
       if (!isNaN(parseInt(CodigoPostal))) {
          codigo("", String(CodigoPostal), false);
       }
@@ -38,7 +39,12 @@ export const DomicilioDeclarante = memo(({ mex, activeState, idEntidad, CodigoPo
          const newDatas = response.map((item) => ({ id: item.Colonia, text: item.Colonia }));
 
          setLoading(false);
-
+         setLoadData((prev)=>{
+            return {
+               ...prev,
+               CodigoPostal:value
+            }
+         })
          setDatas(newDatas);
       } else {
          setDatas([]);

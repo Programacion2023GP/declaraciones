@@ -59,7 +59,7 @@ export const DependientesEconomicos = ({ data = {}, testada = false, relacion = 
          <TextPdf title={"¿Es ciudadano extranjero?"} text={testField(EsCiudadanoExtranjero == 1 ? "Si" : "No", testada)} width={50} />
          {/* <TextPdf title={"¿Es dependiente economico?"} text={testField(EsDependienteEconomico == 1 ? "Si" : "No")} width={50} /> */}
          <TextPdf title={"¿Habita en el domicilio del declarante?"} text={testField(HabitaDomicilioDeclarante == 1 ? "Si" : "No", testada)} width={50} />
-         <TextPdf title={"Lugar donde recide"} text={testField(EsMexico == 1 ? "México" : "Extranjero", testada)} width={50} />
+         <TextPdf title={"Lugar donde reside"} text={testField(EsMexico ? "México" : "Extranjero", testada)} width={50} />
          {/* <TextPdf title={"Lugar donde recide"} text={testField(EsMexico == 1 ? "México" : "Extranjero")} width={50} /> */}
          {/* <TextPdf title={"Domicilio de la pareja"} text={testField(EsMexico == 1 ? "México" : "Extranjero")} width={50} /> */}
          {parseInt(Id_ActividadLaboral) > 0 && parseInt(Id_ActividadLaboral) < 5 && (

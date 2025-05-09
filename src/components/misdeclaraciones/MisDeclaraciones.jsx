@@ -29,6 +29,14 @@ import { PrestamoComodato } from "../checador/hojas/PrestamoComodato";
 import { Ngif } from "../Reusables/conditionals/Ngif";
 import { AvisoPrivacidad } from "../checador/hojas/avisoprivacidad/AvisoPrivacidad";
 import DeclarationDocument from "../checador/hojas/BajoProtesta";
+import { Participacion } from "../checador/hojas/interes/Participacion";
+import { ParticipacionTomaDecisiones } from "../checador/hojas/interes/ParticipacionTomaDecisiones";
+import { Apoyos } from "../checador/hojas/interes/Apoyos";
+import { Representacion } from "../checador/hojas/interes/Representacion";
+import { Clientes } from "../checador/hojas/interes/Clientes";
+import { BeneficiariosPrivados } from "../checador/hojas/interes/BeneficiariosPrivados";
+import { Fideicomisos } from "../checador/hojas/interes/Fideicomisos";
+import { BajoProtesta } from "../declaraciones/steppers/BajoProtesta";
 
 const MisDeclaraciones = ({}) => {
    useEffect(() => {
@@ -65,6 +73,15 @@ const MisDeclaraciones = ({}) => {
    const [pages, setPages] = useState(0);
    const [modal, setModal] = useState(false);
    const [pass, setPass] = useState(false);
+   const [participacion, setParticipacion] = useState([]);
+   const [participacionTomaDecisiones, setParticipacionTomaDecisiones] = useState([]);
+   const [apoyos, setApoyos] = useState([]);
+   const [representacion, setRepresentacion] = useState([]);
+   const [clientes, setClientes] = useState([]);
+   const [beneficiariosPrivados, setBeneficiariosPrivados] = useState([]);
+   const [fideicomisos, setFideicomisos] = useState([]);
+
+   const [interesOpen, setInteresOpen] = useState(false);
    const {
       estadocivil,
       regimenes,
@@ -200,8 +217,10 @@ const MisDeclaraciones = ({}) => {
       setLoading(false);
    };
    const handleAcuse = async (row) => {
-      setDatosGenerales(await GetAxios(`datosgenerales/acuse/${row.Folio}`));
-      const response = await GetAxios(`datosgenerales/acuse/${row.Folio}`);
+      const declaracionNoInteres = data.find((dec) => dec.Tipo_declaracion !== "Intereses" && dec.Declaracion !== "Interes");
+      const folio = declaracionNoInteres ? declaracionNoInteres.Folio : null;
+      setDatosGenerales(await GetAxios(`datosgenerales/acuse/${folio}`));
+      const response = await GetAxios(`datosgenerales/acuse/${folio}`);
       setRow({
          Gender: localStorage.getItem("Sexo"),
          Nombre: localStorage.getItem("Name"),
@@ -219,6 +238,14 @@ const MisDeclaraciones = ({}) => {
    };
    const handelPdf = async (row) => {
       setName(row.Nombre);
+      console.log("r0www",row)
+      setRow({
+         Gender: localStorage.getItem("Sexo"),
+         Nombre: localStorage.getItem("Name"),
+         ApPaterno: localStorage.getItem("PaternalSurname"),
+         ApMaterno: localStorage.getItem("MaternalSurname"),
+         Tipo_declaracion:row.Tipo_declaracion
+      });
       //    {
       //       "Folio": "22637",
       //       "Hoja": "8",
@@ -347,11 +374,54 @@ const MisDeclaraciones = ({}) => {
       }
    };
    const handlePdfPrint = async (row) => {
-      setRow(row);
-
+      const { Tipo_declaracion } = row;
+      console.log("la info", row);
       setTexter(false);
-      handelPdf(row);
+      if (Tipo_declaracion != "Intereses") {
+         handelPdf(row);
+         return;
+      }
+      handleInteresPdf(row);
    };
+   const handleInteresPdf = async (row) => {
+      const { Folio } = row;
+      setRow({
+         Gender: localStorage.getItem("Sexo"),
+         Nombre: localStorage.getItem("Name"),
+         PrimerApellido: localStorage.getItem("PaternalSurname"),
+         SegundoApellido: localStorage.getItem("MaternalSurname")
+      });
+      setModal(true);
+      setLoadingMessage(true);
+      setPages(7);
+
+      setMessage("Participacion");
+      setPass("1");
+      setParticipacion(await GetAxios(`interespdf/participacion/${Folio}`));
+      setMessage("Participacion toma de decisiones");
+      setPass("2");
+      setParticipacionTomaDecisiones(await GetAxios(`interespdf/participaciontomaDecisiones/${Folio}`));
+      setMessage("Apoyos");
+      setPass("3");
+      setApoyos(await GetAxios(`interespdf/apoyos/${Folio}`));
+      setMessage("Representación");
+      setPass("4");
+      setRepresentacion(await GetAxios(`interespdf/representacion/${Folio}`));
+      setMessage("Clientes");
+      setPass("5");
+      setClientes(await GetAxios(`interespdf/clientes/${Folio}`));
+      setMessage("Beneficiarios privados");
+      setPass("6");
+      setBeneficiariosPrivados(await GetAxios(`interespdf/beneficiariosprivados/${Folio}`));
+      setMessage("Fideicomisos");
+      setPass("7");
+      setFideicomisos(await GetAxios(`interespdf/fideicomisos/${Folio}`));
+
+      setOpen(true);
+      setModal(false);
+      setInteresOpen(true);
+   };
+
    const cleanFileName = (text) => {
       let mayusc = "";
       if (text === undefined || text === null) return text;
@@ -394,6 +464,7 @@ const MisDeclaraciones = ({}) => {
       localStorage.setItem(Declaracion == "Interes" ? "id_Intereses" : "id_SituacionPatrimonial", Folio);
       let number = Declara(Declaracion, Tipo_declaracion);
       let page = Hoja;
+
       if (Declaracion == "Interes") {
          window.location.hash = `dashboard/declaraciones/2/${parseInt(page) + (+15 - 1)}`;
          // console.log("aqui",`dashboard/declaraciones/2/${parseInt(page) + (Hoja ==1 ?1:0) + (+14- 1)}`);
@@ -491,6 +562,101 @@ const MisDeclaraciones = ({}) => {
          <PdfDeclaracion title={"ACUSE"} open={acuse} setOpen={setAcuse} formTitle={"ACUSE"}>
             <Acuse data={datosGenerales} adscripcion={adscripcion} row={myRow} declaracion={tpDeclaracion} />
          </PdfDeclaracion>
+         {interesOpen && (
+            <PdfDeclaracion
+               fileName={cleanFileName(myRow?.Folio) + cleanFileName(myRow?.ApPaterno) + cleanFileName(myRow?.ApMaterno) + cleanFileName(myRow?.Nombre)}
+               title={"Interes"}
+               open={interesOpen}
+               setOpen={setInteresOpen}
+               formTitle={"OFICIO DE VALES"}
+               watermark={"Declaracion interes"}
+            >
+               <PagePdf title={`Datos generales`}>
+                  <DatosGenerales
+                     interes
+                     data={[myRow]}
+                     estadocivil={estadocivil}
+                     regimenes={regimenes}
+                     paises={paises}
+                     nacionalidades={nacionalidades}
+                     testada={tester}
+                  />
+               </PagePdf>
+               {participacion.length > 0 ? (
+                  participacion.map((item, index) => (
+                     <PagePdf title={`I. Participación`} key={index}>
+                        <Participacion data={[item]} />
+                     </PagePdf>
+                  ))
+               ) : (
+                  <PagePdf title={`I. Participación Ninguno`} />
+               )}
+
+               {participacionTomaDecisiones.length > 0 ? (
+                  participacionTomaDecisiones.map((item, index) => (
+                     <PagePdf title={`II. Participación toma de decisiones`} key={index}>
+                        <ParticipacionTomaDecisiones data={[item]} />
+                     </PagePdf>
+                  ))
+               ) : (
+                  <PagePdf title={`II. Participación toma de decisiones Ninguno`} />
+               )}
+               {apoyos.length > 0 ? (
+                  apoyos.map((item, index) => (
+                     <PagePdf title={`III. Apoyos`} key={index}>
+                        <Apoyos data={[item]} />
+                     </PagePdf>
+                  ))
+               ) : (
+                  <PagePdf title={`III. Apoyos Ninguno`} />
+               )}
+
+               {representacion.length > 0 ? (
+                  representacion.map((item, index) => (
+                     <PagePdf title={`IV. Representación `} key={index}>
+                        <Representacion data={[item]} />
+                     </PagePdf>
+                  ))
+               ) : (
+                  <PagePdf title={`IV. Representación  Ninguno`} />
+               )}
+
+               {clientes.length > 0 ? (
+                  clientes.map((item, index) => (
+                     <PagePdf title={`V. Clientes principales`} key={index}>
+                        <Clientes data={[item]} />
+                     </PagePdf>
+                  ))
+               ) : (
+                  <PagePdf title={`V. Clientes principales Ninguno`} />
+               )}
+    
+               {beneficiariosPrivados.length > 0 ? (
+                  beneficiariosPrivados.map((item, index) => (
+                     <PagePdf title={`VI. Beneficiarios privados`} key={index}>
+                        <BeneficiariosPrivados data={[item]} />
+                     </PagePdf>
+                  ))
+               ) : (
+                  <PagePdf title={`VI. Beneficiarios privados Ninguno`} />
+               )}
+
+               {fideicomisos.length > 0 ? (
+                  fideicomisos.map((item, index) => (
+                     <PagePdf title={`VI. Fideicomisos`} key={index}>
+                        <Fideicomisos data={[item]} />
+                     </PagePdf>
+                  ))
+               ) : (
+                  <PagePdf title={`VI. Fideicomisos Ninguno`} />
+               )}
+               <DeclarationDocument
+                     row={myRow}
+                     interes
+                  />
+            </PdfDeclaracion>
+         
+         )}
 
          {loadingMessage != null ? (
             !loadingMessage && peticionesLoading ? (
@@ -534,6 +700,7 @@ const MisDeclaraciones = ({}) => {
                   </PagePdf>
                   <PagePdf title={"IV. DATOS DEL EMPLEO CARGO O COMISIÓN"}>
                      <DatosEmpleoCargo
+                        adscripcion={adscripcion}
                         testada={tester}
                         data={datosEmpleos}
                         nivelOrdenGobierno={nivelOrdenGobierno}
@@ -543,12 +710,16 @@ const MisDeclaraciones = ({}) => {
                         paises={paises}
                      />
                   </PagePdf>
-                  <PagePdf title={"V. EXPERIENCIA LABORAL"}>
-                     <ExperienciaLaboral data={experienciaLaboral} ambitopublico={ambitoPublico} testada={tester} />
+                  <PagePdf title={`V. EXPERIENCIA LABORAL ${!experienciaLaboral?.Id_SituacionPatrimonial ? "  NINGUNO" : ""}`}>
+                     {experienciaLaboral?.Id_SituacionPatrimonial ? (
+                        <ExperienciaLaboral data={experienciaLaboral} ambitopublico={ambitoPublico} testada={tester} />
+                     ) : (
+                        <></>
+                     )}
                   </PagePdf>
                   <Ngif condition={selectedDeclaracion < 4}>
-                     <PagePdf title={"VI. DATOS DE LA PAREJA"}>
-                        <DatosPareja data={datosPareja} relacion={relacion} testada={tester} />
+                     <PagePdf title={`VI. DATOS DE LA PAREJA ${!experienciaLaboral?.Id_SituacionPatrimonial ? "  NINGUNO" : ""}`}>
+                        {datosPareja?.Id_SituacionPatrimonial ? <DatosPareja data={datosPareja} relacion={relacion} testada={tester} /> : <></>}
                         <Notas
                            testada={tester}
                            message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
@@ -589,7 +760,7 @@ const MisDeclaraciones = ({}) => {
                      />
                   </PagePdf>
                   <Ngif condition={selectedDeclaracion == 2}>
-                     <PagePdf title={"IX. ¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? NO"}>
+                     <PagePdf title={`IX. ¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? ${!servidorPublico.TotalIngresosNetos && "NO"} `}>
                         <ServidorPublico data={servidorPublico} instrumentos={instrumentos} bienenAjenacion={bienenAjenacion} testada={tester} />
                      </PagePdf>
                   </Ngif>
@@ -711,8 +882,8 @@ const MisDeclaraciones = ({}) => {
                         </PagePdf>
                      </Ngif>
 
-                     <Ngif condition={cuentaValores.length > 0}>
-                        {cuentaValores.map((item, index) => (
+                     <Ngif condition={adeudos.length > 0}>
+                        {adeudos.map((item, index) => (
                            <PagePdf key={index} title={`${selectedDeclaracion != 2 ? "XIII" : "XIV"}. ADEUDOS PASIVOS`}>
                               <AdeudosPasivos
                                  data={[item]}
