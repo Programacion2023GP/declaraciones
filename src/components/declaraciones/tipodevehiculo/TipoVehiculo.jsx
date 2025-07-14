@@ -16,7 +16,9 @@ import { Post } from "../funciones/post";
 import { addVehiculo } from "../../../redux/VehiculosHoja11/VehiculosHoja11";
 import { Axios } from "../../../services/services";
 import Loading from "../../Reusables/loading/Loading";
-
+import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
+import { Vehiculos as PdfVehiculos } from "../../checador/hojas/Vehiculos";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.Vehiculos.initialState);
    const validations = useSelector((state) => state.Vehiculos.validationSchema);
@@ -27,7 +29,8 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
    const [otroVehiculo, setOtroVehiculo] = useState(true);
    const [titularVehiculo, seTitularVehiculo] = useState(0);
    const [loadings, setLoadings] = useState(false);
-
+   const [see, setSee] = useState(false);
+   const [seeItem, setSeeItem] = useState(null);
    const dispatch = useDispatch();
    const formik = useRef(null);
    let { declaracion } = useParams();
@@ -85,7 +88,11 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
          }
       }
    }, [data, vehiculos, adquisicion, pago]);
-
+   const handleSee = (item) => {
+      setChecked(true);
+      setSeeItem(datas.filter((it) => it.identificador == item.identificador)[0]);
+      setSee(true);
+   };
    const addDataTableModified = (values, index) => {
       // Crear una copia del objeto values
       const valuesCopy = { ...values, identificador: index };
@@ -196,15 +203,39 @@ export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) 
    ];
    return (
       <>
+         <PdfDeclaracion title={`Vehiculo Folio  ${seeItem?.identificador}`} open={see} setOpen={setSee} formTitle={"Dependientes Economicos"}>
+              <PagePdf title={`Vehiculo`}>
+
+                  <PdfVehiculos
+                  data={[seeItem]} 
+                  testada={false}
+                  relacion={relacion}
+                  titular={titularVehiculos}
+                  vehiculos={vehiculos}
+                  adquisicion={adquisicion}
+                  pago={pago}
+                  monedas={monedas}
+                  />
+                  </PagePdf>
+               </PdfDeclaracion>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
                {loadings && <Loading />}
 
                <DataTable
-                  // loading={loading && datas.length > 0}
-                  dataHidden={["identificador"]}
+                  moreButtons={[
+                     {
+                        tooltip: "Imprimir",
+                        color: "#27AE60",
+                        icon: VisibilityIcon,
+                        toltip: "Imprimir",
+                        handleButton: handleSee
+                        // conditions: ["Status == 'Terminada'"]
+                     }
+                  ]}
+                  // dataHidden={["identificador"]}
                   data={dataTable}
-                  headers={["Tipo de Vehículo", "Forma de Adquisición", "Forma de Pago"]}
+                  headers={["Folio","Tipo de Vehículo", "Forma de Adquisición", "Forma de Pago"]}
                   deleteButton={true}
                   handleDelete={deleteRow}
                />

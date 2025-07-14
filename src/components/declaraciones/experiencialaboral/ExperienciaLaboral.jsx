@@ -20,7 +20,8 @@ import { insertFormik } from "../../FuncionesFormik";
 // import DataTable from "../../Reusables/table/DataTable";
 import { useFormik } from "formik";
 import DatePickerComponentV2 from "../../Reusables/datepicker/DatePickerComponentV2";
-
+import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
+import { ExperienciaLaboral as PdfExperienciaLaboral } from "../../checador/hojas/ExperienciaLaboral";
 export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => {
    let { declaracion } = useParams();
    const [save, setSave] = useState(true);
@@ -66,7 +67,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
       };
 
       const newDataVisual = {
-         id: index,
+         id: String(index),
          Id_Sector: parseInt(values.Id_AmbitoSector) === 1 ? "PÚBLICO" : "PRIVADO",
          "Empleo, Ámbito cargo o comisión": values.NombreEntePublico,
          Lugar: parseInt(values.FueEnMexico) === 1 ? "Mexico" : "Extranjero",
@@ -230,9 +231,9 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
       return errorMessages;
    };
    const Delete = (row) => {
-      const newDatasVisuales = datasVisuales.filter((elemento) => elemento.id !== row.id);
+      const newDatasVisuales = datasVisuales.filter((elemento) => elemento.id != row.id);
 
-      setDatas(datas.filter((elemento) => elemento.identificador !== row.id));
+      setDatas(datas.filter((elemento) => elemento.identificador != row.id));
 
       setDatasVisuales(newDatasVisuales);
       Success("se elimino de la tabla");
@@ -242,7 +243,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
    };
    const handleSee = (item) => {
       setChecked(true);
-      // console.log("handle", formikRef);
+      // console.log("handle", datas.filter((elemento) => elemento.identificador == item.id)[0]);
       setSeeItem(datas.filter((elemento) => elemento.identificador == item.id)[0]);
       setSee(true);
    };
@@ -252,17 +253,25 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
       };
       init();
    }, [activeAmbitoPublico, activeSector]);
-   useEffect(() => {
-      see && insertFormik(formikRef, seeItem);
-   }, [see, seeItem]);
+   // useEffect(() => {
+   //    see && insertFormik(formikRef, seeItem);
+   // }, [see, seeItem]);
    return (
       <>
-         {/* {console.log("la datas", datas)} */}
+         {/* {consol.log("la datas", datas)} */}
+         <PdfDeclaracion title={`Experiencia laboral Folio  ${seeItem?.identificador} `} open={see} setOpen={setSee} formTitle={"Experiencia laboral"}>
+              <PagePdf title={`Experiencia laboral`}>
+
+                  <PdfExperienciaLaboral
+                  data={[seeItem]} ambitopublico={ambitoPublico} testada={false}
+                  />
+                  </PagePdf>
+               </PdfDeclaracion>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
                <DataTable
-                  headers={["Sector", "Ente publico o Nombre de la empresa", "Lugar", "Fecha de ingreso", "Fecha de salida"]}
-                  dataHidden={["id"]}
+                  headers={["Folio","Sector", "Ente publico o Nombre de la empresa", "Lugar", "Fecha de ingreso", "Fecha de salida"]}
+                  // dataHidden={["id"]}
                   data={datasVisuales}
                   moreButtons={[
                      {
@@ -400,7 +409,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
                      />
                      <Text textStyleCase={true} col={12} name="Aclaraciones" label="Aclaraciones" rows={10} color={"green"} />
                      <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
-                        Regresar a la pagina anterior
+                        {previous ? "Regresar a la pagina anterior" : ""}
                      </Button>
                      <Ngif condition={!see}>
                         <Box position={"relative"} width={"100%"} mb={"1rem"} padding={" 1.2rem"}>
@@ -426,7 +435,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
                </Ngif>
                <Ngif condition={!checked}>
                   <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
-                     Regresar a la pagina anterior
+                     {previous ? "Regresar a la pagina anterior" : ""}
                   </Button>
                   <Box position={"relative"} width={"100%"} mb={"1rem"} padding={" 1.2rem"}>
                      <Button

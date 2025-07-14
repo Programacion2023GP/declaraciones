@@ -15,6 +15,9 @@ import { Axios, GetAxios, PostAxios } from "../../../services/services";
 import { Success } from "../../../toasts/toast";
 import { Post } from "../funciones/post";
 import { FormikForm } from "../../Reusables/formik/FormikForm";
+import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
+import { DependientesEconomicos as PdfDependientesEconomicos } from "../../checador/hojas/DependientesEconomicos";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export const DependientesEconomicos = ({ loading, data, next, previous, title }) => {
    let { declaracion } = useParams();
@@ -35,7 +38,18 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
    const [update, setUpdate] = useState(loading);
    const formik = useRef();
    const [loadData, setLoadData] = useState(data);
+   const [see, setSee] = useState(false);
+   const [seeItem, setSeeItem] = useState(null);
+   const [relacionDeclarante, setRelacionDeclarante] = useState([]);
 
+   useEffect(() => {
+      const init = async () => {
+         const relacionData = await GetAxios("relacioncondeclarante/show");
+         setRelacionDeclarante(relacionData);
+         // getParentescos(relacionData);
+      };
+      init();
+   }, []);
    const submit = async (values, { resetForm }) => {
       formik.current.resetForm();
       setChecked(false);
@@ -54,8 +68,12 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
       };
       init();
    }, []);
+   const handleSee = (item) => {
+      setChecked(true);
+      setSeeItem(datas.filter((it) => it.id == item.id)[0]);
+      setSee(true);
+   };
    useEffect(() => {
-      console.log("data", parentescos);
       if (parentescos.length > 0) {
          if (typeof data !== "undefined" && Array.isArray(loadData) && loadData.length > 0) {
             let newDatasArray = [];
@@ -183,11 +201,29 @@ export const DependientesEconomicos = ({ loading, data, next, previous, title })
 
    return (
       <>
+          <PdfDeclaracion title={`Dependientes Economicos Folio  ${seeItem?.id}`} open={see} setOpen={setSee} formTitle={"Dependientes Economicos"}>
+              <PagePdf title={`Dependientes Economicos`}>
+
+                  <PdfDependientesEconomicos
+                  data={[seeItem]} relacion={relacionDeclarante} testada={false}
+                  />
+                  </PagePdf>
+               </PdfDeclaracion>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
                <DataTable
-                  headers={["Parentesco o relación con el declarante", "RFC", "Empleo, cargo o comisión"]}
-                  dataHidden={["id"]}
+                              moreButtons={[
+                                 {
+                                    tooltip: "Imprimir",
+                                    color: "#27AE60",
+                                    icon: VisibilityIcon,
+                                    toltip: "Imprimir",
+                                    handleButton: handleSee
+                                    // conditions: ["Status == 'Terminada'"]
+                                 }
+                              ]}
+                  headers={["Folio","Parentesco o relación con el declarante", "RFC", "Empleo, cargo o comisión"]}
+                  // dataHidden={["id"]}
                   data={datasTable}
                   // loading={loading && datas.length > 0}
                   // handleEdit={edit}

@@ -45,7 +45,16 @@ export const FormikForm = forwardRef(
 
          return errorMessages;
       };
-      useEffect(() => {}, [see]);
+      useEffect(() => {
+         if (!see && ref.current) {
+           // Resetear el formulario a los valores iniciales
+           ref.current.resetForm();
+           
+           // Opcional: También puedes limpiar los touched y errors
+           ref.current.setTouched({});
+           ref.current.setErrors({});
+         }
+       }, [see]);
       return (
          <Card className={className} sx={{ maxWidth: maxWidth ? maxWidth : "90%", margin: "auto", padding: ".8rem" }}>
             <CardContent>
@@ -77,10 +86,8 @@ export const FormikForm = forwardRef(
                               {see && (
                                  <Box
                                     style={{
-                                       position: "absolute",
-                                       top: "20px", // Ajusta el espacio para que el mensaje se vea como un marcador de libro
-                                       left: "50%",
-                                       transform: "translateX(-50%)",
+                                       // position: "absolute",
+                                       widht:'full',
                                        backgroundColor: "yellow",
                                        padding: "8px 16px",
                                        borderRadius: "4px",
@@ -90,7 +97,7 @@ export const FormikForm = forwardRef(
                                        alignItems: "center"
                                     }}
                                  >
-                                    <Typography variant="caption" color="textSecondary">
+                                    <Typography width={'full'} textAlign={'center'} variant="caption" color="textSecondary">
                                        Modo solo lectura.
                                     </Typography>
                                     <Tooltip title="Desactivar lectura" arrow>
@@ -111,16 +118,21 @@ export const FormikForm = forwardRef(
                                  container
                                  component="form"
                                  style={{
-                                    pointerEvents: see ? "none" : "auto",
+                                    // pointerEvents: see ? "none" : "auto",
                                     opacity: see ? 0.6 : 1,
-                                    backgroundColor: see ? "#f5f5f5" : "white", // Fondo de lectura
+                                    // backgroundColor: see ? "#f5f5f5" : "white", // Fondo de lectura
                                     border: `1px solid ${see ? "#d3d3d3" : "#ccc"}`, // Borde de solo lectura
                                     padding: "1rem",
                                     borderRadius: "4px",
                                     boxShadow: see ? "0 2px 4px rgba(0, 0, 0, 0.1)" : "none", // Sombra sutil para solo lectura
                                     marginTop: "1rem"
                                  }}
-                                 onSubmit={handleSubmit}
+                                 onSubmit={(e) => {
+                                    e.preventDefault(); // Siempre previene la recarga
+                                    if (!see) { // Solo ejecuta handleSubmit si NO está en modo lectura
+                                        handleSubmit(e);
+                                    }
+                                }}
                               >
                                  <Grid item xs={12}>
                                     <Voice message={getErrorMessages(errors, touched)} title={title} info="Ayuda sobre el formulario" totip="Leer errores" />

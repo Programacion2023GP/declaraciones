@@ -194,9 +194,9 @@ const Checador = ({}) => {
       dataAdeudos: [],
       dataPrestamosComodatos: []
    };
-   useEffect(()=>{
-      console.log("server",servidorPublico)
-   },[servidorPublico])
+   useEffect(() => {
+      console.log("server", servidorPublico);
+   }, [servidorPublico]);
    useEffect(() => {
       existPeticiones([
          estadocivil,
@@ -263,7 +263,7 @@ const Checador = ({}) => {
    useEffect(() => {}, [adscripcion, datosGenerales]);
    const handlePdfTester = async (row) => {
       setRow(row);
-      console.log("here",row)
+      console.log("here", row);
 
       setLoadingMessage(null);
       setMasive(false);
@@ -271,7 +271,6 @@ const Checador = ({}) => {
       handelPdf(row);
    };
    const handlePdfPrint = async (row) => {
-
       setLoadingMessage(null);
 
       setMasive(false);
@@ -307,6 +306,7 @@ const Checador = ({}) => {
       );
    };
    const handleAcuse = async (row) => {
+      setAcuse(false);
       setDatosGenerales(await GetAxios(`datosgenerales/acuse/${row.Folio}`));
       setRow(row);
       setTtpDeclaracion(row.Tipo_declaracion);
@@ -388,6 +388,7 @@ const Checador = ({}) => {
       // const foliosStirng = folios.join();
 
       // SOLICITAR DATA DE CADA TABLA
+
       const dataPost = { masiveIds: folios };
       const resDatosGenerales = await PostAxios(`datosgenerales/index/masive`, dataPost);
       DBLocal.dataDatosGenerales = resDatosGenerales.data.result;
@@ -431,7 +432,7 @@ const Checador = ({}) => {
 
       const resPrestamos = await PostAxios(`prestamoscomodatos/index/masive`, dataPost);
       DBLocal.dataPrestamosComodatos = resPrestamos.data.result;
-
+      console.log("fffff",DBLocal.dataDatosGenerales);
       let cont = 0;
       for (const row of dataFiltrados) {
          setRow(row);
@@ -518,7 +519,7 @@ const Checador = ({}) => {
          setPass(1);
 
          setDatosGenerales(
-            masive ? DBLocal.dataDatosGenerales.filter((item) => item.Id_SituacionPatrimonial === row.Folio) : await GetAxios(`datosgenerales/index/${row.Folio}`)
+            masive ? DBLocal.dataDatosGenerales.filter((item) => item.Id_SituacionPatrimonial == row.Folio) : await GetAxios(`datosgenerales/index/${row.Folio}`)
          );
 
          await delay(500); // Esperar medio segundo (500 milisegundos)
@@ -526,7 +527,7 @@ const Checador = ({}) => {
 
          setDomiciliioDeclarante(
             masive
-               ? DBLocal.dataDomiciliodeclarante.filter((item) => item.Id_SituacionPatrimonial === row.Folio)
+               ? DBLocal.dataDomiciliodeclarante.filter((item) => item.Id_SituacionPatrimonial == row.Folio)
                : await GetAxios(`domiciliodeclarante/index/${row.Folio}`)
          );
 
@@ -727,23 +728,23 @@ const Checador = ({}) => {
       return anios;
    };
    const cleanFileName = (text) => {
-      let mayusc = "";
       if (text === undefined || text === null) return text;
-
-      // Primero reemplazamos los acentos y normalizamos la cadena,
-      // pero evitamos afectar la 'ñ' y la 'Ñ'
-      mayusc = text
-         .replace(/[áäàâã]/gi, "a") // Reemplaza todas las variaciones de "a"
-         .replace(/[éëèê]/gi, "e") // Reemplaza todas las variaciones de "e"
-         .replace(/[íïìî]/gi, "i") // Reemplaza todas las variaciones de "i"
-         .replace(/[óöòôõ]/gi, "o") // Reemplaza todas las variaciones de "o"
-         .replace(/[úüùû]/gi, "u") // Reemplaza todas las variaciones de "u"
-         .replace(/[^a-zA-Z0-9Ññ]/g, "") // Remueve caracteres especiales y espacios
-         .replace(/\s+/g, "") // Remueve cualquier espacio extra
-         .replace(/\./g, ""); // Remueve todos los puntos
-
-      return mayusc.toUpperCase(); // Convierte todo a mayúsculas
-   };
+    
+      let mayusc = text
+        .replace(/[áäàâã]/gi, "a")
+        .replace(/[éëèê]/gi, "e")
+        .replace(/[íïìî]/gi, "i")
+        .replace(/[óöòôõ]/gi, "o")
+        .replace(/[úüùû]/gi, "u")
+        .replace(/ñ/g, "n")     // reemplaza ñ minúscula
+        .replace(/Ñ/g, "N")     // reemplaza Ñ mayúscula
+        .replace(/[^a-zA-Z0-9]/g, "") // elimina cualquier otro caracter especial
+        .replace(/\s+/g, "")    // elimina espacios
+        .replace(/\./g, "");    // elimina puntos
+    
+      return mayusc.toUpperCase();
+    };
+    
 
    const [selectedDate, setSelectedDate] = useState(null);
    const [selectedDate2, setSelectedDate2] = useState(null);
@@ -850,7 +851,7 @@ const Checador = ({}) => {
                      options={["CHARTS", "EXCEL", "COLORS"]}
                      // , "PDF",
                      moreButtons={moreButtons}
-                     dataHidden={["Gender","EmpleadoFechaAlta", "FechaRegistroTerminada"]}
+                     dataHidden={["Gender", "EmpleadoFechaAlta", "FechaRegistroTerminada"]}
                      // captionButtons={[
                      //    {text:"mas",handleButton:()=>{alert("dd")},icon:VisibilityIcon}
                      // ]}
@@ -902,11 +903,7 @@ const Checador = ({}) => {
                         formTitle={"OFICIO DE VALES"}
                         watermark={"Declaracion"}
                      >
-                        <PagePdf
-                          title={`I. DATOS GENERALES  ${myRow?.Tipo_declaracion?.toUpperCase()}`}
-
-                           data={datosGenerales}
-                        >
+                        <PagePdf title={`I. DATOS GENERALES  ${myRow?.Tipo_declaracion?.toUpperCase()}`} data={datosGenerales}>
                            <DatosGenerales
                               data={datosGenerales}
                               estadocivil={estadocivil}
@@ -938,7 +935,7 @@ const Checador = ({}) => {
                         </PagePdf>
                         <PagePdf title={"IV. DATOS DEL EMPLEO CARGO O COMISIÓN"}>
                            <DatosEmpleoCargo
-                            adscripcion={adscripcion}
+                              adscripcion={adscripcion}
                               testada={tester}
                               data={datosEmpleos}
                               nivelOrdenGobierno={nivelOrdenGobierno}
@@ -948,21 +945,33 @@ const Checador = ({}) => {
                               paises={paises}
                            />
                         </PagePdf>
-                        <PagePdf title={`V. EXPERIENCIA LABORAL ${!experienciaLaboral?.Id_SituacionPatrimonial ? "  NINGUNO" : ""}`}>
-                     {experienciaLaboral?.Id_SituacionPatrimonial ? (
+                        {/* <PagePdf title={`V. EXPERIENCIA LABORAL ${!experienciaLaboral[0]?.Id_SituacionPatrimonial ? "  NINGUNO" : ""}`}>
+                     {experienciaLaboral[0]?.Id_SituacionPatrimonial ? (
                         <ExperienciaLaboral data={experienciaLaboral} ambitopublico={ambitoPublico} testada={tester} />
                      ) : (
                         <></>
                      )}
-                  </PagePdf>
+                  </PagePdf> */}
+
+                        <Ngif condition={experienciaLaboral.length > 0}>
+                           {experienciaLaboral.map((item, index) => (
+                              <PagePdf key={index} title={"V. EXPERIENCIA LABORAL"}>
+                                 <ExperienciaLaboral data={[item]} ambitopublico={ambitoPublico} testada={tester} />
+                              </PagePdf>
+                           ))}
+                        </Ngif>
+                        <Ngif condition={experienciaLaboral.length === 0}>
+                           <PagePdf title={"V. EXPERIENCIA LABORAL      (NINGUNO)"}></PagePdf>
+                        </Ngif>
+
                         <Ngif condition={selectedDeclaracion < 4}>
-                        <PagePdf title={`VI. DATOS DE LA PAREJA ${!experienciaLaboral?.Id_SituacionPatrimonial ? "  NINGUNO" : ""}`}>
-                        {datosPareja?.Id_SituacionPatrimonial ? <DatosPareja data={datosPareja} relacion={relacion} testada={tester} /> : <></>}
-                        <Notas
-                           testada={tester}
-                           message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
-                        />
-                     </PagePdf>
+                           <PagePdf title={`VI. DATOS DE LA PAREJA ${!datosPareja[0]?.Id_SituacionPatrimonial ? "  NINGUNO" : ""}`}>
+                              {datosPareja[0]?.Id_SituacionPatrimonial ? <DatosPareja data={datosPareja} relacion={relacion} testada={tester} /> : <></>}
+                              <Notas
+                                 testada={tester}
+                                 message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
+                              />
+                           </PagePdf>
                            <Ngif condition={datosDependienteEconomicos.length > 0}>
                               {datosDependienteEconomicos.map((item, index) => (
                                  <PagePdf key={item.Id_DatosDependienteEconomico} title={"VII. DATOS DEL DEPENDIENTE ECONOMICO"}>
@@ -998,11 +1007,10 @@ const Checador = ({}) => {
                            />
                         </PagePdf>
                         <Ngif condition={selectedDeclaracion == 2}>
-                        <PagePdf title={`IX. ¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? ${servidorPublico.length==0 ? 'NO':''} `}>
-                           {servidorPublico.length>0  && (
-
-                              <ServidorPublico data={servidorPublico} instrumentos={instrumentos} bienenAjenacion={bienenAjenacion} testada={tester} />
-                           )}
+                           <PagePdf title={`IX. ¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? ${servidorPublico.length == 0 ? "NO" : ""} `}>
+                              {servidorPublico.length > 0 && (
+                                 <ServidorPublico data={servidorPublico} instrumentos={instrumentos} bienenAjenacion={bienenAjenacion} testada={tester} />
+                              )}
                            </PagePdf>
                         </Ngif>
                         <Ngif condition={selectedDeclaracion < 4}>
@@ -1228,11 +1236,7 @@ const Checador = ({}) => {
                <PDFDownloadLink
                   document={
                      <Document>
-                        <PagePdf
-                          title={`I. DATOS GENERALES  ${myRow?.Tipo_declaracion?.toUpperCase()}`}
-
-                           data={datosGenerales}
-                        >
+                        <PagePdf title={`I. DATOS GENERALES  ${myRow?.Tipo_declaracion?.toUpperCase()}`} data={datosGenerales}>
                            <DatosGenerales
                               data={datosGenerales}
                               estadocivil={estadocivil}
@@ -1264,7 +1268,7 @@ const Checador = ({}) => {
                         </PagePdf>
                         <PagePdf title={"IV. DATOS DEL EMPLEO CARGO O COMISIÓN"}>
                            <DatosEmpleoCargo
-                            adscripcion={adscripcion}
+                              adscripcion={adscripcion}
                               testada={tester}
                               data={datosEmpleos}
                               nivelOrdenGobierno={nivelOrdenGobierno}
@@ -1274,9 +1278,23 @@ const Checador = ({}) => {
                               paises={paises}
                            />
                         </PagePdf>
-                        <PagePdf title={"V. EXPERIENCIA LABORAL"}>
-                           <ExperienciaLaboral data={experienciaLaboral} ambitopublico={ambitoPublico} testada={tester} />
-                        </PagePdf>
+                        {/* <PagePdf title={`V. EXPERIENCIA LABORAL ${!experienciaLaboral[0]?.Id_SituacionPatrimonial ? "  NINGUNO" : ""}`}>
+                           {experienciaLaboral[0]?.Id_SituacionPatrimonial ? (
+                              <ExperienciaLaboral data={experienciaLaboral} ambitopublico={ambitoPublico} testada={tester} />
+                           ) : (
+                              <></>
+                           )}
+                        </PagePdf> */}
+                        <Ngif condition={experienciaLaboral.length > 0}>
+                           {experienciaLaboral.map((item, index) => (
+                              <PagePdf key={index} title={"V. EXPERIENCIA LABORAL "}>
+                                 <ExperienciaLaboral data={[item]} ambitopublico={ambitoPublico} testada={tester} />
+                              </PagePdf>
+                           ))}
+                        </Ngif>
+                        <Ngif condition={experienciaLaboral.length === 0}>
+                           <PagePdf title={"V. EXPERIENCIA LABORAL      (NINGUNO)"}></PagePdf>
+                        </Ngif>
                         <Ngif condition={selectedDeclaracion < 4}>
                            <PagePdf title={"VI. DATOS DE LA PAREJA"}>
                               <DatosPareja data={datosPareja} relacion={relacion} testada={tester} />
@@ -1320,12 +1338,10 @@ const Checador = ({}) => {
                            />
                         </PagePdf>
                         <Ngif condition={selectedDeclaracion == 2}>
-                        <PagePdf title={`IX. ¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? ${servidorPublico.length==0 ? 'NO':''} `}>
-
-                           {servidorPublico.length>0  && (
-
-                              <ServidorPublico data={servidorPublico} instrumentos={instrumentos} bienenAjenacion={bienenAjenacion} testada={tester} />
-                           )}
+                           <PagePdf title={`IX. ¿TE DESEMPEÑASTE COMO SERVIDOR PÚBLICO EN EL AÑO INMEDIATO ANTERIOR? ${servidorPublico.length == 0 ? "NO" : ""} `}>
+                              {servidorPublico.length > 0 && (
+                                 <ServidorPublico data={servidorPublico} instrumentos={instrumentos} bienenAjenacion={bienenAjenacion} testada={tester} />
+                              )}
                            </PagePdf>
                         </Ngif>
                         <Ngif condition={selectedDeclaracion < 4}>
@@ -1515,16 +1531,7 @@ const Checador = ({}) => {
                            </Ngif>
                         </Ngif>
                         <AvisoPrivacidad />
-                        <DeclarationDocument
-                           row={myRow}
-                           message={
-                              selectedDeclaracion == 1 || selectedDeclaracion == 3
-                                 ? "INICIAL"
-                                 : selectedDeclaracion == 2 || selectedDeclaracion == 4
-                                   ? "MODIFICACION"
-                                   : "CONCLUSION"
-                           }
-                        />
+                        <DeclarationDocument row={myRow} message={(myRow?.Tipo_declaracion || "").toUpperCase()} />
                         {/* <For array={datosDependienteEconomicos} pdf>
                     {(item, index) => (
                     )}

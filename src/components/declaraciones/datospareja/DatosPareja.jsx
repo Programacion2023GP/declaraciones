@@ -311,8 +311,8 @@ export const DatosParejas = ({ loading, data, next, previous, title }) => {
                                     color={"green"}
                                     // Otras props opcionales como color, mask, etc., si es necesario
                                  />
-                                 <Text col={12} name="NumeroExterior" label="Número Exterior" type={"number"} color={"green"} />
-                                 <Text col={12} name="NumeroInterior" label="Número Interior" type={"number"} color={"green"} />
+                                 <Text col={12} name="NumeroExterior" label="Número Exterior" type={"text"} color={"green"} />
+                                 <Text col={12} name="NumeroInterior" label="Número Interior" type={"text"} color={"green"} />
                                  <Text col={12} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} handleGetValue={codigo} />
                                  <AutoComplete
                                     hidden={!mexico}

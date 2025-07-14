@@ -45,6 +45,7 @@ import { Backdrop, CircularProgress, Typography } from "@mui/material";
 import { Ngif } from "../components/Reusables/conditionals/Ngif";
 import { NotasAclaratorias } from "../components/notasaclaratorias/NotasAclaratorias";
 import Loading from "../components/Reusables/loading/Loading";
+import Administrativo from "../components/administrativo/Administrativo";
 // import DeclaracionInteres from "../components/interes/DeclaracionInteres";
 // import { MisDeclaraciones } from "../components/misdeclaraciones/MisDeclaraciones";
 // import { ComponentCatalogo } from "../components/catalogos/componentcatalogo/ComponentCatalogo";
@@ -141,6 +142,17 @@ export const router = createHashRouter([
                <ComponentPermissions condition={(role) => [1, 10].includes(role)}>
                   <NotasAclaratorias />
                </ComponentPermissions>
+            )
+         },
+         {
+            path: "administrativo",
+            index: true,
+            element: (
+               <Provider store={store}>
+               <ComponentPermissions condition={(role) => [1, 10].includes(role)}>
+                     <Administrativo />
+                  </ComponentPermissions>
+               </Provider>
             )
          },
          {

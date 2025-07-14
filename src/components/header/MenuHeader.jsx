@@ -15,7 +15,8 @@ import {
    Button,
    InputAdornment,
    Card,
-   CardContent
+   CardContent,
+   Alert
 } from "@mui/material";
 import { Logout as LogoutIcon, ManageAccounts as ManageAccountsIcon, Close as CloseIcon, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Formik, Form, Field } from "formik";
@@ -28,8 +29,8 @@ import { Success } from "../../toasts/toast";
 const MenuHeader = () => {
    const theme = useTheme();
    const dispatch = useDispatch();
-   // const [drawerOpen, setDrawerOpen] = useState(parseInt(localStorage.getItem("ConfirmationDateTime")) == 0  && parseInt(localStorage.getItem('Id_Role'))!=10 ? true : false);
-   const [drawerOpen, setDrawerOpen] = useState(false);
+   const [drawerOpen, setDrawerOpen] = useState(parseInt(localStorage.getItem("ConfirmationDateTime")) == 0  && parseInt(localStorage.getItem('Id_Role'))!=10 ? true : false);
+   // const [drawerOpen, setDrawerOpen] = useState(false);
 
    const [userInitials, setUserInitials] = useState("");
 
@@ -145,10 +146,10 @@ const PasswordChangeForm = ({ onClose }) => {
    const validationSchema = Yup.object().shape({
       password: Yup.string().min(6, "Mínimo 6 caracteres").required("Requerido"),
       newPassword: Yup.string()
-         .min(8, "Mínimo 8 caracteres")
-         .matches(/[a-z]/, "Requiere minúscula")
-         .matches(/[A-Z]/, "Requiere mayúscula")
-         .matches(/[0-9]/, "Requiere número")
+         .min(6, "Mínimo 6 caracteres")
+         // .matches(/[a-z]/, "Requiere minúscula")
+         // .matches(/[A-Z]/, "Requiere mayúscula")
+         // .matches(/[0-9]/, "Requiere número")
          .notOneOf([Yup.ref("password")], "Debe ser diferente")
          .required("Requerido")
    });
@@ -171,7 +172,37 @@ const PasswordChangeForm = ({ onClose }) => {
          <CardContent>
             <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
                <Typography variant="h5">
-                {parseInt(localStorage.getItem("ConfirmationDateTime")) ==0? "Cambia tu contraseña para continuar": "Cambiar Contraseña"}
+                {parseInt(localStorage.getItem("ConfirmationDateTime")) ==0? (
+                 <Alert
+                 severity="warning"
+                 sx={{
+                   borderRadius: 2,
+                   boxShadow: 2,
+                   margin: 2,
+                   bgcolor: '#fff8e1',
+                   color: '#5d4037',
+                   borderLeft: '4px solid #ffa000',
+                   '& .MuiAlert-message': {
+                     padding: '8px 0',
+                   }
+                 }}
+               >
+                 <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>
+                 ATENCIÓN
+                 </div>
+                 <div style={{ marginBottom: '8px' }}>
+                 Favor de actualizar tu contraseña para mejorar la seguridad en la plataforma.
+                 </div>
+                 <div style={{ marginBottom: '8px' }}>
+                    La contraseña deberá de ser mayor o igual a 6 caracteres.
+
+                 </div>
+                 <div style={{ fontStyle: 'italic' }}>
+                 Por favor guarda tu nueva contraseña en un lugar seguro.
+                 </div>
+               </Alert>
+
+                ): "Cambiar Contraseña"}
                 </Typography>
                {parseInt(localStorage.getItem("ConfirmationDateTime")) == 1 && parseInt(localStorage.getItem('Id_Role'))!=10 && (
                   <IconButton onClick={onClose}>
@@ -185,7 +216,7 @@ const PasswordChangeForm = ({ onClose }) => {
                   <Form>
                      <Stack spacing={3}>
                         {/* Campo de contraseña actual */}
-                        {/* {parseInt(localStorage.getItem("ConfirmationDateTime")) ==1 && parseInt(localStorage.getItem('Id_Role'))!=10  && ( */}
+                        {parseInt(localStorage.getItem("ConfirmationDateTime")) ==1 && parseInt(localStorage.getItem('Id_Role'))!=10  && (
 
                         <Field name="password">
                            {({ field }) => (
@@ -217,7 +248,7 @@ const PasswordChangeForm = ({ onClose }) => {
                            )}
                         </Field>
                        
-
+                        )}
                         {/* Campo de nueva contraseña */}
                         <Field name="newPassword">
                            {({ field }) => (
@@ -251,11 +282,11 @@ const PasswordChangeForm = ({ onClose }) => {
 
                         {/* Botones de acción */}
                         <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
-                           {/* {parseInt(localStorage.getItem("ConfirmationDateTime")) == 1 && ( */}
+                           {parseInt(localStorage.getItem("ConfirmationDateTime")) == 1 && (
                               <Button variant="outlined" onClick={onClose}>
                                  Cancelar
                               </Button>
-                           {/* )} */}
+                            )} 
                            <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
                               {isSubmitting ? "Guardando..." : "Aceptar"}
                            </Button>

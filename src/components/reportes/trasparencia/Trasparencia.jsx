@@ -123,17 +123,19 @@ const Trasparencia = ({}) => {
                   "Denominación del puesto (Redactados con perspectiva de género)",
                   "Denominación del cargo",
                   "Área de adscripción",
+                  "Dependencia",
                   "Nombre(s) del(la) servidor(a) público(a)",
                   "Primer apellido del(la) servidor(a) público(a)",
                   "Segundo apellido del(la) servidor(a) público(a)",
                   "ESTE CRITERIO APLICA A PARTIR DEL 01/04/2023 -> Sexo (catálogo)",
+                  "Tipo de declaración",
                   "Modalidad de la Declaración Patrimonial (catálogo)",
                   "Hipervínculo a la versión pública Declaración de Situación Patrimonial",
                   "Área(s) responsable(s) que genera(n), posee(n), publica(n) y actualizan la información",
                   "Fecha de actualización",
                   "Nota"
                ]}
-               link={[13]}
+               link={[15]}
                data={data}
                // por hacer  getUrl ={}
                // refreshRequest ={}
@@ -323,17 +325,21 @@ const Trasparencia = ({}) => {
                      color: "000000",
                      textColor: "ffffff",
 
-                     finish: "Q",
+                     // finish: "Q",
                      write: [
-                        {
-                           letter: "A",
-                           write: `Tabla Campos`,
-                           spacing: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q"]
-                        }
+                        // {
+                        //    letter: "A",
+                        //    write: `Tabla Campos`
+                        //    // spacing: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q"]
+                        // },
+                        // {
+                        //    letter: "B",
+                        //    write: "Saludo"
+                        // }
                      ]
                   } // Colorea la fila 3 (después de las vacías) hasta la columna F con color azul claro
                ]}
-               excelLayoutDownRowsStart ={6}
+               excelLayoutDownRowsStart={5}
                //  conditionExistEditButton={["Status !='Terminada'"]}
                // speakRow
                // conditionExistDeleteButton={["Status !='Terminada'"]}

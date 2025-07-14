@@ -47,9 +47,9 @@ const DeclarationDocument = ({row,interes,message=""}) => {
             <Text style={styles.title}>BAJO PROTESTA</Text>
             <Text style={styles.paragraph}>
                BAJO PROTESTA DE DECIR VERDAD, PRESENTO MI DECLARACION DE 
-               {interes ? " INTERES ":" SITUACION PATRIMONIAL DE "}
+               {interes ? " INTERES":" SITUACION PATRIMONIAL DE "}
                
-                {message}, DE CONFORMIDAD CON LOS ARTICULOS 32 Y 33 CONFORME A LO
+                {row?.Tipo_declaracion.toUpperCase()|| ''}, DE CONFORMIDAD CON LOS ARTICULOS 32 Y 33 CONFORME A LO
                DISPUESTO EN LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, LA LEY GENERAL DEL SISTEMA NACIONAL ANTICORRUPCION Y LA NORMATIVIDAD APLICABLE.
             </Text>
             <View style={styles.signatureContainer}>

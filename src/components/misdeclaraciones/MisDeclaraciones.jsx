@@ -221,7 +221,10 @@ const MisDeclaraciones = ({}) => {
       const folio = declaracionNoInteres ? declaracionNoInteres.Folio : null;
       setDatosGenerales(await GetAxios(`datosgenerales/acuse/${folio}`));
       const response = await GetAxios(`datosgenerales/acuse/${folio}`);
+      console.log("row handleAcuse", row);
       setRow({
+         Folio:row?.Folio,
+         EmpleadoFechaAlta: row?.fechaAlta,
          Gender: localStorage.getItem("Sexo"),
          Nombre: localStorage.getItem("Name"),
          ApPaterno: localStorage.getItem("PaternalSurname"),
@@ -238,13 +241,12 @@ const MisDeclaraciones = ({}) => {
    };
    const handelPdf = async (row) => {
       setName(row.Nombre);
-      console.log("r0www",row)
       setRow({
          Gender: localStorage.getItem("Sexo"),
          Nombre: localStorage.getItem("Name"),
          ApPaterno: localStorage.getItem("PaternalSurname"),
          ApMaterno: localStorage.getItem("MaternalSurname"),
-         Tipo_declaracion:row.Tipo_declaracion
+         Tipo_declaracion: row.Tipo_declaracion
       });
       //    {
       //       "Folio": "22637",
@@ -423,24 +425,22 @@ const MisDeclaraciones = ({}) => {
    };
 
    const cleanFileName = (text) => {
-      let mayusc = "";
       if (text === undefined || text === null) return text;
-
-      // Primero reemplazamos los acentos y normalizamos la cadena,
-      // pero evitamos afectar la 'ñ' y la 'Ñ'
-      mayusc = text
-         .replace(/[áäàâã]/gi, "a") // Reemplaza todas las variaciones de "a"
-         .replace(/[éëèê]/gi, "e") // Reemplaza todas las variaciones de "e"
-         .replace(/[íïìî]/gi, "i") // Reemplaza todas las variaciones de "i"
-         .replace(/[óöòôõ]/gi, "o") // Reemplaza todas las variaciones de "o"
-         .replace(/[úüùû]/gi, "u") // Reemplaza todas las variaciones de "u"
-         .replace(/[^a-zA-Z0-9Ññ]/g, "") // Remueve caracteres especiales y espacios
-         .replace(/\s+/g, "") // Remueve cualquier espacio extra
-         .replace(/\./g, ""); // Remueve todos los puntos
-
-      return mayusc.toUpperCase(); // Convierte todo a mayúsculas
-   };
-
+    
+      let mayusc = text
+        .replace(/[áäàâã]/gi, "a")
+        .replace(/[éëèê]/gi, "e")
+        .replace(/[íïìî]/gi, "i")
+        .replace(/[óöòôõ]/gi, "o")
+        .replace(/[úüùû]/gi, "u")
+        .replace(/ñ/g, "n")     // reemplaza ñ minúscula
+        .replace(/Ñ/g, "N")     // reemplaza Ñ mayúscula
+        .replace(/[^a-zA-Z0-9]/g, "") // elimina cualquier otro caracter especial
+        .replace(/\s+/g, "")    // elimina espacios
+        .replace(/\./g, "");    // elimina puntos
+    
+      return mayusc.toUpperCase();
+    };
    const moreButtons = [
       {
          tooltip: "Imprimir",
@@ -545,7 +545,7 @@ const MisDeclaraciones = ({}) => {
                      filter={true}
                      headers={["Folio", "Nombre", "Apellido Paterno", "Apellido Materno", "Tipo Declaración", "Status", "Fecha", "Tipo de declaración"]}
                      data={data}
-                     dataHidden={["Hoja"]}
+                     dataHidden={["Hoja", "fechaAlta"]}
                      pagination={[5, 10, 25]}
                      editButton={true}
                      deleteButton={true}
@@ -571,7 +571,7 @@ const MisDeclaraciones = ({}) => {
                formTitle={"OFICIO DE VALES"}
                watermark={"Declaracion interes"}
             >
-               <PagePdf title={`Datos generales`}>
+               <PagePdf title={`Identificación únicamente – Sin valor declarativo`}>
                   <DatosGenerales
                      interes
                      data={[myRow]}
@@ -630,7 +630,7 @@ const MisDeclaraciones = ({}) => {
                ) : (
                   <PagePdf title={`V. Clientes principales Ninguno`} />
                )}
-    
+
                {beneficiariosPrivados.length > 0 ? (
                   beneficiariosPrivados.map((item, index) => (
                      <PagePdf title={`VI. Beneficiarios privados`} key={index}>
@@ -650,12 +650,8 @@ const MisDeclaraciones = ({}) => {
                ) : (
                   <PagePdf title={`VI. Fideicomisos Ninguno`} />
                )}
-               <DeclarationDocument
-                     row={myRow}
-                     interes
-                  />
+               <DeclarationDocument row={myRow} interes />
             </PdfDeclaracion>
-         
          )}
 
          {loadingMessage != null ? (
@@ -710,16 +706,42 @@ const MisDeclaraciones = ({}) => {
                         paises={paises}
                      />
                   </PagePdf>
-                  <PagePdf title={`V. EXPERIENCIA LABORAL ${!experienciaLaboral?.Id_SituacionPatrimonial ? "  NINGUNO" : ""}`}>
-                     {experienciaLaboral?.Id_SituacionPatrimonial ? (
+                  {/* <PagePdf title={`V. EXPERIENCIA LABORAL ${!experienciaLaboral[0]?.Id_SituacionPatrimonial ? "  NINGUNO" : ""}`}>
+                     {experienciaLaboral[0]?.Id_SituacionPatrimonial ? (
                         <ExperienciaLaboral data={experienciaLaboral} ambitopublico={ambitoPublico} testada={tester} />
                      ) : (
                         <></>
                      )}
-                  </PagePdf>
+                  </PagePdf> */}
+                  <Ngif condition={experienciaLaboral.length > 0}>
+                        {experienciaLaboral.map((item, index) => (
+                           <PagePdf key={index} title={"V. EXPERIENCIA LABORAL"}>
+                              <ExperienciaLaboral data={[item]} ambitopublico={ambitoPublico} testada={tester} />
+                            
+                           </PagePdf>
+                        ))}
+                     </Ngif>
+                     <Ngif condition={experienciaLaboral.length === 0}>
+                        <PagePdf title={"V. EXPERIENCIA LABORAL      (NINGUNO)"}>
+                      
+                        </PagePdf>
+                     </Ngif>
+
+
+
+
+
+
+
+
+
+
+
+
+
                   <Ngif condition={selectedDeclaracion < 4}>
-                     <PagePdf title={`VI. DATOS DE LA PAREJA ${!experienciaLaboral?.Id_SituacionPatrimonial ? "  NINGUNO" : ""}`}>
-                        {datosPareja?.Id_SituacionPatrimonial ? <DatosPareja data={datosPareja} relacion={relacion} testada={tester} /> : <></>}
+                     <PagePdf title={`VI. DATOS DE LA PAREJA ${!datosPareja[0]?.Id_SituacionPatrimonial ? "  NINGUNO" : ""}`}>
+                        {datosPareja[0]?.Id_SituacionPatrimonial ? <DatosPareja data={datosPareja} relacion={relacion} testada={tester} /> : <></>}
                         <Notas
                            testada={tester}
                            message={`VERSIÓN PÚBLICA ELABORADA CON ATENCIÓN A LAS DISPOSICIONES ESTABLECIDAS POR EL ARTÍCULO 29 DE LA LEY GENERAL DE RESPONSABILIDADES ADMINISTRATIVAS, ASÍ COMO POR LA DÉCIMO OCTAVA Y DÉCIMO NOVENA DE LAS NORMAS E INSTRUCTIVO PARA EL LLENADO Y PRESENTACIÓN DELFORMATO DE DECLARACIONES: DE SITUACIÓN PATRIMONIAL Y DE INTERESES, EMITIDAS MEDIANTE ACUERDO DEL COMITÉ COORDINADOR DELSISTEMA NACIONAL ANTICORRUPCIÓN, PUBLICADO EN EL DIARIO OFICIAL DE LA FEDERACIÓN EL 23 DE SEPTIEMBRE DE 2019.`}
@@ -949,13 +971,8 @@ const MisDeclaraciones = ({}) => {
                   <AvisoPrivacidad />
                   <DeclarationDocument
                      row={myRow}
-                     message={
-                        selectedDeclaracion == 1 || selectedDeclaracion == 3
-                           ? "INICIAL"
-                           : selectedDeclaracion == 2 || selectedDeclaracion == 4
-                             ? "MODIFICACION"
-                             : "CONCLUSION"
-                     }
+                     message={(myRow?.Tipo_declaracion || '').toUpperCase()}
+
                   />
                   {/* <For array={datosDependienteEconomicos} pdf>
                         {(item, index) => (

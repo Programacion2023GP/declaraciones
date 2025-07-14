@@ -44,7 +44,8 @@ const validationSchema = {
    FechaTomaConclusionPosesion: Yup.date("No cumple el formato valido de fecha").required("La fecha es requerida"),
    TelefonoOficina: Yup.number("Tienen que ser numeros").required("El telefono de oficina es requerido"),
    EsEnMexico: Yup.number("Debe ser numerico").required("Es requerido que selecione una opcion"),
-   NumeroExterior: Yup.number("Debe ser numerico").required("El numero exterior es requerido").min(1, "El numero exterior debe ser mayor a 0"),
+   NumeroExterior: Yup.string("Debe ser texto").required("El numero exterior es requerido"),
+
    Calle: Yup.string().required("La calle es requerida"),
    // NumeroInterior: Yup.number().required("El numero interior es requerido"),
    CodigoPostal: Yup.string()

@@ -107,7 +107,6 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       formik.current.setFieldValue("DenominacionPuesto", parseInt(row?.DenominacionPuesto));
    };
    const Form = () => {
-      useEffect(() => {}, []);
       const [dataEmpleos, setDataEmpleos] = useState(empleos);
       const [aereas, setAereas] = useState(adscripcionOrganismo);
       const handleEmpleos = (name, value) => {
@@ -151,7 +150,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
                <AutoComplete
                   col={12}
                   name={"organismo"}
-                  label={"Organismo"}
+                  label={"Dependencia"}
                   options={[
                      { id: "Presidencia", text: "Presidencia" },
                      { id: "SIDEAPAAR", text: "SIDEAPAAR" },
@@ -186,11 +185,11 @@ const Usuarios = ({ formik, setId, peticiones }) => {
 
    const headersDatable =
       parseInt(localStorage.getItem("Id_Role")) == 10
-         ? [ "Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Nombre Completo", "Rol", "Correo"]
-         : ["Nomina", "Nombre", "Apellido Paterno", "Nombre Completo", "Apellido Materno", "Rol", "Correo"];
+         ? [ "Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Nombre Completo", "Rol", "Correo",'Dependencia']
+         : ["Nomina", "Nombre", "Apellido Paterno", "Nombre Completo", "Apellido Materno", "Rol", "Correo",'Dependencia'];
    const dataHiddenDatable =
       parseInt(localStorage.getItem("Id_Role")) == 10
-         ? ["storedCertificatePath","Id_User", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion", "Gender", "organismo", "DenominacionPuesto"]
+         ? ["storedCertificatePath","Id_User", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion", "Gender", "DenominacionPuesto"]
          : [
               "storedCertificatePath",
               "Id_User",
@@ -200,7 +199,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
               "ClaseNivelPuesto",
               "AreaAdscripcion",
               "Gender",
-              "organismo",
+            
               "DenominacionPuesto"
            ];
    return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key, parameter, filterColumns, link };

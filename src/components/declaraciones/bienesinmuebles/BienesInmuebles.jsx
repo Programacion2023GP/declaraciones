@@ -12,6 +12,10 @@ import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 import Loading from "../../Reusables/loading/Loading";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { insertFormik } from "../../FuncionesFormik";
+import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
+import { BienesInmuebles as PdfBienesInmuebles } from "../../checador/hojas/BienesInmuebles";
 
 export const BienesInmuebles = ({ loading, data, next, previous, title, setSend }) => {
    const validations = useSelector((state) => state.BienesInmuebles.validationSchema);
@@ -23,6 +27,9 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
    });
    const [datas, setDatas] = useState([]);
    const [idUnique, setIdUnique] = useState(1);
+   const [see, setSee] = useState(false);
+   const [seeItem, setSeeItem] = useState(null);
+
    const formik = useRef(null);
    const [postStepper, setPostStepper] = useState(false);
    const [animateSend, setAnimateSend] = useState(false);
@@ -52,7 +59,6 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
                newDatasArray.push(modifiedData.newData);
                newSendDatasArray.push(modifiedData.newSendData);
             });
-
             setDatas(newDatasArray); // Actualizamos con el array completo
             setSendDatas(newSendDatasArray); // Actualizamos con el array completo
             setLoadings(false);
@@ -71,7 +77,7 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
 
       // Crear el nuevo objeto de datos visuales
       const newData = {
-         identificador: index,
+         identificador: String(index),
          tipo_inmueble: inmueble,
          "forma adquisicion": adquirir,
          tercero: tercero
@@ -91,11 +97,10 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
       setSendDatas(sendDatas.concat(values));
       const inmueble = inmuebles.filter((item) => item.id === values.Id_TipoInmueble)[0]?.text;
       const adquirir = adquisicion.filter((item) => item.id === values.Id_FormaAdquisicion)[0]?.text;
-
       const tercero = values.T_Id_TipoPersona == 1 ? "Persona Física" : "Persona Moral";
       setDatas(
          datas.concat({
-            identificador: values.identificador,
+            identificador: String(idUnique),
             tipo_inmueble: inmueble,
             "forma adquisicion": adquirir,
             tercero: tercero
@@ -111,6 +116,12 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
          setAnimateSend(false);
       }, 1000);
       // setAnimate(false)
+   };
+   const handleSee = (item) => {
+      console.log(item)
+      // setChecked(true);
+      setSeeItem(sendDatas.filter((elemento) => elemento.identificador == item.identificador)[0]);
+      setSee(true);
    };
    const sendData = async () => {
       const url = `bienesinmuebles/${update ? `update/${localStorage.getItem("id_SituacionPatrimonial")}` : "create"}`;
@@ -147,18 +158,48 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
          setAnimateDelete(false);
       }, 1000);
    };
+   // useEffect(() => {
+   //    // see && insertFormik(formik, seeItem);
+   // }, [see, seeItem]);
    const handleChange = (event) => {
       setChecked(event.target.checked);
    };
    return (
-      <>
+      <div style={{ overflow: "auto" }}>
+              <PdfDeclaracion title={`Bienes Inmuebles Folio ${seeItem?.identificador} `} open={see} setOpen={setSee} formTitle={"Bienes Inmuebles"}>
+              <PagePdf title={`Bienes Inmuebles`}>
+
+                  <PdfBienesInmuebles
+                     data={[seeItem]}
+                     inmuebles={inmuebles}
+                     titular={titular}
+                     testada={false}
+                     adquisicion={adquisicion}
+                     pago={pago}
+                     monedas={monedas}
+                     relacion={relacion}
+                     motivobaja={motivobaja}
+                  />
+                  </PagePdf>
+               </PdfDeclaracion>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
                {loadings && <Loading />}
                <DataTable
                   // loading={}
-                  dataHidden={["identificador"]}
-                  headers={["Tipo de Inmueble", "Forma de Adquisición", "Nombre Tercero"]}
+                  // pagination={[5,10,20]}
+                  moreButtons={[
+                     {
+                        tooltip: "Imprimir",
+                        color: "#27AE60",
+                        icon: VisibilityIcon,
+                        toltip: "Imprimir",
+                        handleButton: handleSee
+                        // conditions: ["Status == 'Terminada'"]
+                     }
+                  ]}
+                  // dataHidden={["identificador"]}
+                  headers={["Folio","Tipo de Inmueble", "Forma de Adquisición", "Nombre Tercero"]}
                   data={datas}
                   handleDelete={deleteRow}
                   deleteButton={true}
@@ -173,6 +214,8 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
          </FormGroup>
          <Ngif condition={checked}>
             <FormikForm
+               // see={see}
+               // setSee={setSee}
                maxHeight={"230px"}
                previousButton
                handlePrevious={previous}
@@ -198,6 +241,9 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
                   motivobaja={motivobaja}
                />
             </FormikForm>
+         
+          
+           
          </Ngif>
          <Ngif condition={!checked}>
             <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
@@ -224,6 +270,6 @@ export const BienesInmuebles = ({ loading, data, next, previous, title, setSend 
                </Button>
             </Box>
          </Ngif>
-      </>
+      </div>
    );
 };

@@ -22,7 +22,9 @@ import { Success } from "../../../toasts/toast";
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 import Loading from "../../Reusables/loading/Loading";
-
+import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
+import { PrestamoComodato as PdfPrestamoComodato } from "../../checador/hojas/PrestamoComodato";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 export const PrestamosComodatos = ({ loading, data, title, previous, next, setSend }) => {
    const validations = useSelector((state) => state.PrestamoComodato.validationSchema);
    const dataForm = useSelector((state) => state.PrestamoComodato.initialState);
@@ -32,7 +34,7 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
    const [idUnique, setIdUnique] = useState(1);
    const formik = useRef(null);
    const [checked, setChecked] = useState(false);
-   const { vehiculos, inmuebles, relacion } = Request({ peticiones: ["vehiculos", "inmuebles", "relacion"] });
+   const { vehiculos, inmuebles, relacion,municipios,entidades,paises } = Request({ peticiones: ["vehiculos", "inmuebles", "relacion","municipios","entidades","paises"] });
    const [datasTable, setDatasTable] = useState([]);
    const [especifiqueOtro, setEspecifiqueOtro] = useState(false);
    const [values, setValues] = useState(null);
@@ -41,7 +43,8 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
    const [update, setUpdate] = useState(loading);
    const [loadData, setLoadData] = useState(data);
    const [loadings, setLoadings] = useState(false);
-
+   const [see, setSee] = useState(false);
+   const [seeItem, setSeeItem] = useState(null);
    const message =
       declaracion == 1 || declaracion == 3
          ? "Reportar la situación de prestamo o comodato por terceros a la fecha de ingreso al empleo, cargo o comisión"
@@ -160,7 +163,7 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
 
             next();
          } catch (error) {
-            console.log("error",error);
+            console.log("error", error);
             Error(error.response.data.data.message);
          }
       }
@@ -175,6 +178,11 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
    };
    const handleChange = (event) => {
       setChecked(event.target.checked);
+   };
+   const handleSee = (item) => {
+      // setChecked(true);
+      setSeeItem(datas.filter((it) => it.identificador == item.id)[0]);
+      setSee(true);
    };
    const otro = (name, value) => {
       setEspecifiqueOtro(name == "Id_TipoInmueble" ? (value == 9 ? true : false) : name == "Id_TipoVehiculo" ? (value == 4 ? true : false) : false);
@@ -192,14 +200,38 @@ export const PrestamosComodatos = ({ loading, data, title, previous, next, setSe
    };
    return (
       <>
+         <PdfDeclaracion title={`Prestamo comodatos Folio  ${seeItem?.identificador}`} open={see} setOpen={setSee} formTitle={"Prestamo comodatos"}>
+            <PagePdf title={`Prestamo comodatos`}>
+               <PdfPrestamoComodato
+                  data={[seeItem]}
+                  municipios={municipios}
+                  entidades={entidades}
+                  paises={paises}
+                  relacion={relacion}
+                  inmuebles={inmuebles}
+                  vehiculos={vehiculos}
+                  testada={false}
+               />
+            </PagePdf>
+         </PdfDeclaracion>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
                {loadings && <Loading />}
 
                <DataTable
                   // loading={loading && datas.length > 0}
-                  dataHidden={["id"]}
-                  headers={["Tipo de bien", "Especificación del bien"]}
+                  moreButtons={[
+                     {
+                        tooltip: "Imprimir",
+                        color: "#27AE60",
+                        icon: VisibilityIcon,
+                        toltip: "Imprimir",
+                        handleButton: handleSee
+                        // conditions: ["Status == 'Terminada'"]
+                     }
+                  ]}
+                  // dataHidden={["id"]}
+                  headers={["Folio","Tipo de bien", "Especificación del bien"]}
                   data={datasTable}
                   handleDelete={deleteRow}
                   deleteButton={true}

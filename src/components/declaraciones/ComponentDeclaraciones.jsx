@@ -137,7 +137,7 @@ const ComponentDeclaraciones = () => {
          url: "datoscargoscomision"
       },
       {
-         label: `Experiencia laboral (últimos cinco empleos)`,
+         label: `Experiencia laboral `,
          component: <ExperienciaLaboral next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
          exist: [1, 2, 3, 4, 5, 6],
          url: "experiencialaboral"
@@ -409,7 +409,6 @@ const ComponentDeclaraciones = () => {
          // Verificar si la página después de la situación es el paso activo
          if (pageAfterSituacion === activeStep && propierty != "id_Intereses") {
             if (situacionPatrimonial && parseInt(situacionPatrimonial?.Id_SituacionPatrimonial) > 0) {
-               console.log("adentro");
                const response = await GetAxios(
                   `${url}/index/${activeStep < 15 ? parseInt(situacionPatrimonial[propiertyDb]) : parseInt(localStorage.getItem("id_Intereses"))}`
                );

@@ -32,7 +32,7 @@ const AereaAdscripcion = ({ formik, setId, peticiones }) => {
       return (
          <>
             <Ngif condition={organismo.length > 0}>
-               <AutoComplete col={12} name={"organismo"} label={"Organismo"} options={organismo} />
+               <AutoComplete col={12} name={"organismo"} label={"Dependencia"} options={organismo} />
                <Text col={12} name={"nombre"} label={"Escribe el aerea de adscripción"} />{" "}
             </Ngif>
 

@@ -49,7 +49,7 @@ const validationSchema = {
 const inmueble = {
    Id_TipoInmueble: Yup.string("El formato es texto").required("El tipo de Inmueble es requerido"),
    V_EsEnMexico: Yup.number("Debe ser numerico").required("Es requerido que selecione una opcion"),
-   NumeroExterior: Yup.number("Debe ser numerico").required("El numero exterior es requerido").min(1, "El numero exterior debe ser mayor a 0"),
+   NumeroExterior: Yup.string("Debe ser texto").required("El numero exterior es requerido"),
    Calle: Yup.string().required("La calle es requerida"),
    CodigoPostal: Yup.string()
       .matches(/^\d{5}$/, "El código postal debe tener exactamente 5 caracteres numéricos")

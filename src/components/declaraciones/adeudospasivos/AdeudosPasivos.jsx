@@ -13,7 +13,9 @@ import { Ngif } from "../../Reusables/conditionals/Ngif";
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 import Loading from "../../Reusables/loading/Loading";
-
+import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
+import { AdeudosPasivos as PdfAdeudosPasivos } from "../../checador/hojas/AdeudosPasivos";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 export const AdeudosPasivos = ({ loading, data, title, next, previous, setSend }) => {
    const validations = useSelector((state) => state.AdeudosPasivos.validationSchema);
    const dataForm = useSelector((state) => state.AdeudosPasivos.initialState);
@@ -28,7 +30,8 @@ export const AdeudosPasivos = ({ loading, data, title, next, previous, setSend }
    const [update, setUpdate] = useState(loading);
    const [loadData, setLoadData] = useState(data);
    const [loadings, setLoadings] = useState(false);
-
+   const [see, setSee] = useState(false);
+   const [seeItem, setSeeItem] = useState(null);
    let { declaracion } = useParams();
    declaracion = parseInt(declaracion);
    const message =
@@ -70,7 +73,11 @@ export const AdeudosPasivos = ({ loading, data, title, next, previous, setSend }
          }
       }
    }, [data, titular]);
-
+   const handleSee = (item) => {
+      // setChecked(true);
+      setSeeItem(datas.filter((it) => it.indentificador == item.identificador)[0]);
+      setSee(true);
+   };
    const addDataTableModified = (values, index) => {
       const valuesCopy = { ...values, identificador: index };
 
@@ -135,14 +142,29 @@ export const AdeudosPasivos = ({ loading, data, title, next, previous, setSend }
    };
    return (
       <>
+         <PdfDeclaracion title={`Inversiones cuentas valores Folio  ${seeItem?.identificador}`} open={see} setOpen={setSee} formTitle={"Inversiones cuentas valores"}>
+            <PagePdf title={`Inversiones cuentas valores`}>
+               <PdfAdeudosPasivos data={[seeItem]} titular={titular} monedas={monedas} adeudos={tipoAdeudos} testada={false} />
+            </PagePdf>
+         </PdfDeclaracion>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
                {loadings && <Loading />}
 
                <DataTable
                   // loading={loading && datas.length > 0}
-                  dataHidden={["id"]}
-                  headers={["Nombre", "Titular del Adeudo", "No. Cuenta"]}
+                  moreButtons={[
+                     {
+                        tooltip: "Imprimir",
+                        color: "#27AE60",
+                        icon: VisibilityIcon,
+                        toltip: "Imprimir",
+                        handleButton: handleSee
+                        // conditions: ["Status == 'Terminada'"]
+                     }
+                  ]}
+                  // dataHidden={["id"]}
+                  headers={["Folio","Nombre", "Titular del Adeudo", "No. Cuenta"]}
                   data={datasTable}
                   handleDelete={deleteRow}
                   deleteButton={true}

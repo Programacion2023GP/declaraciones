@@ -12,7 +12,9 @@ import { addInversionesCuentasValores } from "../../../redux/InversionesCuentasV
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 import Loading from "../../Reusables/loading/Loading";
-
+import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
+import { CuentasValores as PdfCuentasValores } from "../../checador/hojas/CuentasValores";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 export const InversionesCuentasValores = ({ loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.InversionesCuentasValores.initialState);
    const validations = useSelector((state) => state.InversionesCuentasValores.validationSchema);
@@ -20,13 +22,14 @@ export const InversionesCuentasValores = ({ loading, data, next, previous, title
    const [datas, setDatas] = useState([]);
    const [datasTable, setDatasTable] = useState([]);
    const [idUnique, setIdUnique] = useState(1);
-   const { titular, tipoinversion, monedas } = Request({ peticiones: ["titular", "tipoinversion", "monedas"] });
+   const { titular, tipoinversion, monedas,subInversiones } = Request({ peticiones: ["titular", "tipoinversion", "monedas","subInversiones"] });
    const formik = useRef(null);
    const [checked, setChecked] = useState(false);
    const [update, setUpdate] = useState(loading);
    const [loadData, setLoadData] = useState(data);
    const [loadings, setLoadings] = useState(false);
-
+   const [see, setSee] = useState(false);
+   const [seeItem, setSeeItem] = useState(null);
    const dispatch = useDispatch();
    const handleChange = (event) => {
       setChecked(event.target.checked);
@@ -98,6 +101,11 @@ export const InversionesCuentasValores = ({ loading, data, next, previous, title
       setDatasTable(datasTable.filter((element) => element.identificador != row.identificador));
       Success("Se borro de la tabla");
    };
+   const handleSee = (item) => {
+      // setChecked(true);
+      setSeeItem(datas.filter((it) => it.indentificador == item.identificador)[0]);
+      setSee(true);
+   };
    const sendData = async () => {
       if (datas.length > 0) {
          const newDatas = [...datas];
@@ -129,14 +137,29 @@ export const InversionesCuentasValores = ({ loading, data, next, previous, title
 
    return (
       <>
+         <PdfDeclaracion title={`Inversiones cuentas valores Folio  ${seeItem?.indentificador}`} open={see} setOpen={setSee} formTitle={"Inversiones cuentas valores"}>
+            <PagePdf title={`Inversiones cuentas valores`}>
+               <PdfCuentasValores data={[seeItem]} testada={false} inversiones={tipoinversion} titular={titular} monedas={monedas} subInversiones={subInversiones} />
+            </PagePdf>
+         </PdfDeclaracion>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
                {loadings && <Loading />}
 
                <DataTable
+                    moreButtons={[
+                     {
+                        tooltip: "Imprimir",
+                        color: "#27AE60",
+                        icon: VisibilityIcon,
+                        toltip: "Imprimir",
+                        handleButton: handleSee
+                        // conditions: ["Status == 'Terminada'"]
+                     }
+                  ]}
                   // loading={loading && datas.length > 0}
-                  dataHidden={["identificador"]}
-                  headers={["Tipo de Inversion / Activo", "Titular", "Institución/ Razon social"]}
+                  // dataHidden={["identificador"]}
+                  headers={["Folio","Tipo de Inversion / Activo", "Titular", "Institución/ Razon social"]}
                   data={datasTable}
                   handleDelete={deleteRow}
                   deleteButton={true}

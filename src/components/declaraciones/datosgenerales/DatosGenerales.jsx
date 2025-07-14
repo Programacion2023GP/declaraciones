@@ -57,7 +57,10 @@ export const DatosGenerales = ({ loading, data, next, previous, title, setSend }
          id < 1 && localStorage.setItem("id_SituacionPatrimonial", response.data.result);
          Success(response.data.message);
          next();
-         setSend(true);
+         if(setSend){
+
+            setSend(true);
+         }
 
          return response.data;
       } catch (error) {

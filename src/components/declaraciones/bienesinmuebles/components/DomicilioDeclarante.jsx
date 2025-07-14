@@ -49,8 +49,8 @@ export const DomicilioDeclarante = ({ openMunicipio, setOpenMunicipio, estado, s
             handleGetValue={handleGetValue}
          />
          <Text col={4} name="Calle" label="Calle" color={"green"} />
-         <Text col={4} name="NumeroExterior" label="Número Exterior" type={"number"} color={"green"} />
-         <Text col={4} name="NumeroInterior" label="Número Interior" type={"number"} color={"green"} />
+         <Text col={4} name="NumeroExterior" label="Número Exterior" type={"text"} color={"green"} />
+         <Text col={4} name="NumeroInterior" label="Número Interior" type={"text"} color={"green"} />
          <Text col={4} name="CodigoPostal" label="Código Postal" type={"number"} color={"green"} handleGetValue={codigo} />
          <Ngif condition={mexico}>
             <ComponenteMexico setEstado={setEstado} estado={estado} openMunicipio={openMunicipio} setOpenMunicipio={setOpenMunicipio} />

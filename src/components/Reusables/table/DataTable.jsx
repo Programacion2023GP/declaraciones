@@ -479,7 +479,14 @@ const DataTable = ({
          showCancelButton: true,
          confirmButtonText: "Sí, eliminarlo",
          cancelButtonText: "No, cancelar",
-         reverseButtons: true
+         target: 'body', // Renderiza directamente en el body
+         reverseButtons: true,
+         willOpen: () => {
+            const popup = Swal.getPopup();
+            popup.style.zIndex = '2147483647';
+            // Asegúrate de que el contenedor padre también tenga z-index alto
+            document.querySelector('.swal2-container').style.zIndex = '2147483647';
+         }
       }).then((result) => {
          if (result.isConfirmed) {
             // Aquí pones la lógica para eliminar el elemento, por ejemplo, una llamada a una API
@@ -1072,7 +1079,9 @@ const DataTable = ({
                                                       </a>
                                                    ) : (
                                                       <Tooltip title={value} placement="top">
-                                                         {truncateText(value)}
+                                                         {typeof(value)=='string'? truncateText(value):value}
+                                                          {/* {String(truncateText(value))}
+                                                          {console.log(value)} */}
                                                       </Tooltip>
                                                    )}
                                                 </td>
@@ -1128,7 +1137,7 @@ const DataTable = ({
                                                    </a>
                                                 ) : (
                                                    <Tooltip title={value} placement="top">
-                                                      {truncateText(value)}
+                                                         {typeof(value)=='string'? truncateText(value):value}
                                                    </Tooltip>
                                                 )}
                                              </td>
@@ -1151,7 +1160,9 @@ const DataTable = ({
                                                    <EditButton handleEdit={handleEdit} item={item} />
                                                 </MenuItem>
                                              </Ngif>
-                                             <Ngif condition={deleteButton && checkConditionsDelete(item)}>
+                                             <Ngif condition={deleteButton && checkConditionsDelete(item) || moreButtons.length > 0}>
+                                                {deleteButton && checkConditionsDelete(item) && (
+
                                                 <MenuItem
                                                    onClick={() => {
                                                       handleDeleteSecurity(item);
@@ -1159,6 +1170,7 @@ const DataTable = ({
                                                 >
                                                    <DeleteButton handleDelete={handleDelete} item={item} />
                                                 </MenuItem>
+                                                )}
                                                 <MoreButtons
                                                    item={item}
                                                    moreButtons={moreButtons}
@@ -1325,15 +1337,55 @@ const MoreButtons = ({ item, moreButtons, checkConditionsMoreButton, buttonsMenu
                }
                return (
                   <>
-                     <Ngif condition={buttonsMenu}>
-                        <MenuItem
-                           onClick={() => {
-                              element.handleButton(item);
-                           }}
-                        >
-                           Profile
-                        </MenuItem>
-                     </Ngif>
+          <Ngif condition={buttonsMenu}>
+  <MenuItem
+    onClick={(e) => {
+      e.stopPropagation();
+      element.handleButton(item);
+    }}
+    sx={{
+      padding: '8px 16px',
+      '&:hover': {
+        backgroundColor: 'rgba(0, 0, 0, 0.04)'
+      }
+    }}
+  >
+    <Tooltip title={element.toltip} placement="top-start" arrow>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+        gap: '12px',
+        padding: '4px 0'
+      }}>
+        <IconButton
+          size="small"
+          style={{ 
+            color: element.color,
+            marginRight: '8px'
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            element.handleButton(item);
+          }}
+        >
+          <element.icon style={{ fontSize: '1.2rem' }} />
+        </IconButton>
+        
+        {element.message && (
+          <span style={{
+            flex: 1,
+            fontSize: '0.875rem',
+            fontWeight: 400,
+            color: 'inherit'
+          }}>
+            {element.message}
+          </span>
+        )}
+      </div>
+    </Tooltip>
+  </MenuItem>
+</Ngif>
                      <Ngif condition={!buttonsMenu}>
                         <Tooltip title={element.toltip} placement="top-start">
                            <IconButton

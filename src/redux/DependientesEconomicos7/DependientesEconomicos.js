@@ -74,7 +74,7 @@ const validationSchema = {
    FechaIngreso: Yup.date("El formato es invalido").required("Se requiere la fecha"),
    Id_MonedaSalarioMensualNeto: Yup.number().min(1, "La moneda mensual es requerida").required("La moneda mensual es requerida"),
    EsCiudadanoExtranjero: Yup.number("Debe ser numerico").required("Es requerido que selecione una opcion"),
-   NumeroExterior: Yup.number("Debe ser numerico").required("El numero exterior es requerido").min(1, "El numero exterior debe ser mayor a 0"),
+   NumeroExterior: Yup.string("Debe ser texto").required("El numero exterior es requerido"),
    Calle: Yup.string().required("La calle es requerida"),
    CodigoPostal: Yup.string()
       .matches(/^\d{5}$/, "El código postal debe tener exactamente 5 caracteres numéricos")
@@ -115,7 +115,7 @@ const PublicoPrivadouOtro = {
 };
 const validationsDomicilio = {
    EsCiudadanoExtranjero: Yup.number("Debe ser numerico").required("Es requerido que selecione una opcion"),
-   NumeroExterior: Yup.number("Debe ser numerico").required("El numero exterior es requerido").min(1, "El numero exterior debe ser mayor a 0"),
+   NumeroExterior: Yup.string("Debe ser texto").required("El numero exterior es requerido"),
    Calle: Yup.string().required("La calle es requerida"),
    CodigoPostal: Yup.string()
       .matches(/^\d{5}$/, "El código postal debe tener exactamente 5 caracteres numéricos")

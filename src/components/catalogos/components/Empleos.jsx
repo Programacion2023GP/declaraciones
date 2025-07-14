@@ -4,7 +4,9 @@ import { AutoComplete } from "../../Reusables/autocomplete/autocomplete";
 import Loading from "../../Reusables/loading/Loading";
 import { Ngif } from "../../Reusables/conditionals/Ngif";
 const Empleos = ({ formik, setId, peticiones }) => {
-   const { empleos } = peticiones;
+   const { empleos,organismo } = peticiones;
+   // const { organismo } = peticiones;
+
    const table = true;
 
    const title = "Formulario de Empleos";
@@ -34,12 +36,8 @@ const Empleos = ({ formik, setId, peticiones }) => {
                <AutoComplete
                   col={12}
                   name={"organismo"}
-                  label={"Organismo"}
-                  options={[
-                     { id: "PR", text: "PR" },
-                     { id: "DIF", text: "DIF" },
-                     { id: "EXPOFERIA", text: "EXPOFERIA" }
-                  ]}
+                  label={"Dependencia"}
+                  options={organismo}
                />
 
                <Text col={12} name={"valor"} label={"Escribe la Empleos"} />

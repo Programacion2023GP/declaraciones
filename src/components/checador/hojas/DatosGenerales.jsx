@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../Reusables/pdf/PdfDeclaracion";
 import { testField, field, vacio } from "../funciones/Funciones";
 
-export const DatosGenerales = ({ data = [], estadocivil, nacionalidades, paises, regimenes, testada = false,interes = false }) => {
+export const DatosGenerales = ({ data = [], estadocivil, nacionalidades, paises, regimenes, testada = false, interes = false }) => {
    const [civil, setCivil] = useState();
    const [nacionalidad, setNacionalidad] = useState();
    const [pais, setPais] = useState();
@@ -31,7 +31,7 @@ export const DatosGenerales = ({ data = [], estadocivil, nacionalidades, paises,
       setRegimen(regimenes.filter((item) => item.id === parseInt(Id_RegimenMatrimonial))[0]?.text);
    }, []);
    useEffect(() => {
-      console.log(civil, data, estadocivil);
+      console.log("la informacion", data);
    }, [civil, nacionalidad, pais, regimen, data, testada]);
 
    return (
@@ -41,23 +41,22 @@ export const DatosGenerales = ({ data = [], estadocivil, nacionalidades, paises,
          <TextPdf title={"Apellido Materno"} text={field(SegundoApellido, testada)} />
          {!interes && (
             <>
-            <TextPdf title={"CURP"} text={testada ? "XXXXXXXXXXXXXXXXXX" : Curp} width={50} />
-            <TextPdf title={"Rfc"} text={testField(Rfc, testada)} width={50} />
-            <TextPdf title={"Homoclave"} text={testada ? "XXX" : Homoclave} width={50} />
-            <TextPdf title={"Correo institucional"} text={testField(CorreoInstitucional, testada)} />
-            <TextPdf title={"Correo personal"} text={testField(CorreoPersonal, testada)} />
-            <TextPdf title={"Número telefonico de casa"} text={testField(TelefonoCasa, testada)} width={50} />
-            <TextPdf title={"Número personal"} text={testField(TelefonoCelularPersonal, testada)} width={50} />
-            <TextPdf
-               title={"Situacíon Personal/ Estado civil"}
-               text={testField(estadocivil.filter((item) => item.id === parseInt(Id_EstadoCivil))[0]?.text, testada)}
-               width={50}
-            />
-            <TextPdf title={"Régimen Matrimonial"} text={testField(regimenes.filter((item) => item.id === parseInt(Id_RegimenMatrimonial))[0]?.text, testada)} />
-            <TextPdf title={"País de nacimiento"} text={testField(paises.filter((item) => item.id === parseInt(Id_PaisNacimiento))[0]?.text, testada)} />
-            <TextPdf title={"Nacionalidad"} text={testField(nacionalidades.filter((item) => item.id === parseInt(Id_Nacionalidad))[0]?.text, testada)} />
-            <TextPdf title={"Aclaraciones/Observaciones"} text={testField(Aclaraciones, testada)} width={100} />
-            
+               <TextPdf title={"CURP"} text={testada ? "XXXXXXXXXXXXXXXXXX" : Curp} width={50} />
+               <TextPdf title={"Rfc"} text={testField(Rfc, testada)} width={50} />
+               <TextPdf title={"Homoclave"} text={testada ? "XXX" : Homoclave} width={50} />
+               <TextPdf title={"Correo institucional"} text={testField(CorreoInstitucional, testada)} />
+               <TextPdf title={"Correo personal"} text={testField(CorreoPersonal, testada)} />
+               <TextPdf title={"Número telefonico de casa"} text={testField(TelefonoCasa, testada)} width={50} />
+               <TextPdf title={"Número personal"} text={testField(TelefonoCelularPersonal, testada)} width={50} />
+               <TextPdf
+                  title={"Situacíon Personal/ Estado civil"}
+                  text={testField(estadocivil.filter((item) => item.id === parseInt(Id_EstadoCivil))[0]?.text, testada)}
+                  width={50}
+               />
+               <TextPdf title={"Régimen Matrimonial"} text={testField(regimenes.filter((item) => item.id === parseInt(Id_RegimenMatrimonial))[0]?.text, testada)} />
+               <TextPdf title={"País de nacimiento"} text={testField(paises.filter((item) => item.id === parseInt(Id_PaisNacimiento))[0]?.text, testada)} />
+               <TextPdf title={"Nacionalidad"} text={testField(nacionalidades.filter((item) => item.id === parseInt(Id_Nacionalidad))[0]?.text, testada)} />
+               <TextPdf title={"Aclaraciones/Observaciones"} text={testField(Aclaraciones, testada)} width={100} />
             </>
          )}
 

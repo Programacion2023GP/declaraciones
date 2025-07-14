@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
 export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) => {
    const [ads, setAds] = useState(null);
    useEffect(() => {
-      console.log(row)
    }, [row, adscripcion]);
 
    const {
@@ -152,7 +151,7 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
                   <Text style={styles.folioText}>{hoy}</Text>
 
                   <Text style={styles.folioText}>Folio de impresión</Text>
-                  <Text style={styles.folioText}>{Id_SituacionPatrimonial}</Text>
+                  <Text style={styles.folioText}>{row?.Folio}</Text>
 
                   <Text style={styles.folioText}>Fecha de alta del empleado</Text>
                   <Text style={styles.folioText}>{EmpleadoFechaAlta}</Text>
@@ -170,7 +169,7 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
             <Text style={styles.subtitle}>
                DECLARACIÓN: SITUACIÓN PATRIMONIAL - {declaracion} - {row?.Declaracion}
             </Text>
-            <Text style={styles.subtitle}>AÑO DECLARADO: {new Date(FechaRegistro).getFullYear()}</Text>
+            <Text style={styles.subtitle}>AÑO DECLARADO: {new Date(FechaRegistro).getFullYear() -1}</Text>
          </View>
 
          <View style={styles.section}>
@@ -212,7 +211,7 @@ export const Acuse = ({ data = [], declaracion = "", row, adscripcion = [] }) =>
             <Text style={styles.bold}>DEL SERVICIO PÚBLICO:</Text>
             <Text>Cargo: {EmpleoCargoComision}</Text>
             <Text>Dependencia: {valor}</Text>
-            <Text>Área de adscripción (Dirección, Departamento o Coordinación): {AreaAdscripcion}</Text>
+            <Text>Área de adscripción: { adscripcion.find(it => it.id == (AreaAdscripcion || ''))?.text || AreaAdscripcion || ''}</Text>
          </View>
 
          <View style={styles.footer}>

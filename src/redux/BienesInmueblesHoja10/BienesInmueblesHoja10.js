@@ -73,7 +73,8 @@ const validationSchema = {
    ValorAdquisicion: Yup.number("El formato es numerico").min(1, "El valor de adquisición es requerido").required("El valor de adquisición es requerido"),
    EsEnMexico: Yup.number("Debe ser numerico").required("Es requerido que selecione una opcion"),
    Calle: Yup.string().required("La calle es requerida"),
-   NumeroExterior: Yup.number("Debe ser numerico").required("El numero exterior es requerido").min(1, "El numero exterior debe ser mayor a 0"),
+   NumeroExterior: Yup.string("Debe ser texto").required("El numero exterior es requerido"),
+
    CodigoPostal: Yup.string()
       .matches(/^\d{5}$/, "El código postal debe tener exactamente 5 caracteres numéricos")
       .required("El código postal es requerido"),

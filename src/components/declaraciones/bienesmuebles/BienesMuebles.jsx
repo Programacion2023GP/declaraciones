@@ -15,7 +15,9 @@ import { addValidacionesBienesMuebles } from "../../../redux/BienesMueblesHoja12
 import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 import Loading from "../../Reusables/loading/Loading";
-
+import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
+import { BienesMuebles as PdfBienesMuebles } from "../../checador/hojas/BienesMuebles";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 export const BienesMuebles = ({ loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.BienesMuebles.initialState);
    const validations = useSelector((state) => state.BienesMuebles.validationSchema);
@@ -28,7 +30,8 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
    const [update, setUpdate] = useState(loading);
    const [loadData, setLoadData] = useState(data);
    const [loadings, setLoadings] = useState(false);
-
+   const [see, setSee] = useState(false);
+   const [seeItem, setSeeItem] = useState(null);
    // actives (activaciones de campos)
    const [tercero, setTercero] = useState(false);
    const [tiposBienes, setTiposBienes] = useState(false);
@@ -36,7 +39,8 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
    const dispatch = useDispatch();
    const formik = useRef(null);
    let { declaracion } = useParams();
-   const { titular, tiposbienesmuebles, pago, adquisicion, monedas } = Request({ peticiones: ["titular", "tiposbienesmuebles", "pago", "adquisicion", "monedas"] });
+
+   const { titular, tiposbienesmuebles, pago, adquisicion, monedas,relacion,motivobaja } = Request({ peticiones: ["titular", "tiposbienesmuebles", "pago", "adquisicion", "monedas","relacion","motivobaja"] });
    const submit = async (values) => {
       setChecked(false);
 
@@ -155,6 +159,11 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
    // const errors = () => {
    //    console.log(formik.current.errors);
    // };
+   const handleSee = (item) => {
+      setChecked(true);
+      setSeeItem(datas.filter((it) => it.identificador == item.identificador)[0]);
+      setSee(true);
+   };
    const deleteRow = (row) => {
       setDatas(datas.filter((element) => element.identificador != row.identificador));
       setDataTable(dataTable.filter((element) => element.identificador != row.identificador));
@@ -165,14 +174,39 @@ export const BienesMuebles = ({ loading, data, next, previous, title, setSend })
    };
    return (
       <>
+         <PdfDeclaracion title={`Bienes Muebles Folio  ${seeItem?.identificador}`} open={see} setOpen={setSee} formTitle={"Bienes Muebles"}>
+            <PagePdf title={`Bienes Muebles`}>
+               <PdfBienesMuebles
+                  data={[seeItem]}
+                  inmuebles={tiposbienesmuebles}
+                  titular={titular}
+                  testada={false}
+                  adquisicion={adquisicion}
+                  pago={pago}
+                  monedas={monedas}
+                  relacion={relacion}
+                  motivobaja={motivobaja}
+               />
+            </PagePdf>
+         </PdfDeclaracion>
          <Box alignItems={"center"} justifyContent={"center"} display={"flex"}>
             <Card sx={{ maxWidth: "90%", overflow: "auto", margin: "auto", padding: ".8rem", overflow: "auto" }}>
                {loadings && <Loading />}
 
                <DataTable
-                  dataHidden={["identificador"]}
+                   moreButtons={[
+                     {
+                        tooltip: "Imprimir",
+                        color: "#27AE60",
+                        icon: VisibilityIcon,
+                        toltip: "Imprimir",
+                        handleButton: handleSee
+                        // conditions: ["Status == 'Terminada'"]
+                     }
+                  ]}
+                  // dataHidden={["identificador"]}
                   // loading={loading && datas.length > 0}
-                  headers={["Tipo de Bien", "Titular del Bien", "Descripción del Bien"]}
+                  headers={["Folio","Tipo de Bien", "Titular del Bien", "Descripción del Bien"]}
                   data={dataTable}
                   handleDelete={deleteRow}
                   deleteButton={true}
