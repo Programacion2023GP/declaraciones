@@ -227,13 +227,13 @@ const Sidebar = () => {
             }
          ]
       },
-      {
-         path:"administrativo",
-         text: "Edicion de declaraciones",
-         legend: "Acciones administrativas",
-         active: false,
-         permision: [1, 10]
-      }
+      // {
+      //    path:"administrativo",
+      //    text: "Edicion de declaraciones",
+      //    legend: "Acciones administrativas",
+      //    active: false,
+      //    permision: [30]
+      // }
    ]);
    // closing the navbar when clicked outside the sidebar area
    const handleClickOutside = (event) => {

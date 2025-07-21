@@ -149,7 +149,7 @@ export const router = createHashRouter([
             index: true,
             element: (
                <Provider store={store}>
-               <ComponentPermissions condition={(role) => [1, 10].includes(role)}>
+                  <ComponentPermissions condition={(role) => [30].includes(role)}>
                      <Administrativo />
                   </ComponentPermissions>
                </Provider>
