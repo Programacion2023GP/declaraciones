@@ -218,6 +218,8 @@ const Login = () => {
 
                                  switch (parseInt(user.Id_Role)) {
                                     case 1:
+                                    case 11:
+                                    case 12:
                                        window.location.hash = "/dashboard/checador";
                                        break;
                                     case 2:

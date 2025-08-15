@@ -23,7 +23,7 @@ const Sidebar = () => {
          text: "Declaraciones",
          legend: "selección de apartado de declaración",
          active: false,
-         permision: [2, 3, 10],
+         permision: [2, 3, 10, 12],
          children: [
             {
                path: "misdeclaraciones",
@@ -58,7 +58,7 @@ const Sidebar = () => {
          text: "Catalogos",
          legend: "catalogos generales",
          active: false,
-         permision: [1, 10],
+         permision: [1, 10, 12],
 
          children: [
             {
@@ -189,7 +189,7 @@ const Sidebar = () => {
          legend: "registro de usuarios",
 
          active: false,
-         permision: [1, 4, 10]
+         permision: [1, 4, 10, 11, 12]
       },
 
       {
@@ -197,21 +197,21 @@ const Sidebar = () => {
          text: "Checador",
          legend: "checador",
          active: false,
-         permision: [1, 5, 10]
+         permision: [1, 5, 10, 11, 12]
       },
       {
          path: "checadornotasalacaratorias",
          text: "Notas aclaratorias (checador)",
          legend: "Notas aclaratorias (checador)",
          active: false,
-         permision: [1, 10]
+         permision: [1, 10, 12]
       },
       {
          path: "",
          text: "Reportes",
          legend: "reportes del sistema",
          active: false,
-         permision: [1, 10],
+         permision: [1, 10, 12],
          children: [
             {
                path: "reportes/incumplimientos",
@@ -228,11 +228,11 @@ const Sidebar = () => {
          ]
       },
       // {
-      //    path:"administrativo",
+      //    path: "administrativo",
       //    text: "Edicion de declaraciones",
       //    legend: "Acciones administrativas",
       //    active: false,
-      //    permision: [30]
+      //    permision: [10, 12]
       // }
    ]);
    // closing the navbar when clicked outside the sidebar area
@@ -336,10 +336,8 @@ const RecursivoMenu = ({ array, i, handleSelect }) => {
    return (
       <>
          {array.map((child, j) => {
-         
             return (
                <>
-               
                   <Ngif condition={child.permision && !child.permision.includes(parseInt(localStorage.getItem("Id_Role")))}>
                      <></>
                   </Ngif>

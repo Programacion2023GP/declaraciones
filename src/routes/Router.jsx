@@ -89,7 +89,7 @@ export const router = createHashRouter([
                   path: "steppers",
                   element: (
                      <StepperContextProvider>
-                        <ComponentPermissions condition={(role) => [2, 3, 10].includes(role)}>
+                        <ComponentPermissions condition={(role) => [2, 3, 10, 12].includes(role)}>
                            <SteppersLayout />
                         </ComponentPermissions>
                      </StepperContextProvider>
@@ -99,7 +99,7 @@ export const router = createHashRouter([
                   path: ":declaracion",
                   element: (
                      <Provider store={store}>
-                        <ComponentPermissions condition={(role) => [2, 3, 10].includes(role)}>
+                        <ComponentPermissions condition={(role) => [2, 3, 10, 12].includes(role)}>
                            <ComponentDeclaracionesLayout />
                         </ComponentPermissions>
                      </Provider>
@@ -108,7 +108,7 @@ export const router = createHashRouter([
                      {
                         path: ":hoja?",
                         element: (
-                           <ComponentPermissions condition={(role) => [2, 3, 10].includes(role)}>
+                           <ComponentPermissions condition={(role) => [2, 3, 10, 12].includes(role)}>
                               <ComponentDeclaracionesLayout />
                            </ComponentPermissions>
                         )
@@ -121,7 +121,7 @@ export const router = createHashRouter([
             path: "misdeclaraciones",
             index: true,
             element: (
-               <ComponentPermissions condition={(role) => [2, 3, 10].includes(role)}>
+               <ComponentPermissions condition={(role) => [2, 3, 10, 12].includes(role)}>
                   <MisDeclaracionesLayout />
                </ComponentPermissions>
             )
@@ -130,7 +130,7 @@ export const router = createHashRouter([
             path: "notasaclaratorias",
             index: true,
             element: (
-               <ComponentPermissions condition={(role) => [2, 3, 10].includes(role)}>
+               <ComponentPermissions condition={(role) => [2, 3, 10, 12].includes(role)}>
                   <NotasAclaratorias />
                </ComponentPermissions>
             )
@@ -139,7 +139,7 @@ export const router = createHashRouter([
             path: "checadornotasalacaratorias",
             index: true,
             element: (
-               <ComponentPermissions condition={(role) => [1, 10].includes(role)}>
+               <ComponentPermissions condition={(role) => [1, 10, 12].includes(role)}>
                   <NotasAclaratorias />
                </ComponentPermissions>
             )
@@ -149,7 +149,7 @@ export const router = createHashRouter([
             index: true,
             element: (
                <Provider store={store}>
-                  <ComponentPermissions condition={(role) => [30].includes(role)}>
+                  <ComponentPermissions condition={(role) => [10, 12].includes(role)}>
                      <Administrativo />
                   </ComponentPermissions>
                </Provider>
@@ -159,7 +159,7 @@ export const router = createHashRouter([
             path: "checador",
             index: true,
             element: (
-               <ComponentPermissions condition={(role) => [1, 5, 10].includes(role)}>
+               <ComponentPermissions condition={(role) => [1, 5, 10,11, 12].includes(role)}>
                   <ChecadorLayout />
                </ComponentPermissions>
             )
@@ -168,7 +168,7 @@ export const router = createHashRouter([
             path: "usuarios",
             // element:<EstadoCivil/>,
             element: (
-               <ComponentPermissions condition={(role) => [1, 4, 10].includes(role)}>
+               <ComponentPermissions condition={(role) => [1, 4, 10,11, 12].includes(role)}>
                   <ComponentCatalogoLayout pagina={"usuarios"} />
                </ComponentPermissions>
             )
@@ -180,7 +180,7 @@ export const router = createHashRouter([
                {
                   path: ":catalogo",
                   element: (
-                     <ComponentPermissions condition={(role) => [1, 10].includes(role)}>
+                     <ComponentPermissions condition={(role) => [1, 10, 12].includes(role)}>
                         <ComponentCatalogoLayout />
                      </ComponentPermissions>
                   )
@@ -193,7 +193,7 @@ export const router = createHashRouter([
                {
                   path: "incumplimientos",
                   element: (
-                     <ComponentPermissions condition={(role) => [1, 10].includes(role)}>
+                     <ComponentPermissions condition={(role) => [1, 10, 12].includes(role)}>
                         <ComponentIncumplimientosLayout />
                      </ComponentPermissions>
                   )
@@ -201,7 +201,7 @@ export const router = createHashRouter([
                {
                   path: "trasparencia",
                   element: (
-                     <ComponentPermissions condition={(role) => [1, 10].includes(role)}>
+                     <ComponentPermissions condition={(role) => [1, 10, 12].includes(role)}>
                         <ComponentTrasparenciaLayout />
                      </ComponentPermissions>
                   )

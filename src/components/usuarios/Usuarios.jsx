@@ -144,7 +144,19 @@ const Usuarios = ({ formik, setId, peticiones }) => {
                   col={12}
                   name={"Id_Role"}
                   label={"Rol del usuario en el sistema"}
-                  options={roles.filter((r) => (parseInt(localStorage.getItem("Id_Role")) == 4 ? [2, 3].includes(r.id) : true))}
+                  options={roles.filter((r) => {
+                     const roleId = parseInt(localStorage.getItem("Id_Role"));
+                   
+                     if (roleId === 10) {
+                       return false; // no muestra ninguno
+                     } else if (roleId === 1 || roleId === 12) {
+                       return ![1, 10, 12].includes(r.id); // todos excepto 1, 10 y 12
+                     } else {
+                       return [2, 3].includes(r.id); // solo 2 y 3
+                     }
+                   })}
+                   
+                   
                />
                <AutoComplete col={12} name={"Id_TipoIntegrante"} label={"Tipo de integrante del sujeto obligado"} options={intengrantes} />
                <AutoComplete
@@ -185,11 +197,21 @@ const Usuarios = ({ formik, setId, peticiones }) => {
 
    const headersDatable =
       parseInt(localStorage.getItem("Id_Role")) == 10
-         ? [ "Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Nombre Completo", "Rol", "Correo",'Dependencia']
-         : ["Nomina", "Nombre", "Apellido Paterno", "Nombre Completo", "Apellido Materno", "Rol", "Correo",'Dependencia'];
+         ? ["Nomina", "Nombre", "Apellido Paterno", "Apellido Materno", "Nombre Completo", "Rol", "Correo", "Dependencia"]
+         : ["Nomina", "Nombre", "Apellido Paterno", "Nombre Completo", "Apellido Materno", "Rol", "Correo", "Dependencia"];
    const dataHiddenDatable =
       parseInt(localStorage.getItem("Id_Role")) == 10
-         ? ["storedCertificatePath","Id_User", "DenominacionCargo", "Id_Role", "Id_TipoIntegrante", "ClaseNivelPuesto", "AreaAdscripcion", "Gender", "DenominacionPuesto"]
+         ? [
+              "storedCertificatePath",
+              "Id_User",
+              "DenominacionCargo",
+              "Id_Role",
+              "Id_TipoIntegrante",
+              "ClaseNivelPuesto",
+              "AreaAdscripcion",
+              "Gender",
+              "DenominacionPuesto"
+           ]
          : [
               "storedCertificatePath",
               "Id_User",
@@ -199,7 +221,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
               "ClaseNivelPuesto",
               "AreaAdscripcion",
               "Gender",
-            
+
               "DenominacionPuesto"
            ];
    return { validator, initialState, handleEdit, Form, title, headersDatable, urlData, dataHiddenDatable, table, key, parameter, filterColumns, link };

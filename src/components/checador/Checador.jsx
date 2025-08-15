@@ -257,13 +257,15 @@ const Checador = ({}) => {
    const init = async () => {
       setLoading(true);
       setAdscripcion(await GetAxios("adscripcion/show"));
-      setData(await GetAxios(`apartados/all`));
+      setData(await GetAxios(`apartados/all/`));
+     // TODO futura version en cambios por organismo o dependencia
+      // setData(await GetAxios(`apartados/all/${localStorage.getItem("Id_Person")}/${localStorage.getItem("Id_Role")}`));
       setLoading(false);
    };
    useEffect(() => {}, [adscripcion, datosGenerales]);
    const handlePdfTester = async (row) => {
       setRow(row);
-      console.log("here", row);
+
 
       setLoadingMessage(null);
       setMasive(false);
@@ -432,7 +434,7 @@ const Checador = ({}) => {
 
       const resPrestamos = await PostAxios(`prestamoscomodatos/index/masive`, dataPost);
       DBLocal.dataPrestamosComodatos = resPrestamos.data.result;
-      console.log("fffff",DBLocal.dataDatosGenerales);
+      console.log("fffff", DBLocal.dataDatosGenerales);
       let cont = 0;
       for (const row of dataFiltrados) {
          setRow(row);
@@ -729,22 +731,21 @@ const Checador = ({}) => {
    };
    const cleanFileName = (text) => {
       if (text === undefined || text === null) return text;
-    
+
       let mayusc = text
-        .replace(/[áäàâã]/gi, "a")
-        .replace(/[éëèê]/gi, "e")
-        .replace(/[íïìî]/gi, "i")
-        .replace(/[óöòôõ]/gi, "o")
-        .replace(/[úüùû]/gi, "u")
-        .replace(/ñ/g, "n")     // reemplaza ñ minúscula
-        .replace(/Ñ/g, "N")     // reemplaza Ñ mayúscula
-        .replace(/[^a-zA-Z0-9]/g, "") // elimina cualquier otro caracter especial
-        .replace(/\s+/g, "")    // elimina espacios
-        .replace(/\./g, "");    // elimina puntos
-    
+         .replace(/[áäàâã]/gi, "a")
+         .replace(/[éëèê]/gi, "e")
+         .replace(/[íïìî]/gi, "i")
+         .replace(/[óöòôõ]/gi, "o")
+         .replace(/[úüùû]/gi, "u")
+         .replace(/ñ/g, "n") // reemplaza ñ minúscula
+         .replace(/Ñ/g, "N") // reemplaza Ñ mayúscula
+         .replace(/[^a-zA-Z0-9]/g, "") // elimina cualquier otro caracter especial
+         .replace(/\s+/g, "") // elimina espacios
+         .replace(/\./g, ""); // elimina puntos
+
       return mayusc.toUpperCase();
-    };
-    
+   };
 
    const [selectedDate, setSelectedDate] = useState(null);
    const [selectedDate2, setSelectedDate2] = useState(null);
