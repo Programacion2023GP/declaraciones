@@ -16,7 +16,7 @@ import { Success } from "../../../toasts/toast";
 import { Post } from "../funciones/post";
 import { FormikForm } from "../../Reusables/formik/FormikForm";
 import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
-import { DependientesEconomicos as PdfDependientesEconomicos } from "../../checador/hojas/DependientesEconomicos";
+import { DependientesEconomicos as PdfDependientesEconomicos } from "../../checador/hojasvisualizacion/DependientesEconomicos";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export const DependientesEconomicos = ({ loading, data, next, previous, title }) => {

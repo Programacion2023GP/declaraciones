@@ -35,6 +35,8 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
    ];
    const initialValues = {
       Id_User: parseInt(localStorage.getItem("Id_User")),
+      Id_SituacionPatrimonial: parseInt(localStorage.getItem("Id_SituacionPatrimonial")),
+
       Id_Intereses: "",
       Id_TipoRelacion: 1,
       NombreEmpresaSociedadAsociacion: "",
@@ -156,7 +158,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
    };
    const sendDatas = async () => {
       const newDatas = [...datas];
-      const url = `participacionempresas/${update ? `update/${localStorage.getItem("id_Intereses")}` : "create"}`;
+      const url = `participacionempresas/${update ? `update/${localStorage.getItem("id_Intereses")}` : `create/${parseInt(localStorage.getItem("id_SituacionPatrimonial") || "0")}`}`;
       // console.log(newDatas,url);
       if (newDatas.length > 0) {
          try {
@@ -190,7 +192,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
          try {
             const crear = !isNaN(parseInt(localStorage.getItem("id_Intereses"), 10)) && parseInt(localStorage.getItem("id_Intereses"), 10) > 0 ? 0 : 1;
             const response = await Axios.post(
-               `apartados/interes/${parseInt(localStorage.getItem("id_Intereses") || "0")}/1/1/${parseInt(localStorage.getItem("Id_User"))}/${crear}`
+               `apartados/interes/${parseInt(localStorage.getItem("id_SituacionPatrimonial") || "0")}/${parseInt(localStorage.getItem("id_Intereses") || "0")}/1/1/${parseInt(localStorage.getItem("Id_User"))}/${crear}`
             );
             if (crear == 1) {
                localStorage.setItem("id_Intereses", response.data.data.result);
@@ -234,7 +236,7 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
                maxHeight={"250px"}
                messageButton="Agregar a la tabla"
                // previousButton
-               handlePrevious={previous}
+               // handlePrevious={previous}
                ref={formik}
                initialValues={initialValues}
                submit={submit}
@@ -287,9 +289,9 @@ export const ParticipacionEmpresas = ({ loading, data, next, previous, title }) 
          
          </Ngif>
          <Ngif condition={!checked}>
-            <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
+            {/* <Button sx={{ marginRight: "1rem", marginTop: "1rem" }} type="button" onClick={previous} variant="text" color="inherit">
                Regresar a la pagina anterior
-            </Button>
+            </Button> */}
             <Box position={"relative"} width={"100%"} mb={"1rem"} padding={" 1.2rem"}>
                <Button
                   sx={{

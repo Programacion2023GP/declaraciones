@@ -13,7 +13,7 @@ import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 import Loading from "../../Reusables/loading/Loading";
 import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
-import { CuentasValores as PdfCuentasValores } from "../../checador/hojas/CuentasValores";
+import { CuentasValores as PdfCuentasValores } from "../../checador/hojasvisualizacion/CuentasValores";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 export const InversionesCuentasValores = ({ loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.InversionesCuentasValores.initialState);

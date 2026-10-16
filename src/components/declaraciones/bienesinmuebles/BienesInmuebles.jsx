@@ -15,7 +15,7 @@ import Loading from "../../Reusables/loading/Loading";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { insertFormik } from "../../FuncionesFormik";
 import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
-import { BienesInmuebles as PdfBienesInmuebles } from "../../checador/hojas/BienesInmuebles";
+import { BienesInmuebles as PdfBienesInmuebles } from "../../checador/hojasvisualizacion/BienesInmuebles";
 
 export const BienesInmuebles = ({ loading, data, next, previous, title, setSend }) => {
    const validations = useSelector((state) => state.BienesInmuebles.validationSchema);

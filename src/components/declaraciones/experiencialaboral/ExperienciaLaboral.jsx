@@ -21,7 +21,7 @@ import { insertFormik } from "../../FuncionesFormik";
 import { useFormik } from "formik";
 import DatePickerComponentV2 from "../../Reusables/datepicker/DatePickerComponentV2";
 import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
-import { ExperienciaLaboral as PdfExperienciaLaboral } from "../../checador/hojas/ExperienciaLaboral";
+import { ExperienciaLaboral as PdfExperienciaLaboral } from "../../checador/hojasvisualizacion/ExperienciaLaboral";
 export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => {
    let { declaracion } = useParams();
    const [save, setSave] = useState(true);
@@ -107,7 +107,7 @@ export const ExperienciaLaboral = ({ loading, data, next, previous, title }) => 
       EmpleoCargoComision: !activeAmbitoPublico ? Yup.string().required("El empleo, cargo o comisión es requerido") : null,
       FuncionPrincipal: !activeAmbitoPublico ? Yup.string().required("La función principal es requerida") : null,
       SectorEspecificado: activeSector ? Yup.string().required("El sector es requerido") : null,
-      Rfc: activeAmbitoPublico && Yup.string().length(3, "Debe contar con 3 caracteres").trim().required("El RFC de la empresa es requerido"),
+      // Rfc: activeAmbitoPublico && Yup.string().length(3, "Debe contar con 3 caracteres").trim().required("El RFC de la empresa es requerido"),
       Puesto: activeAmbitoPublico && Yup.string().required("El puesto de la empresa es requerido"),
       Id_Sector: activeAmbitoPublico && Yup.number().required("El sector es requerido"),
       FechaIngreso: Yup.date().typeError("El formato de fecha es inválido").required("La fecha de ingreso es requerida"),

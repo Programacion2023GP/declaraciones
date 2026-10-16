@@ -1,44 +1,45 @@
-import { useEffect, useState } from "react";
-import { Ngif } from "../../../Reusables/conditionals/Ngif";
-import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../../Reusables/pdf/PdfDeclaracion";
-import { testField, field, testArrayField, arrayField, vacio } from "../../funciones/Funciones";
-export const Fideicomisos = ({ data = [] }) => {
+import { TextPdf } from "../../../Reusables/pdf/PdfDeclaracion";
+import { testField, vacio } from "../../funciones/Funciones";
+
+export const Fideicomisos = ({ data = {} }) => {
    const {
-      relacion = vacio(),
-      fideocomiso = vacio(),
-      participacion = vacio(),
-      RfcFideicomiso = vacio(),
-      tipo_fideicomitente = vacio(),
-      NombreRazonSocialFideicomitente = vacio(),
-      RfcFideicomitente = vacio(),
-      tipo_fideicomisario = vacio(),
-      NombreRazonSocialFideicomisario = vacio(),
-      RfcFideicomisario = vacio(),
+      tipoFideicomiso = vacio(),
+      tipoParticipacion = vacio(),
+      rfcFideicomiso = vacio(),
+      fideicomitente = {},
+      fiduciario = {},
+      fideicomisario = {},
+      sector = {},
+      extranjero = vacio(),
+      aclaraciones = vacio(),
+   } = data;
 
-      Aclaraciones = vacio(),
-
-      sector = vacio(),
-      pais = vacio(),
-
-   } = data[0] || {};
-   useEffect(() => {}, []);
    return (
       <>
-         <TextPdf title={`Relacion`} text={testField(relacion)} />
-         <TextPdf title={`Tipo del fideocomiso`} text={testField(fideocomiso)} />
-         <TextPdf title={`Participación`} text={testField(participacion)} />
-         <TextPdf title={`Rfc del fideicomiso`} text={testField(RfcFideicomiso)} />
-         <TextPdf title={`Fide del ficomitente`} text={testField(tipo_fideicomitente)} />
-         <TextPdf title={`Nombre o razón social del fidecomitente`} text={testField(NombreRazonSocialFideicomitente)} />
-        
-         <TextPdf title={`Rfc del fideicomitente`} text={testField(RfcFideicomitente)} />
-         <TextPdf title={`Fide del comisario`} text={testField(tipo_fideicomisario)} />
-         <TextPdf title={`Nombre o razón social del fideocomisario`} text={testField(NombreRazonSocialFideicomisario)} />
-         <TextPdf title={`Rfc del fideicomisario`} text={testField(RfcFideicomisario)} />
-         <TextPdf title={`Sector`} text={testField(sector)} />
-         <TextPdf title={`Pais`} text={testField(pais)} />
+         <TextPdf title="Tipo del fideicomiso" text={testField(tipoFideicomiso)} />
+         <TextPdf title="Tipo de participación" text={testField(tipoParticipacion)} />
+         <TextPdf title="RFC del fideicomiso" text={testField(rfcFideicomiso)} />
 
-         <TextPdf title={`Aclaraciones/Observaciones`} text={testField(Aclaraciones)} />
+         {/* Fideicomitente */}
+         <TextPdf title="Tipo de fideicomitente" text={testField(fideicomitente.tipoPersona)} />
+         <TextPdf title="Nombre o razón social del fideicomitente" text={testField(fideicomitente.nombreRazonSocial)} />
+         <TextPdf title="RFC del fideicomitente" text={testField(fideicomitente.rfc)} />
+
+         {/* Fiduciario */}
+         <TextPdf title="Nombre o razón social del fiduciario" text={testField(fiduciario.nombreRazonSocial)} />
+         <TextPdf title="RFC del fiduciario" text={testField(fiduciario.rfc)} />
+
+         {/* Fideicomisario */}
+         <TextPdf title="Tipo de fideicomisario" text={testField(fideicomisario.tipoPersona)} />
+         <TextPdf title="Nombre o razón social del fideicomisario" text={testField(fideicomisario.nombreRazonSocial)} />
+         <TextPdf title="RFC del fideicomisario" text={testField(fideicomisario.rfc)} />
+
+         {/* Sector */}
+         <TextPdf title="Clave del sector" text={testField(sector.clave)} />
+         <TextPdf title="Valor del sector" text={testField(sector.valor)} />
+
+         <TextPdf title="Extranjero/México" text={testField(extranjero)} />
+         <TextPdf title="Aclaraciones/Observaciones" text={testField(aclaraciones)} />
       </>
    );
 };

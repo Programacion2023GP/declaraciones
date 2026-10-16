@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { locationAuth } from "../user/auth/auth";
 import { AnimatePresence, motion } from "framer-motion";
 import SexSelection from "./SexSelection";
+import CustomTutorial from "../components/Reusables/tutorial/CustomTutorial";
 
 const BaseLayout = () => {
    const location = useLocation();
@@ -21,7 +22,8 @@ const BaseLayout = () => {
    const idRole = parseInt(localStorage.getItem("Id_Role"), 10);
    const sexo = localStorage.getItem("Sexo");
    const shouldShowOutlet = ([2, 3].includes(idRole) && sexo != "null" && sexo !== "") || ![2, 3].includes(idRole);
-   
+
+
    const dispatch = useDispatch();
    useEffect(() => {
       dispatch(locationAuth());
@@ -37,21 +39,7 @@ const BaseLayout = () => {
       <Ngif condition={loading}>
          <Box style={{ minHeight: "100%", position: "relative", margin: 0, padding: 0 }}>
             <Grid container style={{ overflowX: "hidden" }}>
-               <Grid
-                  sx={{
-                     marginTop: { xs: "4rem", sm: "4rem", md: 0, lg: 0, xl: 0 },
-
-                     position: "absolute",
-                     zIndex: 1,
-                     background: "gray",
-                     width: "100vh",
-                     height: "100%",
-                     opacity: ".9",
-                     display: { xs: open ? "block" : "none", sm: open ? "block" : "none", md: "none", lg: "none", xl: "none" }
-                  }}
-                  xs={12}
-                  item
-               ></Grid>
+            
                <Grid item xs={12} sm={12} md={12} lg={12} xl={12} sx={{ marginBottom: "3rem" }}>
                   <Header />
                </Grid>
@@ -74,8 +62,13 @@ const BaseLayout = () => {
                      <TemporaryDrawer />
                   </Grid>
                )}
-               <Grid sx={{ height:"fit-content" }} item xs={12} sm={12} md={open ? 8 : 12} lg={open ? 9 : 12} xl={open ? 10 : 12}>
-                  {shouldShowOutlet ? <Outlet /> : <SexSelection setReload={setReload} />}
+               <Grid sx={{ height: "fit-content" }} item xs={12} sm={12} md={open ? 8 : 12} lg={open ? 9 : 12} xl={open ? 10 : 12}>
+
+                     {/* <CustomTutorial guide={tutorial} /> */}
+                     <Outlet />
+                     
+     
+                    
                </Grid>
             </Grid>
          </Box>

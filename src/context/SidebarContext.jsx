@@ -1,31 +1,22 @@
-import { createContext, useState } from "react";
-import { PropTypes } from "prop-types";
+// context/SidebarContext.jsx
+import { createContext, useContext, useState } from "react";
 
-export const SidebarContext = createContext({});
+const SidebarContext = createContext();
+
+export const useSidebarContext = () => {
+  const context = useContext(SidebarContext);
+  if (!context) throw new Error("useSidebarContext must be used within SidebarProvider");
+  return context;
+};
 
 export const SidebarProvider = ({ children }) => {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const openSidebar = () => {
-    setSidebarOpen(true);
-  };
-
-  const closeSidebar = () => {
-    setSidebarOpen(false);
-  };
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
+  const closeSidebar = () => setIsSidebarOpen(false);
 
   return (
-    <SidebarContext.Provider
-      value={{
-        isSidebarOpen,
-        openSidebar,
-        closeSidebar,
-      }}
-    >
+    <SidebarContext.Provider value={{ isSidebarOpen, toggleSidebar, closeSidebar }}>
       {children}
     </SidebarContext.Provider>
   );
-};
-
-SidebarProvider.propTypes = {
-  children: PropTypes.node,
 };

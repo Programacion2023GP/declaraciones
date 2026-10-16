@@ -8,7 +8,6 @@ export const DatosGeneral = ({}) => {
    useEffect(() => {
       const init = async () => {
          const errors = await formik.validationSchema;
-         console.log(errors);
       };
       init();
       formik.setFieldValue("Nombre", localStorage.getItem("Name"));

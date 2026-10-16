@@ -1,262 +1,97 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { ThemeContext } from "../../context/ThemeContext";
-import { LIGHT_THEME } from "../../constants/themeConstants";
-import LogoBlue from "../../assets/images/logo_blue.svg";
-import LogoWhite from "../../assets/images/logo_white.svg";
-import Gomez from "../../assets/icons/logo-gpd.png";
-import { MdOutlineClose } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
-import "./Sidebar.scss";
-import { SidebarContext } from "../../context/SidebarContext";
-import { Items } from "./items/Items";
+// components/sidebar/Sidebar.jsx
+import { useEffect, useRef, useState } from "react";
+import { Tooltip } from "@mui/material";
+import { MdOutlineArrowDropDown, MdOutlineGridView, MdClose } from "react-icons/md";
+import { Link } from "react-router-dom";
+import { useSidebarContext } from "../../context/SidebarContext";
 import { Ngif } from "../Reusables/conditionals/Ngif";
-import { Box } from "@mui/material";
+import Gomez from "../../assets/icons/logo-gpd.png";
+
+const Items = ({ text, path = "#", childrens = false, active = false, classprop = "", index = null, indexChild = undefined, handleClickContinue, message = "", id = null }) => {
+   const onHandleClick = () => handleClickContinue(index, indexChild);
+   return (
+      <Tooltip title={message} placement="right" arrow>
+         <Link
+            to={path}
+            onClick={onHandleClick}
+            id={id || path}
+            className={`
+          !flex !items-center !justify-between !px-4 !py-2 !rounded-md
+          !transition-colors !duration-200
+          ${active && classprop === "active"
+                  ? "!bg-rose-50 !text-rose-700 !font-medium !border-l-4 !border-rose-700"
+                  : "!text-gray-700 hover:!bg-gray-100"}
+          ${active && classprop === "subactive" ? "!text-rose-600 !bg-rose-50/50 !font-medium" : ""}
+        `}
+         >
+            <div className="!flex !items-center !gap-3">
+               <MdOutlineGridView className="!text-lg" />
+               <span className="!text-sm">{text}</span>
+            </div>
+            {childrens && <MdOutlineArrowDropDown className="!text-xl" />}
+         </Link>
+      </Tooltip>
+   );
+};
+
+const RecursivoMenu = ({ array, parentIndex, handleSelect }) => {
+   return (
+      <>
+         {array.map((child, j) => (
+            <Ngif key={child.path} condition={!child.permision || child.permision.includes(parseInt(localStorage.getItem("Id_Role")))}>
+               <li>
+                  <Items
+                     id={child.id}
+                     message={child.legend || child.text.toLowerCase()}
+                     active={child.active}
+                     classprop="subactive"
+                     path={child.path}
+                     text={child.text}
+                     childrens={child.children?.length > 0}
+                     index={parentIndex}
+                     indexChild={j}
+                     handleClickContinue={handleSelect}
+                  />
+                  <div className={`${child.active && child.children?.length > 0 ? "!block" : "!hidden"} !ml-6 !mt-1 !border-l !border-gray-200 !pl-3`}>
+                     {child.children && Array.isArray(child.children) && <RecursivoMenu array={child.children} parentIndex={j} handleSelect={handleSelect} />}
+                  </div>
+               </li>
+            </Ngif>
+         ))}
+      </>
+   );
+};
 
 const Sidebar = () => {
-   const { theme } = useContext(ThemeContext);
-   const { isSidebarOpen, closeSidebar } = useContext(SidebarContext);
+   const { isSidebarOpen, closeSidebar } = useSidebarContext();
    const navbarRef = useRef(null);
-
    const [routes, setRoutes] = useState([
-      {
-         path: "",
-         text: "Declaraciones",
-         legend: "selección de apartado de declaración",
-         active: false,
-         permision: [2, 3, 10, 12],
-         children: [
-            {
-               path: "misdeclaraciones",
-               text: "Mis declaraciones",
-               legend: "Apartado de mis declaraciones",
-               active: false
-            },
-            {
-               path: "notasaclaratorias",
-               text: "Notas aclaratorias",
-               // legend: "crear nueva declaracion",
-               active: false
-            },
-            {
-               path: "declaraciones/steppers",
-               text: "Generar declaración",
-               legend: "crear nueva declaracion",
-               active: false
-            },
-            {
-               path: "declaraciones/2/15",
-               text: "Interes",
-               legend: "crear nueva declaración de Interes",
-               permision: [2, 10],
-
-               active: false
-            }
-         ]
-      },
-      {
-         path: "",
-         text: "Catalogos",
-         legend: "catalogos generales",
-         active: false,
-         permision: [1, 10, 12],
-
-         children: [
-            {
-               path: "catalogos/estadocivil",
-               text: "Estado civil",
-               active: false
-            },
-            {
-               path: "catalogos/regimenmatrimonial",
-               text: "Regimen Matrimonial",
-               active: false
-            },
-            {
-               path: "catalogos/estatus",
-               text: "Estatus",
-               active: false
-            },
-            {
-               path: "catalogos/nivelestudios",
-               text: "Nivel de estudio",
-               active: false
-            },
-            {
-               path: "catalogos/documentoobtenido",
-               text: "Documento obtenido",
-               active: false
-            },
-            {
-               path: "catalogos/nivelordengobierno",
-               text: "Nivel de orden de gobierno",
-               active: false
-            },
-            {
-               path: "catalogos/ambitopublico",
-               text: "Ambito público",
-               active: false
-            },
-            {
-               path: "catalogos/aereaadscripcion",
-               text: "Aerea de adscripción",
-               active: false
-            },
-            {
-               path: "catalogos/empleos",
-               text: "Empleos",
-               active: false
-            },
-            {
-               path: "catalogos/relaciondeclarante",
-               text: "Parentesco/Relación con declarante",
-               active: false
-            },
-            {
-               path: "catalogos/monedas",
-               text: "Moneda",
-               active: false
-            },
-            {
-               path: "catalogos/sectorpertenece",
-               text: "Sector que pertenece",
-               active: false
-            },
-            {
-               path: "catalogos/tipoinstrumento",
-               text: "Tipo de instrumento",
-               active: false
-            },
-            {
-               path: "catalogos/tipoenajenado",
-               text: "Tipo de bienes enajenado",
-               active: false
-            },
-            {
-               path: "catalogos/tipoinmueble",
-               text: "Tipo de inmueble",
-               active: false
-            },
-            {
-               path: "catalogos/titularbienes",
-               text: "Titular de bienes",
-               active: false
-            },
-            {
-               path: "catalogos/vehiculo",
-               text: "Vehiculo",
-               active: false
-            },
-            {
-               path: "catalogos/pago",
-               text: "Forma de pago",
-               active: false
-            },
-            {
-               path: "catalogos/adquisicion",
-               text: "Forma de adquisición",
-               active: false
-            },
-            {
-               path: "catalogos/baja",
-               text: "Motivo de baja",
-               active: false
-            },
-            {
-               path: "catalogos/tipoinversion",
-               text: "Tipo de inversión",
-               active: false
-            },
-            {
-               path: "catalogos/tiposubinversion",
-               text: "Tipo de sub inversión",
-               active: false
-            },
-            {
-               path: "catalogos/tipobien",
-               text: "Tipo de bien mueble",
-               active: false
-            },
-            {
-               path: "catalogos/tipoadeudo",
-               text: "Tipo de adeudo",
-               active: false
-            }
-         ]
-      },
-      {
-         path: "usuarios",
-         text: "Usuarios",
-         legend: "registro de usuarios",
-
-         active: false,
-         permision: [1, 4, 10, 11, 12]
-      },
-
-      {
-         path: "checador",
-         text: "Checador",
-         legend: "checador",
-         active: false,
-         permision: [1, 5, 10, 11, 12]
-      },
-      {
-         path: "checadornotasalacaratorias",
-         text: "Notas aclaratorias (checador)",
-         legend: "Notas aclaratorias (checador)",
-         active: false,
-         permision: [1, 10, 12]
-      },
-      {
-         path: "",
-         text: "Reportes",
-         legend: "reportes del sistema",
-         active: false,
-         permision: [1, 10, 12],
-         children: [
-            {
-               path: "reportes/incumplimientos",
-               text: "Incumplimientos",
-               legend: "reportes de incumplimientos",
-               active: false
-            },
-            {
-               path: "reportes/trasparencia",
-               text: "Trasparencia",
-               legend: "reportes de trasparencia",
-               active: false
-            }
-         ]
-      },
-      // {
-      //    path: "administrativo",
-      //    text: "Edicion de declaraciones",
-      //    legend: "Acciones administrativas",
-      //    active: false,
-      //    permision: [10, 12]
-      // }
+      // ... tus rutas (no cambio nada aquí por brevedad, mantenlas igual)
+      { path: "", text: "Declaraciones", legend: "selección de apartado de declaración", active: false, id: "sidebar-declaraciones", permision: [2, 3, 10, 12], children: [{ id: "sidebar-declaraciones-misdeclaraciones", path: "misdeclaraciones", text: "Mis declaraciones", legend: "Apartado de mis declaraciones", active: false }, { path: "notasaclaratorias", text: "Notas aclaratorias", active: false }, { id: "sidebar-declaraciones-declaraciones", path: "declaraciones/steppers", text: "Generar declaración", legend: "crear nueva declaracion", active: false }] },
+      { path: "", text: "Catalogos", legend: "catalogos generales", active: false, permision: [1, 10, 12], children: [{ path: "catalogos/estadocivil", text: "Estado civil", active: false }, { path: "catalogos/regimenmatrimonial", text: "Regimen Matrimonial", active: false }, { path: "catalogos/estatus", text: "Estatus", active: false }, { path: "catalogos/nivelestudios", text: "Nivel de estudio", active: false }, { path: "catalogos/documentoobtenido", text: "Documento obtenido", active: false }, { path: "catalogos/nivelordengobierno", text: "Nivel de orden de gobierno", active: false }, { path: "catalogos/ambitopublico", text: "Ambito público", active: false }, { path: "catalogos/aereaadscripcion", text: "Aerea de adscripción", active: false }, { path: "catalogos/empleos", text: "Empleos", active: false }, { path: "catalogos/relaciondeclarante", text: "Parentesco/Relación con declarante", active: false }, { path: "catalogos/monedas", text: "Moneda", active: false }, { path: "catalogos/sectorpertenece", text: "Sector que pertenece", active: false }, { path: "catalogos/tipoinstrumento", text: "Tipo de instrumento", active: false }, { path: "catalogos/tipoenajenado", text: "Tipo de bienes enajenado", active: false }, { path: "catalogos/tipoinmueble", text: "Tipo de inmueble", active: false }, { path: "catalogos/titularbienes", text: "Titular de bienes", active: false }, { path: "catalogos/vehiculo", text: "Vehiculo", active: false }, { path: "catalogos/pago", text: "Forma de pago", active: false }, { path: "catalogos/adquisicion", text: "Forma de adquisición", active: false }, { path: "catalogos/baja", text: "Motivo de baja", active: false }, { path: "catalogos/tipoinversion", text: "Tipo de inversión", active: false }, { path: "catalogos/tiposubinversion", text: "Tipo de sub inversión", active: false }, { path: "catalogos/tipobien", text: "Tipo de bien mueble", active: false }, { path: "catalogos/tipoadeudo", text: "Tipo de adeudo", active: false }] },
+      { path: "usuarios", text: "Usuarios", legend: "registro de usuarios", active: false, permision: [1, 4, 10, 11, 12] },
+      { path: "checador", text: "Checador", legend: "checador", active: false, permision: [1, 5, 10, 11, 12] },
+      { path: "checadornotasalacaratorias", text: "Notas aclaratorias (checador)", legend: "Notas aclaratorias (checador)", active: false, permision: [1, 10, 12] },
+      { path: "", text: "Reportes", legend: "reportes del sistema", active: false, permision: [1, 10, 12], children: [{ path: "reportes/incumplimientos", text: "Incumplimientos", legend: "reportes de incumplimientos", active: false }, { path: "reportes/trasparencia", text: "Trasparencia", legend: "reportes de trasparencia", active: false }, { path: "reportes/nopresento", text: "Servidores públicos pendientes de declaración", legend: "Servidores públicos pendientes de declaración", active: false }] },
+      { path: "administrativo", text: "Edicion de declaraciones", legend: "Acciones administrativas", active: false, permision: [1, 10, 12] }
    ]);
-   // closing the navbar when clicked outside the sidebar area
+
+   // Cerrar al hacer clic fuera (solo en móvil y si el overlay no está presente)
    const handleClickOutside = (event) => {
-      if (navbarRef.current && !navbarRef.current.contains(event.target) && event.target.className !== "sidebar-oepn-btn") {
+      if (window.innerWidth < 900 && navbarRef.current && !navbarRef.current.contains(event.target) && event.target.className !== "sidebar-open-btn") {
          closeSidebar();
       }
    };
+
    const handleSelect = (index, childIndex) => {
       const updatedRoutes = [...routes];
       if (childIndex !== undefined) {
-         routes[index].children.map((children) => {
-            children.active = false;
-         });
-
+         routes[index].children.forEach((child) => (child.active = false));
          updatedRoutes[index].children[childIndex].active = true;
       } else {
-         routes.map((item) => {
+         routes.forEach((item) => {
             item.active = false;
-            if (item.children) {
-               item.children.map((children) => {
-                  children.active = false;
-               });
-            }
+            if (item.children) item.children.forEach((child) => (child.active = false));
          });
          updatedRoutes[index].active = true;
       }
@@ -265,112 +100,42 @@ const Sidebar = () => {
 
    useEffect(() => {
       document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-         document.removeEventListener("mousedown", handleClickOutside);
-      };
+      return () => document.removeEventListener("mousedown", handleClickOutside);
    }, []);
 
-   return (
-      <nav className={`sidebar ${isSidebarOpen ? "sidebar-show" : ""}`} style={{ overflowX: "hidden" }} ref={navbarRef}>
-         <div className="sidebar-top">
-            <div className="sidebar-brand">
-               <img src={Gomez} alt="" style={{ height: 100, objectFit: "contain" }} />
-            </div>
-            {/* <button className="sidebar-close-btn" onClick={closeSidebar}>
-               <MdOutlineClose size={24} />
-            </button> */}
-         </div>
-         <div className="sidebar-body">
-            <div className="sidebar-menu">
-               <ul className="menu-list">
-                  {routes.map((item, i) => (
-                     <Ngif condition={item.permision.includes(parseInt(localStorage.getItem("Id_Role")))}>
-                        <li className="menu-item" key={i}>
-                           <Items
-                              message={item.legend ? item.legend : item.text.toLowerCase()}
-                              active={item.active}
-                              classprop={"active"}
-                              path={item.path}
-                              key={`${item.path}-${i}`}
-                              text={item.text}
-                              childrens={item.children != undefined ? (item.children.length > 0 ? true : false) : false}
-                              index={i}
-                              handleClickContinue={handleSelect}
-                           ></Items>
-                           <div
-                              className={item.active && (item.children?.length ?? 0) > 0 ? "subitemactive" : "subitem"}
-                              style={
-                                 {
-                                    // position: "relative",
-                                    // // border: "1px solid blue",
-                                    // padding: "1rem",
-                                    // borderRadius: "5px",
-                                    // overflow: "hidden",
-                                    // transition: "box-shadow 0.3s"
-                                 }
-                              }
-                           >
-                              <ul className="menu-list">
-                                 <Ngif condition={item.children && Array.isArray(item.children)}>
-                                    <RecursivoMenu array={item.children} i={i} handleSelect={handleSelect} />
-                                 </Ngif>
-                              </ul>
-                           </div>
-                        </li>
-                     </Ngif>
-                  ))}
-               </ul>
-            </div>
-         </div>
-      </nav>
-   );
-};
+   const sidebarClasses = `
+    !fixed !top-0 !left-0 !h-full !w-64 !bg-white !shadow-xl !z-50 
+    !transition-transform !duration-300 !ease-in-out
+    !flex !flex-col !border-r !border-gray-200
+    ${isSidebarOpen ? "!translate-x-0" : "!-translate-x-full"}
+    md:!relative md:!translate-x-0 md:!z-auto md:!shadow-none
+  `;
 
-const RecursivoMenu = ({ array, i, handleSelect }) => {
-   const style = {
-      // height: "100%",
-      // background: "linear-gradient(to bottom right, rgba(255, 255, 255, 0.3) 49%, rgba(71, 91, 232, 0.2) 50%)",
-      // backdropFilter: "blur(3px)"
-      // padding:".1rem "
-   };
    return (
-      <>
-         {array.map((child, j) => {
-            return (
-               <>
-                  <Ngif condition={child.permision && !child.permision.includes(parseInt(localStorage.getItem("Id_Role")))}>
-                     <></>
-                  </Ngif>
-                  <Ngif condition={!child.permision || child.permision.includes(parseInt(localStorage.getItem("Id_Role")))}>
-                     <li
-                        style={child.active ? {} : style}
-                        className="menu-item"
-                        key={`${child.path}-${j}`} // Usa una clave única adecuada
-                        onClick={() => handleSelect(i, j)}
-                     >
-                        <Items
-                           message={child.legend ? child.legend : child.text.toLowerCase()}
-                           active={child.active}
-                           classprop="subactive"
-                           path={child.path}
-                           key={`${child.path}-${j}`}
-                           text={child.text}
-                           index={i}
-                           childrens={child.children != undefined ? (child.children.length > 0 ? true : false) : false}
-                           indexChild={j}
-                           handleClickContinue={handleSelect}
-                        />
-                        <div className={child.active && (child.children?.length ?? 0) > 0 ? "subitemactive" : "subitem"}>
-                           <ul className="menu-list">
-                              {child.children && Array.isArray(child.children) && <RecursivoMenu array={child.children} i={j} handleSelect={handleSelect} />}
-                           </ul>
+      <nav ref={navbarRef} className={sidebarClasses}>
+         <div className="!flex !items-center !justify-between !p-4 !border-b !border-gray-200">
+            <img src={Gomez} alt="Logo" className="!h-12 !object-contain" />
+            <button onClick={closeSidebar} className="md:!hidden !p-1 !rounded-full hover:!bg-gray-100">
+               <MdClose size={24} />
+            </button>
+         </div>
+         <div className="!flex-1 !overflow-y-auto !py-4">
+            <ul className="!space-y-1">
+               {routes.map((item, i) => (
+                  <Ngif key={i} condition={item.permision.includes(parseInt(localStorage.getItem("Id_Role")))}>
+                     <li>
+                        <Items id={item.id} message={item.legend || item.text.toLowerCase()} active={item.active} classprop="active" path={item.path} text={item.text} childrens={item.children?.length > 0} index={i} handleClickContinue={handleSelect} />
+                        <div className={`${item.active && item.children?.length > 0 ? "!block" : "!hidden"} !ml-6 !mt-1 !space-y-1 !border-l !border-gray-200 !pl-3`}>
+                           <Ngif condition={item.children && Array.isArray(item.children)}>
+                              <RecursivoMenu array={item.children} parentIndex={i} handleSelect={handleSelect} />
+                           </Ngif>
                         </div>
                      </li>
                   </Ngif>
-               </>
-            );
-         })}
-      </>
+               ))}
+            </ul>
+         </div>
+      </nav>
    );
 };
 

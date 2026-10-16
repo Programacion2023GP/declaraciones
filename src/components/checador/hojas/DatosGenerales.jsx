@@ -1,64 +1,49 @@
-import { useEffect, useState } from "react";
 import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../Reusables/pdf/PdfDeclaracion";
 import { testField, field, vacio } from "../funciones/Funciones";
 
-export const DatosGenerales = ({ data = [], estadocivil, nacionalidades, paises, regimenes, testada = false, interes = false }) => {
-   const [civil, setCivil] = useState();
-   const [nacionalidad, setNacionalidad] = useState();
-   const [pais, setPais] = useState();
-   const [regimen, setRegimen] = useState();
+export const DatosGenerales = ({ data = {}, testada =false}) => {
+  
    const {
-      Nombre = vacio(),
-      PrimerApellido = vacio(),
-      SegundoApellido = vacio(),
-      Curp = vacio(),
-      Rfc = vacio(),
-      Homoclave = vacio(),
-      CorreoInstitucional = vacio(),
-      CorreoPersonal = vacio(),
-      TelefonoCasa = vacio(),
-      TelefonoCelularPersonal = vacio(),
-      Id_EstadoCivil = vacio(),
-      Aclaraciones = vacio(),
-      Id_Nacionalidad = vacio(),
-      Id_PaisNacimiento = vacio(),
-      Id_RegimenMatrimonial = vacio()
-   } = data[0] || {};
-   useEffect(() => {
-      setCivil("");
-      setNacionalidad("");
-      setPais(paises.filter((item) => item.id === parseInt(Id_PaisNacimiento))[0]?.text);
-      setRegimen(regimenes.filter((item) => item.id === parseInt(Id_RegimenMatrimonial))[0]?.text);
-   }, []);
-   useEffect(() => {
-      console.log("la informacion", data);
-   }, [civil, nacionalidad, pais, regimen, data, testada]);
+      nombre = vacio(),
+      primerApellido = vacio(),
+      segundoApellido = vacio(),
+      curp,
+      correoElectronico: { institucional = vacio(), personal = vacio() } = {},
+      rfc: { rfc = vacio(), homoClave = vacio() } = {}, // <--- notice RFC: { ... }
+      telefono: { casa = vacio(), celularPersonal = vacio() } = {},
+      situacionPersonalEstadoCivil = {},
+      regimenMatrimonial ={},
+      aclaracionesObservaciones,
+     paisNacimiento,
+      nacionalidad
+   } = data || {};
+ 
 
    return (
       <>
-         <TextPdf title={"Nombre"} text={field(Nombre, testada)} />
-         <TextPdf title={"Apellido Paterno"} text={field(PrimerApellido, testada)} />
-         <TextPdf title={"Apellido Materno"} text={field(SegundoApellido, testada)} />
-         {!interes && (
+         <TextPdf title={"Nombre"} text={field(nombre, testada)} />
+         <TextPdf title={"Apellido Paterno"} text={field(primerApellido, testada)} />
+         <TextPdf title={"Apellido Materno"} text={field(segundoApellido, testada)} />
+        
             <>
-               <TextPdf title={"CURP"} text={testada ? "XXXXXXXXXXXXXXXXXX" : Curp} width={50} />
-               <TextPdf title={"Rfc"} text={testField(Rfc, testada)} width={50} />
-               <TextPdf title={"Homoclave"} text={testada ? "XXX" : Homoclave} width={50} />
-               <TextPdf title={"Correo institucional"} text={testField(CorreoInstitucional, testada)} />
-               <TextPdf title={"Correo personal"} text={testField(CorreoPersonal, testada)} />
-               <TextPdf title={"Número telefonico de casa"} text={testField(TelefonoCasa, testada)} width={50} />
-               <TextPdf title={"Número personal"} text={testField(TelefonoCelularPersonal, testada)} width={50} />
+            <TextPdf title={"CURP"} text={testada ? "XXXXXXXXXXXXXXXXXX" : curp} width={50} />
+               <TextPdf title={"Rfc"} text={testField(rfc, testada)} width={50} />
+               <TextPdf title={"Homoclave"} text={testada ? "XXX" : homoClave} width={50} />
+            <TextPdf title={"Correo institucional"} text={testField(institucional, testada)} />
+               <TextPdf title={"Correo personal"} text={testField(personal, testada)} />
+               <TextPdf title={"Número telefonico de casa"} text={testField(casa, testada)} width={50} />
+            <TextPdf title={"Número personal"} text={testField(celularPersonal, testada)} width={50} />
                <TextPdf
                   title={"Situacíon Personal/ Estado civil"}
-                  text={testField(estadocivil.filter((item) => item.id === parseInt(Id_EstadoCivil))[0]?.text, testada)}
+               text={testField(situacionPersonalEstadoCivil?.valor, testada)}
                   width={50}
                />
-               <TextPdf title={"Régimen Matrimonial"} text={testField(regimenes.filter((item) => item.id === parseInt(Id_RegimenMatrimonial))[0]?.text, testada)} />
-               <TextPdf title={"País de nacimiento"} text={testField(paises.filter((item) => item.id === parseInt(Id_PaisNacimiento))[0]?.text, testada)} />
-               <TextPdf title={"Nacionalidad"} text={testField(nacionalidades.filter((item) => item.id === parseInt(Id_Nacionalidad))[0]?.text, testada)} />
-               <TextPdf title={"Aclaraciones/Observaciones"} text={testField(Aclaraciones, testada)} width={100} />
+            <TextPdf title={"Régimen Matrimonial"} text={testField(regimenMatrimonial?.valor, testada)} />
+            <TextPdf title={"País de nacimiento"} text={testField(paisNacimiento, testada)} />
+            <TextPdf title={"Nacionalidad"} text={testField(nacionalidad, testada)} />
+            <TextPdf title={"Aclaraciones/Observaciones"} text={testField(aclaracionesObservaciones, testada)} width={100} />
             </>
-         )}
+         
 
          {/* <OptionsPdf title={"Es de mexico"} options={["SI", "NO"]} value={"NO"} /> */}
       </>

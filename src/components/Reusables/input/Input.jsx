@@ -21,144 +21,132 @@ export const Text = ({
    textStyleCase = null,
    handleGetValue
 }) => {
+   const formik = useFormikContext();
+   const isError = formik.touched[name] && !!formik.errors[name];
+
+   // Tipos que NO deben ser transformados a mayúsculas/minúsculas ni filtrados
+   const skipTransformTypes = ["date", "time", "datetime-local", "month", "week", "email", "tel", "url", "password"];
+
+   const formatToUpperCase = (event) => event.target.value.toUpperCase();
+   const formatToLowerCase = (event) => event.target.value.toLowerCase();
+
    const handleInputFormik = async (e, setFieldValue, input, toUpper = true) => {
       try {
-         const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
+         const newText = toUpper ? formatToUpperCase(e) : formatToLowerCase(e);
          setFieldValue(input, newText);
       } catch (error) {
-         Toast.Error(error);
+         console.error(error);
       }
    };
-   const formatToLowerCase = (event) => {
-      const newText = event.target.value.toLowerCase();
-      return newText;
-   };
-   const formatToUpperCase = (event) => {
-      const newText = event.target.value.toUpperCase();
-      return newText;
-   };
-   const formik = useFormikContext();
+
    const handleValue = (name, value) => {
       if (handleGetValue) {
          handleGetValue(name, value);
       }
    };
-   useEffect(() => {
-   }, [name, formik.values[name]]);
 
-   const errors = formik.errors;
-
-   const isError = formik.touched[name] && !!formik.errors[name];
-   const handleInput = (event) => {
-      const { type } = event.target;
-
-      if (type === "number") {
-         let value = event.target.value;
-
-         value = value.replace(/[^0-9.]/g, "");
-
-         const decimalCount = value.split(".").length - 1;
+   // Limpieza para campos numéricos comunes (no para date)
+   const handleNumericInput = (event) => {
+      const { type: inputType, value } = event.target;
+      if (inputType === "number") {
+         let newValue = value.replace(/[^0-9.]/g, "");
+         const decimalCount = newValue.split(".").length - 1;
          if (decimalCount > 1) {
-            value = value.slice(0, value.lastIndexOf("."));
+            newValue = newValue.slice(0, newValue.lastIndexOf("."));
          }
-         event.target.value = value;
+         event.target.value = newValue;
       }
    };
 
+   // Manejo para números que deben conservar ceros a la izquierda (type="number" sin mask)
+   const handleNumberAsTextChange = (e) => {
+      const { value } = e.target;
+      const numericValue = value.replace(/[^0-9]/g, "");
+      formik.setFieldValue(name, numericValue);
+      if (handleGetValue) handleGetValue(name, numericValue);
+      if (textStyleCase != null && !skipTransformTypes.includes(type)) {
+         handleInputFormik({ ...e, target: { ...e.target, value: numericValue } }, formik.setFieldValue, name, textStyleCase === "upper");
+      }
+   };
+
+   const isNumberAsText = type === "number" && !mask;
+   const shouldSkipTransform = skipTransformTypes.includes(type);
+
    return (
-      <>
-         <Grid
-            style={{ margin: marginBoton ? `${marginBoton} 0` : ".3rem 0", paddingLeft: ".4rem", paddingTop: ".5rem" }}
-            item
-            lg={col}
-            xl={col}
-            xs={12}
-            md={12}
-            sx={{ display: hidden ? "none" : "flex" }}
-         >
-            {mask ? (
-               <Field name={name}>
-                  {({ field }) => (
-                     <InputMask
-                        mask={mask}
-                        value={
-                           formik.values && formik.values[name] !== undefined && formik.values[name] !== null
-                           ? type === "number" && formik.values[name] !== null
-                             ? formik.values[name].toString().replace(/^0+(?=\d)/, "")
-                             : formik.values[name]
-                           : type === "number" && !isNaN(parseInt(formik.values[name]))
-                             ? parseInt(formik.values[name])
-                             : "" // Mostrar vacío si el valor es null o undefined
-                         
-                        }
-                        onInput={(e) => {
-                           textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, name, textStyleCase) : null;
-                        }}
-                        onChange={(e) => field.onChange(e)}
-                        onBlur={(e) => field.onBlur(e)}
-                        disabled={loading || disabled}
-                     >
-                        {(inputProps) => (
-                           <TextField
-                              {...inputProps}
-                              key={"text_" + name}
-                              name={name}
-                              label={label}
-                              type={type !== null && type !== undefined ? type : "text"}
-                              variant="outlined"
-                              fullWidth
-                              error={isError}
-                              helperText={isError ? formik.errors[name] : placeholder}
-                              InputLabelProps={{
-                                 style: color ? { color: color } : {}
-                              }}
-                           />
-                        )}
-                     </InputMask>
-                  )}
-               </Field>
-            ) : (
-               <TextField
-                  key={"text_" + name}
-                  name={name}
-                  label={label}
-                  type={type == null ? "text" : type}
-                  variant="outlined"
-                  value={
-                     formik.values && formik.values[name] !== undefined && formik.values[name] !== null
-                        ? type === "number" && formik.values[name] !== null
-                           ? formik.values[name].toString().replace(/^0+(?=\d)/, "")
-                           : formik.values[name]
-                        : type === "number" && !isNaN(parseInt(formik.values[name]))
-                          ? parseInt(formik.values[name])
-                          : "" // Mostrar vacío si el valor es null o undefined
-                  }
-                  // type === "number" && !isNaN(parseInt(formik.values[name])) && parseInt(formik.values[name]) === 0 ?0
-                  onChange={formik.handleChange}
-                  onBlur={(e) => {
-                     formik.handleBlur(e);
-                  }}
-                  onInput={(e) => {
-                     handleInput(e);
+      <Grid
+         style={{ margin: marginBoton ? `${marginBoton} 0` : ".3rem 0", paddingLeft: ".4rem", paddingTop: ".5rem" }}
+         item
+         lg={col}
+         xl={col}
+         xs={12}
+         md={12}
+         sx={{ display: hidden ? "none" : "flex" }}
+      >
+         {mask ? (
+            <Field name={name}>
+               {({ field }) => (
+                  <InputMask
+                     mask={mask}
+                     value={formik.values[name] ?? ""}
+                     onChange={(e) => field.onChange(e)}
+                     onBlur={(e) => field.onBlur(e)}
+                     disabled={loading || disabled}
+                  >
+                     {(inputProps) => (
+                        <TextField
+                           {...inputProps}
+                           name={name}
+                           label={label}
+                           type={type || "text"}
+                           variant="outlined"
+                           fullWidth
+                           error={isError}
+                           helperText={isError ? formik.errors[name] : placeholder}
+                           InputLabelProps={{ style: color ? { color: color } : {} }}
+                        />
+                     )}
+                  </InputMask>
+               )}
+            </Field>
+         ) : (
+            <TextField
+               name={name}
+               label={label}
+               type={isNumberAsText ? "text" : (type || "text")}
+               variant="outlined"
+               value={formik.values[name] ?? ""}
+               onChange={(e) => {
+                  if (isNumberAsText) {
+                     handleNumberAsTextChange(e);
+                  } else {
+                     formik.handleChange(e);
                      handleValue(name, e.target.value);
-                     textStyleCase = type == null ? handleInputFormik(e, formik.setFieldValue, name, true) : false;
-                     // textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, name, textStyleCase) : null;
-                  }}
-                  disabled={loading || disabled}
-                  fullWidth
-                  // defaultValue={1}
-                  inputProps={{ inputMode: "numeric" }}
-                  multiline={rows}
-                  rows={type === null || type === undefined ? rows : undefined}
-                  error={isError}
-                  helperText={isError ? formik.errors[name] : placeholder}
-                  InputLabelProps={{
-                     style: color ? { color: color } : {}
-                  }}
-               />
-            )}
-            {loading && <CircularProgress sx={{ position: "absolute", top: "40%", left: "40%" }} />}
-         </Grid>
-      </>
+                  }
+               }}
+               onBlur={formik.handleBlur}
+               onInput={(e) => {
+                  // No aplicar transformaciones a tipos especiales ni a números como texto
+                  if (!shouldSkipTransform && !isNumberAsText) {
+                     handleNumericInput(e);
+                     handleValue(name, e.target.value);
+                     if (textStyleCase) {
+                        handleInputFormik(e, formik.setFieldValue, name, textStyleCase === "upper");
+                     }
+                  }
+               }}
+               disabled={loading || disabled}
+               fullWidth
+               multiline={rows}
+               rows={rows}
+               error={isError}
+               helperText={isError ? formik.errors[name] : placeholder}
+               InputLabelProps={{ style: color ? { color: color } : {} }}
+               inputProps={{
+                  ...(isNumberAsText && { inputMode: "numeric", pattern: "[0-9]*" })
+               }}
+            />
+         )}
+         {loading && <CircularProgress sx={{ position: "absolute", top: "40%", left: "40%" }} />}
+      </Grid>
    );
 };

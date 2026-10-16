@@ -17,7 +17,7 @@ import { addVehiculo } from "../../../redux/VehiculosHoja11/VehiculosHoja11";
 import { Axios } from "../../../services/services";
 import Loading from "../../Reusables/loading/Loading";
 import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
-import { Vehiculos as PdfVehiculos } from "../../checador/hojas/Vehiculos";
+import { Vehiculos as PdfVehiculos } from "../../checador/hojasvisualizacion/Vehiculos";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 export const TipoVehiculo = ({ loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.Vehiculos.initialState);

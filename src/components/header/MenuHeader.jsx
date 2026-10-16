@@ -18,23 +18,32 @@ import {
    CardContent,
    Alert
 } from "@mui/material";
-import { Logout as LogoutIcon, ManageAccounts as ManageAccountsIcon, Close as CloseIcon, Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+   Logout as LogoutIcon,
+   ManageAccounts as ManageAccountsIcon,
+   Close as CloseIcon,
+   Visibility,
+   VisibilityOff
+} from "@mui/icons-material";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { logoutAuth } from "../../user/auth/auth";
-import axios from "axios";
-import { Axios, PostAxios } from "../../services/services";
-import { Success } from "../../toasts/toast";
+import { Axios } from "../../services/services";
+import { Success, Error } from "../../toasts/toast";
 
 const MenuHeader = () => {
    const theme = useTheme();
    const dispatch = useDispatch();
-   const [drawerOpen, setDrawerOpen] = useState(parseInt(localStorage.getItem("ConfirmationDateTime")) == 0  && parseInt(localStorage.getItem('Id_Role'))!=10 ? true : false);
-   // const [drawerOpen, setDrawerOpen] = useState(false);
+
+   const [drawerOpen, setDrawerOpen] = useState(
+      parseInt(localStorage.getItem("ConfirmationDateTime")) == 0 &&
+         parseInt(localStorage.getItem("Id_Role")) != 10
+         ? true
+         : false
+   );
 
    const [userInitials, setUserInitials] = useState("");
 
-   // Obtener datos del usuario
    useEffect(() => {
       const name = localStorage.getItem("Name") || "";
       const lastName = localStorage.getItem("PaternalSurname") || "";
@@ -45,12 +54,12 @@ const MenuHeader = () => {
 
    const actions = [
       {
-         icon: <ManageAccountsIcon color="primary" />,
+         icon: <ManageAccountsIcon className="!text-[#9B2242]" />,
          name: "Cambiar contraseña",
          action: () => setDrawerOpen(true)
       },
       {
-         icon: <LogoutIcon color="error" />,
+         icon: <LogoutIcon className="!text-[#651D32]" />,
          name: "Cerrar sesión",
          action: () => dispatch(logoutAuth())
       }
@@ -67,18 +76,16 @@ const MenuHeader = () => {
                   top: 16,
                   right: 16,
                   "& .MuiSpeedDial-fab": {
-                     backgroundColor: theme.palette.primary.main,
-                     "&:hover": {
-                        backgroundColor: theme.palette.primary.dark
-                     }
+                     backgroundColor: "#9B2242 !important",
+                     "&:hover": { backgroundColor: "#651D32 !important" }
                   }
                }}
                icon={
                   <Avatar
+                     className="!font-bold !border-2 !border-[#B8B6AF]"
                      sx={{
-                        bgcolor: theme.palette.background.paper,
-                        color: theme.palette.primary.main,
-                        fontWeight: "bold"
+                        bgcolor: "#ffffff !important",
+                        color: "#9B2242 !important",
                      }}
                   >
                      {userInitials}
@@ -94,13 +101,8 @@ const MenuHeader = () => {
                      tooltipOpen
                      onClick={action.action}
                      FabProps={{
-                        sx: {
-                           margin: 2,
-                           backgroundColor: theme.palette.background.paper,
-                           "&:hover": {
-                              backgroundColor: theme.palette.action.hover
-                           }
-                        }
+                        className:
+                           "!bg-white hover:!bg-[#f8f8f8] !transition-all !duration-300 !shadow-md"
                      }}
                   />
                ))}
@@ -116,12 +118,8 @@ const MenuHeader = () => {
                setDrawerOpen(false);
             }}
             PaperProps={{
-               sx: {
-                  width: { xs: "100%", sm: 450 },
-                  p: 3,
-                  display: "flex",
-                  flexDirection: "column"
-               }
+               className:
+                  "!w-full sm:!w-[450px] !p-6 !flex !flex-col !bg-white !rounded-l-2xl !shadow-lg"
             }}
          >
             <PasswordChangeForm onClose={() => setDrawerOpen(false)} />
@@ -130,16 +128,16 @@ const MenuHeader = () => {
    );
 };
 
-// Componente del formulario de cambio de contraseña
 const PasswordChangeForm = ({ onClose }) => {
-   const [showPassword, setShowPassword] = useState({
-      current: false,
-      new: false
-   });
+   const [showPassword, setShowPassword] = useState({ current: false, new: false });
 
    const initialValues = {
       id_User: parseInt(localStorage.getItem("Id_User")) || 0,
-      password: parseInt(localStorage.getItem("ConfirmationDateTime")) == 0 && parseInt(localStorage.getItem('Id_Role'))!=10  ? "123456" : "",
+      password:
+         parseInt(localStorage.getItem("ConfirmationDateTime")) == 0 &&
+            parseInt(localStorage.getItem("Id_Role")) != 10
+            ? "123456"
+            : "",
       newPassword: ""
    };
 
@@ -147,9 +145,6 @@ const PasswordChangeForm = ({ onClose }) => {
       password: Yup.string().min(6, "Mínimo 6 caracteres").required("Requerido"),
       newPassword: Yup.string()
          .min(6, "Mínimo 6 caracteres")
-         // .matches(/[a-z]/, "Requiere minúscula")
-         // .matches(/[A-Z]/, "Requiere mayúscula")
-         // .matches(/[0-9]/, "Requiere número")
          .notOneOf([Yup.ref("password")], "Debe ser diferente")
          .required("Requerido")
    });
@@ -168,88 +163,79 @@ const PasswordChangeForm = ({ onClose }) => {
    };
 
    return (
-      <Card elevation={3}>
+      <Card className="!shadow-md !rounded-2xl">
          <CardContent>
-            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
-               <Typography variant="h5">
-                {parseInt(localStorage.getItem("ConfirmationDateTime")) ==0? (
-                 <Alert
-                 severity="warning"
-                 sx={{
-                   borderRadius: 2,
-                   boxShadow: 2,
-                   margin: 2,
-                   bgcolor: '#fff8e1',
-                   color: '#5d4037',
-                   borderLeft: '4px solid #ffa000',
-                   '& .MuiAlert-message': {
-                     padding: '8px 0',
-                   }
-                 }}
+            <Box className="!flex !justify-between !items-center !mb-4">
+               <Typography
+                  variant="h5"
+                  className="!font-bold !text-[#651D32]"
                >
-                 <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>
-                 ATENCIÓN
-                 </div>
-                 <div style={{ marginBottom: '8px' }}>
-                 Favor de actualizar tu contraseña para mejorar la seguridad en la plataforma.
-                 </div>
-                 <div style={{ marginBottom: '8px' }}>
-                    La contraseña deberá de ser mayor o igual a 6 caracteres.
+                  {parseInt(localStorage.getItem("ConfirmationDateTime")) == 0 ? (
+                     <Alert
+                        severity="warning"
+                        className="!rounded-lg !shadow-md !bg-[#fff8e1] !text-[#5d4037] !border-l-4 !border-[#ffa000] !mb-4"
+                     >
+                        <div className="!font-bold">ATENCIÓN</div>
+                        <div className="!my-2">
+                           Favor de actualizar tu contraseña para mejorar la seguridad en la plataforma.
+                        </div>
+                        <div className="!my-2">
+                           La contraseña deberá tener al menos 6 caracteres.
+                        </div>
+                        <div className="!italic">
+                           Guarda tu nueva contraseña en un lugar seguro.
+                        </div>
+                     </Alert>
+                  ) : (
+                     "Cambiar Contraseña"
+                  )}
+               </Typography>
 
-                 </div>
-                 <div style={{ fontStyle: 'italic' }}>
-                 Por favor guarda tu nueva contraseña en un lugar seguro.
-                 </div>
-               </Alert>
-
-                ): "Cambiar Contraseña"}
-                </Typography>
-               {parseInt(localStorage.getItem("ConfirmationDateTime")) == 1 && parseInt(localStorage.getItem('Id_Role'))!=10 && (
-                  <IconButton onClick={onClose}>
-                     <CloseIcon />
-                  </IconButton>
-               )}
+               {parseInt(localStorage.getItem("ConfirmationDateTime")) == 1 &&
+                  parseInt(localStorage.getItem("Id_Role")) != 10 && (
+                     <IconButton onClick={onClose} className="!text-[#474C55] hover:!text-[#9B2242]">
+                        <CloseIcon />
+                     </IconButton>
+                  )}
             </Box>
 
             <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
                {({ isSubmitting, errors, touched }) => (
                   <Form>
                      <Stack spacing={3}>
-                        {/* Campo de contraseña actual */}
-                        {parseInt(localStorage.getItem("ConfirmationDateTime")) ==1 && parseInt(localStorage.getItem('Id_Role'))!=10  && (
-
-                        <Field name="password">
-                           {({ field }) => (
-                              <TextField
-                                 {...field}
-                                 fullWidth
-                                 label="Contraseña actual"
-                                 type={showPassword.current ? "text" : "password"}
-                                 error={touched.password && Boolean(errors.password)}
-                                 helperText={touched.password && errors.password}
-                                 InputProps={{
-                                    endAdornment: (
-                                       <InputAdornment position="end">
-                                          <IconButton
-                                             onClick={() =>
-                                                setShowPassword({
-                                                   ...showPassword,
-                                                   current: !showPassword.current
-                                                })
-                                             }
-                                             edge="end"
-                                          >
-                                             {showPassword.current ? <VisibilityOff /> : <Visibility />}
-                                          </IconButton>
-                                       </InputAdornment>
-                                    )
-                                 }}
-                              />
+                        {parseInt(localStorage.getItem("ConfirmationDateTime")) == 1 &&
+                           parseInt(localStorage.getItem("Id_Role")) != 10 && (
+                              <Field name="password">
+                                 {({ field }) => (
+                                    <TextField
+                                       {...field}
+                                       fullWidth
+                                       label="Contraseña actual"
+                                       type={showPassword.current ? "text" : "password"}
+                                       error={touched.password && Boolean(errors.password)}
+                                       helperText={touched.password && errors.password}
+                                       InputProps={{
+                                          endAdornment: (
+                                             <InputAdornment position="end">
+                                                <IconButton
+                                                   onClick={() =>
+                                                      setShowPassword({
+                                                         ...showPassword,
+                                                         current: !showPassword.current
+                                                      })
+                                                   }
+                                                   edge="end"
+                                                >
+                                                   {showPassword.current ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                             </InputAdornment>
+                                          )
+                                       }}
+                                    />
+                                 )}
+                              </Field>
                            )}
-                        </Field>
-                       
-                        )}
-                        {/* Campo de nueva contraseña */}
+
                         <Field name="newPassword">
                            {({ field }) => (
                               <TextField
@@ -280,14 +266,49 @@ const PasswordChangeForm = ({ onClose }) => {
                            )}
                         </Field>
 
-                        {/* Botones de acción */}
-                        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+                        <Box className="!flex !justify-end !gap-3">
                            {parseInt(localStorage.getItem("ConfirmationDateTime")) == 1 && (
-                              <Button variant="outlined" onClick={onClose}>
+                              <Button
+                                 variant="outlined"
+                                 onClick={onClose}
+                                 className="!border-[#727372] !text-[#474C55] hover:!bg-[#B8B6AF] hover:!text-[#130D0E]"
+                              >
                                  Cancelar
                               </Button>
-                            )} 
-                           <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
+                           )}
+                           <Button
+                              onClick={()=>{
+                                 onClose();
+                              }}
+                              type="button"
+                              variant="outlined"
+                              className="
+                              !bg-[#F5F5F5]
+                              hover:!bg-[#B8B6AF]
+                              !text-[#474C55]
+                              hover:!text-[#130D0E]
+                              !border
+                              !border-[#727372]
+                              hover:!border-[#651D32]
+                              !font-medium
+                              !px-6
+                              !py-2
+                              !rounded-lg
+                              !transition-all
+                              !duration-300
+                              !shadow-sm
+  "
+                              disabled={isSubmitting}
+                           >
+                              {isSubmitting ? "Guardando..." : "Salir"}
+                           </Button>
+
+                           <Button
+                              type="submit"
+                              variant="contained"
+                              className="!bg-[#9B2242] hover:!bg-[#651D32] !text-white !font-semibold !px-6 !py-2"
+                              disabled={isSubmitting}
+                           >
                               {isSubmitting ? "Guardando..." : "Aceptar"}
                            </Button>
                         </Box>

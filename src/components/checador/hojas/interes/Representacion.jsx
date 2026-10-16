@@ -1,40 +1,41 @@
-import { useEffect, useState } from "react";
-import { Ngif } from "../../../Reusables/conditionals/Ngif";
-import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../../Reusables/pdf/PdfDeclaracion";
-import { testField, field, testArrayField, arrayField, vacio } from "../../funciones/Funciones";
-export const Representacion = ({ data = [] }) => {
-   const {
-      relacion = vacio(),
-      representacion = vacio(),
-      FechaInicioRepresentacion = vacio(),
-      NombreRazonSocial = vacio(),
-      Rfc = vacio(),
-      RecibeRemuneracion = vacio(),
-      EsEnMexico = vacio(),
-      Pais = vacio(),
-      Municipio = vacio(),
-      Aclaraciones = vacio(),
-      Id_TipoPersona = vacio(),
-      MontoMensual = vacio(),
-      sector=vacio(),
-   } = data[0] || {};
-   useEffect(() => {}, []);
+import { useEffect } from "react";
+import { TextPdf } from "../../../Reusables/pdf/PdfDeclaracion";
+import { testField, vacio } from "../../funciones/Funciones";
+
+export const Representacion = ({ data = {} }) => {
+   const representacionObj = data.participacion || {}; // Un solo objeto
+
+   const tipoPersona = representacionObj.tipoPersona || vacio();
+   const monto = representacionObj.montoMensual?.monto || {};
+   const ubicacion = representacionObj.ubicacion?.entidadFederativa || {};
+   const sector = representacionObj.sector || {};
+
+   useEffect(() => { }, []);
+
+   if (!representacionObj || Object.keys(representacionObj).length === 0) {
+      return <TextPdf title="Representación" text="No se encontró información de la representación." />;
+   }
+
    return (
       <>
-         <TextPdf title={`Relacion`} text={testField(relacion)} />
-         <TextPdf title={`Tipo de representación`} text={testField(representacion)} />
-         <TextPdf title={`Fecha de inicio de la participación de la institución`} text={testField(FechaInicioRepresentacion)} />
-         <TextPdf title={`Representante/Representado`} text={testField(Id_TipoPersona)} />
-         <TextPdf title={`Nombre o razon social del represetante o representado`} text={testField(NombreRazonSocial)} />
-         <TextPdf title={`Rfc`} text={testField(Rfc)} />
-         <TextPdf title={`¿Recibe remuneración?`} text={testField(RecibeRemuneracion)} />
-         <TextPdf title={`Lugar donde se ubica`} text={testField(EsEnMexico=='si'?'México':'Extranjero')} />
-
-         {RecibeRemuneracion == "si" && <TextPdf title={`Monto mensual neto de su representación`} text={testField(MontoMensual)} />}
-         {EsEnMexico ? <TextPdf title={`Entidad federativa`} text={testField(Municipio)} /> : <TextPdf title={`Pais`} text={testField(Pais)} />}
-         <TextPdf title={`Sector productivo que pertenece`} text={testField(sector)} />
-
-         <TextPdf title={`Aclaraciones/Observaciones`} text={testField(Aclaraciones)} />
+         <TextPdf title="Relación" text={testField(representacionObj.tipoRelacion)} />
+         <TextPdf title="Tipo de representación" text={testField(representacionObj.tipoRepresentacion)} />
+         <TextPdf title="Fecha de inicio de la participación de la institución" text={testField(representacionObj.fechaInicioRepresentacion)} />
+         <TextPdf title="Tipo de persona" text={testField(tipoPersona)} />
+         <TextPdf title="Nombre o razón social del representante o representado" text={testField(representacionObj.nombreRazonSocial)} />
+         <TextPdf title="RFC" text={testField(representacionObj.rfc)} />
+         <TextPdf title="¿Recibe remuneración?" text={testField(representacionObj.recibeRemuneracion ? "Sí" : "No")} />
+         {representacionObj.recibeRemuneracion && (
+            <TextPdf title="Monto mensual neto de su representación" text={testField(monto.valor)} />
+         )}
+         <TextPdf title="Lugar donde se ubica" text={testField(representacionObj.ubicacion?.pais === "MX" ? "México" : "Extranjero")} />
+         {representacionObj.ubicacion?.pais === "MX" ? (
+            <TextPdf title="Entidad federativa" text={testField(ubicacion.valor)} />
+         ) : (
+            <TextPdf title="País" text={testField(ubicacion.valor)} />
+         )}
+         <TextPdf title="Sector productivo que pertenece" text={testField(sector.valor)} />
+         <TextPdf title="Aclaraciones/Observaciones" text={testField(representacionObj.aclaraciones)} />
       </>
    );
 };

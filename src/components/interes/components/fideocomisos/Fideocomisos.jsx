@@ -187,7 +187,7 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
          }
       } else {
          try {
-            const response = await Axios.post(`apartados/interes/${parseInt(localStorage.getItem("id_Intereses"))}/7/1/${parseInt(localStorage.getItem("Id_User"))}`);
+            const response = await Axios.post(`apartados/interes/${parseInt(localStorage.getItem("id_SituacionPatrimonial") || "0")}/${parseInt(localStorage.getItem("id_Intereses"))}/7/1/${parseInt(localStorage.getItem("Id_User"))}`);
             Success("Continuemos llenando los formularios");
             setDatasTable([]);
             next();
@@ -234,8 +234,8 @@ export const Fideocomisos = ({ loading, data, next, previous, title }) => {
                maxHeight={"250px"}
                validationSchema={validationSchema}
                messageButton="Agregar a la tabla"
-               previousButton
-               handlePrevious={previous}
+               // previousButton
+               // handlePrevious={previous}
                ref={formik}
                initialValues={initialValues}
                submit={submit}

@@ -16,7 +16,7 @@ import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 import Loading from "../../Reusables/loading/Loading";
 import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
-import { BienesMuebles as PdfBienesMuebles } from "../../checador/hojas/BienesMuebles";
+import { BienesMuebles as PdfBienesMuebles } from "../../checador/hojasvisualizacion/BienesMuebles";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 export const BienesMuebles = ({ loading, data, next, previous, title, setSend }) => {
    const dataForm = useSelector((state) => state.BienesMuebles.initialState);

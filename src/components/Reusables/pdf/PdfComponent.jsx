@@ -50,6 +50,7 @@ import BarlowBold from "../../../assets/fonts/Barlow-Bold.ttf";
 import ReactPDF from "@react-pdf/renderer";
 import fs from "fs";
 import path from "path";
+import Spinner from "../../loading/Loading";
 
 //#region FUENTES
 Font.register({
@@ -424,7 +425,9 @@ export const DocumentPDF = ({ fileName, children, watermark = "", formData = { f
                         <Text style={stylesPDF.upperCase}>{formData.departmentTo1}</Text>
                      </View>
                   )}
-                  <View style={stylesPDF.messageBody}>{children}</View>
+                  <View style={stylesPDF.messageBody}>
+                     {children}
+                     </View>
                   <View style={stylesPDF.firmContainer}>
                      <Text style={[stylesPDF.letterSpace, { fontSize: 10 }]}>ATENTAMENTE: </Text>
                      <Text style={stylesPDF.upperCase}>{formData.voucher.requesterWorkstation}</Text>
@@ -519,21 +522,7 @@ export const ModalPDF = ({ fileName, children, open, setOpen, formTitle = "titul
                >
                   {({ loading }) =>
                      loading ? (
-                        <button
-                           disabled
-                           style={{
-                              backgroundColor: "#cccccc",
-                              color: "#666666",
-                              borderRadius: "8px",
-                              padding: "10px 20px",
-                              border: "none",
-                              cursor: "not-allowed",
-                              fontWeight: "bold",
-                              fontSize: "16px"
-                           }}
-                        >
-                           Cargando...
-                        </button>
+                        <Spinner/>
                      ) : (
                         <button
                            style={{

@@ -28,6 +28,8 @@ const BaseLayout = Loadable(lazy(() => import("../layout/BaseLayout")));
 const SteppersLayout = Loadable(lazy(() => import("../components/declaraciones/steppers/Steppers")));
 
 const LoginLayout = Loadable(lazy(() => import("../components/autenticacion/login")));
+const Compaq = Loadable(lazy(() => import("../components/compaq/compaq")));
+
 const ChecadorLayout = Loadable(lazy(() => import("../components/checador/Checador")));
 const ComponentCatalogoLayout = Loadable(lazy(() => import("../components/catalogos/componentcatalogo/ComponentCatalogo")));
 const MisDeclaracionesLayout = Loadable(lazy(() => import("../components/misdeclaraciones/MisDeclaraciones")));
@@ -46,6 +48,7 @@ import { Ngif } from "../components/Reusables/conditionals/Ngif";
 import { NotasAclaratorias } from "../components/notasaclaratorias/NotasAclaratorias";
 import Loading from "../components/Reusables/loading/Loading";
 import Administrativo from "../components/administrativo/Administrativo";
+import Presentar from "../components/presentar/presentar";
 // import DeclaracionInteres from "../components/interes/DeclaracionInteres";
 // import { MisDeclaraciones } from "../components/misdeclaraciones/MisDeclaraciones";
 // import { ComponentCatalogo } from "../components/catalogos/componentcatalogo/ComponentCatalogo";
@@ -144,12 +147,13 @@ export const router = createHashRouter([
                </ComponentPermissions>
             )
          },
+        
          {
             path: "administrativo",
             index: true,
             element: (
                <Provider store={store}>
-                  <ComponentPermissions condition={(role) => [10, 12].includes(role)}>
+                  <ComponentPermissions condition={(role) => [1,10, 12].includes(role)}>
                      <Administrativo />
                   </ComponentPermissions>
                </Provider>
@@ -160,7 +164,7 @@ export const router = createHashRouter([
             index: true,
             element: (
                <ComponentPermissions condition={(role) => [1, 5, 10,11, 12].includes(role)}>
-                  <ChecadorLayout />
+                  <MisDeclaracionesLayout checador  />
                </ComponentPermissions>
             )
          },
@@ -174,6 +178,20 @@ export const router = createHashRouter([
             )
          },
          {
+            path: "usuarios",
+            // element:<EstadoCivil/>,
+            element: (
+               <ComponentPermissions condition={(role) => [1, 4, 10, 11, 12].includes(role)}>
+                  <ComponentCatalogoLayout pagina={"usuarios"} />
+               </ComponentPermissions>
+            )
+         },
+
+         
+         {
+
+
+
             path: "catalogos",
             // element:<EstadoCivil/>,
             children: [
@@ -205,6 +223,14 @@ export const router = createHashRouter([
                         <ComponentTrasparenciaLayout />
                      </ComponentPermissions>
                   )
+               },
+               {
+                  path: "nopresento",
+                  element: (
+                     <ComponentPermissions condition={(role) => [1, 10, 12].includes(role)}>
+                        <Presentar />
+                     </ComponentPermissions>
+                  )
                }
             ]
          }
@@ -213,6 +239,11 @@ export const router = createHashRouter([
    {
       path: "/",
       element: <LoginLayout />,
+      index: true
+   },
+   {
+      path: "/registro/usuarios",
+      element: <Compaq />,
       index: true
    }
 ]);

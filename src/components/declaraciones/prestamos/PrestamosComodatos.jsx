@@ -23,7 +23,7 @@ import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 import Loading from "../../Reusables/loading/Loading";
 import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
-import { PrestamoComodato as PdfPrestamoComodato } from "../../checador/hojas/PrestamoComodato";
+import { PrestamoComodato as PdfPrestamoComodato } from "../../checador/hojasvisualizacion/PrestamoComodato";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 export const PrestamosComodatos = ({ loading, data, title, previous, next, setSend }) => {
    const validations = useSelector((state) => state.PrestamoComodato.validationSchema);

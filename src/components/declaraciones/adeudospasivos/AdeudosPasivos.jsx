@@ -14,7 +14,7 @@ import { Post } from "../funciones/post";
 import { Axios } from "../../../services/services";
 import Loading from "../../Reusables/loading/Loading";
 import { PagePdf, PdfDeclaracion } from "../../Reusables/pdf/PdfDeclaracion";
-import { AdeudosPasivos as PdfAdeudosPasivos } from "../../checador/hojas/AdeudosPasivos";
+import { AdeudosPasivos as PdfAdeudosPasivos } from "../../checador/hojasvisualizacion/AdeudosPasivos";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 export const AdeudosPasivos = ({ loading, data, title, next, previous, setSend }) => {
    const validations = useSelector((state) => state.AdeudosPasivos.validationSchema);

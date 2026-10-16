@@ -1,77 +1,41 @@
-import { useEffect, useState } from "react";
-import { Ngif } from "../../Reusables/conditionals/Ngif";
-import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../Reusables/pdf/PdfDeclaracion";
-import { testField, field, testArrayField, arrayField, vacio } from "../funciones/Funciones";
-import { DatosDomicilio } from "./datosdomicilo/DatosDomicilio";
-export const PrestamoComodato = ({ data = [], testada = false, municipios = [], paises = [], entidades = [], vehiculos = [], relacion = [], inmuebles = [] }) => {
-   const {
-      Id_PrestamoComodato = vacio(),
-      Id_SituacionPatrimonial = vacio(),
-      EsVehiculo = vacio(),
-      Id_TipoInmueble = vacio(),
-      Calle = vacio(),
-      NumeroExterior = vacio(),
-      NumeroInterior = vacio(),
-      ColoniaLocalidad = vacio(),
-      Id_MunicipioAlcaldia = vacio(),
-      Id_EntidadFederativa = vacio(),
-      CiudadLocalidad = vacio(),
-      EstadoProvincia = vacio(),
-      Id_Pais = vacio(),
-      CodigoPostal = vacio(),
-      EsEnMexico = vacio(),
-      Id_TipoVehiculo = vacio(),
-      Marca = vacio(),
-      Modelo = vacio(),
-      Anio = vacio(),
-      NumeroSerieRegistro = vacio(),
-      V_EsEnMexico = vacio(),
-      V_Id_EntidadFederativa = vacio(),
-      Id_TipoDuenoTitular = vacio(),
-      NombreTitular = vacio(),
-      RfcTitular = vacio(),
-      Id_Relacion = vacio(),
-      Aclaraciones = vacio(),
-      FechaRegistro = vacio(),
-      EsActivo = vacio(),
-      V_Id_Pais = vacio(),
-      TipoBien = vacio(),
-      EspecifiqueOtro = vacio()
-   } = data[0] || {};
+import { TextPdf } from "../../Reusables/pdf/PdfDeclaracion";
+import { testField, field, arrayField, vacio } from "../funciones/Funciones";
+
+export const PrestamoComodato = ({ data = {}, testada = false }) => {
+   // Si no hay data, devolvemos vacío
+   if (!data || Object.keys(data).length === 0) return null;
+
+   const tipoBien = data.tipoBien || {};
+   const inmueble = tipoBien.inmueble || {};
+   const vehiculo = tipoBien.vehiculo || {};
+   const dueno = data.duenoTitular || {};
+
+   const esVehiculo = Object.keys(vehiculo).length > 0;
+   const esInmueble = Object.keys(inmueble).length > 0;
+
    return (
       <>
-         <Ngif condition={parseInt(TipoBien) == 1}>
-            <TextPdf text={arrayField(vehiculos, Id_TipoVehiculo)} title={"Tipo de vehículo "} />
-         </Ngif>
-         <Ngif condition={parseInt(TipoBien) == 0}>
-            <TextPdf text={arrayField(inmuebles, Id_TipoInmueble)} title={"Tipo de inmueble"} />
-         </Ngif>
-         <TextPdf text={field(Marca)} title={"Marca"} />
-         <TextPdf text={field(Modelo)} title={"Modelo"} />
-         <TextPdf text={field(Anio)} title={"Año"} />
-         <TextPdf
-            text={parseInt(Id_TipoDuenoTitular) == 1 ? testField(NumeroSerieRegistro, testada) : field(NumeroSerieRegistro)}
-            title={"Número de serie o registro"}
-         />
-         <TextPdf
-            text={parseInt(Id_TipoDuenoTitular) == 1 ? testField(NombreTitular, testada) : field(NombreTitular)}
-            title={`Nombre del dueño o titular del vehículo ${parseInt(TipoBien) == 1?'vehiculo':'inmueble'}`}
-         />
-         <TextPdf text={parseInt(Id_TipoDuenoTitular) == 1 ? testField(RfcTitular, testada) : field(RfcTitular)} title={"RFC"} />
-         <TextPdf
-            text={parseInt(Id_TipoDuenoTitular) == 1 ? testArrayField(relacion, Id_Relacion, testada) : arrayField(relacion, Id_Relacion)}
-            title={"Relación con el dueño o titular"}
-         />
-         <TextPdf
-            title={`¿Dónde se encuentra registrado?`}
-            text={
-               parseInt(Id_TipoDuenoTitular) == 1
-                  ? testField(parseInt(EsEnMexico) == 1 ? "México" : "En el extranjero", testada)
-                  : field(parseInt(EsEnMexico) == 1 ? "México" : "En el extranjero")
-            }
-         />
-         <DatosDomicilio data={data} entidades={entidades} paises={paises} municipios={municipios} testada={false} />
-         <TextPdf text={testField(Aclaraciones, testada)} title={"Aclaraciones/Observaciones"} />
+         {esVehiculo && (
+            <>
+               <TextPdf text={field(vehiculo.tipo?.tipoVehiculo?.valor)} title="Tipo de vehículo" />
+               <TextPdf text={field(vehiculo.marca)} title="Marca" />
+               <TextPdf text={field(vehiculo.modelo)} title="Modelo" />
+               <TextPdf text={field(vehiculo.anio)} title="Año" />
+            </>
+         )}
+
+         {esInmueble && (
+            <>
+               <TextPdf text={field(inmueble.tipoInmueble?.valor)} title="Tipo de inmueble" />
+               {/* Aquí puedes descomentar si quieres mostrar domicilio */}
+               {/* <TextPdf text={field(inmueble.domicilioMexico?.calle)} title="Calle" /> */}
+            </>
+         )}
+
+         <TextPdf text={field(dueno.tipoDuenoTitular)} title="Tipo de dueño/titular" />
+         <TextPdf text={testField(dueno.nombreTitular, testada)} title="Nombre del titular" />
+         <TextPdf text={testField(dueno.rfc, testada)} title="RFC" />
+         <TextPdf text={testField(dueno.relacionConTitular, testada)} title="Relación con titular" />
       </>
    );
 };

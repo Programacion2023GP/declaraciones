@@ -80,6 +80,7 @@ export const FormikForm = forwardRef(
                   <Formik innerRef={ref} initialValues={initialValues} validationSchema={validationSchema} onSubmit={submit}>
                      {({ values, handleSubmit, handleChange, errors, touched, handleBlur, setFieldValue, setValues, submitForm }) => {
                         {
+                           {JSON.stringify(errors)}
                         }
                         return (
                            <>
@@ -134,9 +135,9 @@ export const FormikForm = forwardRef(
                                     }
                                 }}
                               >
-                                 <Grid item xs={12}>
+                                 {/* <Grid item xs={12}>
                                     <Voice message={getErrorMessages(errors, touched)} title={title} info="Ayuda sobre el formulario" totip="Leer errores" />
-                                 </Grid>
+                                 </Grid> */}
 
                                  {React.Children.map(children, (child) =>
                                     React.cloneElement(child, {

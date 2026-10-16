@@ -30,9 +30,9 @@ export const InformacionEmpleo = ({}) => {
             name="NivelEmpleoCargoComision"
             title="Nivel del empleo, cargo o comisión"
             options={[
-               { value: 1, label: "1 Presidente Municipal,Regidores,Tesorero,Contralor, Oficil Mayor." },
-               { value: 2, label: "2 Encargados, Jefes, Supervisores,Administradores, Sub Directores, Directores, Juez, Coordinadores." },
-               { value: 3, label: "3 Operativos(secretaría,auxiliares,limpieza,administrativos,veladores,chofer,intendencia,fajineros, etc.)." }
+               { value: 1, label: "1 Presidente Municipal,Regidores,Tesorero,Contralor, Oficil Mayor,Operativos(secretaría,auxiliares,limpieza,administrativos,veladores,chofer,intendencia,fajineros, etc.)." },
+               { value: 2, label: "1.1 Encargados, Jefes, Supervisores,Administradores, Sub Directores, Directores, Juez, Coordinadores." },
+               { value: 3, label: "2 Operativos(secretaría,auxiliares,limpieza,administrativos,veladores,chofer,intendencia,fajineros, etc.)." }
             ]}
          />
          {/* <AutoComplete

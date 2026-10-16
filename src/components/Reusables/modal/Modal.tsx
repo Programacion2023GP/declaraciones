@@ -36,53 +36,65 @@ export const ModalComponent: React.FC<InterfaceModal> = ({
   if (!portalContainer || !open) return null;
 
   return createPortal(
-    <div className="fixed bg-red-500 inset-0 flex items-center justify-center z-[300] bg-black bg-opacity-50 backdrop-blur-sm animate-fadeIn">
-      <div 
-        className="relative w-full sm:w-4/5 md:w-3/4 lg:w-2/3 xl:w-1/3 max-w-2xl mx-auto rounded-2xl shadow-xl bg-white animate-scaleIn"
-        onClick={(e) => e.stopPropagation()}
+    <div 
+  className="!fixed !inset-0 !z-[9999] !flex !items-center !justify-center 
+             !bg-black !bg-opacity-60 !backdrop-blur-sm animate-fadeIn"
+>
+  <div 
+    className="!relative !w-full sm:!w-4/5 md:!w-3/4 lg:!w-2/3 xl:!w-1/3 
+               !max-w-2xl !mx-auto !rounded-2xl !shadow-2xl !bg-white 
+               animate-scaleIn"
+    onClick={(e) => e.stopPropagation()}
+  >
+    {/* Cabecera del modal */}
+    <div className="!flex !justify-between !items-center !p-5 
+                    !bg-gradient-to-r !from-teal-500 !to-emerald-600 
+                    !rounded-t-2xl !text-white !shadow-lg">
+      <p className="!text-xl sm:!text-2xl !font-semibold">{title}</p>
+      <button
+        onClick={() => setOpen(false)}
+        className="!text-white hover:!text-gray-100 transition duration-200 focus:!outline-none"
+        aria-label="Cerrar modal"
       >
-        {/* Cabecera del modal */}
-        <div className="flex justify-between items-center p-5 bg-gradient-to-r from-teal-400 to-emerald-500 rounded-t-2xl text-white shadow-lg">
-          <p className="text-xl sm:text-2xl font-semibold">{title}</p>
-          <button
-            onClick={() => setOpen(false)}
-            className="text-white hover:text-gray-100 transition duration-200 focus:outline-none"
-            aria-label="Cerrar modal"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
+        <svg
+          className="!w-6 !h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
 
-        {/* Contenido del modal */}
-        <div className="px-6 py-4 max-h-[70vh] overflow-y-auto">
-          <div className="text-gray-800">{children}</div>
-        </div>
+    {/* Contenido del modal */}
+    <div className="!px-6 !py-4 !max-h-[70vh] !overflow-y-auto">
+      <div className="!text-gray-800">{children}</div>
+    </div>
 
-        {/* Footer del modal (opcional) */}
-        {messageButton && handleButton && (
-          <div className="p-4 bg-gray-50 rounded-b-2xl text-center">
-            <button
-              onClick={handleButton}
-              className="bg-teal-500 hover:bg-teal-600 text-white py-2 px-6 rounded-lg shadow-md transition-all duration-200 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50"
-            >
-              {messageButton}
-            </button>
-          </div>
-        )}
+    {/* Footer opcional */}
+    {messageButton && handleButton && (
+      <div className="!p-4 !bg-gray-50 !rounded-b-2xl !text-center">
+        <button
+          onClick={handleButton}
+          className="!bg-teal-500 hover:!bg-teal-600 !text-white 
+                     !py-2 !px-6 !rounded-lg !shadow-md 
+                     !transition-all !duration-200 hover:!scale-[1.02] 
+                     focus:!outline-none focus:!ring-2 
+                     focus:!ring-teal-500 focus:!ring-opacity-50"
+        >
+          {messageButton}
+        </button>
       </div>
-    </div>,
+    )}
+  </div>
+</div>
+,
     portalContainer
   );
 };

@@ -11,7 +11,7 @@ import { DatosCurriculares } from "./datoscurriculares/DatosCurriculares";
 import { DatosEmpleo } from "./datosempleo/DatosEmpleo";
 import { ExperienciaLaboral } from "./experiencialaboral/ExperienciaLaboral";
 import { Titles } from "./funciones/titles";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { DatosParejas } from "./datospareja/DatosPareja";
 import { DependientesEconomicos } from "./dependienteseconomicos/DependientesEconomicos";
 import { IngresosNetos } from "./ingresosnetos/IngresosNetos";
@@ -59,6 +59,7 @@ const ComponentDeclaraciones = () => {
    const handleNext = () => {
       setSend(false);
       // setDataPage([]);
+      console.log("aqui  m", filteredSteps, activeStep)
       setPageAfterSituacion((prevActiveStep) => {
          const nextStepIndex = prevActiveStep + 1;
          return nextStepIndex;
@@ -95,6 +96,49 @@ const ComponentDeclaraciones = () => {
          }
       });
    };
+
+
+   const handleInteres = () => {
+      // setView(false)
+      // Mostrar alerta de confirmación
+      Swal.fire({
+         title: "¿Estás seguro?",
+         text: "Has finalizado tu declaración. ¿Deseas continuar con la declaración de interes?",
+         icon: "warning",
+         showCancelButton: true,
+         confirmButtonColor: "#3085d6",
+         cancelButtonColor: "#d33",
+         confirmButtonText: "Continuar",
+         cancelButtonText: "Salir"
+      }).then((result) => {
+         if (result.isConfirmed) {
+            // Si el usuario confirma, ejecutar el código de salida
+            // dispatch(locationAuth());
+            // localStorage.removeItem("id_SituacionPatrimonial");
+            localStorage.removeItem("id_Intereses");
+
+            window.location.href = `/#/dashboard/declaraciones/${declaracion}/15`;
+            window.location.reload();
+            // setHojaFilter(15)
+
+            // setFiltersStepers((prev)=>[...prev,...declaracionIntereses])
+
+         }
+         else{
+            window.location.hash = "/dashboard/misdeclaraciones";
+
+         }
+      }).catch(() => {
+         console.log("aquiiiiiiiiiii")
+         window.location.hash = "/dashboard/misdeclaraciones";
+         dispatch(locationAuth());
+         localStorage.removeItem("id_SituacionPatrimonial");
+         localStorage.removeItem("id_Intereses");
+         Swal.fire("¡Saliste!", "Has finalizado tu declaración.", "success");
+
+      });
+   };
+
    // const comparationData = (step) => {};
    // Método para manejar el paso anterior
    const handleBack = async () => {
@@ -164,7 +208,7 @@ const ComponentDeclaraciones = () => {
       {
          label: "Servidor Publico",
          component: <ServidorPublico next={handleNext} previous={handleBack} title={Titles(declaracion)} />,
-         exist: [2],
+         exist: [1,3],
          url: "servidorpublico"
       },
       {
@@ -200,7 +244,7 @@ const ComponentDeclaraciones = () => {
       },
       {
          label: "Préstamo o Comodato por Terceros (Situación actual)",
-         component: <PrestamosComodatos next={handleExit} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
+         component: <PrestamosComodatos next={handleInteres} previous={handleBack} title={Titles(declaracion)} setSend={setSend} />,
          exist: [1, 2, 3],
          url: "prestamoscomodatos"
       }
@@ -292,8 +336,8 @@ const ComponentDeclaraciones = () => {
 
    React.useEffect(() => {
       const filtered = steps.filter((step) => step.exist.includes(declaracion));
-
-      setFiltersStepers(hoja > 14 && declaracion == 2 ? declaracionIntereses : filtered);
+      console.log("la misma hoja es", hoja)
+      setFiltersStepers(hoja > 14 ? declaracionIntereses : filtered);
    }, [hoja]);
 
    const [view, setView] = React.useState(false);
@@ -310,7 +354,7 @@ const ComponentDeclaraciones = () => {
 
       // setFiltersStepers(steps.filter((step) => step.exist.includes(declaracion)));
    }, [activeStep, declaracion]);
-   React.useEffect(() => {}, [update, view]);
+   React.useEffect(() => { }, [update, view]);
    React.useEffect(() => {
       // Verificar si dataPage tiene datos válidos
 
@@ -334,8 +378,7 @@ const ComponentDeclaraciones = () => {
 
          setupdate(false);
          const response = await GetAxios(
-            `apartados/hoja/${
-               activeStep < 15 ? parseInt(localStorage.getItem("id_SituacionPatrimonial") ?? "0") || 0 : parseInt(localStorage.getItem("id_Intereses") ?? "0") || 0
+            `apartados/hoja/${activeStep < 15 ? parseInt(localStorage.getItem("id_SituacionPatrimonial") ?? "0") || 0 : parseInt(localStorage.getItem("id_Intereses") ?? "0") || 0
             }`
          );
          let foundHoja = parseInt(response[0].Hoja);
@@ -343,7 +386,7 @@ const ComponentDeclaraciones = () => {
             foundHoja = foundHoja + 14;
          }
          if (isNumber(foundHoja) && foundHoja >= activeStep + 1) {
-            setHojaFilter(foundHoja - 1);
+            // setHojaFilter(foundHoja - 1);
             setupdate(true);
          } else {
             setupdate(false);
@@ -354,7 +397,7 @@ const ComponentDeclaraciones = () => {
          await init();
       }
    };
-   const dataAfterSituacionPatrimonial = async (situacionPatrimonial) => {};
+   const dataAfterSituacionPatrimonial = async (situacionPatrimonial) => { };
    /* 
    ?CONTAMOS CON 3 VERIFICACIONES DE FALLAR DAN FALSA LA ACTUALIZACION
 
@@ -447,13 +490,26 @@ const ComponentDeclaraciones = () => {
       } catch (error) {
          console.error("Error en la inicialización:", error);
          // Manejar errores si es necesario
+
       } finally {
+         setView(true);
+
       }
    };
 
    // Define aquí la lista de pasos con sus títulos y componentes correspondientes
 
    // Función para obtener el título del paso actual
+   React.useEffect(() => {
+      // setFiltersStepers((prev)=>[...prev,...declaracionIntereses])
+      console.log("ff", hojaFilter)
+      if (hojaFilter >= 15) {
+         handleNext()
+         // window.location.hash = "/dashboard/declaraciones/2/15";
+
+      }
+
+   }, [setFiltersStepers, hojaFilter])
    const getStepTitle = () => {
       return filteredSteps[activeStep]?.label;
    };
@@ -538,7 +594,7 @@ const ComponentDeclaraciones = () => {
                      {/* Paso {activeStep + 1} de {steps.length} */}
                   </Typography>
                   {/* Componente correspondiente al paso actual */}
-                  <Ngif condition={view}>
+                  <Ngif condition={filteredSteps[activeStep] && view}>
                      <Grid>{React.cloneElement(filteredSteps[activeStep].component, { data: dataPage, loading: update })}</Grid>
                   </Ngif>
                   <Ngif condition={!view}>

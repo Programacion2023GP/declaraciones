@@ -1,119 +1,45 @@
-import { useEffect, useState } from "react";
-import { Ngif } from "../../Reusables/conditionals/Ngif";
-import { OptionsPdf, SquardsTextPdf, TextPdf } from "../../Reusables/pdf/PdfDeclaracion";
-import { testField, field, testArrayField, arrayField, vacio } from "../funciones/Funciones";
-export const AdeudosPasivos = ({ data = [], testada = false, adeudos = [], titular, monedas = [] }) => {
+import { useEffect } from "react";
+import { TextPdf } from "../../Reusables/pdf/PdfDeclaracion";
+import { testField, field, vacio } from "../funciones/Funciones";
 
+export const AdeudosPasivos = ({ data = {}, testada = false }) => {
    const {
-      Id_AdeudosPasivos = vacio(),
-      Id_SituacionPatrimonial = vacio(),
-      Id_Titular = vacio(),
-      Id_TipoAdeudo = vacio(),
+      tipoAdeudo = { valor: "" },
       NumeroCuentaContrato = vacio(),
       FechaAdquisicion = vacio(),
-      Monto = vacio(),
-      Id_Monto = vacio(),
-      SaldoInsolutoSituacionActual = vacio(),
-      Id_SaldoInsolutoSituacionActual = vacio(),
-      T_Id_TipoPersona = vacio(),
-      T_NombreRazonSocial = vacio(),
-      T_Rfc = vacio(),
-      OC_Id_TipoPersona = vacio(),
-      OC_NombreRazonSocial = vacio(),
-      OC_Rfc = vacio(),
-      EsEnMexico = vacio(),
+      montoOriginal = { monto: { valor: "", moneda: "MXN" } },
+      saldoInsolutoSituacionActual = { monto: { valor: "", moneda: "MXN" } },
+      otorganteCredito = { tipoPersona: "", nombreInstitucion: "", rfc: "" },
+      localizacionAdeudo = { pais: "" },
       Aclaraciones = vacio(),
-      FechaRegistro = vacio(),
-      EsActivo = vacio(),
-      Id_Pais = vacio(),
-      EspecifiqueOtro = vacio()
-   } = data[0] || {};
-   const ids = [2, 5, 6];
-   useEffect(() => {
+   } = data;
 
+   // Corrección: tomar el primer elemento del array
+   const titularItem = (data.titular?.[0] || { titularBien: [] });
+   const titularValor = titularItem.titularBien?.[0]?.valor || "";
+
+   const terceroItem = (data.tercero?.[0] || { tipoPersona: "", nombreRazonSocial: "", rfc: "" });
+
+   useEffect(() => {
+      console.log("Datos AdeudosPasivos:", data);
    }, []);
+
    return (
       <>
-         <TextPdf
-            title={`Titular del adeudo`}
-            text={ids.includes(parseInt(Id_Titular)) ? testArrayField(titular, Id_Titular, testada) : arrayField(titular, Id_Titular)}
-         />
-         {parseInt(Id_TipoAdeudo) > 0 && (
-            <TextPdf
-               title={`Tipo de adeudo`}
-               text={ids.includes(parseInt(Id_Titular)) ? testArrayField(adeudos, Id_TipoAdeudo, testada) : arrayField(adeudos, Id_TipoAdeudo)}
-            />
-         )}
-         <TextPdf
-            title={`Número de cuenta o contrato`}
-            text={ids.includes(parseInt(Id_Titular)) ? testField(NumeroCuentaContrato, testada) : testField(NumeroCuentaContrato, testada)}
-         />
-
-         <TextPdf
-            title={`Fecha de adquisición del adeudo / pasivo`}
-            text={ids.includes(parseInt(Id_Titular)) ? testField(FechaAdquisicion, testada) : field(FechaAdquisicion)}
-         />
-
-         <TextPdf title={`Monto original del adeudo / pasivo`} text={ids.includes(parseInt(Id_Titular)) ? testField(Monto, testada) : field(Monto)} />
-         {parseInt(Id_SaldoInsolutoSituacionActual) > 0 && (
-            <TextPdf
-               title={`Tipo de moneda`}
-               text={
-                  ids.includes(parseInt(Id_Titular))
-                     ? testArrayField(monedas, Id_SaldoInsolutoSituacionActual, testada)
-                     : arrayField(monedas, Id_SaldoInsolutoSituacionActual)
-               }
-            />
-         )}
-         <TextPdf
-            title={`Saldo insoluto`}
-            text={ids.includes(parseInt(Id_Titular)) ? testField(SaldoInsolutoSituacionActual, testada) : testField(SaldoInsolutoSituacionActual, testada)}
-         />
-
-         <TextPdf
-            title={`Tercero`}
-            text={
-               ids.includes(parseInt(Id_Titular))
-                  ? testField(parseInt(T_Id_TipoPersona) == 1 ? "Persona física" : "Persona moral", testada)
-                  : field(parseInt(T_Id_TipoPersona) == 1 ? "Persona física" : "Persona moral")
-            }
-         />
-         <TextPdf
-            title={`Nombre del tercero o terceros`}
-            text={ids.includes(parseInt(Id_Titular)) ? testField(T_NombreRazonSocial, testada) : field(T_NombreRazonSocial)}
-         />
-         <TextPdf title={`RFC`} text={ids.includes(parseInt(Id_Titular)) ? testField(T_Rfc, testada) : field(T_Rfc)} />
-         <TextPdf
-            title={`Otorgante del crédito`}
-            text={
-               ids.includes(parseInt(Id_Titular))
-                  ? testField(parseInt(OC_Id_TipoPersona) == 1 ? "Persona física" : "Persona moral", testada)
-                  : field(parseInt(OC_Id_TipoPersona) == 1 ? "Persona física" : "Persona moral")
-            }
-         />
-         <TextPdf
-            title={`Nombre / institución o razón social`}
-            text={ids.includes(parseInt(Id_Titular)) || parseInt(OC_Id_TipoPersona) == 1 ? testField(OC_NombreRazonSocial, testada) : field(OC_NombreRazonSocial)}
-         />
-         <TextPdf title={`RFC`} text={ids.includes(parseInt(Id_Titular)) || parseInt(OC_Id_TipoPersona) == 1 ? testField(OC_Rfc, testada) : field(OC_Rfc)} />
-         <TextPdf
-            title="¿Dónde se localiza el adeudo?"
-            text={
-               ids.includes(parseInt(Id_Titular))
-                  ? testField(parseInt(EsEnMexico) == 1 ? "México" : "en el extranjero", testada)
-                  : field(parseInt(EsEnMexico) == 1 ? "México" : "en el extranjero")
-            }
-         />
-
-         <TextPdf
-            title={`País`}
-            text={
-               ids.includes(parseInt(Id_Titular))
-                  ? testField(parseInt(EsEnMexico) == 1 ? "México" : vacio(), testada)
-                  : field(parseInt(EsEnMexico) == 1 ? "México" : vacio())
-            }
-         />
-         <TextPdf title={`Aclaraciones/Observaciones`} text={testField(Aclaraciones)} />
+         <TextPdf title={`Titular del adeudo`} text={testada ? testField(titularValor, testada) : field(titularValor)} />
+         <TextPdf title={`Tipo de adeudo`} text={testada ? testField(tipoAdeudo?.valor, testada) : field(tipoAdeudo?.valor)} />
+         <TextPdf title={`Número de cuenta o contrato`} text={testField(NumeroCuentaContrato, testada)} />
+         <TextPdf title={`Fecha de adquisición del adeudo / pasivo`} text={testField(FechaAdquisicion, testada)} />
+         <TextPdf title={`Monto original del adeudo / pasivo`} text={testField(montoOriginal?.monto?.valor, testada)} />
+         <TextPdf title={`Saldo insoluto`} text={testField(saldoInsolutoSituacionActual?.monto?.valor, testada)} />
+         <TextPdf title={`Tercero`} text={testada ? testField(terceroItem.tipoPersona, testada) : field(terceroItem.tipoPersona)} />
+         <TextPdf title={`Nombre del tercero o terceros`} text={testField(terceroItem.nombreRazonSocial, testada)} />
+         <TextPdf title={`RFC del tercero`} text={testField(terceroItem.rfc, testada)} />
+         <TextPdf title={`Otorgante del crédito`} text={testField(otorganteCredito?.tipoPersona, testada)} />
+         <TextPdf title={`Nombre / institución o razón social`} text={testField(otorganteCredito?.nombreInstitucion, testada)} />
+         <TextPdf title={`RFC del otorgante`} text={testField(otorganteCredito?.rfc, testada)} />
+         <TextPdf title={`País`} text={testField(localizacionAdeudo?.pais, testada)} />
+         <TextPdf title={`Aclaraciones/Observaciones`} text={testField(Aclaraciones, testada)} />
       </>
    );
 };

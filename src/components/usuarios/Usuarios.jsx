@@ -22,9 +22,17 @@ const Usuarios = ({ formik, setId, peticiones }) => {
    const validator = {
       Name: Yup.string("El formato es texto").required("El nombre es requerido"),
       Email: Yup.string("El formato es texto").required("El correo es requerido"),
-      Nomina: Yup.number("el formato es numerico").min(1000, "El numero de nomina requiere 4 numeros").required("El numero de nomina es requerido"),
-      PaternalSurname: Yup.string("El formato es texto").required("El apellido paterno es requerido"),
-      // Gender: Yup.string("").required("El sexo es ob"),
+      Nomina: Yup.string()
+         .matches(/^\d+$/, "El formato debe ser numérico")
+         .required("El número de nómina es requerido"),
+      PaternalSurname: Yup.string().test(
+         'al-menos-un-apellido',
+         'Es requerido al menos un apellido (Paterno o Materno)',
+         function (value) {
+            const { MaternalSurname } = this.parent;
+            return !!(value?.trim() || MaternalSurname?.trim());
+         }
+      ),      // Gender: Yup.string("").required("El sexo es ob"),
       // MaternalSurname: Yup.string("El formato es texto").required("El apellido materno es requerido"),
       DenominacionCargo: Yup.number("El formato es texto").required("La Denominación del cargo es requerida"),
       DenominacionPuesto: Yup.number("el formato es numerico").required("La Denominación del puesto es requerida"),
@@ -50,6 +58,16 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       organismo: ""
    };
    const handleNomina = async (name, value) => {
+      // 1. Obtener el organismo desde formik
+      const organismo = formik?.current?.values?.['organismo'];
+
+      // 2. Validar que existe organismo
+      if (!organismo) {
+         Error("Es necesario seleccionar la dependencia");
+         return;
+      }
+
+      // 3. Caso especial para 999999
       if (value === "999999") {
          formik.current.setFieldValue("Name", "Enlance");
          formik.current.setFieldValue("PaternalSurname", "Enlance");
@@ -59,30 +77,63 @@ const Usuarios = ({ formik, setId, peticiones }) => {
          formik.current.setFieldValue("Id_Role", 4);
          return;
       }
+
+      // 4. Validar longitud mínima
       if (value.length >= 4) {
          try {
-            const response = await GetAxios(`compaq/show/${value}`);
+            let apiUrl = '';
+            let apiMethod = 'GET'; // Método por defecto
 
-            if (response.length > 0) {
-               const { nombreE, apellidoP, apellidoM, puesto } = response[0];
+            // Determinar URL según organismo
+            apiUrl = `compaq/show/${value}`;
 
-               formik.current.setFieldValue("Name", nombreE || "");
-               formik.current.setFieldValue("PaternalSurname", apellidoP || "");
-               formik.current.setFieldValue("MaternalSurname", apellidoM || "");
-               formik.current.setFieldValue("DenominacionPuesto", puesto || "");
-            } else {
-               Error("No existe el número de nómina");
-               clearFields();
+
+            // Hacer la petición para Presidencia y EXPOFERIA
+            if (organismo !="") {
+               const response = await GetAxios(apiUrl);
+
+               if (response?.length > 0) {
+                  const { nombreE, apellidoP, apellidoM, puesto } = response[0];
+
+                  formik.current.setFieldValue("Name", nombreE || "");
+                  formik.current.setFieldValue("PaternalSurname", apellidoP || "");
+                  formik.current.setFieldValue("MaternalSurname", apellidoM || "");
+                  formik.current.setFieldValue("DenominacionPuesto", puesto || "");
+                  // También podrías necesitar setear DenominacionCargo
+               } else {
+                  Error("No existe el número de nómina");
+                  clearFields();
+               }
+            } else if (organismo =="DIF") {
+               const response = await fetch("https://dif.gomezpalacio.gob.mx/empleados/",
+               {
+                  headers:{
+                     'Accept': 'application/json',
+                     'Content-Type': 'application/json',
+                  },
+                  mode:"cors"
+               }
+               );
+               const data = await response.json();
+               console.log(data);
+            } {
+               // Para otros organismos (SIDEAPAAR, SIDEAPA, DIF)
+               // Aquí deberías implementar la lógica específica para cada uno
+               // Ejemplo:
+               // const response = await axios.get(apiUrl, { params: { nomina: value } });
+               // Procesar respuesta...
             }
+
          } catch (err) {
             Error("Error en la solicitud, intenta nuevamente.");
-            console.error(err);
+            console.error("Error en handleNomina:", err);
             clearFields();
          }
       } else {
          clearFields();
       }
    };
+
    const clearFields = () => {
       formik.current.setFieldValue("Name", "");
       formik.current.setFieldValue("PaternalSurname", "");
@@ -109,6 +160,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
    const Form = () => {
       const [dataEmpleos, setDataEmpleos] = useState(empleos);
       const [aereas, setAereas] = useState(adscripcionOrganismo);
+      
       const handleEmpleos = (name, value) => {
          formik.current.setFieldValue("AreaAdscripcion", "");
          formik.current.setFieldValue("DenominacionPuesto", "");
@@ -124,7 +176,21 @@ const Usuarios = ({ formik, setId, peticiones }) => {
       return (
          <>
             <Ngif condition={roles.length > 0 && intengrantes.length > 0 && adscripcionOrganismo.length > 0}>
-               <Text type={"number"} col={6} name={"Nomina"} label={"N° de Nomina"} handleGetValue={handleNomina} />
+               <AutoComplete
+                  col={12}
+                  name={"organismo"}
+                  label={"Dependencia"}
+                  options={[
+                     { id: "Presidencia", text: "Presidencia" },
+                     { id: "SIDEAPAAR", text: "SIDEAPAAR" },
+                     { id: "SIDEAPA", text: "SIDEAPA" },
+
+                     { id: "DIF", text: "DIF" },
+                     { id: "EXPOFERIA", text: "EXPOFERIA" }
+                  ]}
+                  handleGetValue={handleEmpleos}
+               />
+               <Text type={"text"} col={6} name={"Nomina"} label={"N° de Nomina"} handleGetValue={handleNomina} />
                <Text col={6} disabled={true} name={"Name"} label={"Nombre(s)"} />
                <Text col={6} disabled={true} name={"PaternalSurname"} label={"Apellido Paterno"} />
                <Text col={6} disabled={true} name={"MaternalSurname"} label={"Apellido Materno"} />
@@ -148,7 +214,7 @@ const Usuarios = ({ formik, setId, peticiones }) => {
                      const roleId = parseInt(localStorage.getItem("Id_Role"));
                    
                      if (roleId === 10) {
-                       return false; // no muestra ninguno
+                      return ![1].includes(r.id); // no muestra ninguno
                      } else if (roleId === 1 || roleId === 12) {
                        return ![1, 10, 12].includes(r.id); // todos excepto 1, 10 y 12
                      } else {
@@ -159,28 +225,14 @@ const Usuarios = ({ formik, setId, peticiones }) => {
                    
                />
                <AutoComplete col={12} name={"Id_TipoIntegrante"} label={"Tipo de integrante del sujeto obligado"} options={intengrantes} />
-               <AutoComplete
-                  col={12}
-                  name={"organismo"}
-                  label={"Dependencia"}
-                  options={[
-                     { id: "Presidencia", text: "Presidencia" },
-                     { id: "SIDEAPAAR", text: "SIDEAPAAR" },
-                     { id: "SIDEAPA", text: "SIDEAPA" },
-
-                     { id: "DIF", text: "DIF" },
-                     { id: "EXPOFERIA", text: "EXPOFERIA" }
-                  ]}
-                  handleGetValue={handleEmpleos}
-               />
+              
                <AutoComplete
                   col={12}
                   name={"ClaseNivelPuesto"}
                   label={"Clase o nivel del puesto"}
                   options={[
-                     { id: 1, text: "1 Presidente Municipal,Regidores,Tesorero,Contralor, Oficil Mayor." },
-                     { id: 2, text: "2 Encargados, Jefes, Supervisores,Administradores, Sub Directores, Directores, Juez, Coordinadores." },
-                     { id: 3, text: "3 Operativos(secretaría,auxiliares,limpieza,administrativos,veladores,chofer,intendencia,fajineros, etc.)." }
+                     { id: 1, text: "1 Presidente Municipal,Regidores,Tesorero,Contralor, Oficil Mayor, Encargados, Jefes, Supervisores,Administradores, Sub Directores, Directores, Juez, Coordinadores." },
+                     { id: 3, text: "2 Operativos(secretaría,auxiliares,limpieza,administrativos,veladores,chofer,intendencia,fajineros, etc.)." }
                   ]}
                />
                <AutoComplete col={12} name={"AreaAdscripcion"} label={"Área de adscripción"} options={aereas} handleGetValue={CargoPuesto} />

@@ -1,43 +1,48 @@
-import Tooltip from "@mui/material/Tooltip";
+import {  Tooltip } from "@mui/material";
+import { MdOutlineArrowDropDown, MdOutlineGridView } from "react-icons/md";
+import { Link } from "react-router-dom";
 
-import { MdOutlineGridView, MdOutlineArrowDropDown } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
-import "../Sidebar.scss";
-import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
-
-export const Items = ({ text, path = null, childrens, active, classprop, index = null, indexChild = undefined, handleClickContinue, message = "" }) => {
+export const Items = ({
+   text,
+   path = "#",
+   childrens = false,
+   active = false,
+   classprop = "",
+   index = null,
+   indexChild = undefined,
+   handleClickContinue,
+   message = "",
+   id = null,
+}) => {
    const onHandleClick = () => {
       handleClickContinue(index, indexChild);
    };
-   const style = { backgroundColor: "rgba(0, 0, 0, 0.8)", color: "#fff", borderRadius: "4px", padding: "8px", fontSize: "14px" };
+
    return (
-      <Tooltip title={message} placement="right" arrow sx={active ? {} : style}>
-         <Link to={path ? path : "#"} className={`menu-link ${active ? classprop : ""}`} onClick={onHandleClick}>
-            <span className="menu-link-icon">
-               <MdOutlineGridView size={18} />
-            </span>
-            <span className="menu-link-text">{text}</span>
-            <span className="menu-link-icon"></span>
-            {childrens && <MdOutlineArrowDropDown size={18} />}
+      <Tooltip title={message} placement="right" arrow>
+         <Link
+            to={path}
+            onClick={onHandleClick}
+            id={id || path}
+            className={`
+          !flex !items-center !justify-between !px-4 !py-2 !rounded-md
+          !transition-colors !duration-200
+          ${active && classprop === "active"
+                  ? "!bg-rose-50 !text-rose-700 !font-medium !border-l-4 !border-rose-700"
+                  : "!text-gray-700 hover:!bg-gray-100"
+               }
+          ${active && classprop === "subactive"
+                  ? "!text-rose-600 !bg-rose-50/50 !font-medium"
+                  : ""
+               }
+        `}
+         >
+            <div className="!flex !items-center !gap-3">
+               <MdOutlineGridView className="!text-lg" />
+               <span className="!text-sm">{text}</span>
+            </div>
+            {childrens && <MdOutlineArrowDropDown className="!text-xl" />}
          </Link>
       </Tooltip>
-   );
-};
-const CustomLink = ({ dest, content, setExit }) => {
-   const navigate = useNavigate();
-
-   const handleDelayedLinkClick = (to, delay) => (event) => {
-      event.preventDefault();
-      setExit(true);
-      setTimeout(() => {
-         navigate(to);
-      }, delay);
-   };
-
-   return (
-      <div className="link" onClick={handleDelayedLinkClick(dest, 1000)}>
-         {content}
-      </div>
    );
 };

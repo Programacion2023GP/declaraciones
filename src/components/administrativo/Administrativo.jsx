@@ -492,12 +492,13 @@ const Administrativo = () => {
                loading={loading}
                filterGlobal={true}
                filter={true}
-               headers={["Folio","Hoja en la que va", "Nombre completo", "Tipo declaración", "Declaracion", "Fecha", "Tipo de declaración"]}
+               headers={["Folio", "Nombre completo", "Hoja en la que va", "Tipo declaración", "Declaracion", "Fecha", "Tipo de declaración"]}
                data={declaraciones}
-               dataHidden={["fechaAlta","Nombre","ApMaterno","ApPaterno"]}
+               dataHidden={["Id_User", "fechaAlta", "Nombre", "ApMaterno", 'organismo', "ApPaterno", 'NombreCompleto', 'Gender', 'Ejercicio', 'Trimestre','FechaFechaTerminadaFormateada']}
                pagination={[10, 25, 50, 100, 200]}
             />
          </div>
+      
 
          <Dialog fullScreen open={modal} style={{'overflow':'auto'}} onClose={setModal} TransitionComponent={Transition}>
             {hoja == 1 && <DatosGenerales data={data} loading={true}  next={()=>{setModal(false)}}/>}

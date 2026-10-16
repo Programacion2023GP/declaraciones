@@ -21,7 +21,7 @@ const Trasparencia = ({}) => {
          json.Hipervinculo = "https://transparencia.gomezpalacio.gob.mx/wp-content/uploads/declaraciones/" + json.Hipervinculo.toUpperCase() + ".pdf";
          mayusc.push(json);
       });
-
+      console.log("mayusc", mayusc);
       setData(mayusc);
       setLoading(false);
    };

@@ -180,7 +180,7 @@ export const ParticipacionTomaDecisiones = ({ loading, data, next, previous, tit
          }
       } else {
          try {
-            const response = await Axios.post(`apartados/interes/${parseInt(localStorage.getItem("id_Intereses"))}/2/1/${parseInt(localStorage.getItem("Id_User"))}`);
+            const response = await Axios.post(`apartados/interes/${parseInt(localStorage.getItem("id_SituacionPatrimonial") || "0")}/${parseInt(localStorage.getItem("id_Intereses"))}/2/1/${parseInt(localStorage.getItem("Id_User"))}`);
             Success("Continuemos llenando los formularios");
             setDatasTable([]);
             next();

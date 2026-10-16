@@ -20,7 +20,7 @@ const initialState = {
 };
 const validationSchema = {
    Nombre: Yup.string().required("El Nombre es obligatorio"),
-   PrimerApellido: Yup.string().required("El Primer apellido es obligatorio"),
+   // PrimerApellido: Yup.string().required("El Primer apellido es obligatorio"),
    // SegundoApellido: Yup.string().required("El Segundo apellido es obligatorio"),
    Curp: Yup.string()
       .required("El CURP es requerido")

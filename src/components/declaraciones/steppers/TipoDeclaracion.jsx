@@ -34,7 +34,7 @@ export const TipoDeclaracion = () => {
                         <InputLabel htmlFor="grouped-native-select">Elegir tipo de declaración</InputLabel>
                         <Select onChange={handleChange} native value={selected} defaultValue="" id="grouped-native-select" label="Elegir tipo de declaración">
                            <option aria-label="None" value="" />
-                           <Ngif condition={role == 2}>
+                           <Ngif condition={ [1,2].includes(role)}>
                               <optgroup label="Situación patrimonial">
                                  <option value={1}>Inicial</option>
                                  <option value={2}>Modificación</option>
